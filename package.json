@@ -1,0 +1,8 @@
+{
+  "name": "template-application-nextjs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:navapbc/template-application-nextjs.git",
+  "author": "karinamzalez <karinamzalez@gmail.com>",
+  "license": "MIT"
+}
