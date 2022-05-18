@@ -11,7 +11,7 @@ const Home: NextPage = () => {
       </Head>
 
       <header className={styles.header}>
-        <p>Placeholder navbar</p>
+        <nav aria-label="Primary">Placeholder navbar</nav>
       </header>
 
       <main className={styles.main}>
@@ -21,7 +21,7 @@ const Home: NextPage = () => {
       </main>
 
       <footer className={styles.footer}>
-        <p>Placeholder footer</p>
+        <nav aria-label="Secondary">Placeholder Footer</nav>
       </footer>
     </div>
   )
