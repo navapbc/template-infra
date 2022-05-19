@@ -21,9 +21,9 @@ A starter [API route](https://nextjs.org/docs/api-routes/introduction) can be ac
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Linter and Typechecker
+## Linter and Typechecker Setup
 
-This application is leveraging `eslint` and nava's internal [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, it is still recommended that you tell your IDE to auto-fix eslint errors on save. In VSCode, to do so, create a .vscode/settings.json file with:
+For linting, this application is leveraging `eslint` and nava's internal [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, it is still recommended that we tell our code editor to auto-fix eslint errors on save. In VSCode, do so by creating a `.vscode/settings.json` file with:
 
 ```
 {
@@ -32,3 +32,11 @@ This application is leveraging `eslint` and nava's internal [eslint-config-nava]
   }
 }
 ```
+
+For typechecking, this application is leveraging Next.js' [incremental typechecking](https://nextjs.org/docs/basic-features/typescript#incremental-type-checking). NextJS will run type checking as a part of `next build`--  Although it is still recommended that we set up type checking using our code editor for development. In VSCode, do so by adding the following to your `.vscode/settings.json` file
+
+```
+"typescript.validate.enable": true
+```
+
+Note: make sure TypeScript and Javascript Language Features are enabled in VS Code Extensions. 
