@@ -23,13 +23,15 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Local Linter and Typechecker Setup
 
-For linting, this application is leveraging `eslint` and nava's internal [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, it is still recommended that we tell our code editor to auto-fix eslint errors on save. In VSCode, do so by creating a `.vscode/settings.json` file with:
+For linting, this application is leveraging `eslint`, `prettier` and nava's internal [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, it is still recommended that we tell our code editor to auto-fix eslint and prettier errors on save. In VSCode, do so by creating a `.vscode/settings.json` file with:
 
 ```
 {
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }
 ```
 

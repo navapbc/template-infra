@@ -2,7 +2,8 @@
   "plugins": ["@typescript-eslint"],
   "extends": [
     "nava",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "prettier" 
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": "error",
