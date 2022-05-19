@@ -21,7 +21,7 @@ A starter [API route](https://nextjs.org/docs/api-routes/introduction) can be ac
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Linter and Typechecker Setup
+## Local Linter and Typechecker Setup
 
 For linting, this application is leveraging `eslint` and nava's internal [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, it is still recommended that we tell our code editor to auto-fix eslint errors on save. In VSCode, do so by creating a `.vscode/settings.json` file with:
 
