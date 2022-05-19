@@ -1,4 +1,11 @@
 {
-  "extends": "nava",
-  "rules": {}
+  "plugins": ["@typescript-eslint"],
+  "extends": [
+    "nava",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "error",
+    "@typescript-eslint/no-explicit-any": "error"
+  }
 }

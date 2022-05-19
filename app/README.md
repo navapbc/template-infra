@@ -2,7 +2,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies: 
+```bash
+yarn
+```
+
+Second, run the development server:
 
 ```bash
 yarn dev
@@ -16,17 +21,14 @@ A starter [API route](https://nextjs.org/docs/api-routes/introduction) can be ac
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
-## Learn More
+## Linter and Typechecker
 
-To learn more about Next.js, take a look at the following resources:
+This application is leveraging `eslint` and nava's internal [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, it is still recommended that you tell your IDE to auto-fix eslint errors on save. In VSCode, to do so, create a .vscode/settings.json file with:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/).
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+{
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
+```
