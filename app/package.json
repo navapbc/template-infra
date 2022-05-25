@@ -5,9 +5,12 @@
   "scripts": {
     "build": "next build",
     "dev": "next dev",
+    "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
+    "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "next lint",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "next": "12.1.6",
