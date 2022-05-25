@@ -1,29 +1,20 @@
 module.exports = {
   'env': {
     'browser': true,
-    'es2021': true,
+    'es2021': true
   },
-  'extends': [
-    'google',
-    'nava',
-    'prettier', 
-    'plugin:react/recommended',
-    'plugin:@typescript-eslint/recommended',
-  ],
+  'extends': ['google', 'nava', 'prettier', 'plugin:react/recommended', 'plugin:@typescript-eslint/recommended', 'plugin:storybook/recommended'],
   'parser': '@typescript-eslint/parser',
   'parserOptions': {
     'ecmaFeatures': {
-      'jsx': true,
+      'jsx': true
     },
     'ecmaVersion': 'latest',
-    'sourceType': 'module',
+    'sourceType': 'module'
   },
-  'plugins': [
-    'react',
-    '@typescript-eslint',
-  ],
+  'plugins': ['react', '@typescript-eslint'],
   'rules': {
     '@typescript-eslint/no-unused-vars': 'error',
     '@typescript-eslint/no-explicit-any': 'error'
-  },
+  }
 };
