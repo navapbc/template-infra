@@ -2,7 +2,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, install dependencies: 
+First, install dependencies:
+
 ```bash
 yarn
 ```
@@ -35,10 +36,10 @@ For linting, this application is leveraging `eslint`, `prettier` and nava's inte
 }
 ```
 
-For typechecking, this application is leveraging Next.js' [incremental typechecking](https://nextjs.org/docs/basic-features/typescript#incremental-type-checking). NextJS will run type checking as a part of `next build`--  Although it is still recommended that we set up type checking using our code editor for development. In VSCode, do so by adding the following to your `.vscode/settings.json` file
+For typechecking, this application is leveraging Next.js' [incremental typechecking](https://nextjs.org/docs/basic-features/typescript#incremental-type-checking). NextJS will run type checking as a part of `next build`-- Although it is still recommended that we set up type checking using our code editor for development. In VSCode, do so by adding the following to your `.vscode/settings.json` file
 
 ```
 "typescript.validate.enable": true
 ```
 
-Note: make sure TypeScript and Javascript Language Features are enabled in VS Code Extensions. 
+Note: make sure TypeScript and Javascript Language Features are enabled in VS Code Extensions.

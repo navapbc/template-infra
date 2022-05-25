@@ -1,15 +1,13 @@
 // test/pages/index.test.js
 
-import { render, screen } from "@testing-library/react";
-import Home from "@pages/index";
+import { render, screen } from '@testing-library/react';
+import Home from '@pages/index';
 
-describe("Home", () => {
-  it("should render the heading", () => {
+describe('Home', () => {
+  it('should render the heading', () => {
     render(<Home />);
 
-    const heading = screen.getByText(
-      /Next.js Template!/i
-    );
+    const heading = screen.getByText(/Next.js Template!/i);
 
     expect(heading).toBeInTheDocument();
     expect(heading).toMatchSnapshot();

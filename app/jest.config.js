@@ -7,7 +7,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   moduleNameMapper: {
     '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
-    '^@pages(.*)$': '<rootDir>/pages$1'
+    '^@pages(.*)$': '<rootDir>/pages$1',
   },
   setupFilesAfterEnv: ['<rootDir>/test/jest.setup.js'],
   transform: {
@@ -16,6 +16,6 @@ module.exports = {
   transformIgnorePatterns: [
     '/.next/',
     '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$'
-  ]
-}; 
+    '^.+\\.module\\.(css|sass|scss)$',
+  ],
+};
