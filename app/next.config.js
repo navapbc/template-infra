@@ -5,6 +5,9 @@ const nextConfig = {
     // TODO: implement i18n internationalization-- look into nextJS subpath routing
     locales: ['en-US', 'es-ES'],
     defaultLocale: 'en-US',
+    localeSubpaths: {
+      es: "es"
+    }
   },
   reactStrictMode: true,
 };
