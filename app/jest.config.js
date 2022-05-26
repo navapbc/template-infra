@@ -14,8 +14,12 @@ module.exports = {
     '^.+\\.tsx?$': 'ts-jest',
   },
   transformIgnorePatterns: [
-    '/.next/',
-    '/node_modules/',
-    '^.+\\.module\\.(css|sass|scss)$'
-  ]
-}; 
+    "/.next/",
+    "/node_modules/",
+    "^.+\\.module\\.(css|sass|scss)$"
+  ],
+  testPathIgnorePatterns: [
+    "<rootDir>/node_modules/",
+  ],
+  testRegex: "(/test/.*(test|spec))\\.[jt]sx?$",
+};
