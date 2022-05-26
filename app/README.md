@@ -24,6 +24,8 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 
 ## Local Linter and Typechecker Setup
 
+### Setting up up linting and typechecking for local development
+
 For linting, this application is leveraging `eslint`, `prettier` and Nava's [eslint-config-nava](https://github.com/navapbc/eslint-config-nava). Although, these will be run on CI and prior to commit, it is still recommended that we tell our code editor to auto-fix eslint and prettier errors on save. 
 
 In VSCode, do so by creating a `.vscode/settings.json` file with:
@@ -45,3 +47,21 @@ For typechecking, this application is leveraging Next.js' [incremental typecheck
 ```
 
 Note: make sure TypeScript and Javascript Language Features are enabled in VS Code Extensions.
+
+### Eslint rules explained
+
+- "@typescript-eslint/no-unused-vars": "error"
+	- Disallows unused variables-- prevents dead code accumulation.  
+- "@typescript-eslint/no-explicit-any": "error"
+	- Disallows usage of `any` type. The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.  
+
+### Tsconfig additions to auto-generated file
+
+- `target: es6` -- nextJS set this valule to `es5` by default. 
+- `allowJS: true` -- allows ts checks on javascript files. 
+- `checkJS: true` -- works in tandem with `allowJS`. Alternative to adding `// @ts-check` at top of Js files-- instructs ts to check all js files. 
+- `jsx: react-jsx` -- [Documentation on this option](https://www.typescriptlang.org/docs/handbook/jsx.html). This value updates the JSX mode that TS whips with. Updating this from "preserve" helped get jest tests into a passing state. TODO: figure out why.
+- `incremental: true` -- enables incremental typechecking. Incremental typechecking creates a series of `.tsbuildinfo` files to dave information from last compilation. This expedites type checking during build. 
+- `baseUrl: "."` & `paths: { @pages/*: [pages/*] }` -- These two, in tandem, setup module path aliases for cleaner imports. To utilize this, import files like: `import Home from "@pages/index";`
+
+### Package.json packages explained 
