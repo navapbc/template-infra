@@ -17,11 +17,7 @@ module.exports = {
     "^.+\\.module\\.(css|sass|scss)$"
   ],
   testPathIgnorePatterns: [
-    "<rootDir>/.next/",
     "<rootDir>/node_modules/",
-    "<rootDir>/out/",
-    "<rootDir>/out-storybook/",
-    "<rootDir>/tests/setup/",
   ],
-  testRegex: "(/tests/.*(test|spec))\\.[jt]sx?$",
+  testRegex: "(/test/.*(test|spec))\\.[jt]sx?$",
 }; 

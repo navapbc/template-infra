@@ -1,6 +1,7 @@
 // test/pages/index.test.js
 
 import { render, screen } from "@testing-library/react";
+import { axe, toHaveNoViolations } from "jest-axe";
 import Home from "@pages/index";
 
 describe("Home", () => {
@@ -14,4 +15,11 @@ describe("Home", () => {
     expect(heading).toBeInTheDocument();
     expect(heading).toMatchSnapshot();
   });
+
+  it("should pass accessibility scan", async () => {
+    const { container } = render(<Home />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  })
 });
