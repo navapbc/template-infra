@@ -9,11 +9,13 @@
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "next lint",
     "start": "next start",
-    "test": "jest",
+    "test": "jest --ci --coverage",
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
     "@typescript-eslint/parser": "^5.26.0",
+    "@types/jest-axe": "^3.5.3",
+    "jest-axe": "^6.0.0",
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0"
