@@ -20,4 +20,4 @@ module.exports = {
     "<rootDir>/node_modules/",
   ],
   testRegex: "(/test/.*(test|spec))\\.[jt]sx?$",
-}; 
+};
