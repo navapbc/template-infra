@@ -67,4 +67,25 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
 ### Package.json 
 
 #### Scripts
-- `test`: runs `jest --ci --coverage`. [--ci option](https://jestjs.io/docs/cli#--ci) is provided so that snapshots don't get created automatically, it will require Jest to be run with `--updateSnapshot`. [--coverage option](https://jestjs.io/docs/cli#--coverageboolean) is provided to instruct jest to collect and report test coverage in output. 
+- `format`: instructs prettier to rewrite files with fixes for formatting violations. 
+- `format-check`: instructs prettier to only check files for violations without fixing them. 
+- `test`: runs `jest --ci --coverage`. [--ci option](https://jestjs.io/docs/cli#--ci) is provided to prevent automatic creation of snapshots. This requires Jest to be run with `--updateSnapshot`. [--coverage option](https://jestjs.io/docs/cli#--coverageboolean) is provided to instruct jest to collect and report test coverage in output. 
+- `ts:check`: runs `tsc --noEmit`. [--noEmit option](https://www.typescriptlang.org/tsconfig#noEmit) is provided to prevent type checker compiler from outputting files. 
+
+#### Dependencies
+- `@typescript-eslint/parser`: implemented in .eslint.json via `"parser": "@typescript-eslint/parser"`. This [plugin](https://www.npmjs.com/package/@typescript-eslint/parser) works in tandem with other plugins to help facilitate the usage of ESlint with TypeScript. 
+- `@types/jest-axe`: This package contains type definitions for [jest-axe](https://www.npmjs.com/package/jest-axe).
+
+#### Dev Dependencies
+- `@babel/preset-typescript`: This [module](https://babeljs.io/docs/en/babel-preset-typescript) allows us to use babel to transpile TypeScript into Javascript, specifically for [jest testing](https://jestjs.io/docs/getting-started#using-typescript) in our case. Implemented in .babelrc > presets. 
+- `@testing-library/dom`: This [module](https://github.com/testing-library/dom-testing-library) provides querying fo. 
+- `@testing-library/jest-dom`: This [module](https://testing-library.com/docs/ecosystem-jest-dom/) is a companion for testing-library/dom-- it provides DOM element matchers for jest. 
+- `@testing-library/react`: This [module](https://testing-library.com/docs/react-testing-library/intro/) works in tandem with testing-library/dom to add APIs for testing React components.
+- `babel-jest`: This [module](https://www.npmjs.com/package/babel-jest) works to compile JavaScript/Typescript code using babel for testing. Automatically implemented if `jest-cli` is used.
+- `eslint`: This [module](https://www.npmjs.com/package/eslint) provides linting. Configuration implemented in .eslintrc. 
+- `eslint-config-nava`:  This [module](https://github.com/navapbc/eslint-config-nava) contains nava's preferred configurations for eslint. It is implemented in .eslintrc > extensions > nava. 
+- `eslint-config-next`: This [module](https://nextjs.org/docs/basic-features/eslint) is automatically installed by nextJS, it includes out of the eslint configuration. Implemented in .eslintrc.json > extends > next.
+- `eslint-config-prettier`: This [module](https://github.com/prettier/eslint-config-prettier) turns off eslint rules that may conflict with prettier. Implemented in .eslintrc > extends > prettier. 
+- `jest-environment-jsdom`: This [module](https://www.npmjs.com/package/jest-environment-jsdom) simulates the DOM for testing. Implemented  in jest.config.js > testEnvironment.
+- `prettier`: This [module](https://prettier.io/) is used for code formatting. Implemented in .prettierrc.json.
+- `ts-jest`: This [module](https://www.npmjs.com/package/ts-jest) lets ys yse hest to test our project written in TypeScript. Implemented in jest.config.js > preset > ts-jest

@@ -13,8 +13,8 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@typescript-eslint/parser": "^5.26.0",
     "@types/jest-axe": "^3.5.3",
+    "@typescript-eslint/parser": "^5.26.0",
     "jest-axe": "^6.0.0",
     "next": "12.1.6",
     "react": "18.1.0",
@@ -38,6 +38,7 @@
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "^8.5.0",
     "jest": "^28.1.0",
+    "jest-cli": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
     "prettier": "^2.6.2",
     "ts-jest": "^28.0.2",

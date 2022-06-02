@@ -3,6 +3,9 @@
    * `next/babel` is required for our React tests to work
    * https://nextjs.org/docs/advanced-features/customizing-babel-config
    */
-  "presets": ["next/babel"],
+  "presets": [
+    "next/babel",
+    "@babel/preset-typescript"
+  ],
   "plugins": []
 }
