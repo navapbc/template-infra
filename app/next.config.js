@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   i18n: {
     // TODO: implement i18n internationalization-- look into nextJS subpath routing
@@ -6,9 +7,9 @@ const nextConfig = {
     defaultLocale: 'en-US',
     localeSubpaths: {
       es: "es"
-    },
+    }
   },
-  reactStrictMode: true
-}
+  reactStrictMode: true,
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

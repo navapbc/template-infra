@@ -16,7 +16,10 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to your <a href="https://github.com/navapbc/template-application-nextjs">Next.js Template!</a>
+          Welcome to your{' '}
+          <a href="https://github.com/navapbc/template-application-nextjs">
+            Next.js Template!
+          </a>
         </h1>
       </main>
 
@@ -24,7 +27,7 @@ const Home: NextPage = () => {
         <nav aria-label="Secondary">Placeholder Footer</nav>
       </footer>
     </div>
-  )
+  );
 };
 
 export default Home;
