@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "build-storybook": "build-storybook",
     "dev": "next dev",
     "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "next lint",
     "start": "next start",
     "storybook": "start-storybook -p 6006",
+    "storybook-build": "build-storybook",
     "test": "jest --ci --coverage",
     "ts:check": "tsc --noEmit"
   },

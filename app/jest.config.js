@@ -17,10 +17,10 @@ module.exports = {
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   testPathIgnorePatterns: ['<rootDir>/node_modules/'],
-  testRegex: "(/test/.*(test|spec))\\.[jt]sx?$",
+  testRegex: '(/test/.*(test|spec))\\.[jt]sx?$',
   globals: {
     'ts-jest': {
-      tsconfig: 'tsconfig.ts-jest.json'
-    }
-  }
+      tsconfig: 'tsconfig.ts-jest.json',
+    },
+  },
 }

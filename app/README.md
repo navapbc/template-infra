@@ -53,7 +53,7 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
 - "@typescript-eslint/no-unused-vars": "error"
   - Disallows unused variables-- prevents dead code accumulation.
 - "@typescript-eslint/no-explicit-any": "error"
-	- Disallows usage of `any` type. The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.  
+  - Disallows usage of `any` type. The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.
 - "react/resct-in-jsx-scope": "off"
   - suppress errors for missing 'import React' in files because NextJS does this for us.
 - "space-before-function-paren": ["error", "never"]
