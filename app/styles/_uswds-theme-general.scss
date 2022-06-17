@@ -1,0 +1,16 @@
+/*
+--------------------------------------------------------------------------------
+U.S. Web Design System - General settings overrides
+--------------------------------------------------------------------------------
+Read more about settings and USWDS style tokens in the documentation:
+https://designsystem.digital.gov/design-tokens
+--------------------------------------------------------------------------------
+*/
+
+/* Disable scarey but mostly irrelevant warnings: */
+$theme-show-compile-warnings: false;
+$theme-show-notifications: false;
+
+/* Point USWDS to our copy of its fonts and icon assets: */
+$theme-font-path: "/fonts";
+$theme-image-path: "/img";

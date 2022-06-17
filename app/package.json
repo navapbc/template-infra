@@ -22,8 +22,9 @@
     "next": "12.1.6",
     "react": "18.1.0",
     "react-dom": "18.1.0",
-    "sass": "^1.52.1",
-    "storybook": "^6.5.4"
+    "sass": "^1.52.3",
+    "storybook": "^6.5.4",
+    "uswds": "^2.13.3"
   },
   "devDependencies": {
     "@babel/core": "^7.18.0",
