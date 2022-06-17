@@ -15,6 +15,7 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
+    "@storybook/preset-scss": "^1.0.3",
     "@types/jest-axe": "^3.5.3",
     "@typescript-eslint/parser": "^5.26.0",
     "@uswds/uswds": "^3.0.1",
@@ -48,6 +49,7 @@
     "@types/testing-library__react": "^10.2.0",
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "babel-jest": "^28.1.0",
+    "css-loader": "^6.7.1",
     "eslint": "^8.15.0",
     "eslint-config-nava": "^11.0.0",
     "eslint-config-next": "12.1.6",
@@ -58,6 +60,8 @@
     "jest-cli": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
     "prettier": "^2.6.2",
+    "sass-loader": "^13.0.0",
+    "style-loader": "^3.3.1",
     "ts-jest": "^28.0.2",
     "typescript": "4.6.4"
   }
