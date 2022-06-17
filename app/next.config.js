@@ -6,10 +6,10 @@ const nextConfig = {
     locales: ['en-US', 'es-ES'],
     defaultLocale: 'en-US',
     localeSubpaths: {
-      es: "es"
-    }
+      es: 'es',
+    },
   },
   reactStrictMode: true,
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
