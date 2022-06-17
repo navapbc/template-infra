@@ -9,6 +9,6 @@ const nextConfig = {
     defaultLocale: 'en-US',
   },
   reactStrictMode: true,
-};
+}
 
-module.exports = nextConfig;
+module.exports = nextConfig
