@@ -56,6 +56,8 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
   - Disallows usage of `any` type. The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.
 - "react/resct-in-jsx-scope": "off"
   - suppress errors for missing 'import React' in files because NextJS does this for us.
+- "space-before-function-paren": ["error", "never"]
+  - suppresses errors for lack of space before function parenthesis to allow for `function()`
 
 ### Tsconfig additions to auto-generated file
 
