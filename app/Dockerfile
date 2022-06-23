@@ -9,7 +9,8 @@ COPY . /srv
 WORKDIR /srv
 # Install application dependencies and build the applicatian.
 # See package.json for yarn commands.
-RUN yarn install --frozen-lockfile \
-    && yarn build
+RUN yarn install --frozen-lockfile
+# RUN yarn install --frozen-lockfile \
+#     && yarn build
 # Run the application.
 CMD yarn start

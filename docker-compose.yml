@@ -8,6 +8,11 @@ services:
     # This service relies on building from a Dockerfile in this file directory,
     # not on an image repository.
     build: ./app
-    # Expose one port to access the application.
+    command: ["yarn", "dev"]
     ports:
+      # Expose one port to access the application.
       - 3000:3000
+      # Expose one port to access storybook for local development.
+      - 6006:6006
+    volumes:
+      - ./app:/srv
