@@ -1,0 +1,13 @@
+# Specify current major version of docker compose.
+# See https://docs.docker.com/compose/compose-file/compose-versioning/
+version: '3'
+
+services:
+  # Define one service for the application.
+  app:
+    # This service relies on building from a Dockerfile in this file directory,
+    # not on an image repository.
+    build: ./app
+    # Expose one port to access the application.
+    ports:
+      - 3000:3000
