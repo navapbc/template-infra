@@ -16,7 +16,6 @@
     "ts:check": "tsc --noEmit"
   },
   "dependencies": {
-    "@storybook/preset-scss": "^1.0.3",
     "@types/jest-axe": "^3.5.3",
     "@typescript-eslint/parser": "^5.26.0",
     "@uswds/compile": "^1.0.0-beta.3",
