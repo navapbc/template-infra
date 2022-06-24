@@ -96,3 +96,12 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
 - `jest-environment-jsdom`: This [module](https://www.npmjs.com/package/jest-environment-jsdom) simulates the DOM for testing. Implemented in jest.config.js > testEnvironment.
 - `prettier`: This [module](https://prettier.io/) is used for code formatting. Implemented in .prettierrc.json.
 - `ts-jest`: This [module](https://www.npmjs.com/package/ts-jest) lets ys yse hest to test our project written in TypeScript. Implemented in jest.config.js > preset > ts-jest
+
+## Design System
+
+<something something USWDS something something>
+
+- installed USWDS 3.x following their directions at https://designsystem.digital.gov/documentation/getting-started/developers
+- requires us to use gulp to compile sass rather than getting to use next.js's built-in sass support
+- that means in next.js and in storybook, we include compiled css files rather than sass files
+- when we try to bypass gulp, next.js isn't able to detect the `uswds-core` module used in `/styles/_uswds-theme.scss` and I don't know how to work around this issue, so I just made it work using compiled css instead. this is a probably a place we could refactor
