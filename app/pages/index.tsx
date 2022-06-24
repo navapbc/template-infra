@@ -1,7 +1,5 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-// this doesn't work because of special uswds-compile stuff
-// import styles from '../styles/Home.module.scss'
 import styles from '../public/css/Home.module.css'
 
 const Home: NextPage = () => {
