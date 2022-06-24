@@ -9,7 +9,7 @@ in the form $setting: value,
 
 @use 'uswds-core' with (
   /* Disable scary but mostly irrelevant warnings: */
-    $theme-show-compile-warnings: false,
+  $theme-show-compile-warnings: false,
   $theme-show-notifications: false,
 
   // Specify USWDS font and image paths.
