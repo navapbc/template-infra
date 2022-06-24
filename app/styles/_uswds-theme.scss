@@ -7,15 +7,13 @@ in the form $setting: value,
 ----------------------------------------
 */
 
-
-@use "uswds-core" with (
-    /* Disable scary but mostly irrelevant warnings: */
+@use 'uswds-core' with (
+  /* Disable scary but mostly irrelevant warnings: */
     $theme-show-compile-warnings: false,
-    $theme-show-notifications: false,
+  $theme-show-notifications: false,
 
-    // Specify USWDS font and image paths.
-    // Same paths are successfully used for both Next.js and Storybook.
-    $theme-font-path: "../uswds/fonts",
-    $theme-image-path: "../uswds/img"
+  // Specify USWDS font and image paths.
+  // Same paths are successfully used for both Next.js and Storybook.
+  $theme-font-path: '../uswds/fonts',
+  $theme-image-path: '../uswds/img'
 );
-

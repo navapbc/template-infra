@@ -1,13 +1,13 @@
 /* gulpfile.js */
 
-const uswds = require("@uswds/compile");
+const uswds = require('@uswds/compile')
 
 /**
  * USWDS version
  * Set the version of USWDS you're using (2 or 3)
  */
 
-uswds.settings.version = 3;
+uswds.settings.version = 3
 
 /**
  * Path settings
@@ -18,11 +18,11 @@ uswds.settings.version = 3;
  * See https://nextjs.org/docs/basic-features/static-file-serving
  */
 
-uswds.paths.dist.theme = './styles';
-uswds.paths.dist.img = './public/uswds/img';
-uswds.paths.dist.fonts = './public/uswds/fonts';
-uswds.paths.dist.js = './public/uswds/js';
-uswds.paths.dist.css = './public/css';
+uswds.paths.dist.theme = './styles'
+uswds.paths.dist.img = './public/uswds/img'
+uswds.paths.dist.fonts = './public/uswds/fonts'
+uswds.paths.dist.js = './public/uswds/js'
+uswds.paths.dist.css = './public/css'
 
 /**
  * Exports
@@ -34,21 +34,21 @@ uswds.paths.dist.css = './public/css';
  * This should not be needed! The initial files (i.e styles.scss, _uswds-theme.scss,
  * _uswds-theme-custom-styles.scss) have all been generated.
  */
-exports.init = uswds.init;
+exports.init = uswds.init
 /**
  * Run `yarn gulp copyAssets` to update the USWDS assets (i.e. copy them
  * from node_modules into ./public).
  */
-exports.copyAssets = uswds.copyAssets;
+exports.copyAssets = uswds.copyAssets
 /**
  * Run `yarn gulp compile` to compile icons as well as sass.
  */
-exports.compile = uswds.compile;
+exports.compile = uswds.compile
 /**
  * Run `yarn gulp compileSass` to just compile sass and not icons (very slightly faster).
  */
-exports.compileSass = uswds.compileSass;
+exports.compileSass = uswds.compileSass
 /**
  * Run `yarn gulp watch` to automatically recompile when there are changes to the sass files.
  */
-exports.watch = uswds.watch;
+exports.watch = uswds.watch
