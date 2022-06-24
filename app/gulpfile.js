@@ -11,7 +11,7 @@ uswds.settings.version = 3;
 
 /**
  * Path settings
- * See Step 4 in https://designsystem.digital.gov/documentation/getting-started/developers/phase-two-compile.
+ * See Step 4 in https://designsystem.digital.gov/documentation/getting-started/developers/phase-two-compile
  *
  * We use the `./public` directory to specify the copied and compiled assets because Next.js expects
  * static assets to be located there.
@@ -26,7 +26,7 @@ uswds.paths.dist.css = './public/css';
 
 /**
  * Exports
- * See Step 4 in https://designsystem.digital.gov/documentation/getting-started/developers/phase-two-compile.
+ * See Step 4 in https://designsystem.digital.gov/documentation/getting-started/developers/phase-two-compile
  */
 
 /**
@@ -48,3 +48,7 @@ exports.compile = uswds.compile;
  * Run `yarn gulp compileSass` to just compile sass and not icons (very slightly faster).
  */
 exports.compileSass = uswds.compileSass;
+/**
+ * Run `yarn gulp watch` to automatically recompile when there are changes to the sass files.
+ */
+exports.watch = uswds.watch;
