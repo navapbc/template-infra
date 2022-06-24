@@ -1,4 +1,7 @@
-import '../styles/app.scss' // Apply global styling to our stories
+import '../public/css/styles.css' // Apply global styling to our stories
+// this doesn't work:
+// Error: Can't resolve '../uswds/img/hero.png' in '/srv/public/css'
+// import '../public/css/styles.storybook.css' // Apply global styling to our stories
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

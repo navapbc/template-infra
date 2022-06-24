@@ -1,0 +1,11 @@
+@use "uswds-core" with (
+    /* Disable scary but mostly irrelevant warnings: */
+    $theme-show-compile-warnings: false,
+    $theme-show-notifications: false,
+
+    // Specify USWDS font and image paths. Next.js build needs these paths to be set to the following.
+    $theme-font-path: "../uswds/fonts",
+    $theme-image-path: "../uswds/images"
+);
+
+@forward "uswds";
