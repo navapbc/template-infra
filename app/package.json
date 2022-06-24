@@ -7,7 +7,6 @@
     "dev": "next dev",
     "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
-    "gulp-init": "gulp init",
     "lint": "next lint",
     "start": "next start",
     "storybook": "start-storybook -p 6006",
