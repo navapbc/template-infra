@@ -1,0 +1,20 @@
+# Ignoring generated files
+.next/
+node_modules/
+
+# Throwing the decision on formatting these over the fence.
+__mocks__/styleMock.js
+.eslintrc.json
+.prettierrc.json
+jest.config.js
+next-env.d.ts
+next.config.js
+package.json
+pages/_app.tsx
+pages/api/hello.ts
+pages/index.tsx
+README.md
+test/jest.setup.js
+test/pages/index.test.tsx
+tsconfig.json
+tsconfig.ts-jest.json
