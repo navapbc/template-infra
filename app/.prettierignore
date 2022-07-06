@@ -1,0 +1,3 @@
+# Ignoring generated files
+.next/
+node_modules/
