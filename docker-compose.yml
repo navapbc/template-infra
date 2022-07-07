@@ -2,12 +2,36 @@
 # See https://docs.docker.com/compose/compose-file/compose-versioning/
 version: '3'
 
+# Define a yaml anchor to be more DRY.
+# Define the core application functionality once and then customize for each service.
+# See https://support.atlassian.com/bitbucket-cloud/docs/yaml-anchors/
+x-app: &app
+  # This service currently relies on building from a Dockerfile in this file directory,
+  # not on an image repository.
+  build: ./app
+  volumes:
+    # Mount the app directory for faster local development.
+    - ./app:/srv
+
 services:
-  # Define one service for the application.
-  app:
-    # This service relies on building from a Dockerfile in this file directory,
-    # not on an image repository.
-    build: ./app
-    # Expose one port to access the application.
+  # Define a service for the Next.js application.
+  nextjs:
+    # This syntax uses the yaml anchor defined above.
+    <<: *app
+    command: ["yarn", "dev"]
     ports:
+      # Expose a port to access the application.
       - 3000:3000
+
+  # Define a service for storybook.
+  storybook:
+    <<: *app
+    command: ["yarn", "storybook"]
+    ports:
+      # Expose a port to access storybook for local development.
+      - 6006:6006
+
+  # Define a service for gulp sass compilation.
+  gulp:
+    <<: *app
+    command: ["yarn", "gulp", "watch"]
