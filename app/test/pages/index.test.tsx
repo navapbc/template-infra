@@ -2,8 +2,8 @@
 import { axe } from 'jest-axe'
 import { NextIntlProvider } from "next-intl"
 import { render, screen } from '@testing-library/react'
-import en from '../../messages/en.json'
-import Index from '@pages/index'
+import en from 'src/messages/en.json'
+import Index from 'src/pages/index'
 
 const renderWithIntl = (component: JSX.Element) => {
   return {
