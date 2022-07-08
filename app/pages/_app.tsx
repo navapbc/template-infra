@@ -1,8 +1,9 @@
-import '../public/uswds/css/styles.css'
-import type { AppProps } from 'next/app'
 import { AbstractIntlMessages, NextIntlProvider } from 'next-intl'
+import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+
+import '../public/uswds/css/styles.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { locale } = useRouter()

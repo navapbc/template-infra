@@ -1,9 +1,10 @@
 // test/pages/index.test.js
+import Index from '@pages/index'
+import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
 import { NextIntlProvider } from 'next-intl'
-import { render, screen } from '@testing-library/react'
+
 import en from '../../messages/en.json'
-import Index from '@pages/index'
 
 const renderWithIntl = (component: JSX.Element) => {
   return {
