@@ -3,10 +3,10 @@ import { useTranslations } from 'next-intl'
 import styles from '../../styles/Layout.module.scss'
 
 type Props = {
-  page?: ReactElement
+  children: ReactElement
 }
 
-const Layout = ({ page }: Props) => {
+const Layout = ({ children }: Props) => {
   const t = useTranslations('Layout')
 
   return (
@@ -14,9 +14,7 @@ const Layout = ({ page }: Props) => {
       <header className={styles.header}>
         <em>{t('header')}</em>
       </header>
-      <main className={styles.container}>
-        {page}
-      </main>
+      <main className={styles.container}>{children}</main>
       <footer className={styles.footer}>
         <em>{t('footer')}</em>
       </footer>

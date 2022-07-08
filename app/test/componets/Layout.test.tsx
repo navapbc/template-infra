@@ -1,7 +1,7 @@
 // test/pages/index.test.js
 import { axe } from 'jest-axe'
 import { screen } from '@testing-library/react'
-import renderWithIntl from "../renderWithIntl"
+import renderWithIntl from '../renderWithIntl'
 import Layout from '../../src/components/Layout'
 
 describe('Layout', () => {

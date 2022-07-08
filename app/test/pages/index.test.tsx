@@ -2,7 +2,7 @@
 import { axe } from 'jest-axe'
 import { screen } from '@testing-library/react'
 import Index from '../../src/pages/index'
-import renderWithIntl from "../renderWithIntl"
+import renderWithIntl from '../renderWithIntl'
 
 describe('Index', () => {
   it('should render welcome text', () => {
