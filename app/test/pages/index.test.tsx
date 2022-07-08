@@ -1,21 +1,32 @@
 // test/pages/index.test.js
-
-import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
-import Home from '@pages/index'
+import { NextIntlProvider } from "next-intl"
+import { render, screen } from '@testing-library/react'
+import en from '../../messages/en.json'
+import Index from '@pages/index'
 
-describe('Home', () => {
-  it('should render the heading', () => {
-    render(<Home />)
+const renderWithIntl = (component: JSX.Element) => {
+  return {
+    ... render(
+      <NextIntlProvider locale='en' messages={en}>
+        {component}
+      </NextIntlProvider>
+    )
+  }
+}
 
-    const heading = screen.getByText(/Next.js Template!/i)
+describe('Index', () => {
+  it('should render welcome text', () => {
+    renderWithIntl(<Index />)
 
-    expect(heading).toBeInTheDocument()
-    expect(heading).toMatchSnapshot()
+    const welcome = screen.getByText(/Welcome!/i)
+
+    expect(welcome).toBeInTheDocument()
+    expect(welcome).toMatchSnapshot()
   })
 
   it('should pass accessibility scan', async () => {
-    const { container } = render(<Home />)
+    const { container } = renderWithIntl(<Index />)
     const results = await axe(container)
 
     expect(results).toHaveNoViolations()
