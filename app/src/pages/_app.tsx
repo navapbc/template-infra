@@ -10,13 +10,12 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [localeMessages, setLocaleMessages] = useState<AbstractIntlMessages>()
 
   useEffect(() => {
-    const _getLocaleMessages = async(
+    const _getLocaleMessages = async (
       locale: string | undefined
     ): Promise<void> => {
       /* eslint-disable */
-      const messages: AbstractIntlMessages = locale && await import(
-        `../messages/${locale}.json`
-      )
+      const messages: AbstractIntlMessages =
+        locale && (await import(`../messages/${locale}.json`))
       setLocaleMessages(messages)
     }
 
