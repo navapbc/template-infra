@@ -23,15 +23,15 @@ services:
       # Expose a port to access the application.
       - 3000:3000
 
-  # Define a service for storybook.
-  storybook:
-    <<: *app
-    command: ["yarn", "storybook"]
-    ports:
-      # Expose a port to access storybook for local development.
-      - 6006:6006
+  # # Define a service for storybook.
+  # storybook:
+  #   <<: *app
+  #   command: ["yarn", "storybook"]
+  #   ports:
+  #     # Expose a port to access storybook for local development.
+  #     - 6006:6006
 
-  # Define a service for gulp sass compilation.
-  gulp:
-    <<: *app
-    command: ["yarn", "gulp", "watch"]
+  # # Define a service for gulp sass compilation.
+  # gulp:
+  #   <<: *app
+  #   command: ["yarn", "gulp", "watch"]
