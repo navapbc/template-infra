@@ -9,4 +9,5 @@ export default {
 
 const Template: ComponentStory<typeof Index> = () => <Index />
 
+
 export const Home = Template.bind({})

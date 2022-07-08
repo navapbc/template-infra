@@ -1,25 +1,14 @@
 // test/pages/index.test.js
 import { axe } from 'jest-axe'
-import { NextIntlProvider } from "next-intl"
-import { render, screen } from '@testing-library/react'
-import en from 'src/messages/en.json'
-import Index from 'src/pages/index'
-
-const renderWithIntl = (component: JSX.Element) => {
-  return {
-    ... render(
-      <NextIntlProvider locale='en' messages={en}>
-        {component}
-      </NextIntlProvider>
-    )
-  }
-}
+import { screen } from '@testing-library/react'
+import Index from '../../src/pages/index'
+import renderWithIntl from "../renderWithIntl"
 
 describe('Index', () => {
   it('should render welcome text', () => {
     renderWithIntl(<Index />)
 
-    const welcome = screen.getByText(/Welcome!/i)
+    const welcome = screen.getByText(/Welcome to your/i)
 
     expect(welcome).toBeInTheDocument()
     expect(welcome).toMatchSnapshot()

@@ -10,8 +10,8 @@
 USWDS THEME CUSTOM STYLES
 ----------------------------------------
 !! Copy this file to your project's
-   sass root. Don't edit the version
-   in node_modules.
+    sass root. Don't edit the version
+    in node_modules.
 ----------------------------------------
 Custom project SASS goes here.
 
@@ -21,3 +21,7 @@ i.e.
 */
 
 @use 'uswds-core' as *;
+
+html {
+  height: 100%;
+}

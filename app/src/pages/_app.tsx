@@ -1,8 +1,9 @@
-import '../public/uswds/css/styles.css'
+import '../../public/uswds/css/styles.css'
 import type { AppProps } from 'next/app'
 import { AbstractIntlMessages, NextIntlProvider } from 'next-intl'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import Layout from 'src/components/Layout'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { locale } = useRouter()
@@ -18,9 +19,11 @@ function MyApp({ Component, pageProps }: AppProps) {
   }, [])
 
   return localeMessages && (
-    <NextIntlProvider messages={localeMessages}>
-      <Component {...pageProps} />    
-    </NextIntlProvider>
+    <Layout>
+      <NextIntlProvider messages={localeMessages}>
+        <Component {...pageProps} />
+      </NextIntlProvider>
+    </Layout>
   )
 }
 

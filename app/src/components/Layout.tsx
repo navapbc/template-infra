@@ -1,19 +1,27 @@
 import { ReactElement } from 'react'
+import { useTranslations } from 'next-intl'
+import styles from '../../styles/Layout.module.scss'
 
 type Props = {
-  children: ReactElement
+  page?: ReactElement
 }
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ page }: Props) => {
+  const t = useTranslations('Layout')
+
   return (
     <>
-      <header>
-        <em className='usa-logo__text'>Template header</em>
+      <header className={styles.header}>
+        <em>{t('header')}</em>
       </header>
-        <body>{children}</body>
-      <footer className="usa-footer usa-footer--slim">
-        <em>Template footer</em>
+      <main className={styles.container}>
+        {page}
+      </main>
+      <footer className={styles.footer}>
+        <em>{t('footer')}</em>
       </footer>
     </>
   )
 }
+
+export default Layout

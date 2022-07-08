@@ -1,7 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Index should render welcome text 1`] = `
-<div>
-  Welcome!
-</div>
+<h1>
+  Welcome to your 
+  <a
+    href="https://github.com/navapbc/template-application-nextjs"
+  >
+    Next.js Template!
+  </a>
+</h1>
 `;
