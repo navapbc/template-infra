@@ -6,21 +6,27 @@ import { useEffect, useState } from 'react'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { locale } = useRouter()
-  const [ localeMessages, setLocaleMessages ] = useState<undefined | AbstractIntlMessages>(undefined);
+  const [localeMessages, setLocaleMessages] = useState<AbstractIntlMessages>()
 
   useEffect(() => {
-    const _getLocaleMessages = async (locale: string | undefined): Promise<void> => {
-      const messages: undefined | AbstractIntlMessages = await import(`../messages/${locale}.json`)
+    const _getLocaleMessages = async (
+      locale: string | undefined
+    ): Promise<void> => {
+      // eslint-disable-next-line
+      const messages: AbstractIntlMessages =
+        locale && (await import(`../messages/${locale}.json`))
       setLocaleMessages(messages)
     }
 
     _getLocaleMessages(locale).catch(console.error)
-  }, [])
+  }, [locale])
 
-  return localeMessages && (
-    <NextIntlProvider messages={localeMessages}>
-      <Component {...pageProps} />    
-    </NextIntlProvider>
+  return (
+    localeMessages && (
+      <NextIntlProvider messages={localeMessages}>
+        <Component {...pageProps} />
+      </NextIntlProvider>
+    )
   )
 }
 

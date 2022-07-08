@@ -1,17 +1,17 @@
 // test/pages/index.test.js
 import { axe } from 'jest-axe'
-import { NextIntlProvider } from "next-intl"
+import { NextIntlProvider } from 'next-intl'
 import { render, screen } from '@testing-library/react'
 import en from '../../messages/en.json'
 import Index from '@pages/index'
 
 const renderWithIntl = (component: JSX.Element) => {
   return {
-    ... render(
-      <NextIntlProvider locale='en' messages={en}>
+    ...render(
+      <NextIntlProvider locale="en" messages={en}>
         {component}
       </NextIntlProvider>
-    )
+    ),
   }
 }
 
