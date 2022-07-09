@@ -1,4 +1,5 @@
-import '../public/css/styles.css' // Apply global styling to our stories
+// Apply global styling to our stories
+import '../styles/styles.scss'
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
