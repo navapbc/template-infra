@@ -17,21 +17,21 @@
 **~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
 ### Examples:
-
-  $ aws configure
-  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-  Default region name [None]: us-east-2
-  Default output format [None]: json
-
+```
+$ aws configure
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: us-east-2
+Default output format [None]: json
+```
 **Using the above command will create a [default] profile.**  
-
-  $ aws configure --profile dev
-  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-  Default region name [None]: us-east-2
-  Default output format [None]: json
-
+```
+$ aws configure --profile dev
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [None]: us-east-2
+Default output format [None]: json
+```
 **Using the above command will create a [dev] profile.**  
 
 ### References:
@@ -57,7 +57,7 @@
 &nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan.
 
 <span style="color:red"> ---- DANGER ----</span>\
-In a non-development environment comment out a resource to destroy, destroy should only be used as a way to cleanup a development environment. e.g. a developers workspace after they have merged their updates to main.
+In a non-development environment comment out a resource to destroy, destroy should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
 
 &nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration.\
 
