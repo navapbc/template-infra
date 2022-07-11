@@ -10,7 +10,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const [localeMessages, setLocaleMessages] = useState<AbstractIntlMessages>()
 
   useEffect(() => {
-    const _getLocaleMessages = async (
+    const _getLocaleMessages = async(
       locale: string | undefined
     ): Promise<void> => {
       /* eslint-disable */
