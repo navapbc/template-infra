@@ -8,9 +8,10 @@
     "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "next lint",
+    "postinstall": "cd .. && husky install app/husky",
     "start": "next start",
     "test": "jest --ci --coverage",
-    "ts:check": "tsc --noEmit"
+    "ts-check": "tsc --noEmit"
   },
   "dependencies": {
     "@types/jest-axe": "^3.5.3",
@@ -38,6 +39,7 @@
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^26.5.3",
+    "husky": "^8.0.1",
     "jest": "^28.1.0",
     "jest-cli": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
