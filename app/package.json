@@ -8,7 +8,7 @@
     "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "next lint",
-    "postinstall": "cd .. && husky install app/husky",
+    "postinstall": "cd .. && husky install app/.husky",
     "start": "next start",
     "test": "jest --ci --coverage",
     "ts-check": "tsc --noEmit"
