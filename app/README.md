@@ -99,9 +99,10 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
 
 ## Design System
 
-<something something USWDS something something>
+We are using the [USWDS 3.0](https://designsystem.digital.gov) design system.
 
-- installed USWDS 3.x following their directions at https://designsystem.digital.gov/documentation/getting-started/developers
-- requires us to use gulp to compile sass rather than getting to use next.js's built-in sass support
-- that means in next.js and in storybook, we include compiled css files rather than sass files
-- when we try to bypass gulp, next.js isn't able to detect the `uswds-core` module used in `/styles/_uswds-theme.scss` and I don't know how to work around this issue, so I just made it work using compiled css instead. this is a probably a place we could refactor
+We did not follow their [install directions](https://designsystem.digital.gov/documentation/getting-started/developers), which require using gulp as a task runner. Instead, we configured `next.config.js` such that we could leverage Next.js's built-in sass compiling and we configured `.storybook/main.js` such that we could leverage Storybook's built-in sass compiling and re-use the same Next.js configuration.
+
+Compiling the USWDS sass is slow, so the initial build step and subsequent sass re-compiles are slow, but after the design system is set up, we shouldn't need to be regularly re-compiling sass.
+
+Copying the USWDS static assets into the project is handled by a [yarn postinstall](https://classic.yarnpkg.com/lang/en/docs/package-json/#toc-scripts) script in `package.json`.

@@ -8,6 +8,7 @@
     "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "next lint",
+    "postinstall": "cp -R ./node_modules/@uswds/uswds/dist/ ./public/uswds/",
     "start": "next start",
     "storybook": "start-storybook -p 6006",
     "storybook-build": "build-storybook",
