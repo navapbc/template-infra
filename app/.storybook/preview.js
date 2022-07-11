@@ -3,7 +3,7 @@ import '../styles/styles.scss'
 import { NextIntlProvider } from 'next-intl'
 
 import en from '../messages/en.json'
-import '../public/uswds/css/styles.css'
+import '../styles/styles.css'
 
 export const decorators = [
   (Story) => (
