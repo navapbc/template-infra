@@ -1,4 +1,5 @@
-import '../public/uswds/css/styles.css' // Apply global styling to our stories
+// Apply global styling to our stories
+import '../styles/styles.scss'
 import { NextIntlProvider } from 'next-intl'
 import en from '../src/messages/en.json'
 
