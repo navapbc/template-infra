@@ -1,0 +1,129 @@
+# Getting Started With Terraform
+
+## Install Terraform CLI
+&nbsp;&nbsp;Terraform is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features. Install the terraform commmand line tool by follow the instructions found here:
+
+- [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+
+## Install AWS CLI
+&nbsp;&nbsp;The AWS Command Line Interface (AWS CLI) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the aws commmand line tool by following the instructions found here:
+
+- [Install Terraform](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+
+## AWS Authentication
+
+&nbsp;&nbsp;In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
+
+**~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
+
+### Examples:
+
+  $ aws configure
+  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  Default region name [None]: us-east-2
+  Default output format [None]: json
+
+**Using the above command will create a [default] profile.**  
+
+  $ aws configure --profile dev
+  AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+  AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+  Default region name [None]: us-east-2
+  Default output format [None]: json
+
+**Using the above command will create a [dev] profile.**  
+
+### References:
+
+- [Configuration basics][1]
+- [Named profiles for the AWS CLI][2]
+- [Configuration and credential file settings][3]
+
+[1]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-quickstart.html
+[2]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
+[3]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
+
+## Basic Terraform Commands 
+
+&nbsp;&nbsp;The `terraform init` command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times.
+
+&nbsp;&nbsp;The `terraform plan` command creates an execution plan, which lets you preview the changes that Terraform plans to make to your infrastructure. By default, when Terraform creates a plan it:
+
+- Reads the current state of any already-existing remote objects to make sure that the Terraform state is up-to-date.
+- Compares the current configuration to the prior state and noting any differences.
+- Proposes a set of change actions that should, if applied, make the remote objects match the configuration.
+
+&nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan.
+
+<span style="color:red"> ---- DANGER ----</span>\
+In a non-development environment comment out a resource to destroy, destroy should only be used as a way to cleanup a development environment. e.g. a developers workspace after they have merged their updates to main.
+
+&nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration.\
+
+For more information about terraform commands follow the link below:
+
+- [Basic CLI Features](https://www.terraform.io/cli/commands)
+
+## Terraform Backend
+
+### infra/bootstrap/account
+
+1. Rename bootstrap/account, account directory to the name of the aws account alias or account id where this infrasstructure will be hosted.
+2. Customize the variables in locals{} at the top of main.tf to match the desired deployment setup.
+3. Open a terminal and cd into the infra/bootstrap/account directory and run the following commands:
+    - terraform init
+    - terraform plan
+    - terrafrom apply
+4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and repeate step `3.` to switch from local to remote backend.
+
+```
+  backend "s3" {
+    bucket         = "AWS_ACCOUNT_ID-AWS_REGION-tf-state"
+    key            = "terraform/backend/terraform.tfstate"
+    region         = "REGION_OF_BUCKET"
+    encrypt        = "true"
+    dynamodb_table = "tf_state_locks"
+  }
+```
+5. Once these steps are complete, this should not need to be touched again, application infrastructure is managed under its envs/environment as described below.
+
+Note: For subsequent accounts if using a multi-account setup, copy the entire account directory and repeat the previous steps for each account.
+
+### infra/envs/environment
+
+&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform {} block to setup the remote backend for the environement. This is where all of the infrastructure will be managed for the application.
+
+# Workspaces
+
+### Terraform workspace commands:
+
+`terraform workspace show [Name]`   - This command will show the workspace you working in.
+
+`terraform workspace list [Name]`   - This command will list all workspaces.
+
+`terraform workspace new [Name]`    - This command will create a new workspace.
+
+`terraform workspace select [Name]` - This command will switch your workspace to the workspace you select.
+
+`terraform workspace delete [Name]` - This command will delete the specified workspace. (does not delete infrastucture, that step will done first)
+
+## Workspaces - Staging Environment
+&nbsp;&nbsp; Workspaces can be used here to allow multiple develepors to deploy their own stacks for development and testing. If workspaces wont be necessary for this project set the prefix variable to "staging."
+
+## Workspaces - Test Environment
+
+&nbsp;&nbsp; **Do not use workspaces**
+
+## Workspaces - Prod Environment
+
+&nbsp;&nbsp; **Do not use workspaces**
+
+
+## Modules
+
+&nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to buid the infrastructure required to provide any functionality needed for the application. An example of a module that is used to build the backend infrastructure for terrform can be found under **infra/modules/backend/***
+
+## Troubleshooting
+
+For use later.
