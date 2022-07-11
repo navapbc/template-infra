@@ -69,7 +69,7 @@ For more information about terraform commands follow the link below:
 
 ### infra/bootstrap/account
 
-1. Rename bootstrap/account, account directory to the name of the aws account alias or account id where this infrasstructure will be hosted.
+1. Rename bootstrap/account, account directory to the name of the aws account alias or account id where this infrastructure will be hosted.
 2. Customize the variables in locals{} at the top of main.tf to match the desired deployment setup.
 3. Open a terminal and cd into the infra/bootstrap/account directory and run the following commands:
     - terraform init
@@ -92,7 +92,7 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 ### infra/envs/environment
 
-&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform {} block to setup the remote backend for the environement. This is where all of the infrastructure will be managed for the application.
+&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform {} block to setup the remote backend for the environment. This is where all of the infrastructure will be managed for the application.
 
 # Workspaces
 
@@ -106,10 +106,10 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 `terraform workspace select [Name]` - This command will switch your workspace to the workspace you select.
 
-`terraform workspace delete [Name]` - This command will delete the specified workspace. (does not delete infrastucture, that step will done first)
+`terraform workspace delete [Name]` - This command will delete the specified workspace. (does not delete infrastructure, that step will done first)
 
 ## Workspaces - Staging Environment
-&nbsp;&nbsp; Workspaces can be used here to allow multiple develepors to deploy their own stacks for development and testing. If workspaces wont be necessary for this project set the prefix variable to "staging."
+&nbsp;&nbsp; Workspaces can be used here to allow multiple developers to deploy their own stacks for development and testing. If workspaces wont be necessary for this project set the prefix variable to "staging."
 ``` sh
 # Example resource using the prefix
 resource "aws_instance" "self" {
@@ -132,7 +132,7 @@ resource "aws_instance" "self" {
 
 ## Modules
 
-&nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to buid the infrastructure required to provide any functionality needed for the application. An example of a module that is used to build the backend infrastructure for terrform can be found under **infra/modules/backend/***
+&nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application. An example of a module that is used to build the backend infrastructure for terraform can be found under **infra/modules/backend/***
 
 ## Troubleshooting
 
