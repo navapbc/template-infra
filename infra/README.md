@@ -110,6 +110,16 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 ## Workspaces - Staging Environment
 &nbsp;&nbsp; Workspaces can be used here to allow multiple develepors to deploy their own stacks for development and testing. If workspaces wont be necessary for this project set the prefix variable to "staging."
+``` sh
+# Example resource using the prefix
+resource "aws_instance" "self" {
+  ami           = "ami-0cff7528ff583bf9a"
+  instance_type = "t2.micro"
+  tags = {
+    Name = "${local.prefix}-instance"
+  }
+}
+```
 
 ## Workspaces - Test Environment
 

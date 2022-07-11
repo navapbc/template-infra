@@ -51,12 +51,3 @@ provider "aws" {
     tags = local.tags
   }
 }
-
-# Example resource using the prefix, delete me before getting started.
-resource "aws_instance" "self" {
-  ami           = "ami-0cff7528ff583bf9a"
-  instance_type = "t2.micro"
-  tags = {
-    Name = "${local.prefix}-instance"
-  }
-}
