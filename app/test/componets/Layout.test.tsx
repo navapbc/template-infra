@@ -1,8 +1,9 @@
 // test/pages/index.test.js
-import { axe } from 'jest-axe'
 import { screen } from '@testing-library/react'
-import renderWithIntl from '../renderWithIntl'
+import { axe } from 'jest-axe'
+
 import Layout from '../../src/components/Layout'
+import renderWithIntl from '../renderWithIntl'
 
 describe('Layout', () => {
   it('should render placeholder header text', () => {

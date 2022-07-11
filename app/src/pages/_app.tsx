@@ -1,16 +1,17 @@
-import '../../styles/styles.scss'
-import type { AppProps } from 'next/app'
 import { AbstractIntlMessages, NextIntlProvider } from 'next-intl'
-import { useEffect, useState } from 'react'
+import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import Layout from 'src/components/Layout'
+
+import '../../styles/styles.scss'
 
 function MyApp({ Component, pageProps }: AppProps) {
   const { locale } = useRouter()
   const [localeMessages, setLocaleMessages] = useState<AbstractIntlMessages>()
 
   useEffect(() => {
-    const _getLocaleMessages = async(
+    const _getLocaleMessages = async (
       locale: string | undefined
     ): Promise<void> => {
       /* eslint-disable */

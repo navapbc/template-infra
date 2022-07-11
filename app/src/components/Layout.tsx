@@ -1,5 +1,5 @@
-import { ReactElement } from 'react'
 import { useTranslations } from 'next-intl'
+import { ReactElement } from 'react'
 
 type Props = {
   children: ReactElement

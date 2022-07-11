@@ -1,5 +1,6 @@
-import { NextIntlProvider } from 'next-intl'
 import { render } from '@testing-library/react'
+import { NextIntlProvider } from 'next-intl'
+
 import en from '../src/messages/en.json'
 
 const renderWithIntl = (component: JSX.Element) => {

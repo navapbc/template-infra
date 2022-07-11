@@ -1,6 +1,7 @@
 // test/pages/index.test.js
-import { axe } from 'jest-axe'
 import { screen } from '@testing-library/react'
+import { axe } from 'jest-axe'
+
 import Index from '../../src/pages/index'
 import renderWithIntl from '../renderWithIntl'
 
