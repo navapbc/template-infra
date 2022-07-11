@@ -1,5 +1,6 @@
-import { AbstractIntlMessages, NextIntlProvider } from 'next-intl'
+import '../styles/styles.scss'
 import type { AppProps } from 'next/app'
+import { AbstractIntlMessages, NextIntlProvider } from 'next-intl'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 

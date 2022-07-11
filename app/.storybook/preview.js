@@ -1,4 +1,5 @@
 // Apply global styling to our stories
+import '../styles/styles.scss'
 import { NextIntlProvider } from 'next-intl'
 
 import en from '../messages/en.json'

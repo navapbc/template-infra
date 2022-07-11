@@ -30,8 +30,3 @@ services:
     ports:
       # Expose a port to access storybook for local development.
       - 6006:6006
-
-  # Define a service for gulp sass compilation.
-  gulp:
-    <<: *app
-    command: ["yarn", "gulp", "watch"]
