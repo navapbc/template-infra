@@ -2,7 +2,9 @@ name: NextJS CI
 
 on:
   push:
-    branches-ignore: [main]
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test:
