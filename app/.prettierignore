@@ -1,3 +1,6 @@
 # Ignoring generated files
 .next/
 node_modules/
+
+# Ignore USWDS static assets
+public/uswds
