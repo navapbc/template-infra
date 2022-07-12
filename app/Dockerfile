@@ -1,9 +1,9 @@
 # Use the Active LTS version of Node.
 # See https://nodejs.org/en/about/releases/
-FROM node:16
+FROM node:16-alpine
 # Keep container packages up-to-date.
-RUN apt update \
-    && apt upgrade -y
+# -U runs both apk update and apk upgrade.
+RUN apk -U upgrade
 # Copy all the application files to a working directory.
 COPY . /srv
 WORKDIR /srv
