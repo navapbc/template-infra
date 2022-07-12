@@ -12,13 +12,7 @@ module.exports = {
   framework: '@storybook/react',
   core: {
     // Use webpack5 instead of webpack4.
-    // Use [lazy compilation](https://storybook.js.org/docs/react/builders/webpack#lazy-compilation) for faster sass compiling.
-    builder: {
-      name: 'webpack5',
-      options: {
-        lazyCompilation: true,
-      },
-    },
+    builder: 'webpack5',
     disableTelemetry: true,
   },
   // Tell storybook where to find USWDS static assets
