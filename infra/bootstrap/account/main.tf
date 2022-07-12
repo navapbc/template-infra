@@ -51,7 +51,7 @@ provider "aws" {
 
 module "bootstrap" {
   source                 = "../../modules/bootstrap"
-  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${local.region}-tf-state"
-  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${local.region}-tf-logs"
+  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current}-tf-state"
+  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current}-tf-logs"
   dynamodb_table         = "tf_state_locks"
 }

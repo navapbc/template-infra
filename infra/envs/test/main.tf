@@ -51,4 +51,3 @@ provider "aws" {
     tags = local.tags
   }
 }
-
