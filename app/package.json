@@ -8,7 +8,7 @@
     "format": "prettier --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "format-check": "prettier --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
     "lint": "NEXT_TELEMETRY_DISABLED=1 next lint",
-    "postinstall": "mkdir ./public && cp -R ./node_modules/@uswds/uswds/dist/ ./public/uswds/",
+    "postinstall": "mkdir -p ./public && cp -R ./node_modules/@uswds/uswds/dist/ ./public/uswds/",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start",
     "storybook": "start-storybook -p 6006",
     "storybook-build": "build-storybook",
