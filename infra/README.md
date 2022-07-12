@@ -92,7 +92,23 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 ### infra/envs/environment
 
-&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform {} block to setup the remote backend for the environment. This is where all of the infrastructure will be managed for the application.
+&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
+
+### Multi vs Single Cloud Account.
+
+&nbsp;&nbsp;In a multi-cloud account, multi-environment setup the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
+
+# Diagrams
+
+## Initial Setup
+<img src="../docs/imgs/initial_setup.svg" width="50%"/>
+
+## Multi-Cloud
+<img src="../docs/imgs/multi_cloud.svg" width="50%"/>
+
+## Single-Cloud
+<img src="../docs/imgs/single_cloud.svg" width="50%"/>
+
 
 # Workspaces
 
