@@ -30,18 +30,16 @@ terraform {
     }
   }
 
-  # Backend arguments are required to be hardcoded. Set these values based on your account.
-
   # Terraform does not allow interpolation here, values must be hardcoded.
-  # 
+ 
   # backend "s3" {
-  #   bucket         = "AWS_ACCOUNT_ID-AWS_REGION-tf-state"
-  #   key            = "terraform/tests/terraform.tfstate"
-  #   region         = "REGION_OF_BUCKET"
+  #   bucket         = "ACCOUNT_ID-REGION-tf-state"
+  #   key            = "terraform/backend/terraform.tfstate"
+  #   region         = "REGION"
   #   encrypt        = "true"
   #   dynamodb_table = "tf_state_locks"
   # }
-
+  
 }
 
 provider "aws" {
