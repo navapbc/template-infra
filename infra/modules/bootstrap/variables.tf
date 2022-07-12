@@ -9,4 +9,5 @@ variable "tf_logging_bucket_name" {
 variable "dynamodb_table" {
   type        = string
   description = "Name of the dynamodb table used for state locking"
-}        
+}
+        
