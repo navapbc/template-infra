@@ -15,4 +15,9 @@ services:
     volumes:
       # Mount the app directory for faster local development.
       - ./app:/srv
+      # Use a named volume for the node_modules so that the container uses the guest machine's node_modules dir instead of the host machine's node_modules directory, which might be divergent.
+      - nextjs_nodemodules:/srv/node_modules
+
+volumes:
+  nextjs_nodemodules:
 
