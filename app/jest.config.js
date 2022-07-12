@@ -7,7 +7,10 @@ module.exports = {
     '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js', // sets up routing to mocks style sheet
     '^@pages(.*)$': '<rootDir>/pages$1', //allows module imports of page components
   },
-  setupFilesAfterEnv: ['<rootDir>/test/jest.setup.js'],
+  setupFilesAfterEnv: [
+    '<rootDir>/tests/jest.setup.js',
+    '<rootDir>/tests/jest-i18n.ts'
+  ],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',
   }, //transfrom typescript files to common js for jest compiler
@@ -17,7 +20,7 @@ module.exports = {
     '^.+\\.module\\.(css|sass|scss)$',
   ],
   testPathIgnorePatterns: ['<rootDir>/node_modules/'],
-  testRegex: '(/test/.*(test|spec))\\.[jt]sx?$',
+  testRegex: '(/tests/.*(test|spec))\\.[jt]sx?$',
   globals: {
     'ts-jest': {
       tsconfig: 'tsconfig.ts-jest.json',

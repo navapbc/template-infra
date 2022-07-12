@@ -6,6 +6,7 @@ module.exports = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
+    'storybook-addon-i18next'
   ],
   framework: '@storybook/react',
   core: {
@@ -46,6 +47,11 @@ module.exports = {
       ],
       exclude: /node_modules/,
     })
+    config.resolve.fallback = {
+      fs: false,
+      path: false,
+      os: false,
+    }
 
     return config
   },
