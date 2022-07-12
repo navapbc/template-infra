@@ -29,11 +29,11 @@ terraform {
   }
 
   # Terraform does not allow interpolation here, values must be hardcoded.
-  # 
+ 
   # backend "s3" {
-  #   bucket         = "AWS_ACCOUNT_ID-AWS_REGION-tf-state"
+  #   bucket         = "ACCOUNT_ID-REGION-tf-state"
   #   key            = "terraform/backend/terraform.tfstate"
-  #   region         = "REGION_OF_BUCKET"
+  #   region         = "REGION"
   #   encrypt        = "true"
   #   dynamodb_table = "tf_state_locks"
   # }
@@ -51,7 +51,7 @@ provider "aws" {
 
 module "bootstrap" {
   source                 = "../../modules/bootstrap"
-  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current}-tf-state"
-  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current}-tf-logs"
+  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
+  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
   dynamodb_table         = "tf_state_locks"
 }
