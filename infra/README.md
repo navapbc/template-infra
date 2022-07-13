@@ -56,10 +56,9 @@ Default output format [None]: json
 
 &nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan.
 
-<span style="color:red"> ---- DANGER ----</span>\
-In a non-development environment comment out a resource to destroy, destroy should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
+&nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration. Use `terraform plan -destroy` to preview what remote objects will be destroyed if you run `terraform destroy`.
 
-&nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration.\
+⚠️ WARNING! ⚠️ This is a destructive command! As a best practice, it's recommended that you comment out resources in non-development environments rather than running this command. `terraform destroy` should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
 
 For more information about terraform commands follow the link below:
 
