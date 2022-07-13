@@ -24,3 +24,7 @@ How to run:
 3. Run `docker-compose up -d --build` to build the image and start the container.
 4. Navigate to `localhost:3000` in your browser to view the application.
 5. Run `docker-compose down` when you are done to delete the container.
+
+## Git Precommit Hook
+
+We use [husky](https://typicode.github.io/husky/#/) to run linting and formatting checks before each commit. Because our husky directory is in `app`, we configured husky with a [custom directory](https://typicode.github.io/husky/#/?id=custom-directory).
