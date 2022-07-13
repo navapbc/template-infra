@@ -2,10 +2,7 @@ const nextConfig = require('../next.config')
 
 module.exports = {
   stories: ['../stories/**/*.stories.@(mdx|js|jsx|ts|tsx)'],
-  addons: [
-    '@storybook/addon-essentials',
-    'storybook-i18n'
-  ],
+  addons: ['@storybook/addon-essentials', 'storybook-react-i18next'],
   framework: '@storybook/react',
   core: {
     // Use webpack5 instead of webpack4.
