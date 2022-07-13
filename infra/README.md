@@ -77,7 +77,7 @@ For more information about terraform commands follow the link below:
     - terrafrom apply
 4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and repeate step `3.` to switch from local to remote backend.
 
-```
+``` tf
   backend "s3" {
     bucket         = "AWS_ACCOUNT_ID-AWS_REGION-tf-state"
     key            = "terraform/backend/terraform.tfstate"
@@ -126,7 +126,7 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 ## Workspaces - Staging Environment
 &nbsp;&nbsp; Workspaces can be used here to allow multiple developers to deploy their own stacks for development and testing. If workspaces wont be necessary for this project set the prefix variable to "staging."
-``` sh
+``` tf
 # Example resource using the prefix
 resource "aws_instance" "self" {
   ami           = "ami-0cff7528ff583bf9a"
@@ -148,8 +148,30 @@ resource "aws_instance" "self" {
 
 ## Modules
 
-&nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application. An example of a module that is used to build the backend infrastructure for terraform can be found under **infra/modules/backend/***
+&nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application.
 
+### infra/modules/bootstrap/
+Module required to create the infrastructure that hosts all terraform backends.
+
+### infra/modules/common/
+The purpose of this module is to contain environment agnostic items. e.g. tags that are common to all environments are stored here. Example usage:
+
+
+``` tf
+# Import the common module
+
+module "common" {
+  source = "../../modules/common"
+
+}
+
+# Combine common tags with environment specific tags.
+tags = merge(module.common.tags, {
+  environment = "staging"
+  description = "Backend resources required for terraform state management."
+
+})
+```
 ## Troubleshooting
 
 For use later.

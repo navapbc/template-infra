@@ -7,13 +7,11 @@ locals {
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Set project tags that will be used to tag all resources. 
-  tags = {
-    project     = "template-application-nextjs"
+  tags = merge(module.common.tags, {
     environment = "staging"
-    owner       = "platform"
-    repository  = "https://github.com/navapbc/template-application-nextjs"
-    description = "Application resources"
-  }
+    description = "Backend resources required for terraform state management."
+
+  })
 
 }
 
@@ -47,6 +45,10 @@ provider "aws" {
     tags = local.tags
   }
 
+}
+
+module "common" {
+  source = "../../modules/common"
 }
 
 module "bootstrap" {

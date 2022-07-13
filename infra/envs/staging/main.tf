@@ -8,14 +8,12 @@ locals {
   profile = "staging"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
-  # Set project tags that will be used to tag all resources. 
-  tags = {
-    project     = "template-application-nextjs"
-    environment = "staging"
-    owner       = "platform"
-    repository  = "https://github.com/navapbc/template-application-nextjs"
-    description = "Application resources"
-  }
+  # Add environment specific tags
+  tags = merge(module.common.tags, {
+    environment = "prod"
+    description = "Application resources created in staging environment"
+    
+  })
 
 }
 
@@ -49,3 +47,9 @@ provider "aws" {
     tags = local.tags
   }
 }
+
+module "common" {
+  source = "../../common"
+}
+
+# Add application modules below
