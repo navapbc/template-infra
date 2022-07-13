@@ -8,13 +8,13 @@
 ## Install AWS CLI
 &nbsp;&nbsp;The AWS Command Line Interface (AWS CLI) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the aws commmand line tool by following the instructions found here:
 
-- [Install Terraform](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 ## AWS Authentication
 
 &nbsp;&nbsp;In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
 
-**~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
+**Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
 ### Examples:
 ```
@@ -46,7 +46,7 @@ Default output format [None]: json
 
 ## Basic Terraform Commands 
 
-&nbsp;&nbsp;The `terraform init` command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control. It is safe to run this command multiple times.
+&nbsp;&nbsp;The `terraform init` command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control.
 
 &nbsp;&nbsp;The `terraform plan` command creates an execution plan, which lets you preview the changes that Terraform plans to make to your infrastructure. By default, when Terraform creates a plan it:
 
@@ -54,14 +54,11 @@ Default output format [None]: json
 - Compares the current configuration to the prior state and noting any differences.
 - Proposes a set of change actions that should, if applied, make the remote objects match the configuration.
 
-It is safe to run this command multiple times.
-
 &nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan deploying the infrastructure specified in the configuraiton. Use with caution. The configuration becomes idempotent once a subsequent apply returns 0 changes.
 
-<span style="color:red"> ---- DANGER ----</span>\
-In a non-development environment comment out a resource to destroy, destroy should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
+&nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration. Use `terraform plan -destroy` to preview what remote objects will be destroyed if you run `terraform destroy`.
 
-&nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration.\
+⚠️ WARNING! ⚠️ This is a destructive command! As a best practice, it's recommended that you comment out resources in non-development environments rather than running this command. `terraform destroy` should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
 
 For more information about terraform commands follow the link below:
 
@@ -97,25 +94,22 @@ For more information about terraform commands follow the link below:
 
 ### infra/envs/environment
 
-&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
+&nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: test, staging, and prod. 
 
-### Multi vs Single Cloud Account.
+To get started with an environment, copy the backend configuration created in the "infra/bootstrap/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
 
-**`Note: For projects using a multi-account setup, copy the entire account directory and repeat the steps for each account.`**
+### Multi-Cloud Accounts vs Single Cloud Accounts
 
-&nbsp;&nbsp;In a multi-cloud account, multi-environment setup the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
+&nbsp;&nbsp;In a simpler single cloud account setup, there is one cloud account that contains the resources created for managing terraform itself, as well as the resources created for each environment.
 
-# Diagrams
-
-## Multi-Cloud
-<img src="../docs/imgs/multi_cloud.svg" width="50%"/>
-
-## Single-Cloud
 <img src="../docs/imgs/single_cloud.svg" width="50%"/>
 
+In a multi-cloud account, multi-environment setup, the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
+
+<img src="../docs/imgs/multi_cloud.svg" width="50%"/>
 
 # Workspaces
-
+&nbsp;&nbsp; Workspaces can be used here to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop on a single environment's terraform files without overwriting each other. Separate resources will be created for each engineer.
 ### Terraform workspace commands:
 
 `terraform workspace show [Name]`   - This command will show the workspace you working in.
@@ -140,15 +134,8 @@ resource "aws_instance" "self" {
   }
 }
 ```
-
-## Workspaces - Test Environment
-
-&nbsp;&nbsp; **Do not use workspaces**
-
-## Workspaces - Prod Environment
-
-&nbsp;&nbsp; **Do not use workspaces**
-
+If workspaces wont be necessary for your project, set the prefix variable in the <what file> to "staging."
+<insert example of how to do this properly here>
 
 ## Modules
 
