@@ -14,8 +14,8 @@ i18n.use(initReactI18next).init({
     en: {
       common: enCommon,
     },
-    es: { common: esCommon }
-  }
+    es: { common: esCommon },
+  },
 })
 
 // Export i18n so tests can manually set the lanuage with:

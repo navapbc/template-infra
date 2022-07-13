@@ -9,7 +9,7 @@ module.exports = {
   },
   setupFilesAfterEnv: [
     '<rootDir>/tests/jest.setup.js',
-    '<rootDir>/tests/jest-i18n.ts'
+    '<rootDir>/tests/jest-i18n.ts',
   ],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',

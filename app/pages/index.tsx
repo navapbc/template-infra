@@ -3,7 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
 const Home: NextPage = () => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('common')
 
   return (
     <div className="container">
@@ -12,11 +12,11 @@ const Home: NextPage = () => {
   )
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async({ locale }) => {
   return {
     props: {
-      ...(await serverSideTranslations(locale || 'en', ['common'])),
-    },
+      ...(await serverSideTranslations(locale || 'en', ['common']))
+    }
   }
 }
 
