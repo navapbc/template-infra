@@ -8,7 +8,7 @@
 ## Install AWS CLI
 &nbsp;&nbsp;The AWS Command Line Interface (AWS CLI) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the aws commmand line tool by following the instructions found here:
 
-- [Install Terraform](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+- [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
 ## AWS Authentication
 
