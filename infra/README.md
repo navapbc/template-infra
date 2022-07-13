@@ -91,7 +91,9 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 ### infra/envs/environment
 
-&nbsp;&nbsp;To get started with an environment copy the backend configuration created in the above instructions and copy into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
+&nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: test, staging, and prod. 
+
+To get started with an environment, copy the backend configuration created in the "infra/bootstrap/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
 
 ### Multi vs Single Cloud Account.
 
