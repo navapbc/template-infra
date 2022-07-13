@@ -4,7 +4,6 @@ module.exports = {
   stories: ['../stories/**/*.stories.@(mdx|js|jsx|ts|tsx)'],
   addons: [
     '@storybook/addon-essentials',
-    'storybook-addon-i18next',
   ],
   framework: '@storybook/react',
   core: {
