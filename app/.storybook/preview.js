@@ -9,4 +9,11 @@ export const parameters = {
       date: /Date$/,
     },
   },
-}
+  locale: "en",
+  locales: {
+    en: "English",
+    es: "Español",
+    fr: "Français",
+    ja: "日本語",
+  },
+};
