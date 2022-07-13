@@ -118,7 +118,7 @@ In a multi-cloud account, multi-environment setup, the relationship between the 
 
 
 # Workspaces
-
+&nbsp;&nbsp; Workspaces can be used here to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop on a single environment's terraform files without overwriting each other. Separate resources will be created for each engineer.
 ### Terraform workspace commands:
 
 `terraform workspace show [Name]`   - This command will show the workspace you working in.
