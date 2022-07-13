@@ -14,7 +14,7 @@
 
 &nbsp;&nbsp;In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
 
-**~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
+**Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
 ### Examples:
 ```
