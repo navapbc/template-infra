@@ -106,3 +106,30 @@ We did not follow their [install directions](https://designsystem.digital.gov/do
 Compiling the USWDS sass is slow, so the initial build step and subsequent sass re-compiles are slow, but after the design system is set up, we shouldn't need to be regularly re-compiling sass.
 
 Copying the USWDS static assets into the project is handled by a [yarn postinstall](https://classic.yarnpkg.com/lang/en/docs/package-json/#toc-scripts) script in `package.json`.
+
+## Internationalization (i18n)
+
+### Next.js i18n
+
+We are using [next-i18next](https://github.com/i18next/next-i18next) for Next.js internationalization. It provides a Next.js wrapper around [i18next](https://www.i18next.com/) and [react-i18next](https://github.com/i18next/react-i18next). Configuration is located in `next-i18next.config.js`. To add a language:
+
+1. Edit `next-i18next.config.js` and add the language to `locales`
+2. Add a language folder: `mkdir -p public/locales/<lang>`
+3. Add a language file: `touch public/locales/<lang>/common.json` and add the translated content
+
+Note that the json structure should be the same for each translation file. However, non-default languages can omit keys, in which case the translation content for the default language will be used.
+
+### Jest i18n
+
+We are using [i18next](https://www.i18next.com/) and [react-i18next](https://github.com/i18next/react-i18next) for jest internationalization. Configuration is located in `jest-i18next.ts`. To add a language:
+
+1. Edit `jest-i18next.ts`, import the language file, and edit the `resources` object.
+
+### Storybook i18n
+
+For storybook, we are using [storybook-react-i18next](https://storybook.js.org/addons/storybook-react-i18next), which adds a globe icon to the add-ons bar for selecting the desired language. To add a language:
+
+1. Edit `.storybook/i18next.js` and add the language to `supportedLngs`. This tells storybook-react-i18next what language files to look for.
+2. Edit `.storybook/preview.js` and add the language to `locales`. This tells storybook-react-i18next the options that the globe icon dropdown should include.
+
+Note that for storybook to support i18next, we need to to set a few webpack settings to false. See `.storybook/main.js`.
