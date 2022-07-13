@@ -12,10 +12,10 @@ i18n.use(initReactI18next).init({
   defaultNS: 'common',
   resources: {
     en: {
-      common: enCommon,
+      common: enCommon
     },
-    es: { common: esCommon },
-  },
+    es: { common: esCommon }
+  }
 })
 
 // Export i18n so tests can manually set the lanuage with:

@@ -4,7 +4,7 @@ import HomePage from '../../pages/index'
 
 export default {
   title: 'Pages',
-  component: HomePage,
+  component: HomePage
 } as ComponentMeta<typeof HomePage>
 
 const Template: ComponentStory<typeof HomePage> = () => <HomePage />

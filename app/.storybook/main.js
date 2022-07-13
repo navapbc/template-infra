@@ -10,7 +10,7 @@ module.exports = {
   core: {
     // Use webpack5 instead of webpack4.
     builder: 'webpack5',
-    disableTelemetry: true,
+    disableTelemetry: true
   },
   // Tell storybook where to find USWDS static assets
   staticDirs: ['../public'],
@@ -22,7 +22,6 @@ module.exports = {
       use: [
         'style-loader',
         'css-loader',
-
         {
           /**
            * Next.js sets this automatically for us, but we need to manually set it here for Storybook.
@@ -31,26 +30,27 @@ module.exports = {
           loader: 'postcss-loader',
           options: {
             postcssOptions: {
-              plugins: ['postcss-preset-env'],
-            },
-          },
+              plugins: ['postcss-preset-env']
+            }
+          }
         },
-
         {
           loader: 'sass-loader',
           options: {
-            sassOptions: nextConfig.sassOptions,
-          },
-        },
+            sassOptions: nextConfig.sassOptions
+          }
+        }
       ],
-      exclude: /node_modules/,
+      exclude: /node_modules/
     })
+
+    // Required for i18next.
     config.resolve.fallback = {
       fs: false,
       path: false,
-      os: false,
+      os: false
     }
 
     return config
-  },
+  }
 }
