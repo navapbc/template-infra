@@ -143,15 +143,8 @@ resource "aws_instance" "self" {
   }
 }
 ```
-
-## Workspaces - Test Environment
-
-&nbsp;&nbsp; **Do not use workspaces**
-
-## Workspaces - Prod Environment
-
-&nbsp;&nbsp; **Do not use workspaces**
-
+If workspaces wont be necessary for your project, set the prefix variable in the <what file> to "staging."
+<insert example of how to do this properly here>
 
 ## Modules
 
