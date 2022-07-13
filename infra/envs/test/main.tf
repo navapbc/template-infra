@@ -2,8 +2,10 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  # Prefix is used in the staging environement for workspaces, don't touch me here.
-  prefix = "test"
+  # The prefix key/value pair is used for terraform workspaces. Leave this as a static string if you are not using workspaces 
+  # for this environment (recommended). If terraform.workspace is not set for <the local user?>, then it will default to the string "default" 
+  # or the string "<env?>".
+  prefix = terraform.workspace
   # Profile that will be used to select which account to deploy to.
   profile = "test"
   # Choose the region where this infrastructure should be deployed.

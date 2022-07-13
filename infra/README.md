@@ -54,7 +54,9 @@ Default output format [None]: json
 - Compares the current configuration to the prior state and noting any differences.
 - Proposes a set of change actions that should, if applied, make the remote objects match the configuration.
 
-&nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan.
+It is safe to run this command multiple times.
+
+&nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan deploying the infrastructure specified in the configuraiton. Use with caution. The configuration becomes idempotent once a subsequent apply returns 0 changes.
 
 <span style="color:red"> ---- DANGER ----</span>\
 In a non-development environment comment out a resource to destroy, destroy should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
@@ -67,9 +69,11 @@ For more information about terraform commands follow the link below:
 
 ## Terraform Backend
 
+&nbsp;&nbsp;The approach to backend management allow terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastrucutre required to support the application.
+
 ### infra/bootstrap/account
 
-1. Rename bootstrap/account, account directory to the name of the aws account alias or account id where this infrastructure will be hosted.
+1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. ./bootstrap/account becomes ./bootstrap/env-project-name
 2. Customize the variables in locals{} at the top of main.tf to match the desired deployment setup.
 3. Open a terminal and cd into the infra/bootstrap/account directory and run the following commands:
     - terraform init
@@ -79,16 +83,17 @@ For more information about terraform commands follow the link below:
 
 ``` tf
   backend "s3" {
-    bucket         = "AWS_ACCOUNT_ID-AWS_REGION-tf-state"
+    bucket         = "ACCOUNT_ID-REGION-tf-state"
     key            = "terraform/backend/terraform.tfstate"
-    region         = "REGION_OF_BUCKET"
+    region         = "REGION"
     encrypt        = "true"
     dynamodb_table = "tf_state_locks"
   }
 ```
 5. Once these steps are complete, this should not need to be touched again, application infrastructure is managed under its envs/environment as described below.
 
-Note: For subsequent accounts if using a multi-account setup, copy the entire account directory and repeat the previous steps for each account.
+## Initial Setup
+<img src="../docs/imgs/initial_setup.svg" width="50%"/>
 
 ### infra/envs/environment
 
@@ -96,12 +101,11 @@ Note: For subsequent accounts if using a multi-account setup, copy the entire ac
 
 ### Multi vs Single Cloud Account.
 
+**`Note: For projects using a multi-account setup, copy the entire account directory and repeat the steps for each account.`**
+
 &nbsp;&nbsp;In a multi-cloud account, multi-environment setup the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
 
 # Diagrams
-
-## Initial Setup
-<img src="../docs/imgs/initial_setup.svg" width="50%"/>
 
 ## Multi-Cloud
 <img src="../docs/imgs/multi_cloud.svg" width="50%"/>

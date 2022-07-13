@@ -2,15 +2,17 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  # Prefix used for projects with multiple infrastructure developers, if unchanged will default to "default", or set to "staging"
-  prefix = terraform.workspace
+  # The prefix key/value pair is used for terraform workspaces, which is useful for projects with multiple infrastructure developers. 
+  # Leave this as a static string if you are not using workspaces for this environment (recommended). Change it to terraform.workspace 
+  # if you want to use workspaces in this environment.
+  prefix = "staging"
   # Profile that will be used to select which account to deploy to.
   profile = "staging"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Add environment specific tags
   tags = merge(module.common.tags, {
-    environment = "prod"
+    environment = "staging"
     description = "Application resources created in staging environment"
     
   })

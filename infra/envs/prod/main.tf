@@ -2,7 +2,9 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  # Prefix is used in the staging environement for workspaces, don't touch me here.
+  # The prefix key/value pair is used for terraform workspaces, which is useful for projects with multiple infrastructure developers. 
+  # Leave this as a static string if you are not using workspaces for this environment (recommended). Change it to terraform.workspace 
+  # if you want to use workspaces in this environment.
   prefix = "prod"
   # Profile that will be used to select which account to deploy to.
   profile = "prod"

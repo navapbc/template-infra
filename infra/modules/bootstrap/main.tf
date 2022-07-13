@@ -33,6 +33,8 @@ resource "aws_dynamodb_table" "terraform_lock" {
 # Create the S3 bucket used to store terraform state remotely.
 resource "aws_s3_bucket" "tf_state" {
   bucket = var.state_bucket_name
+
+  # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
   lifecycle {
     prevent_destroy = true
   }
