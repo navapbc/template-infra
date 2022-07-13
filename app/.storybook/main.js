@@ -3,9 +3,7 @@ const nextConfig = require('../next.config')
 module.exports = {
   stories: ['../stories/**/*.stories.@(mdx|js|jsx|ts|tsx)'],
   addons: [
-    '@storybook/addon-links',
     '@storybook/addon-essentials',
-    '@storybook/addon-interactions',
   ],
   framework: '@storybook/react',
   core: {
