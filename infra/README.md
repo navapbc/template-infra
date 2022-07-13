@@ -97,7 +97,13 @@ To get started with an environment, copy the backend configuration created in th
 
 ### Multi-Cloud Accounts vs Single Cloud Accounts
 
-&nbsp;&nbsp;In a multi-cloud account, multi-environment setup the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
+&nbsp;&nbsp;In a simpler single cloud account setup, there is one cloud account that contains the resources created for managing terraform itself, as well as the resources created for each environment.
+
+<insert single cloud diagram here>
+
+In a multi-cloud account, multi-environment setup, the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
+
+<insert multi-cloud diagram here>
 
 # Diagrams
 
