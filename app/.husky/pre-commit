@@ -1,5 +1,2 @@
 # This file is run from the same directory as `.git`, so we need to change to the `app` directory to run our husky commands.
-cd app
-yarn lint
-yarn format-check
-yarn ts-check
+cd app && yarn lint && yarn format-check && yarn ts-check
