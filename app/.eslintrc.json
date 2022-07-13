@@ -19,6 +19,6 @@
     "react/react-in-jsx-scope": "off",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-explicit-any": "error",
-    "space-before-function-paren": ["error", "never"]
+    "space-before-function-paren": "off"
   }
 }
