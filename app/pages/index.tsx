@@ -19,7 +19,7 @@ const Home: NextPage = () => {
 
       <main className="main">
         <h1 className="title">
-          {t('title')} This is a{' '}
+          Welcome to your{' '}
           <a href="https://github.com/navapbc/template-application-nextjs">
             Next.js Template!
           </a>
