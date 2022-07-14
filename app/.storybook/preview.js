@@ -9,14 +9,14 @@ export const parameters = {
   controls: {
     matchers: {
       color: /(background|color)$/i,
-      date: /Date$/
-    }
+      date: /Date$/,
+    },
   },
   // Configure i18next and locale/dropdown options.
   i18n,
   locale: 'en',
   locales: {
     en: 'English',
-    es: 'Español'
-  }
+    es: 'Español',
+  },
 }
