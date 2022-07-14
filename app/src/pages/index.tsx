@@ -6,7 +6,7 @@ const Home: NextPage = () => {
   const { t } = useTranslation('common')
 
   return (
-    <h1>
+    <h1 className='title'>
       {t('Index.title')}
       <a href="https://github.com/navapbc/template-application-nextjs">
         {t('Index.titleLink')}
