@@ -1,7 +1,7 @@
 // test/pages/index.test.js
-
 import { render, screen } from '@testing-library/react'
 import { axe } from 'jest-axe'
+
 import Index from '../../src/pages/index'
 
 describe('Index', () => {

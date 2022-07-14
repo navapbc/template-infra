@@ -6,7 +6,7 @@ type Props = {
 }
 
 const Layout = ({ children }: Props): JSX.Element => {
-  const {t} = useTranslation('common')
+  const { t } = useTranslation('common')
 
   return (
     <div className="container">

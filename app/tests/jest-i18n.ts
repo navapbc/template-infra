@@ -2,7 +2,6 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 
 import enCommon from '../public/locales/en/common.json'
-
 import esCommon from '../public/locales/es/common.json'
 
 // Setup react-i18next for tests. Load actual content along with some mocked content.

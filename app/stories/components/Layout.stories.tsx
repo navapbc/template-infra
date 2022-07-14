@@ -4,9 +4,11 @@ import LayoutComponent from '../../src/components/Layout'
 
 export default {
   title: 'Components',
-  component: LayoutComponent,
+  component: LayoutComponent
 } as ComponentMeta<typeof LayoutComponent>
 
-const Template: ComponentStory<typeof LayoutComponent> = () => <LayoutComponent />
+const Template: ComponentStory<typeof LayoutComponent> = () => (
+  <LayoutComponent />
+)
 
 export const Layout = Template.bind({})

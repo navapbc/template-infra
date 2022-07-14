@@ -4,7 +4,7 @@ import Index from '../../src/pages/index'
 
 export default {
   title: 'Pages',
-  component: Index,
+  component: Index
 } as ComponentMeta<typeof Index>
 
 const Template: ComponentStory<typeof Index> = () => <Index />

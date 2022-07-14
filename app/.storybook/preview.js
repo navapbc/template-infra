@@ -1,6 +1,5 @@
 // Apply global styling to our stories
 import '../styles/styles.scss'
-
 // Import i18next config.
 import i18n from './i18next.js'
 
