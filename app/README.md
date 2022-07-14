@@ -56,8 +56,6 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
   - Disallows usage of `any` type. The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.
 - "react/resct-in-jsx-scope": "off"
   - suppress errors for missing 'import React' in files because NextJS does this for us.
-- "space-before-function-paren": "off"
-  - suppresses errors for lack of space before function parenthesis to allow for `function()`
 
 ### Tsconfig additions to auto-generated file
 
@@ -121,7 +119,7 @@ Note that the json structure should be the same for each translation file. Howev
 
 ### Jest i18n
 
-We are using [i18next](https://www.i18next.com/) and [react-i18next](https://github.com/i18next/react-i18next) for jest internationalization. Configuration is located in `jest-i18next.ts`. To add a language:
+Internationalization is setup for tests in `jest-i18next.ts`. To add a language:
 
 1. Edit `jest-i18next.ts`, import the language file, and edit the `resources` object.
 
