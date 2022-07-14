@@ -96,3 +96,13 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
 - `jest-environment-jsdom`: This [module](https://www.npmjs.com/package/jest-environment-jsdom) simulates the DOM for testing. Implemented in jest.config.js > testEnvironment.
 - `prettier`: This [module](https://prettier.io/) is used for code formatting. Implemented in .prettierrc.json.
 - `ts-jest`: This [module](https://www.npmjs.com/package/ts-jest) lets ys yse hest to test our project written in TypeScript. Implemented in jest.config.js > preset > ts-jest
+
+## Design System
+
+We are using the [USWDS 3.0](https://designsystem.digital.gov) design system.
+
+We did not follow their [install directions](https://designsystem.digital.gov/documentation/getting-started/developers), which require using gulp as a task runner. Instead, we configured `next.config.js` such that we could leverage Next.js's built-in sass compiling and we configured `.storybook/main.js` such that we could leverage Storybook's built-in sass compiling and re-use the same Next.js configuration.
+
+Compiling the USWDS sass is slow, so the initial build step and subsequent sass re-compiles are slow, but after the design system is set up, we shouldn't need to be regularly re-compiling sass.
+
+Copying the USWDS static assets into the project is handled by a [yarn postinstall](https://classic.yarnpkg.com/lang/en/docs/package-json/#toc-scripts) script in `package.json`.
