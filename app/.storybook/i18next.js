@@ -19,7 +19,6 @@ const resources = ns.reduce((acc, n) => {
 }, {})
 
 i18n.use(initReactI18next).use(LanguageDetector).use(Backend).init({
-  //debug: true,
   lng: 'en',
   fallbackLng: 'en',
   defaultNS: 'common',
