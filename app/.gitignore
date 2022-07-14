@@ -36,9 +36,3 @@ yarn-error.log*
 
 # storybook
 /storybook-static
-
-# compiled css
-/public/css
-
-# uswds assets
-/public/uswds
