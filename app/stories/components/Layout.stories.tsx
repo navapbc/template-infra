@@ -8,7 +8,9 @@ export default {
 } as ComponentMeta<typeof LayoutComponent>
 
 const Template: ComponentStory<typeof LayoutComponent> = () => (
-  <LayoutComponent />
+  <LayoutComponent>
+    <h1>"child"</h1>
+  </LayoutComponent>
 )
 
 export const Layout = Template.bind({})
