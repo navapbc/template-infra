@@ -1,12 +1,12 @@
 import { ComponentMeta, ComponentStory } from '@storybook/react'
 
-import Layout from '../../src/components/Layout'
+import LayoutComponent from '../../src/components/Layout'
 
 export default {
   title: 'Components',
-  component: Layout,
-} as ComponentMeta<typeof Layout>
+  component: LayoutComponent,
+} as ComponentMeta<typeof LayoutComponent>
 
-const Template: ComponentStory<typeof Layout> = () => <Layout />
+const Template: ComponentStory<typeof LayoutComponent> = () => <LayoutComponent />
 
-export const Home = Template.bind({})
+export const Layout = Template.bind({})
