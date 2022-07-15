@@ -12,7 +12,7 @@ const resources = ns.reduce((acc, n) => {
     if (!acc[lng]) acc[lng] = {}
     acc[lng] = {
       ...acc[lng],
-      [n]: require(`../public/locales/${lng}/${n}.json`)
+      [n]: require(`../public/locales/${lng}/${n}.json`),
     }
   })
   return acc
@@ -24,7 +24,7 @@ i18n.use(initReactI18next).use(LanguageDetector).use(Backend).init({
   defaultNS: 'common',
   ns,
   supportedLngs,
-  resources
+  resources,
 })
 
 export default i18n

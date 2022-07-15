@@ -3,6 +3,5 @@
   "importOrderSeparation": true,
   "importOrderSortSpecifiers": true,
   "semi": false,
-  "singleQuote": true,
-  "trailingComma": "none"
+  "singleQuote": true
 }

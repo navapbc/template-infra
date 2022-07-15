@@ -56,8 +56,6 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
   - Disallows usage of `any` type. The usage of `any` defeats the purpose of typescript. Consider using `unknown` type instead instead.
 - "react/resct-in-jsx-scope": "off"
   - suppress errors for missing 'import React' in files because NextJS does this for us.
-- "space-before-function-paren": "off"
-  - suppresses errors for lack of space before function parenthesis to allow for `function()`
 
 ### Tsconfig additions to auto-generated file
 
@@ -92,7 +90,7 @@ Note: make sure TypeScript and Javascript Language Features are enabled in VS Co
 - `eslint`: This [module](https://www.npmjs.com/package/eslint) provides linting. Configuration implemented in .eslintrc.
 - `eslint-config-nava`: This [module](https://github.com/navapbc/eslint-config-nava) contains nava's preferred configurations for eslint. It is implemented in .eslintrc > extensions > nava.
 - `eslint-config-next`: This [module](https://nextjs.org/docs/basic-features/eslint) is automatically installed by nextJS, it includes out of the eslint configuration. Implemented in .eslintrc.json > extends > next.
-- `eslint-config-prettier`: This [module](https://github.com/prettier/eslint-config-prettier) turns off eslint rules that may conflict with prettier. Implemented in .eslintrc > extends > prettier.
+- `eslint-config-prettier`: This [module](https://github.com/prettier/eslint-config-prettier) turns off eslint rules that may conflict with prettier. Implemented in .eslintrc > extends > prettier. This module requires that we list `prettier` as the last element of the `extends` object in `eslintrc.json`.
 - `jest-environment-jsdom`: This [module](https://www.npmjs.com/package/jest-environment-jsdom) simulates the DOM for testing. Implemented in jest.config.js > testEnvironment.
 - `prettier`: This [module](https://prettier.io/) is used for code formatting. Implemented in .prettierrc.json.
 - `ts-jest`: This [module](https://www.npmjs.com/package/ts-jest) lets ys yse hest to test our project written in TypeScript. Implemented in jest.config.js > preset > ts-jest
@@ -121,7 +119,7 @@ Note that the json structure should be the same for each translation file. Howev
 
 ### Jest i18n
 
-We are using [i18next](https://www.i18next.com/) and [react-i18next](https://github.com/i18next/react-i18next) for jest internationalization. Configuration is located in `jest-i18next.ts`. To add a language:
+Internationalization is setup for tests in `jest-i18next.ts`. To add a language:
 
 1. Edit `jest-i18next.ts`, import the language file, and edit the `resources` object.
 

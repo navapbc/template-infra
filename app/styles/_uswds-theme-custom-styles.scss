@@ -10,8 +10,8 @@
 USWDS THEME CUSTOM STYLES
 ----------------------------------------
 !! Copy this file to your project's
-    sass root. Don't edit the version
-    in node_modules.
+   sass root. Don't edit the version
+   in node_modules.
 ----------------------------------------
 Custom project SASS goes here.
 
@@ -23,43 +23,48 @@ i.e.
 @use 'uswds-core' as *;
 
 .container {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  padding: 0 2rem;
 }
 
 .header {
   align-items: center;
   border-bottom: 1px solid #eaeaea;
   display: flex;
+  flex: 1;
   justify-content: center;
-  padding: 2rem;
+  padding: 2rem 0;
   position: sticky;
   top: 0;
 }
 
 .footer {
   align-items: center;
-  background-color: rgb(250, 250, 250);
   border-top: 1px solid #eaeaea;
-  bottom: 0;
-  justify-content: center;
-  padding: 2rem;
-  position: sticky;
   display: flex;
-  width: 100%;
+  flex: 1;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.footer a {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
 }
 
 .main {
   align-items: center;
-  background: linear-gradient(white, rgb(237, 234, 244));
   display: flex;
   flex: 1;
+  flex-direction: column;
   justify-content: center;
-  padding: 2rem;
+  min-height: 100vh;
+  padding: 4rem 0;
 }
 
 .title a {
+  color: #0070f3;
   text-decoration: none;
 }
 
@@ -67,4 +72,10 @@ i.e.
 .title a:focus,
 .title a:active {
   text-decoration: underline;
+}
+
+.title {
+  font-size: 4rem;
+  line-height: 1.15;
+  margin: 0;
 }
