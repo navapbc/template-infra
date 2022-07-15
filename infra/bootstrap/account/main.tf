@@ -2,13 +2,13 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  # Profile that will be used to select which account to deploy to.
-  profile = "staging"
+  # Profile that will be used to select which account to deploy to. This profile name should be propagated to the
+  # environment(s) that will share this aws account.
+  profile = "default"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Set project tags that will be used to tag all resources. 
-  tags = merge(module.common.tags, {
-    environment = "staging"
+  tags = merge(module.common.default_tags, {
     description = "Backend resources required for terraform state management."
 
   })

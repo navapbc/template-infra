@@ -64,9 +64,10 @@ For more information about terraform commands follow the link below:
 
 - [Basic CLI Features](https://www.terraform.io/cli/commands)
 
-## Terraform Backend
+## Terraform Backend Management
 
-&nbsp;&nbsp;The approach to backend management allow terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastrucutre required to support the application.
+&nbsp;&nbsp;The approach to backend management allows Terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastructure required to support the application. Because each backend, bootstrap or environment utilize their own terraform.tfstate stored in these buckets ensure that any backends that are shared use a unique key. When using a non-default workspace, the state path will be `/workspace_key_prefix/workspace_name/key`, `workspace_key_prefix` default is `env:`
+
 
 ### infra/bootstrap/account
 
@@ -96,7 +97,7 @@ For more information about terraform commands follow the link below:
 
 &nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: test, staging, and prod. 
 
-To get started with an environment, copy the backend configuration created in the "infra/bootstrap/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
+To get started with an environment, copy the backend configuration information created in the "infra/bootstrap/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
 
 ### Multi-Cloud Accounts vs Single Cloud Accounts
 
@@ -109,7 +110,8 @@ In a multi-cloud account, multi-environment setup, the relationship between the 
 <img src="../docs/imgs/multi_cloud.svg" width="50%"/>
 
 # Workspaces
-&nbsp;&nbsp; Workspaces can be used here to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop on a single environment's terraform files without overwriting each other. Separate resources will be created for each engineer.
+&nbsp;&nbsp; Terraform workspaces are created by default, the default workspace is named "default." Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop new features single environment without destorying each others infrastructure. Separate resources will be created for each engineer.
+
 ### Terraform workspace commands:
 
 `terraform workspace show [Name]`   - This command will show the workspace you working in.
@@ -122,20 +124,45 @@ In a multi-cloud account, multi-environment setup, the relationship between the 
 
 `terraform workspace delete [Name]` - This command will delete the specified workspace. (does not delete infrastructure, that step will done first)
 
-## Workspaces - Staging Environment
-&nbsp;&nbsp; Workspaces can be used here to allow multiple developers to deploy their own stacks for development and testing. If workspaces wont be necessary for this project set the prefix variable to "staging."
+## Workspaces and prefix - A How To
+
+&nbsp;&nbsp; Workspaces are used to allow multiple developers to deploy their own stacks for development and testing. By default prefix is set to terraform.workspace in the envs/dev environment, it is stage and prod in those respective environments.
+
+### envs/dev/main.tf
 ``` tf
-# Example resource using the prefix
-resource "aws_instance" "self" {
-  ami           = "ami-0cff7528ff583bf9a"
-  instance_type = "t2.micro"
-  tags = {
-    Name = "${local.prefix}-instance"
-  }
+locals {
+  prefix = terraform.workspace
 }
+
+module "example" {
+  source  = "../../modules/example"
+  prefix  = local.prefix
+}
+
 ```
-If workspaces wont be necessary for your project, set the prefix variable in the <what file> to "staging."
-<insert example of how to do this properly here>
+
+### modules/example/variables.tf - When creating a new module create the variable "prefix" in your variables.tf
+``` tf
+
+variable "prefix" {
+  type        = string
+  description = "prefix used to uniquely identify resources, allows parallel development"
+
+}
+
+```
+### modules/example/main.tf - Use var.prefix to uniquely name resources for parallel development.
+``` tf
+
+# Create the S3 bucket with a unique prefix from terraform.workspace.
+resource "aws_s3_bucket" "example" {
+  bucket = "${var.prefix}-bucket"
+
+}
+
+```
+
+The resulting bucket name created in the aws account will be shawn-bucket. If resources are not actively prefixed and two developers deploy the same resource the developer who runs their deployment second will overwrite the deployment of the first.
 
 ## Modules
 
@@ -157,8 +184,8 @@ module "common" {
 }
 
 # Combine common tags with environment specific tags.
-tags = merge(module.common.tags, {
-  environment = "staging"
+tags = merge(module.common.default_tags, {
+  environment = "dev"
   description = "Backend resources required for terraform state management."
 
 })
