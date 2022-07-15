@@ -8,7 +8,7 @@ describe('Home', () => {
   it('should render the heading', () => {
     render(<Home />)
 
-    const heading = screen.getByText(/Next.js Template!/i)
+    const heading = screen.getByText(/Welcome!/i)
 
     expect(heading).toBeInTheDocument()
     expect(heading).toMatchSnapshot()

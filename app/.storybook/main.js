@@ -2,7 +2,7 @@ const nextConfig = require('../next.config')
 
 module.exports = {
   stories: ['../stories/**/*.stories.@(mdx|js|jsx|ts|tsx)'],
-  addons: ['@storybook/addon-essentials'],
+  addons: ['@storybook/addon-essentials', 'storybook-react-i18next'],
   framework: '@storybook/react',
   core: {
     // Use webpack5 instead of webpack4.
@@ -19,7 +19,6 @@ module.exports = {
       use: [
         'style-loader',
         'css-loader',
-
         {
           /**
            * Next.js sets this automatically for us, but we need to manually set it here for Storybook.
@@ -32,7 +31,6 @@ module.exports = {
             },
           },
         },
-
         {
           loader: 'sass-loader',
           options: {
@@ -42,6 +40,13 @@ module.exports = {
       ],
       exclude: /node_modules/,
     })
+
+    // Required for i18next.
+    config.resolve.fallback = {
+      fs: false,
+      path: false,
+      os: false,
+    }
 
     return config
   },

@@ -17,9 +17,12 @@
   },
   "dependencies": {
     "@uswds/uswds": "^3.0.1",
+    "i18next": "^21.8.13",
     "next": "^12.1.6",
+    "next-i18next": "^11.0.0",
     "react": "^18.1.0",
-    "react-dom": "^18.1.0"
+    "react-dom": "^18.1.0",
+    "react-i18next": "^11.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.0",
@@ -47,6 +50,8 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^26.5.3",
     "eslint-plugin-storybook": "^0.5.12",
+    "i18next-browser-languagedetector": "^6.1.4",
+    "i18next-http-backend": "^1.4.1",
     "jest": "^28.1.0",
     "jest-axe": "^6.0.0",
     "jest-cli": "^28.1.0",
@@ -58,6 +63,7 @@
     "sass": "^1.52.3",
     "sass-loader": "^13.0.2",
     "storybook": "^6.5.9",
+    "storybook-react-i18next": "^1.1.2",
     "style-loader": "^3.3.1",
     "ts-jest": "^28.0.2",
     "typescript": "^4.6.4"
