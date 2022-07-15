@@ -5,7 +5,7 @@ type Props = {
   children: ReactElement
 }
 
-const Layout = ({ children }: Props): JSX.Element => {
+const Layout = ({ children }: Props): ReactElement => {
   const { t } = useTranslation('common')
 
   return (
