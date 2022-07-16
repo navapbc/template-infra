@@ -9,7 +9,7 @@ export default {
 
 const Template: ComponentStory<typeof LayoutComponent> = () => (
   <LayoutComponent>
-    <h1>"child"</h1>
+    <h1>Child</h1>
   </LayoutComponent>
 )
 
