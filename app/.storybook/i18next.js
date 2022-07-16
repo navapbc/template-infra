@@ -1,9 +1,9 @@
 // Configure i18next for storybook addon storybook-react-i18next
 // See https://storybook.js.org/addons/storybook-react-i18next
-import { initReactI18next } from 'react-i18next'
 import i18n from 'i18next'
-import Backend from 'i18next-http-backend'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import Backend from 'i18next-http-backend'
+import { initReactI18next } from 'react-i18next'
 
 const ns = ['common']
 const supportedLngs = ['en', 'es']
