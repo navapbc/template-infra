@@ -1,0 +1,10 @@
+{
+  "Index": {
+    "title": "Welcome to your ",
+    "titleLink": "Next.js Template!"
+  },
+  "Layout": {
+    "header": "Template header",
+    "footer": "Template footer"
+  }
+}

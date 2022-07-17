@@ -3,11 +3,21 @@
 version: '3'
 
 services:
-  # Define one service for the application.
-  app:
-    # This service relies on building from a Dockerfile in this file directory,
-    # not on an image repository.
+  # Define a service for the Next.js application.
+  nextjs:
     build: ./app
-    # Expose one port to access the application.
+    command: ["yarn", "dev"]
     ports:
+      # Expose a port to access the application.
       - 3000:3000
+      # Expose a port for storybook.
+      - 6006:6006
+    volumes:
+      # Mount the app directory for faster local development.
+      - ./app:/srv
+      # Use a named volume for the node_modules so that the container uses the guest machine's node_modules dir instead of the host machine's node_modules directory, which might be divergent.
+      - nextjs_nodemodules:/srv/node_modules
+
+volumes:
+  nextjs_nodemodules:
+
