@@ -43,3 +43,53 @@ A `docker-compose.yml` has been included to support local development and deploy
 To support local development, the `docker-compose.yml` runs the `nextjs` container in development mode (i.e. `yarn dev`) instead of production mode (i.e. `yarn start`). This allows Next.js to do things like hot reload.
 
 The docker-compose file bind mounts `app` on the host machine to `/srv` in the guest machine. However, to ensure that the container uses the correct packages in `node_modules`, we use a named docker volume for the `node_modules` dir. The named volume will take precedence over the bind mount, so that the `node_modules` dir in the guest machine will not be overwritten with the host machine's `node_modules` dir. This also means that if you run `yarn add <package>` on the host machine in development (which will update `yarn.lock`), you'll also need to run `docker-compose exec nextjs yarn install --frozen-lockfile` to update `node_modules` in the guest machine.
+
+## Getting started 
+
+### Create a new repository from this template
+
+The template repository can be used to create a project repository using two different methods.
+
+1. From [Github](https://github.com/) and click [New](github.com/new)
+
+    - Select the desired template
+
+2. From the template repo itself.
+
+    - Click Use this template
+
+### These steps are the same for both methods
+
+- Select the repository owner
+- Type in the desired repository name
+- Type a description for this project
+- Select whether this new repository will be Public or Private.
+- Leave Include all branches unchecked.
+- Click Create repository from template
+
+### Setup branch protections
+
+Once the repository has been created the ci stored in this templates .github/workflows will run. Ensure initial CI completes successfully before proceeding.
+
+- Click Actions to verify the workflows ran succesfully.
+- Click Settings
+    - Branches
+    - Add Branch protection rule
+        - Enter "main" for Branch name pattern
+        - Check the following options:
+            - Require a pull request before merging
+            - Require status checks to pass before merging
+            - Require branches to be up to date before merging
+            - Under the search type and select the following
+                - pass/fail checks
+                - CodeQL
+            - Any other desired protections
+
+### Other configurations need to be added, such as what is under the Security tab @Rocket.
+
+
+### Clone the repo to your local development environment
+
+Deploy the infrastructure from the infra folder by following the README.md instructions... I need to create the CD from [WMDP-96 Setup github actions for CD](https://wicmtdp.atlassian.net/browse/WMDP-96) then redo the steps above to verify if cd.yml will run, should also consider renaming ci.yml
+
+
