@@ -66,18 +66,18 @@ For more information about terraform commands follow the link below:
 
 ## Terraform Backend Management
 
-&nbsp;&nbsp;The approach to backend management allows Terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastructure required to support the application. Because each backend, bootstrap or environment utilize their own terraform.tfstate stored in these buckets ensure that any backends that are shared use a unique key. When using a non-default workspace, the state path will be `/workspace_key_prefix/workspace_name/key`, `workspace_key_prefix` default is `env:`
+&nbsp;&nbsp;The approach to backend management allows Terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastructure required to support the application. Because each backend, bootstrap or environment, store their own terraform.tfstate in these buckets, ensure that any backends that are shared use a unique key. When using a non-default workspace, the state path will be `/workspace_key_prefix/workspace_name/key`, `workspace_key_prefix` default is `env:`
 
 
 ### infra/bootstrap/account
 
-1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. ./bootstrap/account becomes ./bootstrap/env-project-name
+1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. `./bootstrap/account` becomes `./bootstrap/aws_account_id`
 2. Customize the variables in locals{} at the top of main.tf to match the desired deployment setup.
 3. Open a terminal and cd into the infra/bootstrap/account directory and run the following commands:
     - terraform init
     - terraform plan
     - terrafrom apply
-4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and repeate step `3.` to switch from local to remote backend.
+4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and re-initilize terraform to copy the terraform.tfstate from local to remote backend.
 
 ``` tf
   backend "s3" {
@@ -95,22 +95,22 @@ For more information about terraform commands follow the link below:
 
 ### infra/envs/environment
 
-&nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: test, staging, and prod. 
+&nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: dev, staging, and prod. 
 
 To get started with an environment, copy the backend configuration information created in the "infra/bootstrap/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
 
 ### Multi-Cloud Accounts vs Single Cloud Accounts
 
-&nbsp;&nbsp;In a simpler single cloud account setup, there is one cloud account that contains the resources created for managing terraform itself, as well as the resources created for each environment.
+&nbsp;&nbsp;In a simpler single cloud account setup, there is one cloud account that contains the resources created for managing terraform itself, as well as the resources created for each environment. If in a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
 
 <img src="../docs/imgs/single_cloud.svg" width="50%"/>
 
-In a multi-cloud account, multi-environment setup, the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1. In a single-cloud account, multi-environment setup ensure that the backend "s3" { key = path/to/terraform.tfstate} is unique for the backend, as well as each environment.
+In a multi-cloud account, multi-environment setup, the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1 for easiest management. If there are less accounts than envirnonments ensure the backend "s3" { key = path/to/terraform.tfstate} is unique from all backends in the shared account. 
 
 <img src="../docs/imgs/multi_cloud.svg" width="50%"/>
 
 # Workspaces
-&nbsp;&nbsp; Terraform workspaces are created by default, the default workspace is named "default." Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop new features single environment without destorying each others infrastructure. Separate resources will be created for each engineer.
+&nbsp;&nbsp; Terraform workspaces are created by default, the default workspace is named "default." Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop new features in parallel using a single environment without destroying each others infrastructure. Separate resources will be created for each engineer when using the prefix variable.
 
 ### Terraform workspace commands:
 
