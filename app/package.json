@@ -45,7 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.26.0",
     "babel-jest": "^28.1.0",
-    "eslint": "^8.15.0",
+    "eslint": "^8.20.0",
     "eslint-config-nava": "^11.0.0",
     "eslint-config-next": "^12.1.6",
     "eslint-config-prettier": "^8.5.0",
