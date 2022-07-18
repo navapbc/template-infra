@@ -161,7 +161,7 @@ resource "aws_s3_bucket" "example" {
 
 ```
 
-The resulting bucket name created in the aws account will be shawn-bucket. If resources are not actively prefixed and two developers deploy the same resource the developer who runs their deployment second will overwrite the deployment of the first.
+When in the workspace "shawn", the resulting bucket name created in the aws account will be `shawn-bucket`. This prevents the following undesirable situation: If resources are not actively prefixed and two developers deploy the same resource, the developer who runs their deployment second will overwrite the deployment of the first.
 
 ## Modules
 
