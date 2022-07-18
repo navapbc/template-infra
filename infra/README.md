@@ -90,7 +90,6 @@ For more information about terraform commands follow the link below:
 ```
 5. Once these steps are complete, this should not need to be touched again, application infrastructure is managed under its envs/environment as described below.
 
-## Initial Setup
 <img src="../docs/imgs/initial_setup.svg" width="50%"/>
 
 ### infra/envs/environment
