@@ -126,7 +126,7 @@ In a multi-cloud account, multi-environment setup, the relationship between the 
 
 ## Workspaces and prefix - A How To
 
-&nbsp;&nbsp; Workspaces are used to allow multiple developers to deploy their own stacks for development and testing. By default prefix is set to terraform.workspace in the envs/dev environment, it is stage and prod in those respective environments.
+&nbsp;&nbsp; Workspaces are used to allow multiple developers to deploy their own stacks for development and testing. By default "prefix~ is set to `terraform.workspace` in the envs/dev environment, it is `staging` and `prod` in those respective environments.
 
 ### envs/dev/main.tf
 ``` tf
