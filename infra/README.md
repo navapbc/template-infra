@@ -54,7 +54,7 @@ Default output format [None]: json
 - Compares the current configuration to the prior state and noting any differences.
 - Proposes a set of change actions that should, if applied, make the remote objects match the configuration.
 
-&nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan deploying the infrastructure specified in the configuraiton. Use with caution. The configuration becomes idempotent once a subsequent apply returns 0 changes.
+&nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan deploying the infrastructure specified in the configuration. Use with caution. The configuration becomes idempotent once a subsequent apply returns 0 changes.
 
 &nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration. Use `terraform plan -destroy` to preview what remote objects will be destroyed if you run `terraform destroy`.
 
