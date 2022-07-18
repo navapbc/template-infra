@@ -71,13 +71,13 @@ For more information about terraform commands follow the link below:
 
 ### infra/bootstrap/account
 
-1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. `./bootstrap/account` becomes `./bootstrap/aws_account_id`
+1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. `./bootstrap/account` becomes `./bootstrap/aws_account_id`.
 2. Customize the variables in locals{} at the top of main.tf to match the desired deployment setup.
 3. Open a terminal and cd into the infra/bootstrap/account directory and run the following commands:
-    - terraform init
-    - terraform plan
-    - terrafrom apply
-4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and re-initilize terraform to copy the terraform.tfstate from local to remote backend.
+    - `terraform init`
+    - `terraform plan`
+    - `terrafrom apply`
+4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and re-run `terraform init` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
 
 ``` tf
   backend "s3" {
