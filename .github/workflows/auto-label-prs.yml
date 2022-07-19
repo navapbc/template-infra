@@ -5,17 +5,15 @@ name: Auto label Pull Requests
 # **Who does it impact**: Automation that relies on the engineering label.
 
 on:
-  pull_request:
-
-permissions:
-  contents: read
-  pull-requests: write
+- pull_request_target
 
 jobs:
   triage:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
-      # See labeling configuration in the `.github/labeler.yml` file
-      - uses: actions/labeler@v4
-        with:
-          repo-token: '${{ secrets.GITHUB_TOKEN }}'
+    - uses: actions/labeler@v4
+      with:
+        repo-token: "${{ secrets.GITHUB_TOKEN }}"

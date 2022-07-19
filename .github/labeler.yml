@@ -1,2 +1,2 @@
 engineering:
-- any: ['**/*']
+- any: ['**/*', '.github/*']
