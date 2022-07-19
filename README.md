@@ -71,25 +71,28 @@ The template repository can be used to create a project repository using two dif
 
 Once the repository has been created the ci stored in this templates .github/workflows will run. Ensure initial CI completes successfully before proceeding.
 
-- Click Actions to verify the workflows ran succesfully.
-- Click Settings
-    - Branches
-    - Add Branch protection rule
-        - Enter "main" for Branch name pattern
-        - Check the following options:
-            - Require a pull request before merging
-            - Require status checks to pass before merging
-            - Require branches to be up to date before merging
-            - Under the search type and select the following
-                - pass/fail checks
-                - CodeQL
-            - Any other desired protections
+- In Settings > General:
+  - Under "Features": 
+    - Enable/disable features that you want for your project. For example, turn off the Wiki if your project won't be using it
+  - Under "Pull Requests": 
+    - Enable only the merge options your project should support
+    - Check "Always suggest updating pull request branches" to encourage pull requests to be updated when they deviate from `main`
+    - Check "Automatically delete head branches" to keep set Github to automatically delete branches once they are merged into `main` in a PR
 
-### Other configurations need to be added, such as what is under the Security tab @Rocket.
 
+
+- In Settings > Collaborators:
+  -  Add all collaborators that should have access to the git repo
+
+
+- In Settings > Code security and analysis:
+  - Click "Enable" for "Dependabot alerts"
+  - Click "Enable" for "Dependabot security updates"
+  - The other security features should already be enabled:
+    - "Dependabot version updates" is controlled by `.github/dependabot.yml`
+    - "Code scanning" is controlled by `.github/codeql-analysis.yml`
+    - "Secret scanning" is enabled by default
 
 ### Clone the repo to your local development environment
 
 Deploy the infrastructure from the infra folder by following the README.md instructions... I need to create the CD from [WMDP-96 Setup github actions for CD](https://wicmtdp.atlassian.net/browse/WMDP-96) then redo the steps above to verify if cd.yml will run, should also consider renaming ci.yml
-
-
