@@ -1,2 +1,2 @@
 engineering:
-- any: ['**/*', '!app/package.json', '!app/yarn.lock']
+- any: ['**/*']
