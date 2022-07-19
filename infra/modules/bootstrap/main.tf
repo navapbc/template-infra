@@ -4,7 +4,8 @@ data "aws_partition" "current" {}
 
 # Create the dynamodb table required for state locking.
 
-
+# Options are a AWS owned key, which is not unique to your account. AWS managed or customer managed. These two options are more secure and customer managed gives
+# control over the key, this allows for ability to restrict access by key as well as policies attached to roles or users. 
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
 resource "aws_kms_key" "terraform_lock" {
   description             = "KMS key for DynamoDB"
