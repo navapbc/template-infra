@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 
 data "aws_partition" "current" {}
 
-# Create the dynamodb table requried for state locking.
+# Create the dynamodb table required for state locking.
 resource "aws_kms_key" "terraform_lock" {
   description             = "KMS key for DynamoDB"
   deletion_window_in_days = "10"
