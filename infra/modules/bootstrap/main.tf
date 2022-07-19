@@ -3,9 +3,14 @@ data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 
 # Create the dynamodb table required for state locking.
+
+
+# https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
 resource "aws_kms_key" "terraform_lock" {
   description             = "KMS key for DynamoDB"
+  # The waiting period, specified in number of days. After the waiting period ends, AWS KMS deletes the KMS key.
   deletion_window_in_days = "10"
+  # Generates new cryptographic material every 365 days, this is used to encrypt your data. The KMS key retains the old material for decryption purposes.
   enable_key_rotation     = "true"
 }
 
@@ -109,7 +114,6 @@ resource "aws_s3_bucket_policy" "tf_state" {
 }
 
 # Create the S3 bucket to provide server access logging.
-
 resource "aws_s3_bucket" "tf_log" {
   bucket = var.tf_logging_bucket_name
 }
@@ -148,6 +152,7 @@ resource "aws_s3_bucket_ownership_controls" "tf_log" {
   }
 }
 
+# Move all log data to lower cost infrequent-access storage after 30 days.
 resource "aws_s3_bucket_lifecycle_configuration" "tf_log" {
   bucket                = aws_s3_bucket.tf_log.id
   expected_bucket_owner = data.aws_caller_identity.current.account_id
