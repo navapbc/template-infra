@@ -72,7 +72,7 @@ Once the repository has been created, the CI stored in this template (`.github/w
 
 - In Settings > Branches:
     - Click add branch protection rule
-    - Enter "main" in Brance name pattern
+    - Enter "main" for the Branch name pattern
     - Check the following:
         - Require a pull request before merging
         - Require approvals
