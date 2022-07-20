@@ -88,6 +88,7 @@ Once the repository has been created, the CI stored in this template (`.github/w
 
 <img src="./docs/imgs/the_rules.svg" width="50%"/>
 
+### Setup other Github settings
 - In Settings > General:
   - Under "Features": 
     - Enable/disable features that you want for your project. For example, turn off the Wiki if your project won't be using it
