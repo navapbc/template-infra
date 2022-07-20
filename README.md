@@ -59,8 +59,8 @@ The template repository can be used to create a project repository using two dif
 - Type in the desired repository name
 - Type a description for this project
 - Select whether this new repository will be Public or Private.
-- Leave Include all branches unchecked.
-- Click Create repository from template
+- Leave "Include all branches" unchecked
+- Click "Create repository from template"
 
 <img src="./docs/imgs/create_from_template.svg" width="50%"/>
 
