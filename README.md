@@ -115,7 +115,7 @@ Once the repository has been created the ci stored in this templates .github/wor
     - "Code scanning" is controlled by `.github/codeql-analysis.yml`
     - "Secret scanning" is enabled by default
 
-<img src="./docs/imgs/code_sec_analysis" width="50%"/>
+<img src="./docs/imgs/code_sec_analysis.svg" width="50%"/>
 
 ### Clone the repo to your local development environment
 
