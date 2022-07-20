@@ -71,7 +71,7 @@ Once the repository has been created, the CI stored in this template (`.github/w
 <img src="./docs/imgs/verify_ci.svg" width="50%"/>
 
 - In Settings > Branches:
-    - Click add branch protection rule
+    - Click "Add branch protection rule"
     - Enter "main" for the Branch name pattern
     - Check the following:
         - Require a pull request before merging
