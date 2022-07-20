@@ -67,9 +67,31 @@ The template repository can be used to create a project repository using two dif
 - Leave Include all branches unchecked.
 - Click Create repository from template
 
+<img src="../docs/imgs/create_from_template.svg" width="50%"/>
+
 ### Setup branch protections
 
 Once the repository has been created the ci stored in this templates .github/workflows will run. Ensure initial CI completes successfully before proceeding.
+
+<img src="../docs/imgs/verify_ci.svg" width="50%"/>
+
+- In Settings > Branches:
+    - Click add branch protection rule
+    - Enter "main" in Brance name pattern
+    - Check the following:
+        - Require a pull request before merging
+        - Require approvals
+            - Minimum of 1
+        - Dismiss stale pull request approvals when new commits are pushed
+    - Require status checks to pass before merging
+    - Require branches to be up to date before merging
+    - In the search box add the following:
+        - pass/fail checks
+        - Analyze (javascript)
+
+<img src="../docs/imgs/add_branch_protection_rule.svg" width="50%"/>
+
+<img src="../docs/imgs/the_rules.svg" width="50%"/>
 
 - In Settings > General:
   - Under "Features": 
@@ -79,7 +101,7 @@ Once the repository has been created the ci stored in this templates .github/wor
     - Check "Always suggest updating pull request branches" to encourage pull requests to be updated when they deviate from `main`
     - Check "Automatically delete head branches" to keep set Github to automatically delete branches once they are merged into `main` in a PR
 
-
+<img src="../docs/imgs/pull_request_settings.svg" width="50%"/>
 
 - In Settings > Collaborators:
   -  Add all collaborators that should have access to the git repo
@@ -92,6 +114,8 @@ Once the repository has been created the ci stored in this templates .github/wor
     - "Dependabot version updates" is controlled by `.github/dependabot.yml`
     - "Code scanning" is controlled by `.github/codeql-analysis.yml`
     - "Secret scanning" is enabled by default
+
+<img src="../docs/imgs/code_sec_-_analysis" width="50%"/>
 
 ### Clone the repo to your local development environment
 
