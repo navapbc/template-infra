@@ -66,7 +66,7 @@ The template repository can be used to create a project repository using two dif
 
 ### Setup branch protections
 
-Once the repository has been created the ci stored in this templates .github/workflows will run. Ensure initial CI completes successfully before proceeding.
+Once the repository has been created, the CI stored in this template (`.github/workflows`) will run. Ensure initial CI completes successfully before proceeding.
 
 <img src="./docs/imgs/verify_ci.svg" width="50%"/>
 
