@@ -27,7 +27,7 @@ jobs:
       with:
         # role-to-assume: arn:aws:iam::ACCOUNT_ID:role/github-actions-assume-role
         role-to-assume: arn:aws:iam::368823044688:role/github-actions-assume-role   # gonna need a switch here for multiple accounts or a job for each environement... both!?
-        role-duration-seconds: 300                                                # ttl of the session 
+        role-duration-seconds: 900                                                  # ttl of the session 
         role-session-name: githubactions
         aws-region: us-east-1
 
