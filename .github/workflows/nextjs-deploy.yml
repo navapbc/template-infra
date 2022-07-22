@@ -2,8 +2,8 @@ name: NextJS Deploy
 # This cd is strictly for deploying the application, will piggy back off of Alsia's work on ECR/ECR 
 on:
   push:
-  #   branches:
-  #     - main
+    branches:
+      - '!main'
 
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
       contents: read                                                              # This is required for actions/checkout
 jobs:
   deploy:
-    name: aws-configure-test
+    name: Deploy NextJS Application
     runs-on: ubuntu-latest
 
     defaults:
@@ -34,7 +34,3 @@ jobs:
     - name: Get Caller Idendentity
       run: |
         aws sts get-caller-identity 
-
-    - name: Describe VPC
-      run: |
-        aws ec2 describe-vpcs 
