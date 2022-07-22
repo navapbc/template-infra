@@ -31,6 +31,10 @@ jobs:
         role-session-name: githubactions
         aws-region: us-east-1
 
-    - name: test it worked.
+    - name: Get Caller Idendentity
       run: |
         aws sts get-caller-identity 
+
+    - name: Describe VPC
+      run: |
+        aws ec2 describe-vpcs 
