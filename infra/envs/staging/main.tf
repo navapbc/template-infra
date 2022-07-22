@@ -14,7 +14,7 @@ locals {
   tags = merge(module.common.default_tags, {
     environment = "staging"
     description = "Application resources created in staging environment"
-    
+
   })
 
 }
@@ -31,7 +31,7 @@ terraform {
   }
 
   # Terraform does not allow interpolation here, values must be hardcoded.
- 
+
   # backend "s3" {
   #   bucket         = "ACCOUNT_ID-REGION-tf-state"
   #   key            = "terraform/staging/terraform.tfstate"

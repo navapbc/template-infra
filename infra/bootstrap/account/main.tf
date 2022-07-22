@@ -9,7 +9,7 @@ locals {
   region = "us-east-1"
   # Set project tags that will be used to tag all resources. 
   tags = merge(module.common.default_tags, {
-    description = "Backend resources required for terraform state management."
+    description = "Account level resources and Terraform backend."
 
   })
 
@@ -24,10 +24,14 @@ terraform {
       source  = "hashicorp/aws"
       version = "~>4.20.1"
     }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0.0"
+    }
   }
 
   # Terraform does not allow interpolation here, values must be hardcoded.
- 
+
   # backend "s3" {
   #   bucket         = "ACCOUNT_ID-REGION-tf-state"
   #   key            = "terraform/backend/terraform.tfstate"
@@ -51,9 +55,14 @@ module "common" {
   source = "../../modules/common"
 }
 
-module "bootstrap" {
-  source                 = "../../modules/bootstrap"
-  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-  dynamodb_table         = "tf_state_locks"
+# module "bootstrap" {
+#   source                 = "../../modules/bootstrap"
+#   state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
+#   tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
+#   dynamodb_table         = "tf_state_locks"
+# }
+
+module "github-actions-oidc" {
+  source         = "../../modules/github-actions-oidc"
+  tr_pattern_sub = "repo:navapbc/template-application-nextjs:*"
 }

@@ -1,0 +1,36 @@
+name: NextJS CD
+# This cd is strictly for deploying the application, will piggy back off of Alsia's work on ECR/ECR 
+on:
+  push:
+  #   branches:
+  #     - main
+
+
+permissions:
+      id-token: write                                                             # This is required to fetch a token
+      contents: read                                                              # This is required for actions/checkout
+jobs:
+  deploy:
+    name: aws-configure-test
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./app                                                  #This may need to be variable based on the trigger (e.g. switch between ./app and ./infra) | different jobs based on different context
+
+    steps:
+    - name: Git clone the repository
+    - uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        # role-to-assume: arn:aws:iam::ACCOUNT_ID:role/github-actions-assume-role
+        role-to-assume: arn:aws:iam::368823044688:role/github-actions-assume-role   # gonna need a switch here for multiple accounts or a job for each environement... both!?
+        role-duration-seconds: 300                                                # ttl of the session 
+        role-session-name: githubactions
+        aws-region: us-east-1
+
+    - name: test it worked.
+      run: |
+        aws sts get-caller-identity 

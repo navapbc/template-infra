@@ -14,7 +14,7 @@ locals {
   tags = merge(module.common.default_tags, {
     environment = "dev"
     description = "Application resources created in dev environment"
-    
+
   })
 
 }
@@ -31,7 +31,7 @@ terraform {
   }
 
   # Terraform does not allow interpolation here, values must be hardcoded.
- 
+
   # backend "s3" {
   #   bucket         = "ACCOUNT_ID-REGION-tf-state"
   #   key            = "terraform/dev/terraform.tfstate"
@@ -39,7 +39,7 @@ terraform {
   #   encrypt        = "true"
   #   dynamodb_table = "tf_state_locks"
   # }
-  
+
 }
 
 provider "aws" {
@@ -49,13 +49,12 @@ provider "aws" {
     tags = local.tags
   }
 }
-
+# Import common tags
 module "common" {
   source = "../../modules/common"
 }
 
 # Add application modules below
-
 module "example" {
   source = "../../modules/example"
   prefix = local.prefix
