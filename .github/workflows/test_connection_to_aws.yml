@@ -1,4 +1,4 @@
-name: NextJS CD
+name: NextJS Deploy
 # This cd is strictly for deploying the application, will piggy back off of Alsia's work on ECR/ECR 
 on:
   push:
@@ -32,5 +32,5 @@ jobs:
         aws-region: us-east-1
 
     - name: test it worked.
-      run: |
+    - run: |
         aws sts get-caller-identity 
