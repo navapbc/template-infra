@@ -50,7 +50,7 @@ The docker-compose file bind mounts `app` on the host machine to `/srv` in the g
 
 The template repository can be used to create a project repository using two different methods.
 
-1. From [Github](https://github.com/): Click [New](github.com/new) and select the desired template.
+1. From [Github](https://github.com/): Click [New](https://github.com/new) and select the desired template.
 2. From the template repo itself: Click "Use this template".
 
 ### These steps are the same for both methods
