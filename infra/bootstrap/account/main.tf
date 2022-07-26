@@ -55,12 +55,12 @@ module "common" {
   source = "../../modules/common"
 }
 
-# module "bootstrap" {
-#   source                 = "../../modules/bootstrap"
-#   state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-#   tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-#   dynamodb_table         = "tf_state_locks"
-# }
+module "bootstrap" {
+  source                 = "../../modules/bootstrap"
+  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
+  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
+  dynamodb_table         = "tf_state_locks"
+}
 
 module "github-actions-oidc" {
   source         = "../../modules/github-actions-oidc"
