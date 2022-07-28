@@ -1,0 +1,13 @@
+name: Deployment Orchestration
+
+on:
+  # push:
+  #   branches:
+  #     - main
+  workflow_dispatch:
+
+jobs:
+  call-workflow:
+    uses: ./.github/workflows/deploy-nextjs-aws.yml@main
+    secrets:
+      ACCOUNT_ID: ${{secrets.ACCOUNT_ID}} 

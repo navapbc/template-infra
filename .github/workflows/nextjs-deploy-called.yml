@@ -1,14 +1,15 @@
 name: NextJS Deploy
 
 on:
-  push:
-    branches:
-      - '!main'
-
+  workflow_call:
+    secrets:
+      ACCOUNT_ID:
+        required: true
 
 permissions:
       id-token: write
       contents: read
+
 jobs:
   deploy:
     name: Deploy NextJS Application
@@ -16,7 +17,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ./app
+        working-directory: ./app                        ................ this is a pain in the ass
 
     steps:
     - name: Git clone the repository
@@ -25,7 +26,7 @@ jobs:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
-        role-to-assume: arn:aws:iam::ACCOUNT_ID:role/github-actions-assume-role
+        role-to-assume: arn:aws:iam::${{secret.ACCOUNT_ID}}:role/github-actions-assume-role
         role-duration-seconds: 900                                                
         role-session-name: githubactions
         aws-region: us-east-1

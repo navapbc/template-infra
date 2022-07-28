@@ -103,12 +103,20 @@ resource "aws_iam_role" "github" {
 #       "ecr:UploadLayerPart"]
 #     effect = "Allow"
 #     resources = ["*"]
+#     principals {
+#       type        = "AWS"
+#       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+#     }
 #   }
 #   statement {
 #     sid = "GithubActionsPermissionsECS"
 #     actions = ["ecs:*"]
 #     effect = "Allow"
 #     resources = ["*"]
+#     principals {
+#       type        = "AWS"
+#       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+#     }
 #   }
 # }
 
