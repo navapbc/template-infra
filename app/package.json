@@ -45,7 +45,7 @@
     "babel-jest": "^28.1.0",
     "eslint": "^8.20.0",
     "eslint-config-nava": "^11.0.0",
-    "eslint-config-next": "^12.1.6",
+    "eslint-config-next": "^12.2.5",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-jest": "^26.5.3",
     "eslint-plugin-storybook": "^0.6.1",
