@@ -1,2 +1,9 @@
 # MacOS files
 .DS_Store
+
+# Ignore develop-specific VS code settings files
+.vscode
+
+# Ignore local environment variables which can contain environment secrets
+.env
+.envrc
