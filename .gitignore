@@ -36,3 +36,7 @@ override.tf.json
 
 # MacOS files
 .DS_Store
+
+# Ignore local environment variables which can contain environment secrets
+.env
+.envrc
