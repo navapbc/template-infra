@@ -63,6 +63,9 @@ Default output format [None]: json
 For more information about terraform commands follow the link below:
 
 - [Basic CLI Features](https://www.terraform.io/cli/commands)
+## Terraform Dependency Lock File
+
+&nbsp;&nbsp;  The [dependency lock file](https://www.terraform.io/language/files/dependency-lock) tracks provider dependencies. It belongs to the configuration as a whole and is created when running `terraform ini`. The lock file is always named `.terraform.lock.hcl`, and this name is intended to signify that it is a lock file for various items that Terraform caches in the `.terraform` subdirectory of your working directory. You should include this file in your version control repository so that you can discuss potential changes to your external dependencies via code review, just as you would discuss potential changes to your configuration itself.  
 
 ## Terraform Backend Management
 

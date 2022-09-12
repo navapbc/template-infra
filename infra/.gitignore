@@ -1,6 +1,5 @@
 # Local .terraform metadata
 **/.terraform/*
-.terraform.lock.hcl
 
 # .tfstate files
 *.tfstate
