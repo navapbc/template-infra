@@ -3,7 +3,7 @@
 ## Install Terraform CLI
 &nbsp;&nbsp;Terraform is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features.
 
-The best way to manage Terraform versions is with [Terraform Version Manager](https://github.com/tfutils/tfenv).
+You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager](https://github.com/tfutils/tfenv).
 
 ```bash
 brew install tfenv
