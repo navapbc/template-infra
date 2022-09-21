@@ -5,8 +5,13 @@
 
 You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager](https://github.com/tfutils/tfenv).
 
+To install via [Homebrew](https://brew.sh/)
 ```bash
 brew install tfenv
+```
+
+Then install the version of Terraform you need.
+```bash
 tfenv install 1.2.1
 ```
 
