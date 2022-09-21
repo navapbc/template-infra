@@ -1,9 +1,19 @@
 # Getting Started With Terraform
 
 ## Install Terraform CLI
-&nbsp;&nbsp;Terraform is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features. Install the terraform commmand line tool by follow the instructions found here:
+&nbsp;&nbsp;Terraform is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features.
 
-- [Install Terraform](https://learn.hashicorp.com/tutorials/terraform/install-cli)
+You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager](https://github.com/tfutils/tfenv).
+
+To install via [Homebrew](https://brew.sh/)
+```bash
+brew install tfenv
+```
+
+Then install the version of Terraform you need.
+```bash
+tfenv install 1.2.1
+```
 
 ## Install AWS CLI
 &nbsp;&nbsp;The AWS Command Line Interface (AWS CLI) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the aws commmand line tool by following the instructions found here:
