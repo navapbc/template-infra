@@ -1,4 +1,4 @@
-name: NextJS CI
+name: CI
 
 on:
   push:
@@ -7,23 +7,19 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: pass/fail checks
+  check:
     runs-on: ubuntu-latest
 
-    defaults:
-      run:
-        working-directory: ./app
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Run check
+      run: make check
+
+  # Run the build to make sure it doesn't fail
+  build:
+    runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v1
-      with:
-        node-version: 16
-    - run: npm install --location=global yarn
-    - run: yarn install --frozen-lockfile
-    - run: yarn build
-    - run: yarn lint
-    - run: yarn format-check
-    - run: yarn test
-    
+      - name: Run build
+        run: release-build
