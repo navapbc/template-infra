@@ -86,7 +86,22 @@ lint:
   npm run lint
 ```
 
-Or alternatively, we can ignore the separate Makefile in each of the application templates, and just hook in directly to poetry/npm in the top level Makefile.
+Alternatively, we can ignore the separate Makefile in each of the application templates, and just hook in directly to poetry/npm in the top level Makefile.
+
+In either case, we could have instructions in each application template that instructs the user to add the appropriate hook into the top level Makefile to call into the application-specific targets. In theory this could also be done via a script:
+
+```bash
+# temporarily fetch latest version of application template
+git clone --single-branch --branch main --depth 1 git@github.com:navapbc/template-application-flask.git
+
+# install application template
+./template-application-flask/scripts/install-template.sh
+
+# clean up temporary folder
+rm -fr template-application-flask
+```
+
+Where install-template.sh could do something like add the appropriate commands to the top level Makefile.
 
 Reference: [Recursively calling Make](https://www.gnu.org/software/make/manual/make.html#Recursion)
 
