@@ -1,0 +1,22 @@
+name: Deploy
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build release
+        run: make release-build
+
+      - name: Publish release
+        run: make release-publish
+
+      - name: Deploy release
+        run: make release-deploy
