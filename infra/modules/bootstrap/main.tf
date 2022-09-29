@@ -8,7 +8,7 @@ data "aws_partition" "current" {}
 # control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users. 
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
 resource "aws_kms_key" "terraform_lock" {
-  description             = "KMS key for DynamoDB"
+  description             = "KMS key for DynamoDB table ${var.dynamodb_table}"
   # The waiting period, specified in number of days. After the waiting period ends, AWS KMS deletes the KMS key.
   deletion_window_in_days = "10"
   # Generates new cryptographic material every 365 days, this is used to encrypt your data. The KMS key retains the old material for decryption purposes.
