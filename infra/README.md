@@ -91,15 +91,13 @@ For more information about terraform commands follow the link below:
     - `terraform init`
     - `terraform plan`
     - `terrafrom apply`
-4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and re-run `terraform init` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
+4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and run `terraform init -force-copy` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
 
 ``` tf
   backend "s3" {
-    bucket         = "ACCOUNT_ID-REGION-tf-state"
-    key            = "terraform/backend/terraform.tfstate"
-    region         = "REGION"
-    encrypt        = "true"
-    dynamodb_table = "tf_state_locks"
+    bucket         = "<TF_STATE_BUCKET_NAME>"
+    dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
+    ...
   }
 ```
 5. Once these steps are complete, this should not need to be touched again, application infrastructure is managed under its envs/environment as described below.
