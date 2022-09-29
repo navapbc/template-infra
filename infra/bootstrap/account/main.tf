@@ -11,6 +11,9 @@ locals {
 
   })
 
+  tf_state_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
+  tf_logs_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
+  tf_locks_table_name = "${local.project_name}-tf-state-locks"
 }
 
 terraform {
@@ -50,7 +53,7 @@ module "common" {
 
 module "bootstrap" {
   source                 = "../../modules/bootstrap"
-  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-  dynamodb_table         = "tf_state_locks"
+  state_bucket_name      = local.tf_state_bucket_name
+  tf_logging_bucket_name = local.tf_logs_bucket_name
+  dynamodb_table         = local.tf_locks_table_name
 }
