@@ -201,6 +201,39 @@ tags = merge(module.common.default_tags, {
 
 })
 ```
+
+## Destroying Infrastructure
+
+1. First destroy all your environments by running `terraform destroy` in each of your environment module folders
+
+    ```bash
+    # within each env folder in /infra/envs/ (dev, stage, etc)
+    terraform destroy
+    ```
+
+2. Then destroy the backends. You need to add `force_destroy = true` to the S3 buckets, and update the
+  lifecycle block to set `prevent_destroy = false`. Then run `terraform destroy` within the backend account folders.
+
+    ```terraform
+    resource "aws_s3_bucket" "tf_state" {
+      bucket = var.state_bucket_name
+
+      force_destroy = true
+
+      # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
+      lifecycle {
+        prevent_destroy = false
+      }
+    }
+
+    ...
+
+    resource "aws_s3_bucket" "tf_log" {
+      bucket = var.tf_logging_bucket_name
+      force_destroy = true
+    }
+    ```
+
 ## Troubleshooting
 
 For use later.
