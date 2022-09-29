@@ -1,3 +1,12 @@
+# PROJECT_NAME defaults to name of the current directory.
+# should not to be changed if you follow GitOps operating procedures.
+PROJECT_NAME := $(notdir $(PWD))
+
+# For now only support a single app in the folder `app/` within the repo
+# In the future, support multiple apps, and which app is being operated
+# on will be determined by the APP_NAME Makefile argument
+APP_NAME := app
+
 .PHONY : \
 	check \
 	lint \
@@ -27,7 +36,22 @@ test:
 ## Release Management ##
 ########################
 
+GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
+
+# Generate a unique tag based solely on the git hash.
+# This will be the identifier used for deployment via terraform.
+ifdef GIT_REPO_AVAILABLE
+IMAGE_TAG := $(shell git rev-parse HEAD)
+else
+IMAGE_TAG := "uknown-dev.$(DATE)"
+endif
+
 release-build:
+	cd $(APP_NAME) && docker build \
+		--tag $(PROJECT_NAME)-$(APP_NAME):latest \
+		--tag $(PROJECT_NAME)-$(APP_NAME):$(IMAGE_TAG) \
+		--target release \
+		.
 
 release-publish:
 
