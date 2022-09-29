@@ -214,6 +214,8 @@ tags = merge(module.common.default_tags, {
 
 ## Destroying Infrastructure
 
+To destroy everything you'll need to undo everythin in reverse.
+
 1. First destroy all your environments by running `terraform destroy` in each of your environment module folders
 
     ```bash
@@ -221,8 +223,8 @@ tags = merge(module.common.default_tags, {
     terraform destroy
     ```
 
-2. Then destroy the backends. You need to add `force_destroy = true` to the S3 buckets, and update the
-  lifecycle block to set `prevent_destroy = false`. Then run `terraform destroy` within the backend account folders.
+2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the
+  lifecycle block to set `prevent_destroy = false`. Then run `terraform apply`
 
     ```terraform
     resource "aws_s3_bucket" "tf_state" {
@@ -242,6 +244,21 @@ tags = merge(module.common.default_tags, {
       bucket = var.tf_logging_bucket_name
       force_destroy = true
     }
+    ```
+
+3. Then since we're going to be destroying the tfstate buckets, you'll want to unconfigure them, so you want to comment out or delete the s3 backend configuration and run `terraform init -force-copy` to copy the tfstate back to a local tfstate file.
+
+    ```terraform
+    # Comment out or delete the backend block
+    backend "s3" {
+      ...
+    }
+    ```
+
+4. Finally, you can run `terraform destroy` within the backend account folders.
+
+    ```bash
+    terraform destroy
     ```
 
 ## Troubleshooting
