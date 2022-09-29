@@ -24,6 +24,7 @@ tfenv install 1.2.1
 
 &nbsp;&nbsp;In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
 
+There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file, and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
 **Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
 ### Examples:

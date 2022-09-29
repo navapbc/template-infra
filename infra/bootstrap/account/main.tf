@@ -2,9 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  # Profile that will be used to select which account to deploy to. This profile name should be propagated to the
-  # environment(s) that will share this aws account.
-  profile = "default"
+  project_name = "<PROJECT_NAME>"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Set project tags that will be used to tag all resources. 
@@ -40,7 +38,6 @@ terraform {
 
 provider "aws" {
   region  = local.region
-  profile = local.profile
   default_tags {
     tags = local.tags
   }
