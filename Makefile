@@ -35,6 +35,8 @@ test:
 ## Release Management ##
 ########################
 
+IMAGE_NAME := $(PROJECT_NAME)-$(APP_NAME)
+
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
 
 # Generate a unique tag based solely on the git hash.
@@ -45,12 +47,14 @@ else
 IMAGE_TAG := "unknown-dev.$(DATE)"
 endif
 
+# Generate an informational tag so we can see where every image comes from.
+DATE := $(shell date -u '+%Y%m%d.%H%M%S')
+INFO_TAG := $(DATE).$(USER)
+
 release-build:
-	cd $(APP_NAME) && docker build \
-		--tag $(PROJECT_NAME)-$(APP_NAME):latest \
-		--tag $(PROJECT_NAME)-$(APP_NAME):$(IMAGE_TAG) \
-		--target release \
-		.
+	cd $(APP_NAME) && $(MAKE) IMAGE_NAME=$(IMAGE_NAME) release-build
+	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(IMAGE_TAG)
+	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(INFO_TAG)
 
 release-publish:
 
