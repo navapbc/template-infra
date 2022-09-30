@@ -43,7 +43,7 @@ GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
 ifdef GIT_REPO_AVAILABLE
 IMAGE_TAG := $(shell git rev-parse HEAD)
 else
-IMAGE_TAG := "uknown-dev.$(DATE)"
+IMAGE_TAG := "unknown-dev.$(DATE)"
 endif
 
 release-build:
