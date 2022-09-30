@@ -246,7 +246,7 @@ To destroy everything you'll need to undo everythin in reverse.
     }
     ```
 
-3. Then since we're going to be destroying the tfstate buckets, you'll want to unconfigure them, so you want to comment out or delete the s3 backend configuration and run `terraform init -force-copy` to copy the tfstate back to a local tfstate file.
+3. Then since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration and run `terraform init -force-copy` to copy the tfstate back to a local tfstate file.
 
     ```terraform
     # Comment out or delete the backend block
