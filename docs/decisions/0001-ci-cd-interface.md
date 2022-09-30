@@ -10,6 +10,11 @@ Technical Story: Define Makefile interface between infra and application [#105](
 
 In order to reuse CI and CD logic for different tech stacks, we need to establish a consistent interface by which different applications can hook into the common CI/CD infrastructure.
 
+## Decision Drivers
+
+* We want to define most of the release management logic in `template-infra` but allow application specific methods for building the release.
+* The build needs to be able to be run from the CD workflow defined in `template-infra`, but it also needs to be able to be run from the application as part of the CI workflow as one of the CI checks.
+
 ## Proposal
 
 ### CD interface
@@ -32,7 +37,16 @@ release-deploy:
   ... code that restarts ecs service with new image
 ```
 
-Each of the template applications (template-application-nextjs, template-application-flask) needs to have a `Dockerfile` in `app/` e.g. `template-application-flask/app/Dockerfile`. The Dockerfile needs to have a named stage called `release` e.g.
+Each of the template applications (template-application-nextjs, template-application-flask) needs to have a `Makefile` in `app/` e.g. `template-application-flask/app/Makefile` with a `release-build` target that builds the release image. The `release-build` target should take an `OPTS` argument to pass into the build command to allow the parent Makefile to pass in arguments like `--tag IMAGE_NAME:IMAGE_TAG` which can facilitate release management.
+
+```makefile
+# template-application-flask/app/Makefile
+
+release-build:
+  docker build $(OPTS) --target release .
+```
+
+By convention, the application's Dockerfile should have a named stage called `release` e.g.
 
 ```Dockerfile
 # template-application-flask/app/Dockerfile
@@ -87,6 +101,16 @@ jobs:
 ```
 
 For now we are assuming there's only one deployable application service per repo, but we could evolve this architecture to have the project rename `app` as part of the installation process to something specific like `api` or `web`, and rename `ci-app.yml` appropriately to `ci-api.yml` or `ci-web.yml`, which would allow for multiple application folders to co-exist.
+
+## Alternative options considered for CD interface
+
+1. Application template repos also have their own release-build command (could use Make, but doesn't have to) that is called as part of the application's ci-app.yml. The application's version of release-build doesn't have to tag the release, since the template-infra version will do that:
+
+    * Cons: build command in two places, and while 99% of the build logic is within Dockerfile and code, there's still a small chance that difference in build command line arguments could produce a different build in CI than what is used for release
+
+2. We can run release-build as part of template-infra's ci-infra.yml, so we still get CI test coverage of build process
+
+    * Cons: things like tests and linting in ci-app.yml can't use the docker image to run the tests, which potentially means CI and production are using slightly different environments
 
 ## Decision Outcome
 
