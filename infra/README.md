@@ -216,7 +216,7 @@ tags = merge(module.common.default_tags, {
 
 ## Destroying Infrastructure
 
-To destroy everything you'll need to undo everythin in reverse.
+To destroy everything you'll need to undo everything in reverse.
 
 1. First destroy all your environments by running `terraform destroy` in each of your environment module folders
 
