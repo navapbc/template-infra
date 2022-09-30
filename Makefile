@@ -1,5 +1,4 @@
 # PROJECT_NAME defaults to name of the current directory.
-# should not to be changed if you follow GitOps operating procedures.
 PROJECT_NAME := $(notdir $(PWD))
 
 # For now only support a single app in the folder `app/` within the repo
