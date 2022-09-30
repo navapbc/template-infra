@@ -1,7 +1,7 @@
 # CI/CD Interface
 
 * Status: proposed
-* Deciders: [list everyone involved in the decision] <!-- optional -->
+* Deciders: @lorenyu @kyeah <!-- optional -->
 * Date: [YYYY-MM-DD when the decision was last updated] <!-- optional -->
 
 Technical Story: Define Makefile interface between infra and application [#105](https://github.com/navapbc/template-infra/issues/105)
@@ -12,98 +12,81 @@ In order to reuse CI and CD logic for different tech stacks, we need to establis
 
 ## Proposal
 
+### CD interface
+
 Create a `Makefile` in `template-infra` repo that defines the following make targets:
 
 ```makefile
-############
-# Validation
-############
-
-check: check-static test
-check-static: lint type-check
-
-lint: # add application specific test commands here e.g. cd app && $(MAKE) lint
-
-type-check: # add application specific test commands here e.g. cd app && $(MAKE) type-check
-
-test: # add application specific test commands here e.g. cd app && $(MAKE) test
-
 ###################
 # Building and deploying
 ##################
 
 # Generate an informational tag so we can see where every image comes from.
-DATE := $(shell date -u '+%Y%m%d.%H%M%S')
-INFO_TAG := $(DATE).$(USER)
-
-GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
-
-# Generate a unique tag based solely on the git hash.
-# This will be the identifier used for deployment via terraform.
-ifdef GIT_REPO_AVAILABLE
-IMAGE_TAG := $(shell git rev-parse HEAD)
-else
-IMAGE_TAG := "uknown-dev.$(DATE)"
-endif
-
-build-image: # assumes there is a Dockerfile in `app` folder
+release-build: # assumes there is a Dockerfile in `app` folder
   ... code that builds image from app/Dockerfile
 
-publish-image:
+release-publish:
   ... code that publishes to ecr
 
-deploy:
+release-deploy:
   ... code that restarts ecs service with new image
 ```
 
-Then each of the template applications (template-application-nextjs, template-application-flask) can define a separate Makefile in `app/` e.g. `template-application-flask/app/Makefile`, and they can define specific implementations of the make targets e.g.
+Each of the template applications (template-application-nextjs, template-application-flask) needs to have a `Dockerfile` in `app/` e.g. `template-application-flask/app/Dockerfile`. The Dockerfile needs to have a named stage called `release` e.g.
 
-```makefile
-# template-application-flask/app/Makefile
-
-test:
-  poetry run test
-
-type-check:
-  poetry run type-check
-
-lint:
-  poetry run lint
+```Dockerfile
+# template-application-flask/app/Dockerfile
+...
+FROM scratch AS release
+...
 ```
 
-And for NextJS
+### CI interface
 
-```makefile
-# template-application-nextjs/app/Makefile
+Each application will have their own CI workflow that gets copied into the project's workflows folder as part of installation. `template-application-nextjs` and `template-application-flask` will have `.github/workflows/ci-app.yml`, and `template-infra` will have `.github/workflows/ci-infra.yml`.
 
-test:
-  npm test
-
-type-check:
-  npm run type-check
-
-lint:
-  npm run lint
-```
-
-Alternatively, we can ignore the separate Makefile in each of the application templates, and just hook in directly to poetry/npm in the top level Makefile.
-
-In either case, we could have instructions in each application template that instructs the user to add the appropriate hook into the top level Makefile to call into the application-specific targets. In theory this could also be done via a script:
+Installation would look something like:
 
 ```bash
-# temporarily fetch latest version of application template
-git clone --single-branch --branch main --depth 1 git@github.com:navapbc/template-application-flask.git
-
-# install application template
-./template-application-flask/scripts/install-template.sh
-
-# clean up temporary folder
-rm -fr template-application-flask
+cp template-infra/.github/workflows/* .github/workflows/
+cp template-application-nextjs/.github/workflows/* .github/workflows/
 ```
 
-Where install-template.sh could do something like add the appropriate commands to the top level Makefile.
+CI in `template-application-next` might be something like:
 
-Reference: [Recursively calling Make](https://www.gnu.org/software/make/manual/make.html#Recursion)
+```yml
+# template-application-nextjs/.github/workflows/ci-app.yml
+
+jobs:
+  lint:
+    steps:
+      - run: npm run lint
+  type-check:
+    steps:
+      - run: npm run type-check
+  test:
+    steps:
+      - run: npm test
+```
+
+CI in `template-application-flask` might be something like:
+
+```yml
+# template-application-nextjs/.github/workflows/ci-app.yml
+
+jobs:
+  lint:
+    steps:
+      - run: poetry run black
+  type-check:
+    steps:
+      - run: poetry run mypy
+  test:
+    steps:
+      - run: poetry run pytest
+```
+
+For now we are assuming there's only one deployable application service per repo, but we could evolve this architecture to have the project rename `app` as part of the installation process to something specific like `api` or `web`, and rename `ci-app.yml` appropriately to `ci-api.yml` or `ci-web.yml`, which would allow for multiple application folders to co-exist.
 
 ## Decision Outcome
 
