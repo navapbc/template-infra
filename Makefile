@@ -52,9 +52,8 @@ DATE := $(shell date -u '+%Y%m%d.%H%M%S')
 INFO_TAG := $(DATE).$(USER)
 
 release-build:
-	cd $(APP_NAME) && $(MAKE) IMAGE_NAME=$(IMAGE_NAME) release-build
-	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(IMAGE_TAG)
-	docker tag $(IMAGE_NAME):latest $(IMAGE_NAME):$(INFO_TAG)
+	cd $(APP_NAME) && $(MAKE) release-build \
+		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
 release-publish:
 
