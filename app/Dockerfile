@@ -5,7 +5,7 @@ ENV PORT=8000
 
 ADD index.html /www/index.html
 
-# EXPOSE $PORT
+EXPOSE $PORT
 
 HEALTHCHECK CMD nc -z localhost $PORT
 
