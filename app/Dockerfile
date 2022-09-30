@@ -1,18 +1,23 @@
-# Use the Active LTS version of Node.
-# See https://nodejs.org/en/about/releases/
-FROM node:16-alpine
-# Keep container packages up-to-date.
-# -U runs both apk update and apk upgrade.
-RUN apk -U upgrade
-# Copy just the package data to the working directory.
-COPY yarn.lock /srv
-COPY package.json /srv
-WORKDIR /srv
-# Install application dependencies.
-RUN yarn install --frozen-lockfile
-# Copy all the remaining application files (ignoring files in .dockerignore) to the working directory.
-COPY . /srv
-# Build the application.
-RUN yarn build
-# Run the application.
-CMD yarn start
+# Simple hello, world image mostly copied
+# from https://github.com/crccheck/docker-hello-world
+#
+# Testing
+# -------
+# After running `make release-build` (see [Releases](../docs/releases.md)),
+# you can verify the image works by running
+#
+#   docker run -p 80:8000 template-infra-app
+#
+# then visit localhost in a browser (or can use curl from a terminal)
+
+FROM busybox:latest AS release
+ENV PORT=8000
+
+ADD index.html /www/index.html
+
+EXPOSE $PORT
+
+HEALTHCHECK CMD nc -z localhost $PORT
+
+# Create a basic webserver and run it until the container is stopped
+CMD echo "httpd started" && trap "exit 0;" TERM INT; httpd -v -p $PORT -h /www -f & wait
