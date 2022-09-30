@@ -101,7 +101,9 @@ For more information about terraform commands follow the link below:
     - `terrafrom apply`
 4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and run `terraform init -force-copy` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
 
-    ``` tf
+    ```terraform
+      # infra/bootstrap/account/main.tf
+
       backend "s3" {
         bucket         = "<TF_STATE_BUCKET_NAME>"
         dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
@@ -227,6 +229,8 @@ To destroy everything you'll need to undo everythin in reverse.
   lifecycle block to set `prevent_destroy = false`. Then run `terraform apply`
 
     ```terraform
+    # infra/modules/bootstrap/main.tf
+
     resource "aws_s3_bucket" "tf_state" {
       bucket = var.state_bucket_name
 
@@ -249,6 +253,8 @@ To destroy everything you'll need to undo everythin in reverse.
 3. Then since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration and run `terraform init -force-copy` to copy the tfstate back to a local tfstate file.
 
     ```terraform
+    # infra/bootstrap/account/main.tf
+
     # Comment out or delete the backend block
     backend "s3" {
       ...
