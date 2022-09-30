@@ -2,9 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  # Profile that will be used to select which account to deploy to. This profile name should be propagated to the
-  # environment(s) that will share this aws account.
-  profile = "default"
+  project_name = "<PROJECT_NAME>"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Set project tags that will be used to tag all resources. 
@@ -13,6 +11,9 @@ locals {
 
   })
 
+  tf_state_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
+  tf_logs_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
+  tf_locks_table_name = "${local.project_name}-tf-state-locks"
 }
 
 terraform {
@@ -29,18 +30,17 @@ terraform {
   # Terraform does not allow interpolation here, values must be hardcoded.
  
   # backend "s3" {
-  #   bucket         = "ACCOUNT_ID-REGION-tf-state"
+  #   bucket         = "<TF_STATE_BUCKET_NAME>"
+  #   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
   #   key            = "terraform/backend/terraform.tfstate"
   #   region         = "REGION"
   #   encrypt        = "true"
-  #   dynamodb_table = "tf_state_locks"
   # }
 
 }
 
 provider "aws" {
   region  = local.region
-  profile = local.profile
   default_tags {
     tags = local.tags
   }
@@ -53,7 +53,7 @@ module "common" {
 
 module "bootstrap" {
   source                 = "../../modules/bootstrap"
-  state_bucket_name      = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-  tf_logging_bucket_name = "${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-  dynamodb_table         = "tf_state_locks"
+  state_bucket_name      = local.tf_state_bucket_name
+  tf_logging_bucket_name = local.tf_logs_bucket_name
+  dynamodb_table         = local.tf_locks_table_name
 }
