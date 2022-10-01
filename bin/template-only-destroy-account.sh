@@ -19,8 +19,9 @@ sed -i .bak 's/prevent_destroy = true/prevent_destroy = false/g' ../../modules/b
 terraform apply -auto-approve
 
 # Delete the backend S3 block to re-configure terraform to use local state
-# since we're about to delete the backend S3 bucket
-sed -i .bak '{N;N;N;N;N;N;N;N;N;N;N;N;s/backend "s3" {.*}//;}' main.tf
+# since we're about to delete the backend S3 bucket. The following sed command
+# deletes every line between 'backend "s3" {' and '}'
+sed -i .bak '{/backend "s3" {/,/}/d;}' main.tf
 
 # Now re-initialize terraform to unconfigure the S3 backend and
 # move the tfstate file to a local tfstate file
