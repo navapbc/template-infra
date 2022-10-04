@@ -11,13 +11,13 @@ output "region" {
 }
 
 output "tf_state_bucket_name" {
-  value = local.tf_state_bucket_name
+  value = module.bootstrap.tf_state_bucket_name
 }
 
-output "tf_logs_bucket_name" {
-  value = local.tf_logs_bucket_name
+output "tf_log_bucket_name" {
+  value = module.bootstrap.tf_log_bucket_name
 }
 
 output "tf_locks_table_name" {
-  value = local.tf_locks_table_name
+  value = module.bootstrap.tf_locks_table_name
 }

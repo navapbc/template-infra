@@ -2,13 +2,19 @@ data "aws_caller_identity" "current" {}
 
 data "aws_partition" "current" {}
 
+locals {  
+  tf_state_bucket_name = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
+  tf_logs_bucket_name  = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
+  tf_locks_table_name  = "${var.project_name}-tf-state-locks"
+}
+
 # Create the dynamodb table required for state locking.
 
 # Options for encryption are an AWS owned key, which is not unique to your account; AWS managed; or customer managed. The latter two options are more secure, and customer managed gives
 # control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users. 
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
 resource "aws_kms_key" "terraform_lock" {
-  description             = "KMS key for DynamoDB table ${var.dynamodb_table}"
+  description             = "KMS key for DynamoDB table ${local.tf_locks_table_name}"
   # The waiting period, specified in number of days. After the waiting period ends, AWS KMS deletes the KMS key.
   deletion_window_in_days = "10"
   # Generates new cryptographic material every 365 days, this is used to encrypt your data. The KMS key retains the old material for decryption purposes.
@@ -16,7 +22,7 @@ resource "aws_kms_key" "terraform_lock" {
 }
 
 resource "aws_dynamodb_table" "terraform_lock" {
-  name         = var.dynamodb_table
+  name         = local.tf_locks_table_name
   hash_key     = "LockID"
   billing_mode = "PAY_PER_REQUEST"
 
@@ -38,7 +44,7 @@ resource "aws_dynamodb_table" "terraform_lock" {
 
 # Create the S3 bucket used to store terraform state remotely.
 resource "aws_s3_bucket" "tf_state" {
-  bucket = var.state_bucket_name
+  bucket = local.tf_state_bucket_name
 
   # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
   lifecycle {
@@ -116,7 +122,7 @@ resource "aws_s3_bucket_policy" "tf_state" {
 
 # Create the S3 bucket to provide server access logging.
 resource "aws_s3_bucket" "tf_log" {
-  bucket = var.tf_logging_bucket_name
+  bucket = local.tf_logs_bucket_name
 }
 
 resource "aws_s3_bucket_versioning" "tf_log" {
