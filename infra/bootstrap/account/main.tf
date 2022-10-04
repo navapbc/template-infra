@@ -1,6 +1,3 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
 locals {
   project_name = "<PROJECT_NAME>"
   # Choose the region where this infrastructure should be deployed.
@@ -8,12 +5,7 @@ locals {
   # Set project tags that will be used to tag all resources. 
   tags = merge(module.common.default_tags, {
     description = "Backend resources required for terraform state management."
-
   })
-
-  tf_state_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-  tf_logs_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-  tf_locks_table_name = "${local.project_name}-tf-state-locks"
 }
 
 terraform {
@@ -51,9 +43,7 @@ module "common" {
   source = "../../modules/common"
 }
 
-module "bootstrap" {
-  source                 = "../../modules/bootstrap"
-  state_bucket_name      = local.tf_state_bucket_name
-  tf_logging_bucket_name = local.tf_logs_bucket_name
-  dynamodb_table         = local.tf_locks_table_name
+module "account" {
+  source = "../../modules/account"
+  project_name = local.project_name
 }
