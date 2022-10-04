@@ -1,21 +1,25 @@
 # Getting Started With Terraform
 
 ## Install Terraform CLI
+
 &nbsp;&nbsp;Terraform is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features.
 
 You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager](https://github.com/tfutils/tfenv).
 
 To install via [Homebrew](https://brew.sh/)
+
 ```bash
 brew install tfenv
 ```
 
 Then install the version of Terraform you need.
+
 ```bash
 tfenv install 1.2.1
 ```
 
 ## Install AWS CLI
+
 &nbsp;&nbsp;The AWS Command Line Interface (AWS CLI) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the aws commmand line tool by following the instructions found here:
 
 - [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
@@ -24,27 +28,32 @@ tfenv install 1.2.1
 
 &nbsp;&nbsp;In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
 
+There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file, and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
 **Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
-### Examples:
-```
+### Examples
+
+```bash
 $ aws configure
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [None]: us-east-2
 Default output format [None]: json
 ```
+
 **Using the above command will create a [default] profile.**  
-```
+
+```bash
 $ aws configure --profile dev
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [None]: us-east-2
 Default output format [None]: json
 ```
+
 **Using the above command will create a [dev] profile.**  
 
-### References:
+### References
 
 - [Configuration basics][1]
 - [Named profiles for the AWS CLI][2]
@@ -54,7 +63,7 @@ Default output format [None]: json
 [2]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html
 [3]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html
 
-## Basic Terraform Commands 
+## Basic Terraform Commands
 
 &nbsp;&nbsp;The `terraform init` command is used to initialize a working directory containing Terraform configuration files. This is the first command that should be run after writing a new Terraform configuration or cloning an existing one from version control.
 
@@ -66,13 +75,14 @@ Default output format [None]: json
 
 &nbsp;&nbsp;The `terraform apply` command executes the actions proposed in a Terraform plan deploying the infrastructure specified in the configuration. Use with caution. The configuration becomes idempotent once a subsequent apply returns 0 changes.
 
-&nbsp;&nbsp; The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration. Use `terraform plan -destroy` to preview what remote objects will be destroyed if you run `terraform destroy`.
+&nbsp;&nbsp;The `terraform destroy` command is a convenient way to destroy all remote objects managed by a particular Terraform configuration. Use `terraform plan -destroy` to preview what remote objects will be destroyed if you run `terraform destroy`.
 
 ⚠️ WARNING! ⚠️ This is a destructive command! As a best practice, it's recommended that you comment out resources in non-development environments rather than running this command. `terraform destroy` should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
 
 For more information about terraform commands follow the link below:
 
 - [Basic CLI Features](https://www.terraform.io/cli/commands)
+
 ## Terraform Dependency Lock File
 
 &nbsp;&nbsp;  The [dependency lock file](https://www.terraform.io/language/files/dependency-lock) tracks provider dependencies. It belongs to the configuration as a whole and is created when running `terraform ini`. The lock file is always named `.terraform.lock.hcl`, and this name is intended to signify that it is a lock file for various items that Terraform caches in the `.terraform` subdirectory of your working directory. You should include this file in your version control repository so that you can discuss potential changes to your external dependencies via code review, just as you would discuss potential changes to your configuration itself.  
@@ -80,7 +90,6 @@ For more information about terraform commands follow the link below:
 ## Terraform Backend Management
 
 &nbsp;&nbsp;The approach to backend management allows Terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastructure required to support the application. Because each backend, bootstrap or environment, store their own terraform.tfstate in these buckets, ensure that any backends that are shared use a unique key. When using a non-default workspace, the state path will be `/workspace_key_prefix/workspace_name/key`, `workspace_key_prefix` default is `env:`
-
 
 ### infra/bootstrap/account
 
@@ -90,17 +99,18 @@ For more information about terraform commands follow the link below:
     - `terraform init`
     - `terraform plan`
     - `terrafrom apply`
-4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and re-run `terraform init` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
+4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and run `terraform init -force-copy` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
 
-``` tf
-  backend "s3" {
-    bucket         = "ACCOUNT_ID-REGION-tf-state"
-    key            = "terraform/backend/terraform.tfstate"
-    region         = "REGION"
-    encrypt        = "true"
-    dynamodb_table = "tf_state_locks"
-  }
-```
+    ```terraform
+      # infra/bootstrap/account/main.tf
+
+      backend "s3" {
+        bucket         = "<TF_STATE_BUCKET_NAME>"
+        dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
+        ...
+      }
+    ```
+
 5. Once these steps are complete, this should not need to be touched again, application infrastructure is managed under its envs/environment as described below.
 
 <img src="../docs/imgs/initial_setup.svg" width="50%"/>
@@ -122,9 +132,10 @@ In a multi-cloud account, multi-environment setup, the relationship between the 
 <img src="../docs/imgs/multi_cloud.svg" width="50%"/>
 
 # Workspaces
+
 &nbsp;&nbsp; Terraform workspaces are created by default, the default workspace is named "default." Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop new features in parallel using a single environment without destroying each others infrastructure. Separate resources will be created for each engineer when using the prefix variable.
 
-### Terraform workspace commands:
+### Terraform workspace commands
 
 `terraform workspace show [Name]`   - This command will show the workspace you working in.
 
@@ -202,6 +213,59 @@ tags = merge(module.common.default_tags, {
 
 })
 ```
+
+## Destroying Infrastructure
+
+To destroy everything you'll need to undo everything in reverse.
+
+1. First destroy all your environments by running `terraform destroy` in each of your environment module folders
+
+    ```bash
+    # within each env folder in /infra/envs/ (dev, stage, etc)
+    terraform destroy
+    ```
+
+2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply`. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in depth explanation.
+
+    ```terraform
+    # infra/modules/bootstrap/main.tf
+
+    resource "aws_s3_bucket" "tf_state" {
+      bucket = var.state_bucket_name
+
+      force_destroy = true
+
+      # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
+      lifecycle {
+        prevent_destroy = false
+      }
+    }
+
+    ...
+
+    resource "aws_s3_bucket" "tf_log" {
+      bucket = var.tf_logging_bucket_name
+      force_destroy = true
+    }
+    ```
+
+3. Then since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration and run `terraform init -force-copy` to copy the tfstate back to a local tfstate file.
+
+    ```terraform
+    # infra/bootstrap/account/main.tf
+
+    # Comment out or delete the backend block
+    backend "s3" {
+      ...
+    }
+    ```
+
+4. Finally, you can run `terraform destroy` within the backend account folders.
+
+    ```bash
+    terraform destroy
+    ```
+
 ## Troubleshooting
 
 For use later.
