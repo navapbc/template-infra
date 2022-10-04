@@ -13,3 +13,8 @@ module "bootstrap" {
   tf_logging_bucket_name = local.tf_logs_bucket_name
   dynamodb_table         = local.tf_locks_table_name
 }
+
+module "github_oidc" {
+  source = "github.com/navapbc/terraform-aws-oidc-github"
+  github_repositories = [var.github_repository]
+}

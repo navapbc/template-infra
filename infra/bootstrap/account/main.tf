@@ -1,5 +1,6 @@
 locals {
   project_name = "<PROJECT_NAME>"
+  github_repository = "<GITHUB_REPOSITORY>"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Set project tags that will be used to tag all resources. 
@@ -46,4 +47,5 @@ module "common" {
 module "account" {
   source = "../../modules/account"
   project_name = local.project_name
+  github_repository = local.github_repository
 }
