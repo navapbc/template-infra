@@ -1,8 +1,8 @@
 # CI/CD Interface
 
 * Status: proposed
-* Deciders: @lorenyu @kyeah <!-- optional -->
-* Date: [YYYY-MM-DD when the decision was last updated] <!-- optional -->
+* Deciders: @lorenyu @kyeah
+* Date: 2022-10-04
 
 Technical Story: Define Makefile interface between infra and application [#105](https://github.com/navapbc/template-infra/issues/105)
 
@@ -111,19 +111,3 @@ For now we are assuming there's only one deployable application service per repo
 2. We can run release-build as part of template-infra's ci-infra.yml, so we still get CI test coverage of build process
 
     * Cons: things like tests and linting in ci-app.yml can't use the docker image to run the tests, which potentially means CI and production are using slightly different environments
-
-## Decision Outcome
-
-Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
-
-### Positive Consequences <!-- optional -->
-
-* [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
-* …
-
-### Negative Consequences <!-- optional -->
-
-* [e.g., compromising quality attribute, follow-up decisions required, …]
-* …
-
-## Pros and Cons of the Options
