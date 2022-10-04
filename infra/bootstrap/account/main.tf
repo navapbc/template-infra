@@ -56,5 +56,5 @@ module "bootstrap" {
 
 module "github_oidc" {
   source = "github.com/navapbc/terraform-aws-oidc-github"
-  github_repositories = [var.github_repository]
+  github_repositories = [local.github_repository]
 }
