@@ -1,7 +1,15 @@
 name: Check GitHub Actions AWS Authentication
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      aws-region:
+        description: AWS region
+        default: us-east-1
+        required: false
+      role-to-assume:
+        description: ARN of IAM role to assume
+        required: true
 
 permissions:
   contents: read
