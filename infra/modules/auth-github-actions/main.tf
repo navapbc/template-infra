@@ -1,0 +1,61 @@
+locals {
+  github_actions_role_name = "${var.project_name}-github-actions"
+}
+
+# Set up GitHub's OpenID Connect provider in AWS account
+resource "aws_iam_openid_connect_provider" "github" {
+  url             = "https://token.actions.githubusercontent.com"
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [local.oidc_thumbprint_github]
+}
+
+# Create IAM role for GitHub Actions
+resource "aws_iam_role" "github_actions" {
+  name               = local.github_actions_role_name
+  description        = "Service role required for Github Action to deploy application resources into the account."
+  assume_role_policy = data.aws_iam_policy_document.github_assume_role.json
+}
+
+# Attach access policies to GitHub Actions role
+resource "aws_iam_role_policy_attachment" "custom" {
+  count      = var.enabled ? length(var.iam_role_policy_arns) : 0
+
+  role       = aws_iam_role.github_actions.name
+  policy_arn = var.iam_role_policy_arns[count.index]
+}
+
+# Get GitHub's OIDC provider's thumbprint
+# See https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc_verify-thumbprint.html
+
+data "tls_certificate" "github" {
+  url = "https://token.actions.githubusercontent.com"
+}
+
+locals {
+  oidc_thumbprint_github = data.tls_certificate.github.certificates.0.sha1_fingerprint
+}
+
+# Set up assume role policy for GitHub Actions
+data "aws_iam_policy_document" "github_assume_role" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+
+    principals {
+      type        = "Federated"
+      identifiers = [aws_iam_openid_connect_provider.github.arn]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "token.actions.githubusercontent.com:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringLike"
+      variable = "token.actions.githubusercontent.com:sub"
+      values   = ["repo:${var.github_repository}:ref:${var.github_branch}"]
+    }
+  }
+}
