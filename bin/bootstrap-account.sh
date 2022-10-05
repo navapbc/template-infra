@@ -2,6 +2,7 @@
 set -euxo pipefail
 
 # PROJECT_NAME defaults to name of the current directory.
+# Run this at project root before changing directories
 PROJECT_NAME=$(basename $(PWD))
 
 # GITHUB_REPOSITORY defaults to the origin of the current git repo
