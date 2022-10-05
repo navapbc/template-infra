@@ -12,7 +12,7 @@ locals {
 
   # Set project tags that will be used to tag all resources. 
   tags = merge(module.common.default_tags, {
-    description = "Backend resources required for terraform state management."
+    description = "Backend resources required for terraform state management and GitHub authentication with AWS."
   })
 }
 
