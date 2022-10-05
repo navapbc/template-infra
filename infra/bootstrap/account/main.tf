@@ -8,8 +8,6 @@ locals {
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
 
-  github_actions_role_name = "${local.project_name}-github-actions"
-
   # Set project tags that will be used to tag all resources. 
   tags = merge(module.common.default_tags, {
     description = "Backend resources required for terraform state management and GitHub authentication with AWS."
@@ -56,8 +54,8 @@ module "bootstrap" {
   project_name = local.project_name
 }
 
-module "github_oidc" {
-  source = "github.com/navapbc/terraform-aws-oidc-github"
-  github_repositories = [local.github_repository]
-  iam_role_name = local.github_actions_role_name
+module "auth_github_actions" {
+  source = "../../modules/auth-github-actions"
+  project_name = local.project_name
+  github_repository = local.github_repository
 }

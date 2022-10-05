@@ -23,9 +23,9 @@ output "tf_locks_table_name" {
 }
 
 output "github_actions_role_name" {
-  value = local.github_actions_role_name
+  value = module.auth_github_actions.github_actions_role_name
 }
 
 output "github_actions_role_arn" {
-  value = module.github_oidc.iam_role_arn
+  value = module.auth_github_actions.github_actions_role_arn
 }
