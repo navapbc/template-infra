@@ -35,7 +35,9 @@ locals {
   oidc_thumbprint_github = data.tls_certificate.github.certificates.0.sha1_fingerprint
 }
 
-# Set up assume role policy for GitHub Actions
+# Set up assume role policy for GitHub Actions to allow GitHub actions
+# running from the specified repository and branches/git refs to assume
+# the role
 data "aws_iam_policy_document" "github_assume_role" {
   statement {
     effect  = "Allow"
