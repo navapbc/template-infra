@@ -2,7 +2,19 @@
 set -euxo pipefail
 
 # PROJECT_NAME defaults to name of the current directory.
+# Run this at project root before changing directories
 PROJECT_NAME=$(basename $(PWD))
+
+# GITHUB_REPOSITORY defaults to the origin of the current git repo
+# Get the "org/repo" string (e.g. "navapbc/template-infra") by first
+# getting the repo URL (e.g. "git@github.com:navapbc/template-infra.git"
+# or "https://github.com/navapbc/template-infra.git"), getting the
+# repo name (e.g. "template-infra"), then searching with grep for the
+# string that includes both the repo name and the org name before it.
+REPO_URL=$(git remote get-url origin)
+REPO_NAME=$(basename $REPO_URL .git)
+GITHUB_REPOSITORY=$(echo $REPO_URL | \
+    grep --extended-regexp --only-matching "[-_a-zA-Z0-9]+/$REPO_NAME")
 
 cd infra/bootstrap/account
 
@@ -13,6 +25,15 @@ terraform init
 # The project name is used to define unique names for the infrastructure
 # resources that are created in the subsequent steps.
 sed -i .bak "s/<PROJECT_NAME>/$PROJECT_NAME/" main.tf
+
+# Then replace the placeholder value for <GITHUB_REPOSITORY> in main.tf
+# The repository name is used to set up the GitHub OpenID Connect provider
+# in AWS which allows GitHub Actions to authenticate with our AWS account
+# when called from our repository only.
+# Use '|' as the regex delimeter for sed instead of '/' since
+# GITHUB_REPOSITORY will have a '/' in it
+sed -i .bak "s|<GITHUB_REPOSITORY>|$GITHUB_REPOSITORY|" main.tf
+
 
 # Create the infrastructure for the terraform backend such as the S3 bucket
 # for storing tfstate files and the DynamoDB table for tfstate locks.

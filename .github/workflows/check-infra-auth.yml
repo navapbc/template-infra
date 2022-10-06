@@ -1,0 +1,30 @@
+name: Check GitHub Actions AWS Authentication
+
+on:
+  workflow_dispatch:
+    inputs:
+      aws-region:
+        description: AWS region
+        default: us-east-1
+        required: false
+      role-to-assume:
+        description: ARN of IAM role to assume
+        required: true
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  caller-identity:
+    name: Check caller identity
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::368823044688:role/template-infra-github-actions
+    - run: aws sts get-caller-identity
