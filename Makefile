@@ -17,8 +17,10 @@ APP_NAME := app
 	db-migrate-create
 
 lint-infra:
-	echo "run terraform fmt  -recursive ./infra if this fails"
 	terraform fmt -recursive -check infra
+
+format-infra:
+	terraform fmt -recursive infra
 
 ########################
 ## Release Management ##
