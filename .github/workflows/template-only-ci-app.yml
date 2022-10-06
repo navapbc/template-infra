@@ -1,4 +1,4 @@
-name: CI Application Checks
+name: Template Only - CI Application Checks
 
 on:
   push:
