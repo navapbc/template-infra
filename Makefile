@@ -7,6 +7,8 @@ PROJECT_NAME := $(notdir $(PWD))
 APP_NAME := app
 
 .PHONY : \
+	infra-lint \
+	infra-format \
 	release-build \
 	release-publish \
 	release-deploy \
@@ -14,6 +16,12 @@ APP_NAME := app
 	db-migrate \
 	db-migrate-down \
 	db-migrate-create
+
+infra-lint:
+	terraform fmt -recursive -check infra
+
+infra-format:
+	terraform fmt -recursive infra
 
 ########################
 ## Release Management ##
