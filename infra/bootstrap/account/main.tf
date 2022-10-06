@@ -12,8 +12,8 @@ locals {
   })
 
   tf_state_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-  tf_logs_bucket_name = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-  tf_locks_table_name = "${local.project_name}-tf-state-locks"
+  tf_logs_bucket_name  = "${local.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
+  tf_locks_table_name  = "${local.project_name}-tf-state-locks"
 }
 
 terraform {
@@ -28,7 +28,7 @@ terraform {
   }
 
   # Terraform does not allow interpolation here, values must be hardcoded.
- 
+
   #uncomment# backend "s3" {
   #uncomment#   bucket         = "<TF_STATE_BUCKET_NAME>"
   #uncomment#   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
@@ -40,7 +40,7 @@ terraform {
 }
 
 provider "aws" {
-  region  = local.region
+  region = local.region
   default_tags {
     tags = local.tags
   }
