@@ -14,7 +14,7 @@ locals {
   tags = merge(module.common.default_tags, {
     environment = "prod"
     description = "Application resources created in production environment"
-    
+
   })
 
 }
@@ -31,7 +31,7 @@ terraform {
   }
 
   # Terraform does not allow interpolation here, values must be hardcoded.
- 
+
   # backend "s3" {
   #   bucket         = "ACCOUNT_ID-REGION-tf-state"
   #   key            = "terraform/prod/terraform.tfstate"

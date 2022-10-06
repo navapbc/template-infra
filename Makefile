@@ -7,10 +7,8 @@ PROJECT_NAME := $(notdir $(PWD))
 APP_NAME := app
 
 .PHONY : \
-	check \
-	lint \
-	type-check \
-	test \
+	infra-lint \
+	infra-format \
 	release-build \
 	release-publish \
 	release-deploy \
@@ -19,17 +17,11 @@ APP_NAME := app
 	db-migrate-down \
 	db-migrate-create
 
-######################
-## Automated Checks ##
-######################
+infra-lint:
+	terraform fmt -recursive -check infra
 
-check: lint type-check test
-
-lint:
-
-type-check:
-
-test:
+infra-format:
+	terraform fmt -recursive infra
 
 ########################
 ## Release Management ##
@@ -58,13 +50,3 @@ release-build:
 release-publish:
 
 release-deploy:
-
-#########################
-## Database Management ##
-#########################
-
-db-migrate:
-
-db-migrate-down:
-
-db-migrate-create:

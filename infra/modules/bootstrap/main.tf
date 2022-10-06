@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 data "aws_partition" "current" {}
 
-locals {  
+locals {
   tf_state_bucket_name = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
   tf_logs_bucket_name  = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
   tf_locks_table_name  = "${var.project_name}-tf-state-locks"
@@ -14,11 +14,11 @@ locals {
 # control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users. 
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
 resource "aws_kms_key" "terraform_lock" {
-  description             = "KMS key for DynamoDB table ${local.tf_locks_table_name}"
+  description = "KMS key for DynamoDB table ${var.dynamodb_table}"
   # The waiting period, specified in number of days. After the waiting period ends, AWS KMS deletes the KMS key.
   deletion_window_in_days = "10"
   # Generates new cryptographic material every 365 days, this is used to encrypt your data. The KMS key retains the old material for decryption purposes.
-  enable_key_rotation     = "true"
+  enable_key_rotation = "true"
 }
 
 resource "aws_dynamodb_table" "terraform_lock" {
