@@ -7,6 +7,7 @@ PROJECT_NAME := $(notdir $(PWD))
 APP_NAME := app
 
 .PHONY : \
+	lint-infra \
 	release-build \
 	release-publish \
 	release-deploy \
@@ -14,6 +15,10 @@ APP_NAME := app
 	db-migrate \
 	db-migrate-down \
 	db-migrate-create
+
+lint-infra:
+	echo "run terraform fmt  -recursive ./infra if this fails"
+	terraform fmt -recursive -check infra
 
 ########################
 ## Release Management ##
