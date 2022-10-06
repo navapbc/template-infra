@@ -6,9 +6,15 @@ set -euxo pipefail
 PROJECT_NAME=$(basename $(PWD))
 
 # GITHUB_REPOSITORY defaults to the origin of the current git repo
-# Get the URL string and remove the "git@github.com:" prefix, leaving
-# just the "org/repo" string (e.g. "navapbc/template-infra")
-GITHUB_REPOSITORY=$(git remote get-url origin | sed s/^git@github.com://)
+# Get the "org/repo" string (e.g. "navapbc/template-infra") by first
+# getting the repo URL (e.g. "git@github.com:navapbc/template-infra.git"
+# or "https://github.com/navapbc/template-infra.git"), getting the
+# repo name (e.g. "template-infra"), then searching with grep for the
+# string that includes both the repo name and the org name before it.
+REPO_URL=$(git remote get-url origin)
+REPO_NAME=$(basename $REPO_URL .git)
+GITHUB_REPOSITORY=$(echo $REPO_URL | \
+    grep --extended-regexp --only-matching "[-_a-zA-Z0-9]+/$REPO_NAME")
 
 cd infra/bootstrap/account
 
