@@ -46,9 +46,25 @@ resource "aws_dynamodb_table" "terraform_lock" {
 resource "aws_s3_bucket" "tf_state" {
   bucket = local.tf_state_bucket_name
 
+  # checkov:skip=CKV_AWS_144:Cross region replication not required by default
+
   # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
   lifecycle {
     prevent_destroy = true
+  }
+
+  logging {
+    target_bucket = aws_s3_bucket.tf_log.bucket
+    target_prefix = "log/${local.tf_state_bucket_name}"
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.mykey.arn
+        sse_algorithm     = "aws:kms"
+      }
+    }
   }
 }
 
@@ -123,6 +139,17 @@ resource "aws_s3_bucket_policy" "tf_state" {
 # Create the S3 bucket to provide server access logging.
 resource "aws_s3_bucket" "tf_log" {
   bucket = local.tf_logs_bucket_name
+
+  # checkov:skip=CKV_AWS_144:Cross region replication not required by default
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        kms_master_key_id = aws_kms_key.mykey.arn
+        sse_algorithm     = "aws:kms"
+      }
+    }
+  }
 }
 
 resource "aws_s3_bucket_versioning" "tf_log" {
@@ -260,5 +287,3 @@ resource "aws_s3_bucket_logging" "tf_log" {
   target_bucket = aws_s3_bucket.tf_log.id
   target_prefix = "log/"
 }
-
-

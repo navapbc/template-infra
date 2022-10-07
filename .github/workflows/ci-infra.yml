@@ -16,15 +16,26 @@ jobs:
   check-terraform-format:
     name: Check Terraform format
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.1
           terraform_wrapper: false
-
       - name: Run infra-lint
         run: |
           echo "If this fails, run 'make infra-format'"
           make infra-lint
+  check-compliance:
+    name: Check compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Run Checkov check
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: infra
+          framework: terraform 

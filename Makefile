@@ -17,6 +17,9 @@ APP_NAME := app
 	db-migrate-down \
 	db-migrate-create
 
+infra-check-compliance:
+	checkov --directory infra
+
 infra-lint:
 	terraform fmt -recursive -check infra
 
