@@ -1,6 +1,6 @@
 # CI/CD Interface
 
-* Status: proposed
+* Status: accepted
 * Deciders: @lorenyu @kyeah
 * Date: 2022-10-04
 
