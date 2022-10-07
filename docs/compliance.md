@@ -15,3 +15,7 @@ brew install checkov
 ```bash
 make infra-check-compliance
 ```
+
+## Pre-Commit
+
+If you use [pre-commit](https://www.checkov.io/4.Integrations/pre-commit.html), you can optionally add checkov to your own pre-commit hook by following the instructions [here](https://www.checkov.io/4.Integrations/pre-commit.html).
