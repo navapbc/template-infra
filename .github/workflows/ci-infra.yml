@@ -40,7 +40,7 @@ jobs:
           directory: infra
           framework: terraform 
   check-compliance-with-tfsec:
-    name: Check compliance with checkov
+    name: Check compliance with tfsec
     runs-on: ubuntu-latest
 
     permissions:
