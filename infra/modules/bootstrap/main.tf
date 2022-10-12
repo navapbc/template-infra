@@ -53,11 +53,6 @@ resource "aws_s3_bucket" "tf_state" {
     prevent_destroy = true
   }
 
-  logging {
-    target_bucket = aws_s3_bucket.tf_log.bucket
-    target_prefix = "log/${local.tf_state_bucket_name}"
-  }
-
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -281,9 +276,16 @@ resource "aws_s3_bucket_policy" "tf_log" {
   policy = data.aws_iam_policy_document.tf_log.json
 }
 
+resource "aws_s3_bucket_logging" "tf_state" {
+  bucket = aws_s3_bucket.tf_state.id
+
+  target_bucket = aws_s3_bucket.tf_log.id
+  target_prefix = "logs/${aws_s3_bucket.tf_state.bucket}/"
+}
+
 resource "aws_s3_bucket_logging" "tf_log" {
   bucket = aws_s3_bucket.tf_log.id
 
   target_bucket = aws_s3_bucket.tf_log.id
-  target_prefix = "log/"
+  target_prefix = "logs/${aws_s3_bucket.tf_log.bucket}/"
 }
