@@ -52,15 +52,6 @@ resource "aws_s3_bucket" "tf_state" {
   lifecycle {
     prevent_destroy = true
   }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.tfstate.arn
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
 }
 
 resource "aws_s3_bucket_versioning" "tf_state" {
@@ -74,7 +65,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      kms_master_key_id = aws_kms_key.tfstate.arn
+      sse_algorithm = "aws:kms"
     }
     bucket_key_enabled = true
   }
@@ -136,15 +128,6 @@ resource "aws_s3_bucket" "tf_log" {
   bucket = local.tf_logs_bucket_name
 
   # checkov:skip=CKV_AWS_144:Cross region replication not required by default
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.tfstate.arn
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
 }
 
 resource "aws_s3_bucket_versioning" "tf_log" {
@@ -158,7 +141,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_log" {
   bucket = aws_s3_bucket.tf_log.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      kms_master_key_id = aws_kms_key.tfstate.arn
+      sse_algorithm = "aws:kms"
     }
     bucket_key_enabled = true
   }
