@@ -7,6 +7,9 @@ PROJECT_NAME := $(notdir $(PWD))
 APP_NAME := app
 
 .PHONY : \
+	infra-check-compliance \
+	infra-check-compliance-checkov \
+	infra-check-compliance-tfsec \
 	infra-lint \
 	infra-format \
 	release-build \
