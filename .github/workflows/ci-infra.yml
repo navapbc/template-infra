@@ -1,4 +1,4 @@
-name: CI Infrastructure Checks
+name: CI Infra Checks
 
 on:
   push:
@@ -26,8 +26,8 @@ jobs:
         run: |
           echo "If this fails, run 'make infra-format'"
           make infra-lint
-  check-compliance:
-    name: Check compliance
+  check-compliance-with-checkov:
+    name: Check compliance with checkov
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -39,3 +39,17 @@ jobs:
         with:
           directory: infra
           framework: terraform 
+  check-compliance-with-tfsec:
+    name: Check compliance with tfsec
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tfsec check
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
+        with:
+          github_token: ${{ github.token }}

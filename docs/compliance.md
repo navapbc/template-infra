@@ -1,14 +1,22 @@
 # Compliance
 
-We use the [Checkov](https://www.checkov.io/) static analysis tool to check for compliance with infrastructure policies.
+We use [Checkov](https://www.checkov.io/) and [tfsec](https://aquasecurity.github.io/tfsec/) static analysis tools to check for compliance with infrastructure policies.
 
 ## Setup
 
-To run this tool locally, first install Checkov by running the following command.
+To run these tool locally, first install them by running the following commands.
 
-```bash
-brew install checkov
-```
+* Install checkov
+
+    ```bash
+    brew install checkov
+    ```
+
+* Install tfsec
+
+    ```bash
+    brew install tfsec
+    ```
 
 ## Check compliance
 
