@@ -11,7 +11,11 @@ PROJECT_NAME=$(basename $(PWD))
 APP_NAME=${1:-app}
 
 # The list of modules we need to set up
-MODULES="envs/dev envs/staging envs/prod"
+MODULES="\
+  envs/dev \
+  envs/staging \
+  envs/prod \
+  "
 
 # Get the name of the S3 bucket that was created to store the tf state
 # and the name of the DynamoDB table that was created for tf state locks.
