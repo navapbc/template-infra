@@ -4,6 +4,6 @@ variable "project_name" {
 }
 
 variable "app_name" {
-  type = string
+  type        = string
   description = "The name of the application. This will be used to prefix the name of the ECR repository."
 }
