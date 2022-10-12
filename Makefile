@@ -6,7 +6,12 @@ PROJECT_NAME := $(notdir $(PWD))
 # on will be determined by the APP_NAME Makefile argument
 APP_NAME := app
 
+# Get the list of reusable terraform modules by getting out all the modules
+# in infra/modules and then stripping out the "infra/modules/" prefix
+MODULES := $(notdir $(wildcard infra/modules/*))
+
 .PHONY : \
+	infra-validate-modules \
 	infra-check-compliance \
 	infra-check-compliance-checkov \
 	infra-check-compliance-tfsec \
@@ -19,6 +24,15 @@ APP_NAME := app
 	db-migrate \
 	db-migrate-down \
 	db-migrate-create
+
+# Validate all infra modules. The prerequisite for this rule is obtained by
+# prefixing each module with the string "infra-validate-module-"
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
+
+infra-validate-module-%:
+	@echo "Validate module: $*"
+	terraform -chdir=infra/modules/$* init -backend=false
+	terraform -chdir=infra/modules/$* validate
 
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
 

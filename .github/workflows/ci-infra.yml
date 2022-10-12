@@ -26,6 +26,17 @@ jobs:
         run: |
           echo "If this fails, run 'make infra-format'"
           make infra-lint
+  validate-terraform:
+    name: Validate Terraform modules
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.1
+          terraform_wrapper: false
+      - name: Run infra-validate-modules
+        run: make infra-validate-modules
   check-compliance-with-checkov:
     name: Check compliance with checkov
     runs-on: ubuntu-latest
