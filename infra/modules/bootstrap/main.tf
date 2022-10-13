@@ -13,7 +13,7 @@ locals {
 # Options for encryption are an AWS owned key, which is not unique to your account; AWS managed; or customer managed. The latter two options are more secure, and customer managed gives
 # control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users. 
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html
-resource "aws_kms_key" "terraform_lock" {
+resource "aws_kms_key" "tf_backend" {
   description = "KMS key for DynamoDB table ${local.tf_locks_table_name}"
   # The waiting period, specified in number of days. After the waiting period ends, AWS KMS deletes the KMS key.
   deletion_window_in_days = "10"
@@ -33,7 +33,7 @@ resource "aws_dynamodb_table" "terraform_lock" {
 
   server_side_encryption {
     enabled     = true
-    kms_key_arn = aws_kms_key.terraform_lock.arn
+    kms_key_arn = aws_kms_key.tf_backend.arn
   }
 
   point_in_time_recovery {
@@ -52,20 +52,6 @@ resource "aws_s3_bucket" "tf_state" {
   lifecycle {
     prevent_destroy = true
   }
-
-  logging {
-    target_bucket = aws_s3_bucket.tf_log.bucket
-    target_prefix = "log/${local.tf_state_bucket_name}"
-  }
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.mykey.arn
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
 }
 
 resource "aws_s3_bucket_versioning" "tf_state" {
@@ -79,7 +65,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      kms_master_key_id = aws_kms_key.tf_backend.arn
+      sse_algorithm     = "aws:kms"
     }
     bucket_key_enabled = true
   }
@@ -141,15 +128,6 @@ resource "aws_s3_bucket" "tf_log" {
   bucket = local.tf_logs_bucket_name
 
   # checkov:skip=CKV_AWS_144:Cross region replication not required by default
-
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        kms_master_key_id = aws_kms_key.mykey.arn
-        sse_algorithm     = "aws:kms"
-      }
-    }
-  }
 }
 
 resource "aws_s3_bucket_versioning" "tf_log" {
@@ -163,7 +141,8 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_log" {
   bucket = aws_s3_bucket.tf_log.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+      kms_master_key_id = aws_kms_key.tf_backend.arn
+      sse_algorithm     = "aws:kms"
     }
     bucket_key_enabled = true
   }
@@ -281,9 +260,16 @@ resource "aws_s3_bucket_policy" "tf_log" {
   policy = data.aws_iam_policy_document.tf_log.json
 }
 
+resource "aws_s3_bucket_logging" "tf_state" {
+  bucket = aws_s3_bucket.tf_state.id
+
+  target_bucket = aws_s3_bucket.tf_log.id
+  target_prefix = "logs/${aws_s3_bucket.tf_state.bucket}/"
+}
+
 resource "aws_s3_bucket_logging" "tf_log" {
   bucket = aws_s3_bucket.tf_log.id
 
   target_bucket = aws_s3_bucket.tf_log.id
-  target_prefix = "log/"
+  target_prefix = "logs/${aws_s3_bucket.tf_log.bucket}/"
 }
