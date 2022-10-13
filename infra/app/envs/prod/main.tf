@@ -44,7 +44,7 @@ provider "aws" {
 }
 
 module "common" {
-  source = "../../modules/common"
+  source = "../../../modules/common"
 }
 
 # Add application modules below
