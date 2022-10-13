@@ -1,24 +1,5 @@
 #
 #
-# To use the ECR repository, you'll need to grant the following permissions
-# data "aws_iam_policy_document" "ecr-perms" {
-#   statement {
-#     sid = "ECRPerms"
-#     actions = [
-#       "ecr:BatchCheckLayerAvailability",
-#       "ecr:BatchGetImage",
-#       "ecr:CompleteLayerUpload",
-#       "ecr:GetDownloadUrlForLayer",
-#       "ecr:GetLifecyclePolicy",
-#       "ecr:InitiateLayerUpload",
-#       "ecr:PutImage",
-#       "ecr:UploadLayerPart"
-#     ]
-#     effect = "Allow"
-#     resources = [ "value" ]
-#   }
-# }
-# 
 
 locals {
   image_repository_name = "${var.project_name}-${var.app_name}"
@@ -58,9 +39,14 @@ resource "aws_ecr_lifecycle_policy" "image_retention" {
 EOF
 }
 
-data "aws_iam_policy_document" "push_access" {
+data "aws_iam_policy_document" "ecr_access" {
   statement {
-    sid = "PushAccess"
+    sid    = "PushAccess"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [var.push_access_role_arn]
+    }
     actions = [
       "ecr:BatchCheckLayerAvailability",
       "ecr:CompleteLayerUpload",
@@ -68,33 +54,18 @@ data "aws_iam_policy_document" "push_access" {
       "ecr:PutImage",
       "ecr:UploadLayerPart"
     ]
-    effect    = "Allow"
-    resources = ["${aws_ecr_repository.app.arn}"]
   }
-}
 
-data "aws_iam_policy_document" "pull_access" {
   statement {
-    sid = "PullAccess"
+    sid    = "PullAccess"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [for account_id in var.app_account_ids : "arn:aws:iam::${account_id}:root"]
+    }
     actions = [
       "ecr:BatchGetImage",
       "ecr:GetDownloadUrlForLayer",
     ]
-    effect    = "Allow"
-    resources = ["${aws_ecr_repository.app.arn}"]
   }
-}
-
-resource "aws_iam_policy" "push_access" {
-  name        = "push-access"
-  path        = local.iam_path
-  description = "Allow push access to the ECR repository for ${var.app_name}"
-  policy      = data.aws_iam_policy_document.push_access.json
-}
-
-resource "aws_iam_policy" "pull_access" {
-  name        = "pull-access"
-  path        = local.iam_path
-  description = "Allow pull access to the ECR repository for ${var.app_name}"
-  policy      = data.aws_iam_policy_document.pull_access.json
 }
