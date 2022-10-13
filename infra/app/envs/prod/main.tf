@@ -6,21 +6,16 @@ locals {
   # Leave this as a static string if you are not using workspaces for this environment (recommended). Change it to terraform.workspace 
   # if you want to use workspaces in this environment.
   prefix = "prod"
-  # Profile is used to select which aws credentials to use, set this to match the account this environement runs in.
-  profile = "default"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Add environment specific tags
   tags = merge(module.common.default_tags, {
     environment = "prod"
     description = "Application resources created in production environment"
-
   })
-
 }
 
 terraform {
-
   required_version = ">=1.2.0"
 
   required_providers {
@@ -43,7 +38,6 @@ terraform {
 
 provider "aws" {
   region  = local.region
-  profile = local.profile
   default_tags {
     tags = local.tags
   }
