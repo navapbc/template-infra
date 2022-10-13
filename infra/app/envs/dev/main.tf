@@ -44,12 +44,11 @@ provider "aws" {
 }
 
 module "common" {
-  source = "../../modules/common"
+  source = "../../../modules/common"
 }
 
 # Add application modules below
 
-module "example" {
-  source = "../../modules/example"
-  prefix = local.prefix
+module "app" {
+  source = "../../../modules/app"
 }
