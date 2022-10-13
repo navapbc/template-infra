@@ -23,6 +23,7 @@ MODULES="\
 # modules
 TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/bootstrap/account output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/bootstrap/account output -raw tf_locks_table_name)
+REGION=$(terraform -chdir=infra/bootstrap/account output -raw region)
 
 echo "Setup configuration"
 echo "PROJECT_NAME=$PROJECT_NAME"
@@ -42,6 +43,7 @@ do
   sed -i .bak "s/<APP_NAME>/$APP_NAME/g" main.tf
   sed -i .bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" main.tf
   sed -i .bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" main.tf
+  sed -i .bak "s/<REGION>/$REGION/g" main.tf
 
   # Go back up to project root
   cd - > /dev/null
