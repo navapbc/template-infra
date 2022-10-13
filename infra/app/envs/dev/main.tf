@@ -32,14 +32,13 @@ terraform {
 
   # Terraform does not allow interpolation here, values must be hardcoded.
 
-  # backend "s3" {
-  #   bucket         = "ACCOUNT_ID-REGION-tf-state"
-  #   key            = "terraform/dev/terraform.tfstate"
-  #   region         = "REGION"
-  #   encrypt        = "true"
-  #   dynamodb_table = "tf_state_locks"
-  # }
-
+  backend "s3" {
+    bucket         = "<TF_STATE_BUCKET_NAME>"
+    key            = "<PROJECT_NAME>/infra/<APP_NAME>/environments/dev.tfstate"
+    dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
+    region         = "<REGION>"
+    encrypt        = "true"
+  }
 }
 
 provider "aws" {
