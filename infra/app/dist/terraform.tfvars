@@ -1,4 +1,2 @@
 github_actions_role_arn = "<GITHUB_ACTIONS_ROLE_ARN>"
-app_environment_account_ids = [
-  APP_ENVIRONMENT_ACCOUNT_IDS
-]
+app_environment_account_ids = []
