@@ -22,7 +22,7 @@ resource "aws_ecr_repository_policy" "image_access" {
 }
 
 resource "aws_ecr_lifecycle_policy" "image_retention" {
-  repository = local.image_repository_name
+  repository = aws_ecr_repository.app.name
 
   policy = <<EOF
 {
@@ -61,16 +61,20 @@ data "aws_iam_policy_document" "image_access" {
     ]
   }
 
-  statement {
-    sid    = "PullAccess"
-    effect = "Allow"
-    principals {
-      type        = "AWS"
-      identifiers = [for account_id in var.app_account_ids : "arn:aws:iam::${account_id}:root"]
+  dynamic "statement" {
+    # Only add this statement if we need to define cross-account access policies
+    for_each = length(var.app_account_ids) > 0 ? [true]: []
+    content {
+      sid    = "PullAccess"
+      effect = "Allow"
+      principals {
+        type        = "AWS"
+        identifiers = [for account_id in var.app_account_ids : "arn:aws:iam::${account_id}:root"]
+      }
+      actions = [
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+      ]
     }
-    actions = [
-      "ecr:BatchGetImage",
-      "ecr:GetDownloadUrlForLayer",
-    ]
   }
 }
