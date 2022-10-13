@@ -16,7 +16,8 @@ echo "GITHUB_ACTIONS_ROLE_ARN=$GITHUB_ACTIONS_ROLE_ARN"
 cd infra/$APP_NAME/dist/
 
 # Replace the placeholder values for terraform variables
-sed -i .bak "s/<GITHUB_ACTIONS_ROLE_ARN>/$GITHUB_ACTIONS_ROLE_ARN/g" terraform.tfvars
+# Use '|' as sed command separator since role ARNs can contain '/' characters
+sed -i .bak "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g" terraform.tfvars
 
 # Initialize terraform
 terraform init
