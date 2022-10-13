@@ -10,12 +10,13 @@ PROJECT_NAME=$(basename $(PWD))
 # infrastructure code. Defaults to "app".
 APP_NAME=${1:-app}
 
-# The list of modules we need to set up are all the environment modules
-# as well as the individual modules for infrastructure resources that
-# are shared across environments such as the dist module which contains
-# infra resources for storing built release candidate artifacts used
-# for deploying to all the environments
-MODULES="dist envs/dev envs/staging envs/prod"
+# The list of modules we need to set up
+MODULES="\
+  dist \
+  envs/dev \
+  envs/staging \
+  envs/prod \
+  "
 
 # Get the name of the S3 bucket that was created to store the tf state
 # and the name of the DynamoDB table that was created for tf state locks.
@@ -23,6 +24,7 @@ MODULES="dist envs/dev envs/staging envs/prod"
 # modules
 TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/bootstrap/account output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/bootstrap/account output -raw tf_locks_table_name)
+REGION=$(terraform -chdir=infra/bootstrap/account output -raw region)
 
 echo "Setup configuration"
 echo "PROJECT_NAME=$PROJECT_NAME"
@@ -42,6 +44,7 @@ do
   sed -i .bak "s/<APP_NAME>/$APP_NAME/g" main.tf
   sed -i .bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" main.tf
   sed -i .bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" main.tf
+  sed -i .bak "s/<REGION>/$REGION/g" main.tf
 
   # Go back up to project root
   cd - > /dev/null
