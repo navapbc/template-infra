@@ -16,6 +16,11 @@ resource "aws_ecr_repository" "app" {
   }
 }
 
+resource "aws_ecr_repository_policy" "image_access" {
+  repository = aws_ecr_repository.app.name
+  policy     = data.aws_iam_policy_document.image_access.json
+}
+
 resource "aws_ecr_lifecycle_policy" "image_retention" {
   repository = local.image_repository_name
 
@@ -39,7 +44,7 @@ resource "aws_ecr_lifecycle_policy" "image_retention" {
 EOF
 }
 
-data "aws_iam_policy_document" "ecr_access" {
+data "aws_iam_policy_document" "image_access" {
   statement {
     sid    = "PushAccess"
     effect = "Allow"
