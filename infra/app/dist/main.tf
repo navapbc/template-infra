@@ -1,6 +1,7 @@
 locals {
   project_name = "<PROJECT_NAME>"
   app_name     = "<APP_NAME>"
+  region       = "<REGION>"
 
   # Set project tags that will be used to tag all resources. 
   tags = merge(module.common.default_tags, {
