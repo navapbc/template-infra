@@ -3,7 +3,7 @@ locals {
   app_name     = "<APP_NAME>"
   region       = "<REGION>"
 
-  # Set project tags that will be used to tag all resources. 
+  # Set project tags that will be used to tag all resources.
   tags = merge(module.common.default_tags, {
     description = "Backend resources required for storing built release candidate artifacts to be used for deploying to environments."
   })
