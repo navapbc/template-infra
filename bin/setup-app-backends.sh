@@ -46,6 +46,9 @@ do
   sed -i .bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" main.tf
   sed -i .bak "s/<REGION>/$REGION/g" main.tf
 
+  # Initialize backend
+  terraform init
+
   # Go back up to project root
   cd - > /dev/null
 done
