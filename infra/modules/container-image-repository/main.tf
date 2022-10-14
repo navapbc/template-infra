@@ -84,5 +84,5 @@ data "aws_iam_policy_document" "image_access" {
 
 resource "aws_kms_key" "ecr_kms" {
   enable_key_rotation = true
-  description         = "KMS key for ECR repository ${image_repository_name}"
+  description         = "KMS key for ECR repository ${local.image_repository_name}"
 }
