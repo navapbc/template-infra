@@ -4,7 +4,7 @@
 
 This is a template repository for a to set up foundational infrastructure for your application in AWS. This template includes setup for:
 
-* **Developer workflows** - PR template, architecture decision record (ADR) template, Makefile.
+* **Team workflows** - PR template, architecture decision record (ADR) template, Makefile.
 * **Infrastructure as code** - infrastructure for terraform backends, including S3 buckets and DynamoDB table for locking terraform state
 * **CI for infra** - GitHub action that performs infra code checks, including linting, validation, and security compliance checks.
 * **Application infrastructure** - the infrastructure you need to set up a basic web app, such as a image container repository, load balancer, web service, and database.
@@ -37,8 +37,8 @@ Now you're ready to set up the various pieces of your infrastructure.
 
 ## Setup
 
-1. [Set up developer workflows](./docs/setup-developer-workflows.md)
-2. Set up continuous integration
+1. [Set up team workflows](./docs/setup-team-workflows.md)
+2. [Set up continuous integration](./docs/setup-ci.md)
 3. Set up Terraform's Infrastructure-as-Code management resources
 4. Set up application deployment process
 5. Set up application environments
