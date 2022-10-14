@@ -23,3 +23,7 @@ For more information about terraform commands follow the link below:
 ## Terraform Dependency Lock File
 
 The [dependency lock file](https://www.terraform.io/language/files/dependency-lock) tracks provider dependencies. It belongs to the configuration as a whole and is created when running `terraform ini`. The lock file is always named `.terraform.lock.hcl`, and this name is intended to signify that it is a lock file for various items that Terraform caches in the `.terraform` subdirectory of your working directory. You should include this file in your version control repository so that you can discuss potential changes to your external dependencies via code review, just as you would discuss potential changes to your configuration itself.  
+
+## Modules
+
+A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application.
