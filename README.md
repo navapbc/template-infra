@@ -37,8 +37,8 @@ Now you're ready to set up the various pieces of your infrastructure.
 
 ## Setup
 
-1. [Set up team workflows](./docs/setup-team-workflows.md)
-2. [Set up continuous integration](./docs/setup-ci.md)
+1. [Set up team workflows](./template-only-docs/setup-team-workflow.md)
+2. [Set up continuous integration](./template-only-docs/setup-ci.md)
 3. Set up Terraform's Infrastructure-as-Code management resources
 4. Set up application deployment process
 5. Set up application environments

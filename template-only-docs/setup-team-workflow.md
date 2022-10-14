@@ -1,4 +1,4 @@
-# Set up development workflows
+# Set up development workflow
 
 ## Pull request template
 
@@ -42,3 +42,7 @@ In Settings > Code security and analysis, enable "Dependabot alerts" and enable 
 ## Other Github features
 
 In Settings > General > Features, enable/disable features that you want for your project. For example, turn off the Wiki if your project won't be using it
+
+## Documenting GitHub settings
+
+After setting up your project, consider copying this document into your project's `docs/` folder to document your team's settings. It could serve as a reference for people on the team that do not have admin access to the GitHub repository as well as explain the rationale behind certain settings.
