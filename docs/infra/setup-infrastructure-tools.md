@@ -22,6 +22,8 @@ Then install the version of Terraform you need.
 tfenv install 1.2.1
 ```
 
+If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./introduction-to-terraform.md).
+
 ### Install AWS CLI
 
 The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS commmand line tool by following the instructions found here:
