@@ -2,10 +2,6 @@
 
 This doc explains how to set up infrastructure resources that Terraform needs to manage your project's infrastructure.
 
-## Prerequisites
-
-First, [set up infrastructure tools](../docs/infra/set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication.
-
 ## Single account setup
 
 Follow the instructions in [Set up AWS account](../docs/infra/set-up-aws-account.md) if you want to manage all your resources in a single AWS account (for simple projects or projects that don't need to go to production).
