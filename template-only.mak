@@ -1,8 +1,10 @@
 .PHONY = \
-	bootstrap-account
+	set-up-account \
+	setup-app-backends \
+	destroy-account
 
-bootstrap-account:
-	./bin/bootstrap-account.sh
+set-up-account:
+	./bin/set-up-account.sh account
 
 setup-app-backends:
 	./bin/setup-app-backends.sh
