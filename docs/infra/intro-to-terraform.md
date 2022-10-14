@@ -27,3 +27,7 @@ The [dependency lock file](https://www.terraform.io/language/files/dependency-lo
 ## Modules
 
 A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application.
+
+## Terraform Workspaces
+
+Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. Read more about it in [Terraform Workspaces](./intro-to-terraform-workspaces.md)
