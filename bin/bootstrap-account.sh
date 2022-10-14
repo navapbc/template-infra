@@ -16,7 +16,7 @@ REPO_NAME=$(basename $REPO_URL .git)
 GITHUB_REPOSITORY=$(echo $REPO_URL | \
     grep --extended-regexp --only-matching "[-_a-zA-Z0-9]+/$REPO_NAME")
 
-cd infra/bootstrap/account
+cd infra/accounts/account
 
 # Initialize terraform
 terraform init

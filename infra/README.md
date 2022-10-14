@@ -91,18 +91,18 @@ For more information about terraform commands follow the link below:
 
 &nbsp;&nbsp;The approach to backend management allows Terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastructure required to support the application. Because each backend, bootstrap or environment, store their own terraform.tfstate in these buckets, ensure that any backends that are shared use a unique key. When using a non-default workspace, the state path will be `/workspace_key_prefix/workspace_name/key`, `workspace_key_prefix` default is `env:`
 
-### infra/bootstrap/account
+### infra/accounts/account
 
-1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. `./bootstrap/account` becomes `./bootstrap/aws_account_id`.
+1. Rename account to the name of the aws account alias or account id where this infrastructure will be hosted. e.g. `./accounts/account` becomes `./accounts/aws_account_id`.
 2. Customize the variables in locals{} at the top of main.tf to match the desired deployment setup.
-3. Open a terminal and cd into the infra/bootstrap/account directory and run the following commands:
+3. Open a terminal and cd into the infra/accounts/account directory and run the following commands:
     - `terraform init`
     - `terraform plan`
     - `terrafrom apply`
 4. Uncomment out the backend "s3" {} block, fill in the appropriate information from outputs and run `terraform init -force-copy` from **Step 3.** to copy the terraform.tfstate from local to remote backend.
 
     ```terraform
-      # infra/bootstrap/account/main.tf
+      # infra/accounts/account/main.tf
 
       backend "s3" {
         bucket         = "<TF_STATE_BUCKET_NAME>"
@@ -117,9 +117,9 @@ For more information about terraform commands follow the link below:
 
 ### infra/envs/environment
 
-&nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: dev, staging, and prod. 
+&nbsp;&nbsp;Specify different environments for the application in this section. This template repo includes three example environments: dev, staging, and prod.
 
-To get started with an environment, copy the backend configuration information created in the "infra/bootstrap/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed. 
+To get started with an environment, copy the backend configuration information created in the "infra/accounts/account" instructions above into the terraform { backend "s3" {} } block to setup the remote backend for the environment. This is where all of the infrastructure for the application will be managed.
 
 ### Multi-Cloud Accounts vs Single Cloud Accounts
 
@@ -127,7 +127,7 @@ To get started with an environment, copy the backend configuration information c
 
 <img src="../docs/imgs/single_cloud.svg" width="50%"/>
 
-In a multi-cloud account, multi-environment setup, the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1 for easiest management. If there are less accounts than envirnonments ensure the backend "s3" { key = path/to/terraform.tfstate} is unique from all backends in the shared account. 
+In a multi-cloud account, multi-environment setup, the relationship between the bootstrap/account(s) and envs/environement(s) should be 1:1 for easiest management. If there are less accounts than envirnonments ensure the backend "s3" { key = path/to/terraform.tfstate} is unique from all backends in the shared account.
 
 <img src="../docs/imgs/multi_cloud.svg" width="50%"/>
 
@@ -152,6 +152,7 @@ In a multi-cloud account, multi-environment setup, the relationship between the 
 &nbsp;&nbsp; Workspaces are used to allow multiple developers to deploy their own stacks for development and testing. By default "prefix~ is set to `terraform.workspace` in the envs/dev environment, it is `staging` and `prod` in those respective environments.
 
 ### envs/dev/main.tf
+
 ``` tf
 locals {
   prefix = terraform.workspace
@@ -165,6 +166,7 @@ module "example" {
 ```
 
 ### modules/example/variables.tf - When creating a new module create the variable "prefix" in your variables.tf
+
 ``` tf
 
 variable "prefix" {
@@ -174,7 +176,9 @@ variable "prefix" {
 }
 
 ```
-### modules/example/main.tf - Use var.prefix to uniquely name resources for parallel development.
+
+### modules/example/main.tf - Use var.prefix to uniquely name resources for parallel development
+
 ``` tf
 
 # Create the S3 bucket with a unique prefix from terraform.workspace.
@@ -192,11 +196,12 @@ When in the workspace "shawn", the resulting bucket name created in the aws acco
 &nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application.
 
 ### infra/modules/bootstrap/
+
 Module required to create the infrastructure that hosts all terraform backends.
 
 ### infra/modules/common/
-The purpose of this module is to contain environment agnostic items. e.g. tags that are common to all environments are stored here. Example usage:
 
+The purpose of this module is to contain environment agnostic items. e.g. tags that are common to all environments are stored here. Example usage:
 
 ``` tf
 # Import the common module
@@ -252,7 +257,7 @@ To destroy everything you'll need to undo everything in reverse.
 3. Then since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration and run `terraform init -force-copy` to copy the tfstate back to a local tfstate file.
 
     ```terraform
-    # infra/bootstrap/account/main.tf
+    # infra/accounts/account/main.tf
 
     # Comment out or delete the backend block
     backend "s3" {

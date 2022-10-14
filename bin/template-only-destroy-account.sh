@@ -3,7 +3,7 @@
 # the platform bootstrap process.
 set -euxo pipefail
 
-cd infra/bootstrap/account
+cd infra/accounts/account
 
 # The following lines update S3 buckets in the terraform bootstrap module
 # add force_destroy = true to S3 resource blocks and update any lifecycle
