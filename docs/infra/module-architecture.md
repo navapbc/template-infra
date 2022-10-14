@@ -64,7 +64,7 @@ flowchart TB
     container-image-repository
     web-app
     database
-    static-build-repository
+    static-bundle-repository
     modules/static-app[static-app]
   end
 
@@ -73,7 +73,7 @@ flowchart TB
   app/build-repository --> container-image-repository
   app/env-template --> web-app
   app/env-template --> database
-  static-app/build-repository --> static-build-repository
+  static-app/build-repository --> static-bundle-repository
   static-app/env-template --> modules/static-app
 ```
 
