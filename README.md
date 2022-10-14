@@ -15,7 +15,7 @@ The template infra is intended to work with multiple application templates. See 
 
 ## Installation
 
-To get started using the template infrastructure on your project, install the template by cloning the template repository and copying the following folders/files to your repository.
+To get started using the template infrastructure on your project, install the template by cloning the template repository and copying the following folders/files to your repository and removing any files that are only relevant to the template itself:
 
 ```bash
 # fetch latest version of template-infra
@@ -27,7 +27,10 @@ cp -r \
   template-infra/docs \
   template-infra/infra \
   template-infra/docker-compose.yml \
+  Makefile \
   .
+
+rm .github/workflows/template-only-*
 
 # clean up template-infra folder
 rm -fr template-infra
@@ -37,9 +40,9 @@ Now you're ready to set up the various pieces of your infrastructure.
 
 ## Setup
 
-1. [Set up team workflows](./template-only-docs/setup-team-workflow.md)
-2. [Set up continuous integration](./template-only-docs/setup-ci.md)
-3. Set up Terraform's Infrastructure-as-Code management resources
+1. [Set up team workflow](./template-only-docs/setup-team-workflow.md)
+2. [Set up infrastructure as code (IaC) management resources](./)
+3. [Set up continuous integration](./template-only-docs/setup-ci.md)
 4. Set up application deployment process
 5. Set up application environments
 
