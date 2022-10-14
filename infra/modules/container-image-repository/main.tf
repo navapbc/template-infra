@@ -7,9 +7,15 @@ locals {
 
 resource "aws_ecr_repository" "app" {
   name = local.image_repository_name
+  image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
+  }
+
+  encryption_configuration {
+    encryption_type = "KMS"
+    kms_key = aws_kms_key.ecr_kms.key_id
   }
 }
 
@@ -74,4 +80,9 @@ data "aws_iam_policy_document" "image_access" {
       ]
     }
   }
+}
+
+resource "aws_kms_key" "ecr_kms" {
+  enable_key_rotation = true
+  description         = "KMS key for ECR repository ${image_repository_name}"
 }
