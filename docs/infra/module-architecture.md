@@ -59,7 +59,8 @@ flowchart TB
   end
 
   subgraph modules
-    modules/account[account]
+    terraform-backend
+    auth-github-actions
     container-image-repository
     web-app
     database
@@ -67,7 +68,8 @@ flowchart TB
     modules/static-app[static-app]
   end
 
-  account --> modules/account
+  account --> terraform-backend
+  account --> auth-github-actions
   app/build-repository --> container-image-repository
   app/env-template --> web-app
   app/env-template --> database
