@@ -11,9 +11,9 @@ cd infra/accounts/account
 # because S3 buckets by default are protected from destruction to avoid
 # loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d)
 # for a more in depth explanation.
-sed -i .bak 's/resource "aws_s3_bucket" "tf_state" {/&\n  force_destroy = true/' ../../modules/bootstrap/main.tf
-sed -i .bak 's/resource "aws_s3_bucket" "tf_log" {/&\n  force_destroy = true/' ../../modules/bootstrap/main.tf
-sed -i .bak 's/prevent_destroy = true/prevent_destroy = false/g' ../../modules/bootstrap/main.tf
+sed -i .bak 's/resource "aws_s3_bucket" "tf_state" {/&\n  force_destroy = true/' ../../modules/terraform-backend/main.tf
+sed -i .bak 's/resource "aws_s3_bucket" "tf_log" {/&\n  force_destroy = true/' ../../modules/terraform-backend/main.tf
+sed -i .bak 's/prevent_destroy = true/prevent_destroy = false/g' ../../modules/terraform-backend/main.tf
 
 # Apply the S3 bucket changes from the previous step
 terraform apply -auto-approve

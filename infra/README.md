@@ -195,7 +195,7 @@ When in the workspace "shawn", the resulting bucket name created in the aws acco
 
 &nbsp;&nbsp;A module is a container for multiple resources that are used together. Modules can be used to create lightweight abstractions, so that you can describe your infrastructure in terms of its architecture, rather than directly in terms of physical objects. The .tf files in your working directory when you run `terraform plan` or `terraform apply` together form the root module. In this root module you will call modules that you create from the module directory to build the infrastructure required to provide any functionality needed for the application.
 
-### infra/modules/bootstrap/
+### infra/modules/terraform-backend/
 
 Module required to create the infrastructure that hosts all terraform backends.
 
@@ -233,7 +233,7 @@ To destroy everything you'll need to undo everything in reverse.
 2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply`. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in depth explanation.
 
     ```terraform
-    # infra/modules/bootstrap/main.tf
+    # infra/modules/terraform-backend/main.tf
 
     resource "aws_s3_bucket" "tf_state" {
       bucket = var.state_bucket_name
