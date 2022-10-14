@@ -3,9 +3,6 @@
 
 locals {
   image_repository_name = "${var.project_name}-${var.app_name}"
-
-  # Friendly path to put IAM policies created by this module
-  iam_path = "/${var.project_name}/${var.app_name}/container-image-repository/"
 }
 
 resource "aws_ecr_repository" "app" {
