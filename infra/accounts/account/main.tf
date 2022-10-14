@@ -49,7 +49,7 @@ module "common" {
 }
 
 module "bootstrap" {
-  source       = "../../modules/terraform-backend"
+  source       = "../../modules/modules/terraform-backend-s3"
   project_name = local.project_name
 }
 
