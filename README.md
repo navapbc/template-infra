@@ -43,8 +43,8 @@ Now you're ready to set up the various pieces of your infrastructure.
 1. [Set up team workflow](./template-only-docs/setup-team-workflow.md)
 2. [Set up resources needed to manage infrastructure as code (IaC)](./template-only-docs/set-up-infrastructure-as-code.md)
 3. [Set up continuous integration](./template-only-docs/setup-ci.md)
-4. Set up application deployment process
-5. Set up application environments
+4. [Set up application](./docs/infra/set-up-app.md)
+5. [Set up application environments](./docs/infra/set-up-app-env.md)
 
 ### Clone the repo to your local development environment
 
