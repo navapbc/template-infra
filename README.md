@@ -45,7 +45,3 @@ Now you're ready to set up the various pieces of your infrastructure.
 3. [Set up continuous integration](./template-only-docs/set-up-ci.md)
 4. [Set up application](./docs/infra/set-up-app.md)
 5. [Set up application environments](./docs/infra/set-up-app-env.md)
-
-### Clone the repo to your local development environment
-
-Deploy the infrastructure from the infra folder by following the README.md instructions... I need to create the CD from [WMDP-96 Setup github actions for CD](https://wicmtdp.atlassian.net/browse/WMDP-96) then redo the steps above to verify if cd.yml will run, should also consider renaming ci.yml
