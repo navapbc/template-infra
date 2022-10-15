@@ -6,8 +6,8 @@
 set-up-account:
 	./bin/set-up-account.sh account
 
-setup-app-backends:
-	./bin/setup-app-backends.sh
+set-up-app-backends:
+	./bin/set-up-app-backends.sh
 
 destroy-account:
 	./bin/template-only-destroy-account.sh
