@@ -3,12 +3,17 @@ package test
 import (
 	"testing"
 
+	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/shell"
 )
 
 // An example of how to test the simple Terraform module in examples/terraform-basic-example using Terratest.
 func TestAccountSetup(t *testing.T) {
 	t.Parallel()
+
+	region := "us-east-1"
+	expectedTfStateBucket := "template-infra-368823044688-us-east-1-tf-state"
+	expectedTfStateKey := "template-infra/infra/account.tfstate"
 
 	defer shell.RunCommand(t, shell.Command{
 		Command:    "make",
@@ -18,7 +23,10 @@ func TestAccountSetup(t *testing.T) {
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "bootstrap-account"},
+		Args:       []string{"-f", "template-only.mak", "set-up-account"},
 		WorkingDir: "../",
 	})
+
+	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
+	aws.GetS3ObjectContents(t, region, expectedTfStateBucket, expectedTfStateKey)
 }
