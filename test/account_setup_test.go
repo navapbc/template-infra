@@ -5,6 +5,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/shell"
+	"github.com/stretchr/testify/assert"
 )
 
 // An example of how to test the simple Terraform module in examples/terraform-basic-example using Terratest.
@@ -28,12 +29,14 @@ func TestAccountSetup(t *testing.T) {
 	})
 
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
-	aws.GetS3ObjectContents(t, region, expectedTfStateBucket, expectedTfStateKey)
+	_, err := aws.GetS3ObjectContentsE(t, region, expectedTfStateBucket, expectedTfStateKey)
+	assert.NoError(t, err)
 
 	// Check that GitHub Actions can authenticate with AWS
-	shell.RunCommand(t, shell.Command{
+	err = shell.RunCommandE(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth"},
 		WorkingDir: "../",
 	})
+	assert.NoError(t, err)
 }
