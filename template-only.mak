@@ -5,6 +5,7 @@
 	test \
 	set-up-account \
 	setup-app-backends \
+	check-github-actions-auth \
 	destroy-account
 
 test:
