@@ -29,4 +29,11 @@ func TestAccountSetup(t *testing.T) {
 
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
 	aws.GetS3ObjectContents(t, region, expectedTfStateBucket, expectedTfStateKey)
+
+	// Check that GitHub Actions can authenticate with AWS
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth"},
+		WorkingDir: "../",
+	})
 }
