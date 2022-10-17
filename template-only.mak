@@ -16,5 +16,8 @@ set-up-account:
 set-up-app-backends:
 	./bin/set-up-app-backends.sh
 
+check-github-actions-auth:
+	./bin/check-github-actions-auth.sh arn:aws:iam::368823044688:role/template-infra-github-actions
+
 destroy-account:
 	./bin/template-only-destroy-account.sh
