@@ -30,7 +30,7 @@ func TestAccountSetup(t *testing.T) {
 
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
 	_, err := aws.GetS3ObjectContentsE(t, region, expectedTfStateBucket, expectedTfStateKey)
-	assert.NoError(t, err)
+	assert.NoError(t, err, "Failed to get tfstate object from tfstate bucket")
 
 	// Check that GitHub Actions can authenticate with AWS
 	err = shell.RunCommandE(t, shell.Command{
@@ -38,5 +38,5 @@ func TestAccountSetup(t *testing.T) {
 		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth"},
 		WorkingDir: "../",
 	})
-	assert.NoError(t, err)
+	assert.NoError(t, err, "GitHub actions failed to authenticate")
 }
