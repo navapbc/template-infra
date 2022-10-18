@@ -21,6 +21,9 @@ set-up-account:
 set-up-app-backends:
 	./bin/set-up-app-backends.sh
 
+set-up-app-build-repository:
+	./bin/set-up-app-build-repository.sh $(PROJECT_NAME)
+
 check-github-actions-auth:
 	./bin/check-github-actions-auth.sh arn:aws:iam::368823044688:role/$(PROJECT_NAME)-github-actions
 
