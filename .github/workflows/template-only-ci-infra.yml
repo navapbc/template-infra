@@ -14,6 +14,10 @@ on:
 # For now, only allow workflow run at a time, since this actually provisions infra.
 concurrency: platform-template-only-ci-infra
 
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   test:
     name: Infra Tests
