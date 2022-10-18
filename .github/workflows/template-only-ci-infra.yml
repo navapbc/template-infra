@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - lorenyu/templateonlyci
   pull_request:
     paths:
       - template-only-infra/**
