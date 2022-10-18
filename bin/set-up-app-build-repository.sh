@@ -2,14 +2,23 @@
 set -euo pipefail
 
 PROJECT_NAME=$1
-APP_NAME=${2:-app}
+ACCOUNT=${2:-account}
+APP_NAME=${3:-app}
+
+# Get the github actions role ARN from the account
+GITHUB_ACTIONS_ROLE_ARN=$(terraform -chdir=infra/accounts/$ACCOUNT output -raw github_actions_role_arn)
 
 echo "Setup configuration"
 echo "PROJECT_NAME=$PROJECT_NAME"
 echo "APP_NAME=$APP_NAME"
+echo "GITHUB_ACTIONS_ROLE_ARN=$GITHUB_ACTIONS_ROLE_ARN"
 
 echo "Setting up build-repository"
 
 cd infra/$APP_NAME/build-repository
+
+# Replace placeholder value of GitHub actions role with actual value
+sed -i .bak "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g" main.tf
+
 terraform init
 terraform apply -auto-approve
