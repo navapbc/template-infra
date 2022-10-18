@@ -18,6 +18,7 @@ echo "Setting up build-repository"
 cd infra/$APP_NAME/build-repository
 
 # Replace placeholder value of GitHub actions role with actual value
+# Use '|' as sed command separator since role ARN can have '/' characters
 sed -i .bak "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g" main.tf
 
 terraform init
