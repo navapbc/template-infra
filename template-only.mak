@@ -2,7 +2,7 @@
 # and is not intended to be used by projects that are using the template
 
 # PROJECT_NAME defaults to name of the current directory.
-PROJECT_NAME := $(notdir $(PWD))
+PROJECT_NAME ?= $(notdir $(PWD))
 
 .PHONY : \
 	test \
