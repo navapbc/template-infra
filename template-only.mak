@@ -13,7 +13,7 @@ PROJECT_NAME := $(notdir $(PWD))
 	tmp
 
 test:
-	cd test && go test -v -timeout 30m
+	cd test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 
 set-up-account:
 	./bin/set-up-account.sh $(PROJECT_NAME) account
