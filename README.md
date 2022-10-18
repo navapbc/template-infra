@@ -5,9 +5,9 @@
 This is a template repository to set up foundational infrastructure for your application in AWS. This template includes setup for:
 
 * **Team workflows** - templates for pull requests (PRs), architecture decision records (ADRs), and Makefiles.
-* **Infrastructure as code** - infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
-* **CI for infra** - GitHub action that performs infra code checks, including linting, validation, and security compliance checks.
+* **Account level foundational infrastructure** - infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
 * **Application infrastructure** - the infrastructure you need to set up a basic web app, such as a image container repository, load balancer, web service, and database.
+* **CI for infra** - GitHub action that performs infra code checks, including linting, validation, and security compliance checks.
 * **CD / Deployments** - infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
 * **Documentation** - technical documentation for the decisions that went into all the defaults that come with the template.
 
