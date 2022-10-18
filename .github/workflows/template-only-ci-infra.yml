@@ -44,3 +44,6 @@ jobs:
 
       - name: Run Terratest
         run: make -f template-only.mak test
+        env:
+          # GitHub token needed for GitHub CLI which is used during tests to check GitHub Actions auth
+          GH_TOKEN: ${{ secrets.PLATFORM_TESTER_GITHUB_TOKEN }}
