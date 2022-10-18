@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a template repository for a to set up foundational infrastructure for your application in AWS. This template includes setup for:
+This is a template repository to set up foundational infrastructure for your application in AWS. This template includes setup for:
 
 * **Team workflows** - PR template, architecture decision record (ADR) template, Makefile.
 * **Infrastructure as code** - infrastructure for terraform backends, including S3 buckets and DynamoDB table for locking terraform state
