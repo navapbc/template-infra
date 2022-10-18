@@ -7,8 +7,8 @@ GITHUB_ACTIONS_ROLE=$1
 # See comment below about "Getting workflow run id"
 PREV_RUN_CREATE_TIME=$(gh run list --workflow check-infra-auth.yml --limit 1 --json createdAt --jq ".[].createdAt")
 
-echo "Run check-infra-auth workflow with role-to-assume=$GITHUB_ACTIONS_ROLE"
-gh workflow run check-infra-auth.yml --field role-to-assume=$GITHUB_ACTIONS_ROLE
+echo "Run check-infra-auth workflow with role_to_assume=$GITHUB_ACTIONS_ROLE"
+gh workflow run check-infra-auth.yml --field role_to_assume=$GITHUB_ACTIONS_ROLE
 
 #########################
 ## Get workflow run id ##
