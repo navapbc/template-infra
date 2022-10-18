@@ -8,7 +8,7 @@ This is a template repository to set up foundational infrastructure for your app
 * **Infrastructure as code** - infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
 * **CI for infra** - GitHub action that performs infra code checks, including linting, validation, and security compliance checks.
 * **Application infrastructure** - the infrastructure you need to set up a basic web app, such as a image container repository, load balancer, web service, and database.
-* **CD / Deployments** - infrastructure to set up AWS account access for GitHub actions, Makefile commands for building and publishing release candidates, and a GitHub action for deploying on merges to main.
+* **CD / Deployments** - infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
 * **Documentation** - technical documentation for the decisions that went into all the defaults that come with the template.
 
 The template infra is intended to work with multiple application templates. See [template-application-flask](https://github.com/navapbc/template-application-flask) and [template-application-nextjs](https://github.com/navapbc/template-application-nextjs).
