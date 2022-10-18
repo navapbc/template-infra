@@ -1,9 +1,8 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
-# PROJECT_NAME defaults to name of the current directory.
-# Run this at project root before changing directories
-PROJECT_NAME=$(basename $(PWD))
+PROJECT_NAME=$1
+ACCOUNT=$2
 
 # GITHUB_REPOSITORY defaults to the origin of the current git repo
 # Get the "org/repo" string (e.g. "navapbc/template-infra") by first
@@ -16,10 +15,25 @@ REPO_NAME=$(basename $REPO_URL .git)
 GITHUB_REPOSITORY=$(echo $REPO_URL | \
     grep --extended-regexp --only-matching "[-_a-zA-Z0-9]+/$REPO_NAME")
 
-cd infra/bootstrap/account
+echo "Account configuration"
+echo "====================="
+echo "PROJECT_NAME=$PROJECT_NAME"
+echo "ACCOUNT=$ACCOUNT"
+echo "REPO_URL=$REPO_URL"
+echo "REPO_NAME=$REPO_NAME"
+echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+echo
 
-# Initialize terraform
+cd infra/accounts/$ACCOUNT
+
+echo "--------------------"
+echo "Initialize Terraform"
+echo "--------------------"
 terraform init
+
+echo "-------------------------------------"
+echo "Replace placeholder values in main.tf"
+echo "-------------------------------------"
 
 # First replace the placeholder value for <PROJECT_NAME> in main.tf
 # The project name is used to define unique names for the infrastructure
@@ -34,10 +48,17 @@ sed -i .bak "s/<PROJECT_NAME>/$PROJECT_NAME/" main.tf
 # GITHUB_REPOSITORY will have a '/' in it
 sed -i .bak "s|<GITHUB_REPOSITORY>|$GITHUB_REPOSITORY|" main.tf
 
+echo "-------------------------------"
+echo "Deploy infrastructure resources"
+echo "-------------------------------"
 
 # Create the infrastructure for the terraform backend such as the S3 bucket
 # for storing tfstate files and the DynamoDB table for tfstate locks.
 terraform apply -auto-approve
+
+echo "-------------------------------------------"
+echo "Reconfigure Terraform backend to S3 backend"
+echo "-------------------------------------------"
 
 # Get the name of the S3 bucket that was created to store the tf state
 # and the name of the DynamoDB table that was created for tf state locks.
@@ -45,12 +66,17 @@ terraform apply -auto-approve
 TF_STATE_BUCKET_NAME=$(terraform output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
 
+
 # Configure the S3 backend in main.tf by replacing the placeholder
 # values with the actual values from the previous step, then
 # uncomment the S3 backend block
 sed -i .bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/" main.tf
 sed -i .bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/" main.tf
 sed -i .bak 's/#uncomment# //g' main.tf
+
+echo "------------------------------"
+echo "Copy tfstate to new S3 backend"
+echo "------------------------------"
 
 # Re-initialize terraform with the new backend and copy the tfstate
 # to the new backend in S3
