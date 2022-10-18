@@ -1,0 +1,27 @@
+name: Template CI Infra Checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    paths:
+      - template-only-infra/**
+      - infra/modules/**
+      - .github/workflows/template-only-ci-infra.yml
+
+# For now, only allow workflow run at a time, since this actually provisions infra.
+concurrency: platform-template-only-ci-infra
+
+jobs:
+  test:
+    name: Infra Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: ">=1.19.0"
+      - name: Run Terratest
+        run: make -f template-only.mak test
