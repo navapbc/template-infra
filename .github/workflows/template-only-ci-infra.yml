@@ -13,10 +13,6 @@ on:
 # For now, only allow workflow run at a time, since this actually provisions infra.
 concurrency: platform-template-only-ci-infra
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   test:
     name: Infra Tests
@@ -35,6 +31,8 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-region: us-east-1
-          role-to-assume: arn:aws:iam::368823044688:role/platform-template-infra-github-actions
+          aws-access-key-id: ${{ secrets.PLATFORM_TESTER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.PLATFORM_TESTER_AWS_SECRET_ACCESS_KEY }}
+
       - name: Run Terratest
         run: make -f template-only.mak test
