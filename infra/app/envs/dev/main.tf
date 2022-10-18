@@ -48,7 +48,3 @@ module "common" {
 }
 
 # Add application modules below
-
-module "app" {
-  source = "../../../modules/app"
-}
