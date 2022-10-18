@@ -45,12 +45,3 @@ module "bootstrap" {
   source       = "../../../infra/modules/terraform-backend-s3"
   project_name = local.project_name
 }
-
-module "auth_github_actions" {
-  source            = "../../../infra/modules/auth-github-actions"
-  project_name      = local.project_name
-  github_repository = local.github_repository
-
-  # TODO: Refine permissions needed for platform-template-infra GitHub actions role
-  iam_role_policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
-}
