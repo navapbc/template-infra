@@ -20,15 +20,13 @@ terraform {
     }
   }
 
-  # Terraform does not allow interpolation here, values must be hardcoded.
-
-  #uncomment# backend "s3" {
-  #uncomment#   bucket         = "<TF_STATE_BUCKET_NAME>"
-  #uncomment#   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-  #uncomment#   key            = "<PROJECT_NAME>/infra/account.tfstate"
-  #uncomment#   region         = "us-east-1"
-  #uncomment#   encrypt        = "true"
-  #uncomment# }
+  backend "s3" {
+    bucket         = "platform-template-infra-368823044688-us-east-1-tf-state"
+    dynamodb_table = "platform-template-infra-tf-state-locks"
+    key            = "platform-template-infra/infra/account.tfstate"
+    region         = "us-east-1"
+    encrypt        = "true"
+  }
 }
 
 provider "aws" {
