@@ -1,14 +1,18 @@
 # PROJECT_NAME defaults to name of the current directory.
-PROJECT_NAME := $(notdir $(PWD))
+PROJECT_NAME ?= $(notdir $(PWD))
 
 # For now only support a single app in the folder `app/` within the repo
 # In the future, support multiple apps, and which app is being operated
 # on will be determined by the APP_NAME Makefile argument
-APP_NAME := app
+APP_NAME ?= app
+
+# The name of the account folder under accounts
+ACCOUNT ?= account
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
+
 
 .PHONY : \
 	infra-validate-modules \
@@ -72,6 +76,20 @@ release-build:
 	cd $(APP_NAME) && $(MAKE) release-build \
 		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
-release-publish:
+release-publish: get-image-registry ecr-login
+	$(eval IMAGE_REPOSITORY := $(terraform -chdir=infra/$(APP_NAME)/build-repository output -raw image_repository_name))
+	docker tag $(APP_NAME):$(IMAGE_TAG) $(IMAGE_REGISTRY)/$(IMAGE_REPOSITORY):$(IMAGE_TAG)
+	docker push $(IMAGE_REGISTRY)/$(IMAGE_REPOSITORY):$(IMAGE_TAG)
 
 release-deploy:
+
+ecr-login: get-image-registry
+	@echo "Authenticating Docker with ECR"
+	aws ecr get-login-password --region 'us-east-1' | \
+	docker login --username AWS --password-stdin $(IMAGE_REGISTRY)
+
+# Define the IMAGE_REGISTRY variable dynamically since it is different for each account
+get-container-image-registry:
+	$(eval AWS_ACCOUNT_ID := $(terraform -chdir=infra/accounts/$(ACCOUNT) output -raw account_id))
+	$(eval REGION := $(terraform -chdir=infra/accounts/$(ACCOUNT) output -raw region))
+	$(eval IMAGE_REGISTRY ?= $(AWS_ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com)
