@@ -3,7 +3,7 @@
 
 locals {
   suffix                = terraform.workspace == "default" ? "main" : terraform.workspace
-  image_repository_name = "${var.project_name}-${var.app_name}-${suffix}"
+  image_repository_name = "${var.project_name}-${var.app_name}-${local.suffix}"
 }
 
 resource "aws_ecr_repository" "app" {
