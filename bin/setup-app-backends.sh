@@ -12,7 +12,7 @@ APP_NAME=${1:-app}
 
 # The list of modules we need to set up
 MODULES="\
-  dist \
+  build-repository \
   envs/dev \
   envs/staging \
   envs/prod \
