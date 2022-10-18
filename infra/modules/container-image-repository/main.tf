@@ -2,11 +2,12 @@
 #
 
 locals {
-  image_repository_name = "${var.project_name}-${var.app_name}"
+  suffix                = terraform.workspace == "default" ? "main" : terraform.workspace
+  image_repository_name = "${var.project_name}-${var.app_name}-${suffix}"
 }
 
 resource "aws_ecr_repository" "app" {
-  name = local.image_repository_name
+  name                 = local.image_repository_name
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -15,7 +16,7 @@ resource "aws_ecr_repository" "app" {
 
   encryption_configuration {
     encryption_type = "KMS"
-    kms_key = aws_kms_key.ecr_kms.key_id
+    kms_key         = aws_kms_key.ecr_kms.key_id
   }
 }
 
@@ -66,7 +67,7 @@ data "aws_iam_policy_document" "image_access" {
 
   dynamic "statement" {
     # Only add this statement if we need to define cross-account access policies
-    for_each = length(var.app_account_ids) > 0 ? [true]: []
+    for_each = length(var.app_account_ids) > 0 ? [true] : []
     content {
       sid    = "PullAccess"
       effect = "Allow"
