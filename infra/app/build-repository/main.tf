@@ -6,7 +6,7 @@ locals {
   # Set project tags that will be used to tag all resources.
   tags = {
     project             = local.project_name
-    application         = local.app
+    application         = local.app_name
     application_role    = "build-repository"
     terraform           = true
     terraform_workspace = terraform.workspace
