@@ -19,7 +19,7 @@ set-up-account:
 	./bin/set-up-account.sh $(PROJECT_NAME) account
 
 set-up-app-backends:
-	./bin/set-up-app-backends.sh
+	./bin/set-up-app-backends.sh $(PROJECT_NAME)
 
 set-up-app-build-repository:
 	./bin/set-up-app-build-repository.sh $(PROJECT_NAME)
