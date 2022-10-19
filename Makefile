@@ -53,6 +53,8 @@ infra-format:
 ## Release Management ##
 ########################
 
+# Include project name in image name so that image name
+# does not conflict with other images during local development
 IMAGE_NAME := $(PROJECT_NAME)-$(APP_NAME)
 
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
