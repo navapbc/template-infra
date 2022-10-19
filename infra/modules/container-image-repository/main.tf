@@ -1,9 +1,9 @@
-#
-#
+data "aws_region" "current" {}
 
 locals {
   suffix                = terraform.workspace == "default" ? "main" : terraform.workspace
   image_repository_name = "${var.project_name}-${var.app_name}-${local.suffix}"
+  image_registry        = "${aws_ecr_repository.app.registry_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
 }
 
 resource "aws_ecr_repository" "app" {
