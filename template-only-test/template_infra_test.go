@@ -6,6 +6,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	"github.com/gruntwork-io/terratest/modules/shell"
+	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,6 +43,7 @@ func SubtestSetUpAppBackends(t *testing.T) {
 
 func SubtestBuildRepository(t *testing.T) {
 	projectName := ProjectName()
+	defer TeardownBuildRepository(t)
 	SetUpBuildRepository(t, projectName)
 	ValidateBuildRepository(t, projectName)
 }
@@ -114,5 +116,11 @@ func TeardownAccount(t *testing.T) {
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
 		WorkingDir: "../",
+	})
+}
+
+func TeardownBuildRepository(t *testing.T) {
+	terraform.Destroy(t, &terraform.Options{
+		TerraformDir: "../infra/app/build-repository/",
 	})
 }
