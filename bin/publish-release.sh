@@ -22,5 +22,5 @@ aws ecr get-login-password --region $REGION \
   | docker login --username AWS --password-stdin $IMAGE_REGISTRY
 echo
 echo "Publishing image"
-docker tag $APP_NAME:$IMAGE_TAG $IMAGE_REGISTRY/$IMAGE_REPOSITORY:$IMAGE_TAG
-docker push $IMAGE_REGISTRY/$IMAGE_REPOSITORY:$IMAGE_TAG
+docker tag $APP_NAME:$IMAGE_TAG $IMAGE_REPOSITORY_URL:$IMAGE_TAG
+docker push $IMAGE_REPOSITORY_URL:$IMAGE_TAG
