@@ -13,11 +13,10 @@ func TestAccountSetup(t *testing.T) {
 	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
 	projectName := "platform-test-account"
 	accountId := "368823044688"
-
 	region := "us-east-1"
 
 	defer TeardownAccount(t)
-	SetUpAccount(t)
+	SetUpAccount(t, projectName)
 	ValidateTerraformBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
 }
@@ -41,7 +40,7 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 }
 
-func SetUpAccount(t *testing.T) {
+func SetUpAccount(t *testing.T, projectName string) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "set-up-account", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
