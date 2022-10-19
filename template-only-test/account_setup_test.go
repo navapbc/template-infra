@@ -15,6 +15,8 @@ func TestAccountSetup(t *testing.T) {
 
 	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
 	projectName := "platform-test-account"
+	accountId := 368823044688
+	githubActionsRole := fmt.Sprintf("arn:aws:iam::%s:role/%s-github-actions", accountId, projectName)
 
 	region := "us-east-1"
 	expectedTfStateBucket := "platform-template-infra-368823044688-us-east-1-tf-state"
@@ -39,7 +41,7 @@ func TestAccountSetup(t *testing.T) {
 	// Check that GitHub Actions can authenticate with AWS
 	err = shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth"},
+		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth", fmt.Sprintf("GITHUB_ACTIONS_ROLE=%s", githubActionsRole)},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
