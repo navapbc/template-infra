@@ -25,4 +25,4 @@ check-github-actions-auth:
 	./bin/check-github-actions-auth.sh arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-actions
 
 destroy-account:
-	./template-only-bin/template-only-destroy-account.sh
+	./template-only-bin/destroy-account.sh
