@@ -29,8 +29,5 @@ set-up-app-build-repository:
 check-github-actions-auth:
 	./bin/check-github-actions-auth.sh $(GITHUB_ACTIONS_ROLE)
 
-create-distribution-resources:
-	./bin/create-distribution-resources.sh
-
 destroy-account:
 	./template-only-bin/destroy-account.sh
