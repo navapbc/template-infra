@@ -9,16 +9,33 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestAccountSetup(t *testing.T) {
+func ProjectName() string {
+	return "platform-test-account"
+}
+
+func TestTemplateInfra(t *testing.T) {
 	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
-	projectName := "platform-test-account"
-	accountId := "368823044688"
-	region := "us-east-1"
+	projectName := ProjectName()
 
 	defer TeardownAccount(t)
 	SetUpAccount(t, projectName)
+
+	t.Run("TestAccount", SubtestAccount)
+	t.Run("TestBuildRepository", SubtestBuildRepository)
+}
+
+func SubtestAccount(t *testing.T) {
+	projectName := ProjectName()
+	accountId := "368823044688"
+	region := "us-east-1"
 	ValidateTerraformBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
+}
+
+func SubtestBuildRepository(t *testing.T) {
+	projectName := ProjectName()
+	SetUpBuildRepository(t, projectName)
+	ValidateBuildRepository(t, projectName)
 }
 
 func ValidateTerraformBackend(t *testing.T, region string, projectName string) {
@@ -40,6 +57,22 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 }
 
+func ValidateBuildRepository(t *testing.T, projectName string) {
+	err := shell.RunCommandE(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"release-build", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		WorkingDir: "../",
+	})
+	assert.NoError(t, err, "GitHub actions failed to authenticate")
+
+	err = shell.RunCommandE(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"release-publish", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		WorkingDir: "../",
+	})
+	assert.NoError(t, err, "GitHub actions failed to authenticate")
+}
+
 func SetUpAccount(t *testing.T, projectName string) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
@@ -52,6 +85,14 @@ func TeardownAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
+		WorkingDir: "../",
+	})
+}
+
+func SetUpBuildRepository(t *testing.T, projectName string) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "set-up-app-build-repository", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
 		WorkingDir: "../",
 	})
 }
