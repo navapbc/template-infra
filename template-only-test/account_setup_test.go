@@ -15,7 +15,7 @@ func TestAccountSetup(t *testing.T) {
 
 	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
 	projectName := "platform-test-account"
-	accountId := 368823044688
+	accountId := "368823044688"
 	githubActionsRole := fmt.Sprintf("arn:aws:iam::%s:role/%s-github-actions", accountId, projectName)
 
 	region := "us-east-1"
