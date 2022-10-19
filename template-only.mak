@@ -7,6 +7,7 @@ ACCOUNT_ID ?= 368823044688
 GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-actions
 
 .PHONY : \
+  clean \
 	test \
 	set-up-account \
 	setup-app-backends \
@@ -14,7 +15,7 @@ GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-ac
 	destroy-account \
 	tmp
 
-test:
+test: clean
 	cd template-only-test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 
 set-up-account:
@@ -25,6 +26,11 @@ set-up-app-backends:
 
 set-up-app-build-repository:
 	./template-only-bin/set-up-app-build-repository.sh $(PROJECT_NAME)
+
+clean:
+	rm -fr infra/app/envs/dev/.terraform infra/app/envs/staging/.terraform infra/app/envs/prod/.terraform infra/app/build-repository/.terraform
+	git reset --hard HEAD
+	git clean -f
 
 check-github-actions-auth:
 	./bin/check-github-actions-auth.sh $(GITHUB_ACTIONS_ROLE)
