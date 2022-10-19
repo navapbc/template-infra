@@ -1,11 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-# PROJECT_NAME defaults to name of the current directory.
-# Run this at project root before changing directories
-PROJECT_NAME=$(basename $(PWD))
-
-ACCOUNT=$1
+PROJECT_NAME=$1
+ACCOUNT=$2
 
 # GITHUB_REPOSITORY defaults to the origin of the current git repo
 # Get the "org/repo" string (e.g. "navapbc/template-infra") by first

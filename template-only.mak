@@ -1,6 +1,9 @@
 # This Makefile is for developers working on template-infra itself
 # and is not intended to be used by projects that are using the template
 
+PROJECT_NAME ?= platform-template-infra
+ACCOUNT ?= account
+
 .PHONY : \
 	test \
 	set-up-account \
@@ -9,10 +12,10 @@
 	destroy-account
 
 test:
-	cd test && go test -v -timeout 30m
+	cd template-only-test && go test -v -timeout 30m
 
 set-up-account:
-	./bin/set-up-account.sh account
+	./bin/set-up-account.sh $(PROJECT_NAME) $(ACCOUNT)
 
 set-up-app-backends:
 	./bin/set-up-app-backends.sh
