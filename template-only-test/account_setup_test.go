@@ -13,8 +13,8 @@ func TestAccountSetup(t *testing.T) {
 	t.Parallel()
 
 	region := "us-east-1"
-	expectedTfStateBucket := "template-infra-368823044688-us-east-1-tf-state"
-	expectedTfStateKey := "template-infra/infra/account.tfstate"
+	expectedTfStateBucket := "platform-template-infra-368823044688-us-east-1-tf-state"
+	expectedTfStateKey := "platform-template-infra/infra/account.tfstate"
 
 	defer shell.RunCommand(t, shell.Command{
 		Command:    "make",
