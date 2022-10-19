@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
@@ -11,6 +12,9 @@ import (
 // An example of how to test the simple Terraform module in examples/terraform-basic-example using Terratest.
 func TestAccountSetup(t *testing.T) {
 	t.Parallel()
+
+	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
+	projectName := "platform-test-account"
 
 	region := "us-east-1"
 	expectedTfStateBucket := "platform-template-infra-368823044688-us-east-1-tf-state"
@@ -24,7 +28,7 @@ func TestAccountSetup(t *testing.T) {
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-account"},
+		Args:       []string{"-f", "template-only.mak", "set-up-account", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
 		WorkingDir: "../",
 	})
 
