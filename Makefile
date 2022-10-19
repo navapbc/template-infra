@@ -89,7 +89,7 @@ ecr-login: get-image-registry
 	docker login --username AWS --password-stdin $(IMAGE_REGISTRY)
 
 # Define the IMAGE_REGISTRY variable dynamically since it is different for each account
-get-container-image-registry:
+get-image-registry:
 	$(eval AWS_ACCOUNT_ID := $(terraform -chdir=infra/accounts/$(ACCOUNT) output -raw account_id))
 	$(eval REGION := $(terraform -chdir=infra/accounts/$(ACCOUNT) output -raw region))
 	$(eval IMAGE_REGISTRY ?= $(AWS_ACCOUNT_ID).dkr.ecr.$(REGION).amazonaws.com)
