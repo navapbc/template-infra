@@ -2,11 +2,9 @@ package test
 
 import (
 	"fmt"
-	"os"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
-	"github.com/gruntwork-io/terratest/modules/environment"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/stretchr/testify/assert"
 )
@@ -15,8 +13,8 @@ import (
 func TestAccountSetup(t *testing.T) {
 	t.Parallel()
 
-	environment.RequireEnvVar(t, "PROJECT_NAME")
-	projectName := os.Getenv("PROJECT_NAME")
+	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
+	projectName := "platform-test-account"
 
 	region := "us-east-1"
 	expectedTfStateBucket := fmt.Sprintf("%s-368823044688-us-east-1-tf-state", projectName)
@@ -30,7 +28,7 @@ func TestAccountSetup(t *testing.T) {
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-account"},
+		Args:       []string{"-f", "template-only.mak", "set-up-account", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
 		WorkingDir: "../",
 	})
 
