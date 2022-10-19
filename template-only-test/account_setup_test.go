@@ -13,7 +13,6 @@ func TestAccountSetup(t *testing.T) {
 	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
 	projectName := "platform-test-account"
 	accountId := "368823044688"
-
 	region := "us-east-1"
 
 	defer TeardownAccount(t)
