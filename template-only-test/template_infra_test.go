@@ -13,23 +13,31 @@ func ProjectName() string {
 	return "platform-test-account"
 }
 
-func TestTemplateInfra(t *testing.T) {
+func TestSetUpAccount(t *testing.T) {
 	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
 	projectName := ProjectName()
 
 	defer TeardownAccount(t)
 	SetUpAccount(t, projectName)
 
-	t.Run("TestAccount", SubtestAccount)
-	t.Run("TestBuildRepository", SubtestBuildRepository)
+	t.Run("ValidateAccount", ValidateAccount)
+	t.Run("SetUpAppBackends", SubtestSetUpAppBackends)
 }
 
-func SubtestAccount(t *testing.T) {
+func ValidateAccount(t *testing.T) {
 	projectName := ProjectName()
 	accountId := "368823044688"
 	region := "us-east-1"
-	ValidateTerraformBackend(t, region, projectName)
+	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
+}
+
+func SubtestSetUpAppBackends(t *testing.T) {
+	projectName := ProjectName()
+	SetUpAppBackends(t, projectName)
+	ValidateAppBackends(t)
+
+	t.Run("TestBuildRepository", SubtestBuildRepository)
 }
 
 func SubtestBuildRepository(t *testing.T) {
@@ -38,7 +46,31 @@ func SubtestBuildRepository(t *testing.T) {
 	ValidateBuildRepository(t, projectName)
 }
 
-func ValidateTerraformBackend(t *testing.T, region string, projectName string) {
+func SetUpAccount(t *testing.T, projectName string) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "set-up-account", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		WorkingDir: "../",
+	})
+}
+
+func SetUpAppBackends(t *testing.T, projectName string) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "set-up-app-backends", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		WorkingDir: "../",
+	})
+}
+
+func SetUpBuildRepository(t *testing.T, projectName string) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "set-up-app-build-repository", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		WorkingDir: "../",
+	})
+}
+
+func ValidateAccountBackend(t *testing.T, region string, projectName string) {
 	expectedTfStateBucket := fmt.Sprintf("%s-368823044688-%s-tf-state", projectName, region)
 	expectedTfStateKey := fmt.Sprintf("%s/infra/account.tfstate", projectName)
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
@@ -57,6 +89,10 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 }
 
+func ValidateAppBackends(t *testing.T) {
+	// TODO
+}
+
 func ValidateBuildRepository(t *testing.T, projectName string) {
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
@@ -73,26 +109,10 @@ func ValidateBuildRepository(t *testing.T, projectName string) {
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 }
 
-func SetUpAccount(t *testing.T, projectName string) {
-	shell.RunCommand(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-account", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
-		WorkingDir: "../",
-	})
-}
-
 func TeardownAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
-		WorkingDir: "../",
-	})
-}
-
-func SetUpBuildRepository(t *testing.T, projectName string) {
-	shell.RunCommand(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-app-build-repository", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
 		WorkingDir: "../",
 	})
 }
