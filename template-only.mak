@@ -1,8 +1,9 @@
 # This Makefile is for developers working on template-infra itself
 # and is not intended to be used by projects that are using the template
 
-PROJECT_NAME ?= platform-template-infra
-ACCOUNT ?= account
+PROJECT_NAME := platform-template-infra
+ACCOUNT := account
+ACCOUNT_ID := 368823044688
 
 .PHONY : \
 	test \
@@ -21,7 +22,7 @@ set-up-app-backends:
 	./template-only-bin/set-up-app-backends.sh
 
 check-github-actions-auth:
-	./template-only-bin/check-github-actions-auth.sh arn:aws:iam::368823044688:role/template-infra-github-actions
+	./bin/check-github-actions-auth.sh arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-actions
 
 destroy-account:
 	./template-only-bin/template-only-destroy-account.sh
