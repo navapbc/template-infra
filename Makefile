@@ -74,6 +74,6 @@ release-build:
 		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
 release-publish:
-	./bin/publish-release.sh $(APP_NAME) $(IMAGE_TAG)
+	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:
