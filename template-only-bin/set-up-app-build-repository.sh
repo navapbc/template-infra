@@ -23,7 +23,10 @@ echo "----------------------------------------------"
 
 # Replace placeholder value of GitHub actions role with actual value
 # Use '|' as sed command separator since role ARN can have '/' characters
-sed -i .bak "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g" terraform.tfvars
+cp terraform.tfvars terraform.tfvars.bak
+cat terraform.tfvars.bak \
+  | sed "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g" terraform.tfvars
+  > terraform.tfvars
 
 echo "-------------------------------"
 echo "Deploy infrastructure resources"
