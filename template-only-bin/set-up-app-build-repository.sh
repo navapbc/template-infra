@@ -25,7 +25,7 @@ echo "----------------------------------------------"
 # Use '|' as sed command separator since role ARN can have '/' characters
 cp terraform.tfvars terraform.tfvars.bak
 cat terraform.tfvars.bak \
-  | sed "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g"
+  | sed "s|<GITHUB_ACTIONS_ROLE_ARN>|$GITHUB_ACTIONS_ROLE_ARN|g" \
   > terraform.tfvars
 
 echo "-------------------------------"
