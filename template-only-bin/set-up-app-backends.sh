@@ -39,14 +39,11 @@ do
   cd infra/$APP_NAME/$MODULE/
 
   # Replace the placeholder values in the module
-  cp main.tf main.tf.bak
-  cat main.tf.bak \
-    | sed "s/<PROJECT_NAME>/$PROJECT_NAME/g" \
-    | sed "s/<APP_NAME>/$APP_NAME/g" \
-    | sed "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" \
-    | sed "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" \
-    | sed "s/<REGION>/$REGION/g" \
-    > main.tf
+  sed -i .bak "s/<PROJECT_NAME>/$PROJECT_NAME/g" main.tf
+  sed -i .bak "s/<APP_NAME>/$APP_NAME/g" main.tf
+  sed -i .bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" main.tf
+  sed -i .bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" main.tf
+  sed -i .bak "s/<REGION>/$REGION/g" main.tf
 
   # Go back up to project root
   cd - > /dev/null

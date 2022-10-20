@@ -38,18 +38,15 @@ echo "-------------------------------------"
 # First replace the placeholder value for <PROJECT_NAME> in main.tf
 # The project name is used to define unique names for the infrastructure
 # resources that are created in the subsequent steps.
-#
+sed -i .bak "s/<PROJECT_NAME>/$PROJECT_NAME/" main.tf
+
 # Then replace the placeholder value for <GITHUB_REPOSITORY> in main.tf
 # The repository name is used to set up the GitHub OpenID Connect provider
 # in AWS which allows GitHub Actions to authenticate with our AWS account
 # when called from our repository only.
 # Use '|' as the regex delimeter for sed instead of '/' since
 # GITHUB_REPOSITORY will have a '/' in it
-cp main.tf main.tf.bak
-cat main.tf.bak \
-    | sed "s/<PROJECT_NAME>/$PROJECT_NAME/" \
-    | sed "s|<GITHUB_REPOSITORY>|$GITHUB_REPOSITORY|" \
-    > main.tf
+sed -i .bak "s|<GITHUB_REPOSITORY>|$GITHUB_REPOSITORY|" main.tf
 
 echo "-------------------------------"
 echo "Deploy infrastructure resources"
@@ -69,15 +66,13 @@ echo "-------------------------------------------"
 TF_STATE_BUCKET_NAME=$(terraform output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
 
+
 # Configure the S3 backend in main.tf by replacing the placeholder
 # values with the actual values from the previous step, then
 # uncomment the S3 backend block
-cp main.tf main.tf.bak
-cat main.tf.bak \
-    | sed "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/" \
-    | sed "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/" \
-    | sed 's/#uncomment# //g' \
-    > main.tf
+sed -i .bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/" main.tf
+sed -i .bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/" main.tf
+sed -i .bak 's/#uncomment# //g' main.tf
 
 echo "------------------------------"
 echo "Copy tfstate to new S3 backend"
