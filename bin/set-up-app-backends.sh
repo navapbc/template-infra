@@ -21,9 +21,9 @@ MODULES="\
 # and the name of the DynamoDB table that was created for tf state locks.
 # This will be used to configure the S3 backends in all the application
 # modules
-TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/bootstrap/account output -raw tf_state_bucket_name)
-TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/bootstrap/account output -raw tf_locks_table_name)
-REGION=$(terraform -chdir=infra/bootstrap/account output -raw region)
+TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/accounts/account output -raw tf_state_bucket_name)
+TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts/account output -raw tf_locks_table_name)
+REGION=$(terraform -chdir=infra/accounts/account output -raw region)
 
 echo "Setup configuration"
 echo "PROJECT_NAME=$PROJECT_NAME"
