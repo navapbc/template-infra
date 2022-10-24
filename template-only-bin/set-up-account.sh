@@ -1,9 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-# PROJECT_NAME defaults to name of the current directory.
-# Run this at project root before changing directories
-PROJECT_NAME=$(basename $(PWD))
+PROJECT_NAME=$1
+ACCOUNT=$2
 
 ACCOUNT=$1
 

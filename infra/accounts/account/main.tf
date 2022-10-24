@@ -30,7 +30,7 @@ terraform {
   #uncomment# backend "s3" {
   #uncomment#   bucket         = "<TF_STATE_BUCKET_NAME>"
   #uncomment#   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-  #uncomment#   key            = "terraform/backend/terraform.tfstate"
+  #uncomment#   key            = "<PROJECT_NAME>/infra/account.tfstate"
   #uncomment#   region         = "us-east-1"
   #uncomment#   encrypt        = "true"
   #uncomment# }

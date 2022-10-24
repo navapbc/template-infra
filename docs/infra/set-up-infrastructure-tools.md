@@ -30,6 +30,18 @@ The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a uni
 
 - [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
+### Install Go
+
+The [Go programming language](https://go.dev/dl/) is required to run [Terratest](https://terratest.gruntwork.io/), the unit test framework for Terraform.
+
+### Install GitHub CLI
+
+The [GitHub CLI](https://cli.github.com/) is useful for automating certain operations for GitHub such as with GitHub actions.
+
+```bash
+brew install gh
+```
+
 ## AWS Authentication
 
 In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
