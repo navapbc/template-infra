@@ -14,7 +14,7 @@ GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-ac
 	destroy-account
 
 test:
-	cd template-only-test && go test -v -timeout 30m
+	cd template-only-test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 
 set-up-account:
 	./template-only-bin/set-up-account.sh $(PROJECT_NAME) $(ACCOUNT)
