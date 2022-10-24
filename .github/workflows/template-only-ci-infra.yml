@@ -10,14 +10,12 @@ on:
       - infra/modules/**
       - .github/workflows/template-only-ci-infra.yml
 
-# For now, only allow workflow run at a time, since this actually provisions infra.
+# For now, only allow one workflow run at a time, since this actually provisions infra.
 concurrency: platform-template-only-ci-infra
 
 jobs:
   test:
     name: Infra Tests
-    # Use MacOS instead of Ubuntu since the "sed" commands in set-up-account.sh
-    # template-only-destroy-account.sh only work on MacOS
     runs-on: ubuntu-latest
 
     steps:
