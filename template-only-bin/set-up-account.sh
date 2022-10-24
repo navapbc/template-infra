@@ -78,6 +78,10 @@ echo "------------------------------"
 echo "Copy tfstate to new S3 backend"
 echo "------------------------------"
 
+echo "------------------------------"
+echo "Copy tfstate to new S3 backend"
+echo "------------------------------"
+
 # Re-initialize terraform with the new backend and copy the tfstate
 # to the new backend in S3
 terraform init -force-copy
