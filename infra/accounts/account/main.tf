@@ -44,8 +44,8 @@ provider "aws" {
   }
 }
 
-module "common" {
-  source = "../../modules/common"
+module "project_config" {
+  source = "../../project-config"
 }
 
 module "bootstrap" {

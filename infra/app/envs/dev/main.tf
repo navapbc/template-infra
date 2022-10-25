@@ -43,8 +43,8 @@ provider "aws" {
   }
 }
 
-module "common" {
-  source = "../../../modules/common"
+module "project_config" {
+  source = "../../../project-config"
 }
 
 # Add application modules below
