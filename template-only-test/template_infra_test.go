@@ -83,7 +83,7 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
 	expectedTfStateBucket := fmt.Sprintf("%s-368823044688-%s-tf-state", projectName, region)
-	expectedTfStateKey := fmt.Sprintf("%s/infra/account.tfstate", projectName)
+	expectedTfStateKey := "infra/account.tfstate"
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
 	_, err := aws.GetS3ObjectContentsE(t, region, expectedTfStateBucket, expectedTfStateKey)
 	assert.NoError(t, err, fmt.Sprintf("Failed to get tfstate object from tfstate bucket %s", expectedTfStateBucket))
