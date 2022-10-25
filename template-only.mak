@@ -2,6 +2,8 @@
 # and is not intended to be used by projects that are using the template
 
 PROJECT_NAME ?= platform-template-infra
+PROJECT_OWNER ?= platform-admins
+PROJECT_REGION ?= us-east-1
 ACCOUNT ?= account
 ACCOUNT_ID ?= 368823044688
 GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-actions
@@ -17,8 +19,11 @@ GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-ac
 test:
 	cd template-only-test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 
-set-up-account:
-	./template-only-bin/set-up-account.sh $(PROJECT_NAME) $(ACCOUNT)
+set-up-project:
+	./template-only-bin/set-up-project.sh $(PROJECT_NAME) $(PROJECT_OWNER) $(PROJECT_REGION)
+
+set-up-account: set-up-project
+	./template-only-bin/set-up-account.sh $(ACCOUNT)
 
 set-up-app-backends:
 	./template-only-bin/set-up-app-backends.sh $(PROJECT_NAME)

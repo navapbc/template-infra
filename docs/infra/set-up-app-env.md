@@ -18,7 +18,7 @@ Now navigate to the environment module of the application you want to set up (e.
 
 backend "s3" {
   bucket         = "<TF_STATE_BUCKET_NAME>"
-  key            = "<PROJECT_NAME>/infra/<APP_NAME>/envs/dev.tfstate"
+  key            = "infra/<APP_NAME>/envs/dev.tfstate"
   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
   region         = "<REGION>"
   encrypt        = "true"

@@ -25,7 +25,7 @@ Now navigate to the `build-repository` module of the application you want to set
 
 backend "s3" {
   bucket         = "<TF_STATE_BUCKET_NAME>"
-  key            = "<PROJECT_NAME>/infra/<APP_NAME>/build-repository.tfstate"
+  key            = "infra/<APP_NAME>/build-repository.tfstate"
   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
   region         = "<REGION>"
   encrypt        = "true"

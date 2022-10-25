@@ -1,17 +1,14 @@
 locals {
-  project_name = "<PROJECT_NAME>"
+  project_name = module.project_config.project_name
   app_name     = "<APP_NAME>"
   region       = "<REGION>"
 
   # Set project tags that will be used to tag all resources.
-  tags = {
-    project             = local.project_name
-    application         = local.app_name
-    application_role    = "build-repository"
-    terraform           = true
-    terraform_workspace = terraform.workspace
-    description         = "Backend resources required for storing built release candidate artifacts to be used for deploying to environments."
-  }
+  tags = merge(module.project_config.default_tags, {
+    application      = local.app_name
+    application_role = "build-repository"
+    description      = "Backend resources required for storing built release candidate artifacts to be used for deploying to environments."
+  })
 }
 
 terraform {
@@ -28,7 +25,7 @@ terraform {
 
   backend "s3" {
     bucket         = "<TF_STATE_BUCKET_NAME>"
-    key            = "<PROJECT_NAME>/infra/<APP_NAME>/dist.tfstate"
+    key            = "infra/<APP_NAME>/dist.tfstate"
     dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
     region         = "<REGION>"
     encrypt        = "true"
@@ -40,6 +37,10 @@ provider "aws" {
   default_tags {
     tags = local.tags
   }
+}
+
+module "project_config" {
+  source = "../../project-config"
 }
 
 module "container_image_repository" {

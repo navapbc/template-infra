@@ -19,7 +19,8 @@ func TestSetUpAccount(t *testing.T) {
 	projectName := ProjectName()
 
 	defer TeardownAccount(t)
-	SetUpAccount(t, projectName)
+	SetUpProject(t, projectName)
+	SetUpAccount(t)
 
 	t.Run("ValidateAccount", ValidateAccount)
 	t.Run("SetUpAppBackends", SubtestSetUpAppBackends)
@@ -48,10 +49,18 @@ func SubtestBuildRepository(t *testing.T) {
 	ValidateBuildRepository(t, projectName)
 }
 
-func SetUpAccount(t *testing.T, projectName string) {
+func SetUpProject(t *testing.T, projectName string) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-account", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"-f", "template-only.mak", "set-up-project", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		WorkingDir: "../",
+	})
+}
+
+func SetUpAccount(t *testing.T) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "set-up-account"},
 		WorkingDir: "../",
 	})
 }

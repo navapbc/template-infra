@@ -1,5 +1,5 @@
 output "project_name" {
-  value = local.project_name
+  value = module.project_config.project_name
 }
 
 output "account_id" {
