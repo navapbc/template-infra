@@ -9,7 +9,7 @@ locals {
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Add environment specific tags
-  tags = merge(module.common.default_tags, {
+  tags = merge(module.project_config.default_tags, {
     environment = "staging"
     description = "Application resources created in staging environment"
   })
