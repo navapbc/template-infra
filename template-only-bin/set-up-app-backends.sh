@@ -1,17 +1,16 @@
 #!/bin/bash
 set -euo pipefail
 
-# PROJECT_NAME defaults to name of the current directory.
-# Run this at project root before changing directories
-PROJECT_NAME=$(basename $(PWD))
+PROJECT_NAME=$1
 
 # APP_NAME is the name of the directory that holds the application code,
 # as well as the subdirectory of /infra that holds the application
 # infrastructure code. Defaults to "app".
-APP_NAME=${1:-app}
+APP_NAME=${2:-app}
 
 # The list of modules we need to set up
 MODULES="\
+  build-repository \
   envs/dev \
   envs/staging \
   envs/prod \
@@ -44,6 +43,9 @@ do
   sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" main.tf
   sed -i.bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" main.tf
   sed -i.bak "s/<REGION>/$REGION/g" main.tf
+
+  # Initialize backend
+  terraform init
 
   # Go back up to project root
   cd - > /dev/null

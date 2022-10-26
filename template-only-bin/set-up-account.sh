@@ -1,27 +1,11 @@
 #!/bin/bash
 set -euo pipefail
 
-PROJECT_NAME=$1
-ACCOUNT=$2
-
-# GITHUB_REPOSITORY defaults to the origin of the current git repo
-# Get the "org/repo" string (e.g. "navapbc/template-infra") by first
-# getting the repo URL (e.g. "git@github.com:navapbc/template-infra.git"
-# or "https://github.com/navapbc/template-infra.git"), getting the
-# repo name (e.g. "template-infra"), then searching with grep for the
-# string that includes both the repo name and the org name before it.
-REPO_URL=$(git remote get-url origin)
-REPO_NAME=$(basename $REPO_URL .git)
-GITHUB_REPOSITORY=$(echo $REPO_URL | \
-    grep --extended-regexp --only-matching "[-_a-zA-Z0-9]+/$REPO_NAME")
+ACCOUNT=$1
 
 echo "Account configuration"
 echo "====================="
-echo "PROJECT_NAME=$PROJECT_NAME"
 echo "ACCOUNT=$ACCOUNT"
-echo "REPO_URL=$REPO_URL"
-echo "REPO_NAME=$REPO_NAME"
-echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
 echo
 
 cd infra/accounts/$ACCOUNT
@@ -30,23 +14,6 @@ echo "--------------------"
 echo "Initialize Terraform"
 echo "--------------------"
 terraform init
-
-echo "-------------------------------------"
-echo "Replace placeholder values in main.tf"
-echo "-------------------------------------"
-
-# First replace the placeholder value for <PROJECT_NAME> in main.tf
-# The project name is used to define unique names for the infrastructure
-# resources that are created in the subsequent steps.
-sed -i.bak "s/<PROJECT_NAME>/$PROJECT_NAME/" main.tf
-
-# Then replace the placeholder value for <GITHUB_REPOSITORY> in main.tf
-# The repository name is used to set up the GitHub OpenID Connect provider
-# in AWS which allows GitHub Actions to authenticate with our AWS account
-# when called from our repository only.
-# Use '|' as the regex delimeter for sed instead of '/' since
-# GITHUB_REPOSITORY will have a '/' in it
-sed -i.bak "s|<GITHUB_REPOSITORY>|$GITHUB_REPOSITORY|" main.tf
 
 echo "-------------------------------"
 echo "Deploy infrastructure resources"
@@ -73,10 +40,6 @@ TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
 sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/" main.tf
 sed -i.bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/" main.tf
 sed -i.bak 's/#uncomment# //g' main.tf
-
-echo "------------------------------"
-echo "Copy tfstate to new S3 backend"
-echo "------------------------------"
 
 echo "------------------------------"
 echo "Copy tfstate to new S3 backend"

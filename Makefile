@@ -1,14 +1,15 @@
 # PROJECT_NAME defaults to name of the current directory.
-PROJECT_NAME := $(notdir $(PWD))
+PROJECT_NAME ?= $(notdir $(PWD))
 
 # For now only support a single app in the folder `app/` within the repo
 # In the future, support multiple apps, and which app is being operated
 # on will be determined by the APP_NAME Makefile argument
-APP_NAME := app
+APP_NAME ?= app
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
+
 
 .PHONY : \
 	infra-validate-modules \
@@ -52,6 +53,8 @@ infra-format:
 ## Release Management ##
 ########################
 
+# Include project name in image name so that image name
+# does not conflict with other images during local development
 IMAGE_NAME := $(PROJECT_NAME)-$(APP_NAME)
 
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
@@ -73,5 +76,6 @@ release-build:
 		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
 release-publish:
+	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:

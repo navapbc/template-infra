@@ -6,21 +6,16 @@ locals {
   # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”, 
   # if you choose not to use workspaces set this value to "dev" 
   prefix = terraform.workspace
-  # Profile is used to select which aws credentials to use, set this to match the account this environement runs in.
-  profile = "default"
   # Choose the region where this infrastructure should be deployed.
   region = "us-east-1"
   # Add environment specific tags
-  tags = merge(module.common.default_tags, {
+  tags = merge(module.project_config.default_tags, {
     environment = "dev"
     description = "Application resources created in dev environment"
-
   })
-
 }
 
 terraform {
-
   required_version = ">=1.2.0"
 
   required_providers {
@@ -34,7 +29,7 @@ terraform {
 
   backend "s3" {
     bucket         = "<TF_STATE_BUCKET_NAME>"
-    key            = "<PROJECT_NAME>/infra/<APP_NAME>/environments/dev.tfstate"
+    key            = "infra/<APP_NAME>/environments/dev.tfstate"
     dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
     region         = "<REGION>"
     encrypt        = "true"
@@ -42,20 +37,14 @@ terraform {
 }
 
 provider "aws" {
-  region  = local.region
-  profile = local.profile
+  region = local.region
   default_tags {
     tags = local.tags
   }
 }
 
-module "common" {
-  source = "../../modules/common"
+module "project_config" {
+  source = "../../../project-config"
 }
 
 # Add application modules below
-
-module "example" {
-  source = "../../modules/example"
-  prefix = local.prefix
-}

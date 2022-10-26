@@ -2,6 +2,10 @@
 
 This doc explains how to set up infrastructure resources that Terraform needs to manage your project's infrastructure.
 
+## Project setup
+
+Before you start, first set up your project configuration values in [infra/project-config/main.tf](../infra/project-config/main.tf). You'll set values like the project name, project owner, etc. These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.
+
 ## Single account setup
 
 Follow the instructions in [Set up AWS account](../docs/infra/set-up-aws-account.md) if you want to manage all your resources in a single AWS account (for simple projects or projects that don't need to go to production).
