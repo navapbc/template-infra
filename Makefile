@@ -28,12 +28,17 @@ MODULES := $(notdir $(wildcard infra/modules/*))
 
 # Validate all infra modules. The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
-infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) infra-validate-env-template
 
 infra-validate-module-%:
 	@echo "Validate module: $*"
 	terraform -chdir=infra/modules/$* init -backend=false
 	terraform -chdir=infra/modules/$* validate
+
+infra-validate-env-template:
+	@echo "Validate module: env-template"
+	terraform -chdir=infra/app/env-template init -backend=false
+	terraform -chdir=infra/app/env-template validate
 
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
 
