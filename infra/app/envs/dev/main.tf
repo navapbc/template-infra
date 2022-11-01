@@ -2,6 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
+  environment_name = "dev"
   # The prefix key/value pair is used for Terraform Workspaces, which is useful for projects with multiple infrastructure developers.
   # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”, 
   # if you choose not to use workspaces set this value to "dev" 
@@ -10,7 +11,7 @@ locals {
   region = "us-east-1"
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
-    environment = "dev"
+    environment = local.environment_name
     description = "Application resources created in dev environment"
   })
 }
@@ -28,10 +29,10 @@ terraform {
   # Terraform does not allow interpolation here, values must be hardcoded.
 
   backend "s3" {
-    bucket         = "<TF_STATE_BUCKET_NAME>"
-    key            = "infra/<APP_NAME>/environments/dev.tfstate"
-    dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-    region         = "<REGION>"
+    bucket         = "platform-test-account-368823044688-us-east-1-tf-state"
+    key            = "infra/app/environments/dev.tfstate"
+    dynamodb_table = "platform-test-account-tf-state-locks"
+    region         = "us-east-1"
     encrypt        = "true"
   }
 }
@@ -47,4 +48,7 @@ module "project_config" {
   source = "../../../project-config"
 }
 
-# Add application modules below
+module "app" {
+  source           = "../../env-template"
+  environment_name = local.environment_name
+}
