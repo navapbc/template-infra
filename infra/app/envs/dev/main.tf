@@ -33,6 +33,7 @@ terraform {
     key            = "infra/<APP_NAME>/environments/dev.tfstate"
     dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
     region         = "<REGION>"
+    encrypt        = "true"
   }
 }
 
