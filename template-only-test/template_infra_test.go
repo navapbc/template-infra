@@ -2,22 +2,21 @@ package test
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
+	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
-func ProjectName() string {
-	return "platform-test-account"
-}
+// Note: projectName can't be too long since S3 bucket names have a 63 character max length
+var uniqueId = strings.ToLower(random.UniqueId())
+var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
 
 func TestSetUpAccount(t *testing.T) {
-	// Note: projectName can't be too long since S3 bucket names have a 63 character max length
-	projectName := ProjectName()
-
 	defer TeardownAccount(t)
 	SetUpProject(t, projectName)
 	SetUpAccount(t)
@@ -27,7 +26,7 @@ func TestSetUpAccount(t *testing.T) {
 }
 
 func ValidateAccount(t *testing.T) {
-	projectName := ProjectName()
+	projectName := projectName
 	accountId := "368823044688"
 	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
@@ -35,7 +34,7 @@ func ValidateAccount(t *testing.T) {
 }
 
 func SubtestSetUpAppBackends(t *testing.T) {
-	projectName := ProjectName()
+	projectName := projectName
 	SetUpAppBackends(t, projectName)
 	ValidateAppBackends(t)
 
@@ -43,7 +42,7 @@ func SubtestSetUpAppBackends(t *testing.T) {
 }
 
 func SubtestBuildRepository(t *testing.T) {
-	projectName := ProjectName()
+	projectName := projectName
 	defer TeardownBuildRepository(t)
 	SetUpBuildRepository(t, projectName)
 	ValidateBuildRepository(t, projectName)
