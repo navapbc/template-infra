@@ -19,13 +19,13 @@ variable "desired_instance_count" {
 
 variable "cpu" {
   type        = number
-  default     = 2048
+  default     = 256
   description = "Number of cpu units used by the task, expessed as an integer value, e.g 512 "
 }
 
 variable "memory" {
   type        = number
-  default     = 2048
+  default     = 512
   description = "Amount (in MiB) of memory used by the task. e.g. 2048"
 }
 
