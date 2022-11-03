@@ -1,4 +1,4 @@
-resource "aws_iam_role" "github_actions" {
+data "aws_iam_role" "github_actions" {
   name = module.project_config.github_actions_role_name
 }
 
