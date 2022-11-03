@@ -32,7 +32,8 @@ set-up-app-build-repository:
 	./template-only-bin/set-up-app-build-repository.sh $(PROJECT_NAME)
 
 clean:
-	rm -fr infra/app/envs/dev/.terraform infra/app/envs/staging/.terraform infra/app/envs/prod/.terraform infra/app/build-repository/.terraform
+	rm -fr infra/accounts/account/.terraform infra/app/envs/dev/.terraform infra/app/envs/staging/.terraform infra/app/envs/prod/.terraform infra/app/build-repository/.terraform
+	rm -f infra/accounts/account/terraform.tfstate* infra/app/envs/dev/terraform.tfstate* infra/app/envs/staging/terraform.tfstate* infra/app/envs/prod/terraform.tfstate* infra/app/build-repository/terraform.tfstate*
 	git reset --hard HEAD
 	git clean -f
 
