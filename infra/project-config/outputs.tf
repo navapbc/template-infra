@@ -30,3 +30,7 @@ output "default_tags" {
     # description is set in each environments local use key project_description if required.        
   }
 }
+
+output "github_actions_role_name" {
+  value = local.github_actions_role_name
+}

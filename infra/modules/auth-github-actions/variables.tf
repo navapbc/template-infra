@@ -1,6 +1,6 @@
-variable "project_name" {
+variable "github_actions_role_name" {
   type        = string
-  description = "The name of the project. This will be used to prefix the names of the bootstrap resources."
+  description = "The name to use for the IAM role GitHub actions will assume."
 }
 
 variable "github_repository" {
