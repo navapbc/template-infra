@@ -43,10 +43,13 @@ module "project_config" {
   source = "../../project-config"
 }
 
+module "app_config" {
+  source = "../app-config"
+}
+
 module "container_image_repository" {
   source               = "../../modules/container-image-repository"
-  project_name         = local.project_name
-  app_name             = local.app_name
+  name                 = module.app_config.image_repository_name
   push_access_role_arn = var.github_actions_role_arn
   app_account_ids      = var.app_environment_account_ids
 }

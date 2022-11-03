@@ -1,13 +1,11 @@
 data "aws_region" "current" {}
 
 locals {
-  suffix                = terraform.workspace == "default" ? "main" : terraform.workspace
-  image_repository_name = "${var.project_name}-${var.app_name}-${local.suffix}"
-  image_registry        = "${aws_ecr_repository.app.registry_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
+  image_registry = "${aws_ecr_repository.app.registry_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
 }
 
 resource "aws_ecr_repository" "app" {
-  name                 = local.image_repository_name
+  name                 = var.name
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
@@ -85,5 +83,5 @@ data "aws_iam_policy_document" "image_access" {
 
 resource "aws_kms_key" "ecr_kms" {
   enable_key_rotation = true
-  description         = "KMS key for ECR repository ${local.image_repository_name}"
+  description         = "KMS key for ECR repository ${var.name}"
 }
