@@ -51,7 +51,6 @@ func SubtestBuildRepository(t *testing.T) {
 }
 
 func SubtestDevEnvironment(t *testing.T) {
-	projectName := ProjectName()
 	defer TeardownDevEnvironment(t)
 	SetUpDevEnvironment(t, projectName)
 	ValidateDevEnvironment(t)
