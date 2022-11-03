@@ -51,7 +51,7 @@ module "bootstrap" {
 }
 
 module "auth_github_actions" {
-  source            = "../../modules/auth-github-actions"
-  project_name      = module.project_config.project_name
-  github_repository = module.project_config.code_repository
+  source                         = "../../modules/auth-github-actions"
+  githubgithub_actions_role_name = module.project_config.project_name
+  github_repository              = module.project_config.code_repository
 }
