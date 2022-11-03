@@ -1,6 +1,6 @@
 [
   {
-    "name": "${container_name}",
+    "name": "${service_name}",
     "image": "${image_url}",
     "memory": "${memory}",
     "cpu": "${cpu}",
@@ -28,9 +28,9 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "${cloudwatch_log_group_name}",
+        "awslogs-group": "${service_name}",
         "awslogs-region": "${aws_region}",
-        "awslogs-stream-prefix": "${environment_name}"
+        "awslogs-stream-prefix": "${service_name}"
       }
     }
   }

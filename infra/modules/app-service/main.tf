@@ -2,11 +2,10 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 locals {
-  service_name            = "${var.app_name}-${var.environment_name}"
-  alb_name                = local.service_name
-  cluster_name            = local.service_name
-  log_group_name          = "service/${local.service_name}"
-  task_executor_role_name = "${local.service_name}-task-executor"
+  alb_name                = var.service_name
+  cluster_name            = var.service_name
+  log_group_name          = "service/${var.service_name}"
+  task_executor_role_name = "${var.service_name}-task-executor"
 }
 
 ###########################
@@ -129,7 +128,7 @@ resource "aws_ecs_cluster" "cluster" {
 }
 
 resource "aws_ecs_service" "app" {
-  name            = local.service_name
+  name            = var.service_name
   cluster         = aws_ecs_cluster.cluster.arn
   launch_type     = "FARGATE"
   task_definition = aws_ecs_task_definition.app.arn
@@ -149,13 +148,13 @@ resource "aws_ecs_service" "app" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.api_tg.arn
-    container_name   = local.service_name
+    container_name   = var.service_name
     container_port   = 1550
   }
 }
 
 resource "aws_ecs_task_definition" "app" {
-  family             = local.service_name
+  family             = var.service_name
   execution_role_arn = aws_iam_role.task_executor.arn
 
   # when is this needed?
@@ -163,14 +162,12 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = templatefile(
     "${path.module}/container-definitions.json.tftpl",
     {
-      container_name            = local.service_name
-      image_url                 = var.image_url
-      container_port            = var.container_port
-      cpu                       = var.cpu
-      memory                    = var.memory
-      environment_name          = var.environment_name
-      cloudwatch_log_group_name = aws_cloudwatch_log_group.service_logs.name
-      aws_region                = data.aws_region.current.name
+      service_name   = var.service_name
+      image_url      = var.image_url
+      container_port = var.container_port
+      cpu            = var.cpu
+      memory         = var.memory
+      aws_region     = data.aws_region.current.name
     }
   )
 
@@ -185,7 +182,7 @@ resource "aws_ecs_task_definition" "app" {
 
 # Security group to allow access to Fargate tasks
 resource "aws_security_group" "app" {
-  name        = local.service_name
+  name        = var.service_name
   description = "allow inbound access on the container port"
   lifecycle {
     create_before_destroy = true
