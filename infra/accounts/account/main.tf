@@ -28,7 +28,7 @@ terraform {
   #uncomment#   bucket         = "<TF_STATE_BUCKET_NAME>"
   #uncomment#   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
   #uncomment#   key            = "infra/account.tfstate"
-  #uncomment#   region         = "us-east-1"
+  #uncomment#   region         = "<REGION>"
   #uncomment#   encrypt        = "true"
   #uncomment# }
 
