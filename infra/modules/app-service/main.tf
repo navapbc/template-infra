@@ -19,7 +19,7 @@ locals {
 
 # ALB for an API running in ECS
 resource "aws_lb" "alb" {
-  name            = local.alb_name
+  name            = var.service_name
   idle_timeout    = "120"
   internal        = false
   security_groups = [aws_security_group.alb.id]
@@ -86,7 +86,7 @@ resource "aws_lb_target_group" "api_tg" {
 }
 
 resource "aws_security_group" "alb" {
-  name        = local.alb_name
+  name        = "${var.service_name}-alb"
   description = "Allow traffic to alb"
 
   lifecycle {
@@ -182,7 +182,7 @@ resource "aws_ecs_task_definition" "app" {
 
 # Security group to allow access to Fargate tasks
 resource "aws_security_group" "app" {
-  name        = var.service_name
+  name        = "${var.service_name}-app"
   description = "allow inbound access on the container port"
   lifecycle {
     create_before_destroy = true
