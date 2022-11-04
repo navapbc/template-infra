@@ -26,7 +26,7 @@ module "app_config" {
 }
 
 module "service" {
-  source                = "../../modules/app-service"
+  source                = "../../modules/service"
   service_name          = local.service_name
   image_repository_name = module.app_config.image_repository_name
   image_tag             = var.image_tag
