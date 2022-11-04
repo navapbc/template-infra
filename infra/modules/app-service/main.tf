@@ -9,11 +9,6 @@ locals {
   image_url               = "${var.image_repository_url}:${var.image_tag}"
 }
 
-###########################
-## Network Configuration ##
-###########################
-
-
 ###################
 ## Load balancer ##
 ###################
@@ -86,47 +81,9 @@ resource "aws_lb_target_group" "api_tg" {
   }
 }
 
-resource "aws_security_group" "alb" {
-  name        = "${var.service_name}-alb"
-  description = "Allow traffic to alb"
-
-  lifecycle {
-    create_before_destroy = true
-
-    # changing the description is a destructive change
-    # just ignore it
-    ignore_changes = [description]
-  }
-
-  vpc_id = var.vpc_id
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 #######################
 ## Service Execution ##
 #######################
-
-resource "aws_ecs_cluster" "cluster" {
-  name = local.cluster_name
-
-  setting {
-    name  = "containerInsights"
-    value = "enabled"
-  }
-}
 
 resource "aws_ecs_service" "app" {
   name            = var.service_name
@@ -181,28 +138,27 @@ resource "aws_ecs_task_definition" "app" {
   network_mode = "awsvpc"
 }
 
-# Security group to allow access to Fargate tasks
-resource "aws_security_group" "app" {
-  name        = "${var.service_name}-app"
-  description = "allow inbound access on the container port"
-  lifecycle {
-    create_before_destroy = true
-  }
+resource "aws_ecs_cluster" "cluster" {
+  name = local.cluster_name
 
-  ingress {
-    protocol        = "tcp"
-    from_port       = var.container_port
-    to_port         = var.container_port
-    security_groups = [aws_security_group.alb.id]
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
   }
 }
+
+##########
+## Logs ##
+##########
+
+# Cloudwatch log group to for streaming ECS application logs.
+resource "aws_cloudwatch_log_group" "service_logs" {
+  name = local.log_group_name
+}
+
+####################
+## Access Control ##
+####################
 
 resource "aws_iam_role" "task_executor" {
   name               = local.task_executor_role_name
@@ -265,11 +221,58 @@ resource "aws_iam_role_policy" "task_executor" {
   policy = data.aws_iam_policy_document.task_executor.json
 }
 
-##########
-## Logs ##
-##########
+###########################
+## Network Configuration ##
+###########################
 
-# Cloudwatch log group to for streaming ECS application logs.
-resource "aws_cloudwatch_log_group" "service_logs" {
-  name = local.log_group_name
+resource "aws_security_group" "alb" {
+  name        = "${var.service_name}-alb"
+  description = "Allow TCP traffic to application load balancer"
+
+  lifecycle {
+    create_before_destroy = true
+
+    # changing the description is a destructive change
+    # just ignore it
+    ignore_changes = [description]
+  }
+
+  vpc_id = var.vpc_id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Security group to allow access to Fargate tasks
+resource "aws_security_group" "app" {
+  name        = "${var.service_name}-app"
+  description = "Allow inbound TCP access to application container port"
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = var.container_port
+    to_port         = var.container_port
+    security_groups = [aws_security_group.alb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
