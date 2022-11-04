@@ -230,7 +230,10 @@ resource "aws_iam_role_policy" "task_executor" {
 ###########################
 
 resource "aws_security_group" "alb" {
-  name        = "${var.service_name}-alb"
+  # Specify name_prefix instead of name because when a change requires creating a new
+  # security group, sometimes the change requires the new security group to be created
+  # before the old one is destroyed. In this situation, the new one needs a unique name
+  name_prefix = "${var.service_name}-alb"
   description = "Allow TCP traffic to application load balancer"
 
   lifecycle {
@@ -260,7 +263,10 @@ resource "aws_security_group" "alb" {
 
 # Security group to allow access to Fargate tasks
 resource "aws_security_group" "app" {
-  name        = "${var.service_name}-app"
+  # Specify name_prefix instead of name because when a change requires creating a new
+  # security group, sometimes the change requires the new security group to be created
+  # before the old one is destroyed. In this situation, the new one needs a unique name
+  name_prefix = "${var.service_name}-app"
   description = "Allow inbound TCP access to application container port"
   lifecycle {
     create_before_destroy = true
