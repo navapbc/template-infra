@@ -210,7 +210,7 @@ data "aws_iam_policy_document" "task_executor" {
       "ecr:GetDownloadUrlForLayer",
     ]
 
-    resources = [local.image_repository_url]
+    resources = [var.image_repository_url]
   }
 }
 
