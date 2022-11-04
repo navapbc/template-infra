@@ -11,9 +11,9 @@ variable "image_tag" {
   description = "The tag of the image to deploy"
 }
 
-variable "image_repository_url" {
+variable "image_repository_name" {
   type        = string
-  description = "The URL of the container image repository"
+  description = "The name of the container image repository"
 }
 
 variable "desired_instance_count" {
