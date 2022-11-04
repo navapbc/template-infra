@@ -149,7 +149,7 @@ resource "aws_ecs_service" "app" {
   load_balancer {
     target_group_arn = aws_lb_target_group.api_tg.arn
     container_name   = var.service_name
-    container_port   = 1550
+    container_port   = var.container_port
   }
 }
 
