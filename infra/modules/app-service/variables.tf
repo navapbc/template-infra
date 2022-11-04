@@ -6,9 +6,14 @@ variable "service_name" {
   }
 }
 
-variable "image_url" {
+variable "image_tag" {
   type        = string
-  description = "The URL for the image to deploy"
+  description = "The tag of the image to deploy"
+}
+
+variable "image_repository_url" {
+  type        = string
+  description = "The URL of the container image repository"
 }
 
 variable "desired_instance_count" {

@@ -30,9 +30,10 @@ module "app_config" {
 }
 
 module "service" {
-  source       = "../../modules/app-service"
-  service_name = local.service_name
-  image_url    = "${data.aws_ecr_repository.app.repository_url}:${var.image_tag}"
-  vpc_id       = data.aws_vpc.default.id
-  subnet_ids   = data.aws_subnets.default.ids
+  source               = "../../modules/app-service"
+  service_name         = local.service_name
+  image_repository_url = data.aws_ecr_repository.app.repository_url
+  image_tag            = var.image_tag
+  vpc_id               = data.aws_vpc.default.id
+  subnet_ids           = data.aws_subnets.default.ids
 }

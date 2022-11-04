@@ -6,6 +6,7 @@ locals {
   cluster_name            = var.service_name
   log_group_name          = "service/${var.service_name}"
   task_executor_role_name = "${var.service_name}-task-executor"
+  image_url               = "${var.image_repository_url}:${var.image_tag}"
 }
 
 ###########################
@@ -163,7 +164,7 @@ resource "aws_ecs_task_definition" "app" {
     "${path.module}/container-definitions.json.tftpl",
     {
       service_name   = var.service_name
-      image_url      = var.image_url
+      image_url      = local.image_url
       container_port = var.container_port
       cpu            = var.cpu
       memory         = var.memory
@@ -205,10 +206,10 @@ resource "aws_security_group" "app" {
 
 resource "aws_iam_role" "task_executor" {
   name               = local.task_executor_role_name
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume_role.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_assume_task_executor_role.json
 }
 
-data "aws_iam_policy_document" "ecs_assume_role" {
+data "aws_iam_policy_document" "ecs_assume_task_executor_role" {
   statement {
     sid = "ECSTaskExecution"
     actions = [
@@ -221,6 +222,52 @@ data "aws_iam_policy_document" "ecs_assume_role" {
     }
   }
 }
+
+data "aws_iam_policy_document" "task_executor" {
+  # Allow ECS to log to Cloudwatch.
+  statement {
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogStreams"
+    ]
+
+    resources = ["${aws_cloudwatch_log_group.service_logs.arn}:*"]
+  }
+
+  # Allow ECS to authenticate with ECR
+  statement {
+    sid    = "AllowEbAuthECR"
+    effect = "Allow"
+    actions = [
+      "ecr:GetAuthorizationToken",
+    ]
+    resources = ["*"]
+  }
+
+  # Allow ECS to download images.
+  statement {
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+      "ecr:BatchGetImage",
+      "ecr:GetAuthorizationToken",
+      "ecr:GetDownloadUrlForLayer",
+    ]
+
+    resources = [local.image_repository_url]
+  }
+}
+
+# Link access policies to the ECS task execution role.
+resource "aws_iam_role_policy" "task_executor" {
+  name   = "${var.service_name}-task-executor-role-policy"
+  role   = aws_iam_role.task_executor.id
+  policy = data.aws_iam_policy_document.task_executor.json
+}
+
+##########
+## Logs ##
+##########
 
 # Cloudwatch log group to for streaming ECS application logs.
 resource "aws_cloudwatch_log_group" "service_logs" {
