@@ -177,7 +177,6 @@ data "aws_iam_policy_document" "ecs_assume_task_executor_role" {
     actions = [
       "sts:AssumeRole"
     ]
-    effect = "Allow"
     principals {
       type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
@@ -193,14 +192,12 @@ data "aws_iam_policy_document" "task_executor" {
       "logs:PutLogEvents",
       "logs:DescribeLogStreams"
     ]
-
     resources = ["${aws_cloudwatch_log_group.service_logs.arn}:*"]
   }
 
   # Allow ECS to authenticate with ECR
   statement {
-    sid    = "ECRAuth"
-    effect = "Allow"
+    sid = "ECRAuth"
     actions = [
       "ecr:GetAuthorizationToken",
     ]
@@ -215,7 +212,6 @@ data "aws_iam_policy_document" "task_executor" {
       "ecr:BatchGetImage",
       "ecr:GetDownloadUrlForLayer",
     ]
-
     resources = [data.aws_ecr_repository.app.arn]
   }
 }
