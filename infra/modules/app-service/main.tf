@@ -129,6 +129,7 @@ resource "aws_ecs_task_definition" "app" {
       container_port = var.container_port
       cpu            = var.cpu
       memory         = var.memory
+      awslogs_group  = aws_cloudwatch_log_group.service_logs.name
       aws_region     = data.aws_region.current.name
     }
   )

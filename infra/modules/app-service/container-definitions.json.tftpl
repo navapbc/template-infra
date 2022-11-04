@@ -28,7 +28,7 @@
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-group": "${service_name}",
+        "awslogs-group": "${awslogs_group}",
         "awslogs-region": "${aws_region}",
         "awslogs-stream-prefix": "${service_name}"
       }
