@@ -11,10 +11,6 @@ data "aws_subnets" "default" {
   }
 }
 
-data "aws_ecr_repository" "app" {
-  name = module.app_config.image_repository_name
-}
-
 locals {
   project_name = module.project_config.project_name
   app_name     = module.app_config.app_name
