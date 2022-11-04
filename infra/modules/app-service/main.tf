@@ -197,7 +197,7 @@ data "aws_iam_policy_document" "task_executor" {
 
   # Allow ECS to authenticate with ECR
   statement {
-    sid    = "AllowEbAuthECR"
+    sid    = "ECRAuth"
     effect = "Allow"
     actions = [
       "ecr:GetAuthorizationToken",
@@ -207,10 +207,10 @@ data "aws_iam_policy_document" "task_executor" {
 
   # Allow ECS to download images.
   statement {
+    sid = "ECRPullAccess"
     actions = [
       "ecr:BatchCheckLayerAvailability",
       "ecr:BatchGetImage",
-      "ecr:GetAuthorizationToken",
       "ecr:GetDownloadUrlForLayer",
     ]
 
