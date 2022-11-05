@@ -91,6 +91,9 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 func SetUpDevEnvironment(t *testing.T, projectName string) {
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../infra/app/envs/dev/",
+		Vars: map[string]interface{}{
+			"image_tag": GetCurrentCommitHash(t),
+		},
 	})
 	terraform.InitAndApply(t, terraformOptions)
 }
@@ -155,5 +158,13 @@ func TeardownBuildRepository(t *testing.T) {
 func TeardownDevEnvironment(t *testing.T) {
 	terraform.Destroy(t, &terraform.Options{
 		TerraformDir: "../infra/app/envs/dev/",
+	})
+}
+
+func GetCurrentCommitHash(t *testing.T) string {
+	return shell.RunCommandAndGetOutput(t, shell.Command{
+		Command:    "git",
+		Args:       []string{"rev-parse", "HEAD"},
+		WorkingDir: "./",
 	})
 }
