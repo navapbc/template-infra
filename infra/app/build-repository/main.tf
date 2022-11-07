@@ -54,6 +54,6 @@ module "app_config" {
 module "container_image_repository" {
   source               = "../../modules/container-image-repository"
   name                 = module.app_config.image_repository_name
-  push_access_role_arn = var.github_actions_role_arn
+  push_access_role_arn = data.aws_iam_role.github_actions.arn
   app_account_ids      = var.app_environment_account_ids
 }
