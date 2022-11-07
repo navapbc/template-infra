@@ -46,6 +46,7 @@ Now that the S3 bucket for storing Terraform state files and the DynamoDB table 
   backend "s3" {
     bucket         = "<TF_STATE_BUCKET_NAME>"
     dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
+    region         = "<REGION>"
     ...
   }
 ```

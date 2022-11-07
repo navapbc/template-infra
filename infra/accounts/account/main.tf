@@ -3,7 +3,7 @@ data "aws_region" "current" {}
 
 locals {
   # Choose the region where this infrastructure should be deployed.
-  region = "us-east-1"
+  region = module.project_config.default_region
 
   # Set project tags that will be used to tag all resources. 
   tags = merge(module.project_config.default_tags, {
@@ -28,7 +28,7 @@ terraform {
   #uncomment#   bucket         = "<TF_STATE_BUCKET_NAME>"
   #uncomment#   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
   #uncomment#   key            = "infra/account.tfstate"
-  #uncomment#   region         = "us-east-1"
+  #uncomment#   region         = "<REGION>"
   #uncomment#   encrypt        = "true"
   #uncomment# }
 
@@ -51,7 +51,7 @@ module "bootstrap" {
 }
 
 module "auth_github_actions" {
-  source            = "../../modules/auth-github-actions"
-  project_name      = module.project_config.project_name
-  github_repository = module.project_config.code_repository
+  source                   = "../../modules/auth-github-actions"
+  github_actions_role_name = module.project_config.github_actions_role_name
+  github_repository        = module.project_config.code_repository
 }
