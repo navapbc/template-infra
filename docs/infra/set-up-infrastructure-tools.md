@@ -71,6 +71,12 @@ Default output format [None]: json
 
 **Using the above command will create a [dev] profile.**  
 
+Once you're done, verify access by running the following command to print out information about the AWS IAM user you authenticated as.
+
+```bash
+aws sts get-caller-identity
+```
+
 ### References
 
 - [Configuration basics][1]
