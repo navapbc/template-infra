@@ -32,6 +32,7 @@ echo "-------------------------------------------"
 # This will be used to configure the S3 backend in main.tf
 TF_STATE_BUCKET_NAME=$(terraform output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
+REGION=$(terraform output -raw region)
 
 
 # Configure the S3 backend in main.tf by replacing the placeholder
@@ -39,6 +40,7 @@ TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
 # uncomment the S3 backend block
 sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/" main.tf
 sed -i.bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/" main.tf
+sed -i.bak "s/<REGION>/$REGION/" main.tf
 sed -i.bak 's/#uncomment# //g' main.tf
 
 echo "------------------------------"

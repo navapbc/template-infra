@@ -1,7 +1,3 @@
-locals {
-  github_actions_role_name = "${var.project_name}-github-actions"
-}
-
 # Set up GitHub's OpenID Connect provider in AWS account
 resource "aws_iam_openid_connect_provider" "github" {
   url             = "https://token.actions.githubusercontent.com"
@@ -11,7 +7,7 @@ resource "aws_iam_openid_connect_provider" "github" {
 
 # Create IAM role for GitHub Actions
 resource "aws_iam_role" "github_actions" {
-  name               = local.github_actions_role_name
+  name               = var.github_actions_role_name
   description        = "Service role required for Github Action to deploy application resources into the account."
   assume_role_policy = data.aws_iam_policy_document.github_assume_role.json
 }

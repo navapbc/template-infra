@@ -10,4 +10,6 @@ locals {
 
   # Default AWS region for project (e.g. us-east-1, us-east-2, us-west-1)
   default_region = "<DEFAULT_REGION>"
+
+  github_actions_role_name = "${local.project_name}-github-actions"
 }
