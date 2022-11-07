@@ -46,14 +46,6 @@ func SubtestBuildRepository(t *testing.T) {
 	defer TeardownBuildRepository(t)
 	SetUpBuildRepository(t, projectName)
 	ValidateBuildRepository(t, projectName)
-
-	t.Run("TestDevEnvironment", SubtestDevEnvironment)
-}
-
-func SubtestDevEnvironment(t *testing.T) {
-	defer TeardownDevEnvironment(t)
-	SetUpDevEnvironment(t, projectName)
-	ValidateDevEnvironment(t)
 }
 
 func SetUpProject(t *testing.T, projectName string) {
@@ -86,13 +78,6 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 		Args:       []string{"-f", "template-only.mak", "set-up-app-build-repository", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
 		WorkingDir: "../",
 	})
-}
-
-func SetUpDevEnvironment(t *testing.T, projectName string) {
-	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
-	})
-	terraform.InitAndApply(t, terraformOptions)
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
@@ -134,10 +119,6 @@ func ValidateBuildRepository(t *testing.T, projectName string) {
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 }
 
-func ValidateDevEnvironment(t *testing.T) {
-	// TODO
-}
-
 func TeardownAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
@@ -155,5 +136,13 @@ func TeardownBuildRepository(t *testing.T) {
 func TeardownDevEnvironment(t *testing.T) {
 	terraform.Destroy(t, &terraform.Options{
 		TerraformDir: "../infra/app/envs/dev/",
+	})
+}
+
+func GetCurrentCommitHash(t *testing.T) string {
+	return shell.RunCommandAndGetOutput(t, shell.Command{
+		Command:    "git",
+		Args:       []string{"rev-parse", "HEAD"},
+		WorkingDir: "./",
 	})
 }

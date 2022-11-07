@@ -14,6 +14,7 @@ FROM busybox:latest AS release
 ENV PORT=8000
 
 ADD index.html /www/index.html
+ADD health /www/health
 
 EXPOSE $PORT
 

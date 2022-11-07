@@ -1,0 +1,37 @@
+[
+  {
+    "name": "${service_name}",
+    "image": "${image_url}",
+    "memory": ${memory},
+    "cpu": ${cpu},
+    "networkMode": "awsvpc",
+    "essential": true,
+    "entryPoint": null,
+    "readonlyRootFilesystem": true,
+    "healthcheck": {
+      "command": [
+        "CMD-SHELL",
+        "curl -f http://localhost:${container_port}/health || exit 1"
+      ]
+    },
+    "portMappings": [
+      {
+        "containerPort": ${container_port}
+      }
+    ],
+    "linuxParameters": {
+      "capabilities": {
+        "drop": ["ALL"]
+      },
+      "initProcessEnabled": true
+    },
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${awslogs_group}",
+        "awslogs-region": "${aws_region}",
+        "awslogs-stream-prefix": "${service_name}"
+      }
+    }
+  }
+]

@@ -34,7 +34,8 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 # Validate all infra root and child modules.
 infra-validate: \
 	infra-validate-modules \
-	infra-validate-env-template
+	# !! Uncomment the following line once you've set up the infra/project-config module
+	# infra-validate-env-template
 
 # Validate all infra root and child modules.
 # Validate all infra reusable child modules. The prerequisite for this rule is obtained by

@@ -14,6 +14,9 @@ locals {
     environment = local.environment_name
     description = "Application resources created in dev environment"
   })
+
+  tfstate_bucket = "<TF_STATE_BUCKET_NAME>"
+  tfstate_key    = "infra/<APP_NAME>/environments/dev.tfstate"
 }
 
 terraform {
@@ -51,4 +54,5 @@ module "project_config" {
 module "app" {
   source           = "../../env-template"
   environment_name = local.environment_name
+  image_tag        = local.image_tag
 }
