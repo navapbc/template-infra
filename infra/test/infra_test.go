@@ -23,7 +23,7 @@ func TestDev(t *testing.T) {
 		WorkingDir: "./",
 	})
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
+		TerraformDir: "../app/envs/dev/",
 		Vars: map[string]interface{}{
 			"image_tag": imageTag,
 		},
@@ -39,13 +39,13 @@ func BuildAndPublish(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"release-build"},
-		WorkingDir: "../",
+		WorkingDir: "../../",
 	})
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"release-publish"},
-		WorkingDir: "../",
+		WorkingDir: "../../",
 	})
 }
 
@@ -61,7 +61,7 @@ func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "aws",
 		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName},
-		WorkingDir: "../",
+		WorkingDir: "../../",
 	})
 }
 

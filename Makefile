@@ -67,7 +67,7 @@ infra-format:
 	terraform fmt -recursive infra
 
 infra-test:
-	cd test && go test -v -timeout 30m
+	cd infra/test && go test -v -timeout 30m
 
 ########################
 ## Release Management ##
