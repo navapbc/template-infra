@@ -29,7 +29,7 @@ func TestDev(t *testing.T) {
 		},
 	})
 
-	// defer DestroyDevEnvironmentAndWorkspace(t, terraformOptions, workspaceName)
+	defer DestroyDevEnvironmentAndWorkspace(t, terraformOptions, workspaceName)
 	CreateDevEnvironmentInWorkspace(t, terraformOptions, workspaceName)
 	WaitForServiceToBeStable(t, workspaceName)
 	RunEndToEndTests(t, terraformOptions)
