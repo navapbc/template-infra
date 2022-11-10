@@ -5,3 +5,7 @@ output "account_id" {
 output "region" {
   value = data.aws_region.current.name
 }
+
+output "service_endpoint" {
+  value = module.app.service_endpoint
+}
