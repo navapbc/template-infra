@@ -1,5 +1,6 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+data "aws_lb" "current" {}
 
 locals {
   # The prefix key/value pair is used for terraform workspaces, which is useful for projects with multiple infrastructure developers. 

@@ -5,3 +5,8 @@ output "account_id" {
 output "region" {
   value = data.aws_region.current.name
 }
+
+output "dns_name" {
+  description = "The DNS name of the load balancer."
+  value       = data.aws_lb.current.dns_name
+}

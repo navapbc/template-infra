@@ -1,5 +1,6 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+data "aws_lb" "current" {}
 
 locals {
   environment_name = "dev"
