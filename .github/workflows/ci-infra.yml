@@ -13,10 +13,6 @@ on:
       - test/**
       - .github/workflows/ci-infra.yml
 
-permissions:
-  contents: read
-  id-token: write
-
 jobs:
   check-terraform-format:
     name: Check Terraform format
@@ -73,6 +69,11 @@ jobs:
   # infra-test-e2e:
   #   name: End-to-end tests
   #   runs-on: ubuntu-latest
+
+  #   permissions:
+  #     contents: read
+  #     id-token: write
+
   #   steps:
   #     - uses: actions/checkout@v3
   #     - uses: hashicorp/setup-terraform@v2
