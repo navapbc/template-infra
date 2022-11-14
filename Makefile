@@ -6,9 +6,6 @@ PROJECT_NAME ?= $(notdir $(PWD))
 # on will be determined by the APP_NAME Makefile argument
 APP_NAME ?= app
 
-# enter the env you want to target on the deployment.
-ENV_NAME ?= 
-
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
@@ -99,6 +96,7 @@ release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:
+# check the varaible against the list of enviroments and suggest one of the correct envs.
 ifneq ($(filter $(ENV_NAME),$(ENVIRONMENTS)),)
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENV_NAME)
 else
