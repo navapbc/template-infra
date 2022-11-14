@@ -11,5 +11,5 @@ variable "github_repository" {
 variable "iam_role_policy_arns" {
   type        = list(string)
   description = "List of IAM policy ARNs to attach to the GitHub Actions IAM role. Defaults to Developer power user access role."
-  default     = ["arn:aws:iam::aws:policy/PowerUserAccess"]
+  default     = ["arn:aws:iam::aws:policy/AdministratorAccess"]
 }
