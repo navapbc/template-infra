@@ -1,6 +1,6 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
-data "aws_lb" "current" {}
+data "aws_lb" "alb" {}
 
 locals {
   # The prefix key/value pair is used for terraform workspaces, which is useful for projects with multiple infrastructure developers. 
@@ -14,6 +14,8 @@ locals {
     environment = "staging"
     description = "Application resources created in staging environment"
   })
+
+  public_endpoint = data.aws_lb.alb.dns_name
 }
 
 terraform {
