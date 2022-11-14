@@ -1,6 +1,5 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
-data "aws_lb" "alb" {}
 
 locals {
   environment_name = "dev"
@@ -18,7 +17,6 @@ locals {
 
   tfstate_bucket  = "<TF_STATE_BUCKET_NAME>"
   tfstate_key     = "infra/<APP_NAME>/environments/dev.tfstate"
-  public_endpoint = data.aws_lb.alb.dns_name
 }
 
 terraform {

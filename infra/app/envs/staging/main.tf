@@ -14,8 +14,6 @@ locals {
     environment = "staging"
     description = "Application resources created in staging environment"
   })
-
-  public_endpoint = data.aws_lb.alb.dns_name
 }
 
 terraform {

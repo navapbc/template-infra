@@ -8,10 +8,5 @@ output "region" {
 
 output "public_endpoint" {
   description = "The DNS name of the load balancer that is created in the service module."
-  value       = data.aws_lb.alb.dns_name
-}
-
-output "public_endpoint" {
-  description = "The DNS name of the load balancer that is created in the service module."
-  value       = data.aws_lb.alb.dns_name
+  value       = module.app.public_endpoint
 }

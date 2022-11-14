@@ -14,8 +14,6 @@ locals {
     environment = "prod"
     description = "Application resources created in production environment"
   })
-
-  public_endpoint = data.aws_lb.alb.dns_name
 }
 
 terraform {
