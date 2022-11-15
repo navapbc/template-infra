@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      project:
+      project_repository:
         description: Project repository to deploy to
         default: navapbc/platform-test
         required: true
@@ -21,7 +21,7 @@ jobs:
       - name: Checkout platform-test repo
         uses: actions/checkout@v3
         with:
-          repository: platform-test
+          repository: ${{ inputs.project_repository }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
       - name: Reinstall infra template
         # TODO: first add install-template.sh to main branch in a separate PR
