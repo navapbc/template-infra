@@ -3,8 +3,18 @@ name: Deploy
 on:
   push:
     branches: ["main"]
-  workflow_dispatch: {}
-
+  workflow_dispatch: 
+    inputs:
+      env_name:
+        description: 'env_name input'
+        required: true
+        default: 'dev' 
+        type: choice
+        options:
+        - dev
+        - staging
+        - prod 
+  
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -19,4 +29,4 @@ jobs:
         run: make release-publish
 
       - name: Deploy release
-        run: make release-deploy
+        run: make release-deploy ENV_NAME=${{ inputs.env_name }}
