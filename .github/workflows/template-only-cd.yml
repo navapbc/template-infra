@@ -1,0 +1,30 @@
+name: Template Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      project:
+        description: Project repository to deploy to
+        default: platform-test
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy template infra
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout platform-test repo
+        uses: actions/checkout@v3
+        with:
+          repository: platform-test
+          token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+      - name: Reinstall infra template
+        # TODO: first add install-template.sh to main branch in a separate PR
+        run: |
+          curl https://raw.githubusercontent.com/navapbc/template-infra/lorenyu/platformcd/template-only-bin/install-template.sh | bash -s
+          git add .
+          git commit -m "Template infra deploy #${{ github.run_id }}"
+          git push
