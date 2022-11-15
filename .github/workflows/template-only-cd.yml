@@ -27,7 +27,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: template-infra
-      - name: Reinstall infra template and cleanup
+      - name: Reinstall infra template
         # TODO: first add install-template.sh to main branch in a separate PR
         run: |
           cp -r \
@@ -38,8 +38,12 @@ jobs:
             template-infra/Makefile \
             .
           rm .github/workflows/template-only-*
+      - name: Clean infra template
+        run: rm -fr template-infra
       - name: Push changes to project repo
         run: |
+          git config --global user.email "platform-admins@navapbc.com"
+          git config --global user.name "nava-platform-bot"
           git add .
           git commit -m "Template infra deploy #${{ github.run_id }}"
           git push
