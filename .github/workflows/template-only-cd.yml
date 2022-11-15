@@ -8,7 +8,7 @@ on:
     inputs:
       project:
         description: Project repository to deploy to
-        default: platform-test
+        default: navapbc/platform-test
         required: true
   # TODO: uncomment before merging this is for testing
   pull_request:
