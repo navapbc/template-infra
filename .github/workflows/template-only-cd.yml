@@ -18,15 +18,28 @@ jobs:
     name: Deploy template infra
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout platform-test repo
+      - name: Checkout project repo
         uses: actions/checkout@v3
         with:
           repository: ${{ inputs.project_repository }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
-      - name: Reinstall infra template
+      - name: Checkout template-infra repo
+        uses: actions/checkout@v3
+        with:
+          path: template-infra
+      - name: Reinstall infra template and cleanup
         # TODO: first add install-template.sh to main branch in a separate PR
         run: |
-          curl https://raw.githubusercontent.com/navapbc/template-infra/lorenyu/platformcd/template-only-bin/install-template.sh | bash -s
+          cp -r \
+            template-infra/.github \
+            template-infra/bin \
+            template-infra/docs \
+            template-infra/infra \
+            template-infra/Makefile \
+            .
+          rm .github/workflows/template-only-*
+      - name: Push changes to project repo
+        run: |
           git add .
           git commit -m "Template infra deploy #${{ github.run_id }}"
           git push
