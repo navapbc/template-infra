@@ -91,7 +91,19 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 }
 
 func SetUpDevEnvironment(t *testing.T) {
+	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
+	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
+		Command:    "git",
+		Args:       []string{"rev-parse", "HEAD"},
+		WorkingDir: "./",
+	})
 
+	terraform.InitAndApply(t, terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../infra/app/envs/dev/",
+		Vars: map[string]interface{}{
+			"image_tag": imageTag,
+		},
+	}))
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
@@ -144,19 +156,9 @@ func ValidateDevEnvironment(t *testing.T) {
 		WorkingDir: "../../",
 	})
 
-	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
-	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
-		Command:    "git",
-		Args:       []string{"rev-parse", "HEAD"},
-		WorkingDir: "./",
-	})
-
 	// Hit the service endpoint to see if it returns status 200
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../infra/app/envs/dev/",
-		Vars: map[string]interface{}{
-			"image_tag": imageTag,
-		},
 	})
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
