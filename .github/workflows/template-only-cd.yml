@@ -29,7 +29,6 @@ jobs:
           repository: navapbc/platform-test
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
       - name: Reinstall infra template
-        # TODO: first add install-template.sh to main branch in a separate PR
         run: |
           cp -r \
             template-infra/.github \
