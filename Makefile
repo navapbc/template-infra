@@ -93,6 +93,8 @@ release-build:
 		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
 release-publish:
+	# Need to init module when running in CD since GitHub actions does a fresh checkout of repo
+	terraform -chdir=infra/$(APP_NAME)/build-repository init
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:
