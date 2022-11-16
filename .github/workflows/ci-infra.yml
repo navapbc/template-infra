@@ -65,7 +65,7 @@ jobs:
         uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           github_token: ${{ github.token }}
-  # Uncomment to trigger automated infra tests once dev environment is set up
+  # !! Uncomment to trigger automated infra tests once dev environment is set up
   # infra-test-e2e:
   #   name: End-to-end tests
   #   runs-on: ubuntu-latest
