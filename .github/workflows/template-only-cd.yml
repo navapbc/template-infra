@@ -5,17 +5,15 @@ on:
     branches:
       - main
   workflow_dispatch:
-    inputs:
-      project_repository:
-        description: Project repository to deploy to
-        default: navapbc/platform-test
-        required: true
   # TODO: uncomment before merging this is for testing
   pull_request:
 
+# Only allow on workflow at a time to prevent race conditions when pushing changes to the project repo
+concurrency: platform-template-only-cd
+
 jobs:
   deploy:
-    name: Deploy template infra
+    name: Deploy to platform-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout template-infra repo
