@@ -11,4 +11,4 @@ Some checks are disabled until you've completed certain setup steps:
 
 You can verify that CI is running and passing by clicking into the Actions tab in GitHub.
 
-Note that this repo only contains CI for infra (`ci-infra.yml`). Application CI is included as part of the application templates.
+Note that this repo only contains CI for infra (`ci-infra.yml`). Application CI (`ci-app.yml`) is included as part of the application templates.
