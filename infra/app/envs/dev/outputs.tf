@@ -7,5 +7,6 @@ output "region" {
 }
 
 output "service_endpoint" {
-  value = module.app.service_endpoint
+  description = "The public endpoint for the service."
+  value       = module.app.service_endpoint
 }
