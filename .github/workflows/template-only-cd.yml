@@ -30,6 +30,9 @@ jobs:
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
       - name: Reinstall infra template
         run: |
+          # TODO(lorenyu) move all these steps into a script so we can do something like
+          # cd project-repo && ../template-infra/template-only-bin/install-template.sh
+
           cp -r \
             template-infra/.github \
             template-infra/bin \
@@ -38,6 +41,17 @@ jobs:
             template-infra/Makefile \
             project-repo
           rm project-repo/.github/workflows/template-only-*
+
+          # Restore project files with project-specific configuration that was defined as part of project setup.
+          # This includes the terraform backend configuration blocks and the project-config module
+          git checkout HEAD -- \
+            infra/project-config/main.tf \
+            infra/accounts/account/main.tf \
+            infra/app/build-repository/main.tf \
+            infra/app/envs/dev/main.tf \
+            infra/app/envs/prod/main.tf \
+            infra/app/envs/staging/main.tf
+
       - name: Push changes to project repo
         working-directory: project-repo
         run: |
