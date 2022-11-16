@@ -29,18 +29,19 @@ jobs:
           repository: navapbc/platform-test
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
       - name: Reinstall infra template
+        working-directory: project-repo
         run: |
           # TODO(lorenyu) move all these steps into a script so we can do something like
-          # cd project-repo && ../template-infra/template-only-bin/install-template.sh
+          # ../template-infra/template-only-bin/install-template.sh
 
           cp -r \
-            template-infra/.github \
-            template-infra/bin \
-            template-infra/docs \
-            template-infra/infra \
-            template-infra/Makefile \
-            project-repo
-          rm project-repo/.github/workflows/template-only-*
+            ../template-infra/.github \
+            ../template-infra/bin \
+            ../template-infra/docs \
+            ../template-infra/infra \
+            ../template-infra/Makefile \
+            .
+          rm .github/workflows/template-only-*
 
           # Restore project files with project-specific configuration that was defined as part of project setup.
           # This includes the terraform backend configuration blocks and the project-config module
