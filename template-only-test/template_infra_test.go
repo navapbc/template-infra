@@ -136,7 +136,7 @@ func ValidateBuildRepository(t *testing.T, projectName string) {
 }
 
 func TeardownAccount(t *testing.T) {
-	fmt.Println("::group::Destroying account")
+	fmt.Println("::group::Destroying account resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
@@ -146,15 +146,19 @@ func TeardownAccount(t *testing.T) {
 }
 
 func TeardownBuildRepository(t *testing.T) {
+	fmt.Println("::group::Destroying build repository resources")
 	terraform.Destroy(t, &terraform.Options{
 		TerraformDir: "../infra/app/build-repository/",
 	})
+	fmt.Println("::endgroup::")
 }
 
 func TeardownDevEnvironment(t *testing.T) {
+	fmt.Println("::group::Destroying dev environment resources")
 	terraform.Destroy(t, &terraform.Options{
 		TerraformDir: "../infra/app/envs/dev/",
 	})
+	fmt.Println("::endgroup::")
 }
 
 func GetCurrentCommitHash(t *testing.T) string {
