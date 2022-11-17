@@ -44,3 +44,4 @@ Now you're ready to set up the various pieces of your infrastructure.
 3. [Set up continuous integration](./template-only-docs/set-up-ci.md)
 4. [Set up application](./docs/infra/set-up-app.md)
 5. [Set up application environments](./docs/infra/set-up-app-env.md)
+6. [Set up continous deployment](./template-only-docs/set-up-cd.md)
