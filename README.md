@@ -15,24 +15,10 @@ The template infra is intended to work with multiple application templates. See 
 
 ## Installation
 
-To get started using the template infrastructure on your project, install the template by cloning the template repository and copying the following folders/files to your repository and removing any files that are only relevant to the template itself:
+To get started using the template infrastructure on your project, run the following command to execute the [install script](https://github.com/navapbc/template-infra/tree/main/template-only-bin/install-template.sh), which clones the template repository, copies the template files to your repository, and removes any files that are only relevant to the template itself:
 
 ```bash
-# fetch latest version of template-infra
-git clone --single-branch --branch main --depth 1 git@github.com:navapbc/template-infra.git
-
-cp -r \
-  template-infra/.github \
-  template-infra/bin \
-  template-infra/docs \
-  template-infra/infra \
-  template-infra/Makefile \
-  .
-
-rm .github/workflows/template-only-*
-
-# clean up template-infra folder
-rm -fr template-infra
+curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-template.sh | bash -s
 ```
 
 Now you're ready to set up the various pieces of your infrastructure.
@@ -44,3 +30,4 @@ Now you're ready to set up the various pieces of your infrastructure.
 3. [Set up continuous integration](./template-only-docs/set-up-ci.md)
 4. [Set up application](./docs/infra/set-up-app.md)
 5. [Set up application environments](./docs/infra/set-up-app-env.md)
+6. [Set up continous deployment](./template-only-docs/set-up-cd.md)
