@@ -23,11 +23,15 @@ curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only
 
 Now you're ready to set up the various pieces of your infrastructure.
 
+## Application Requirements
+
+This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template.
+
 ## Setup
 
 1. [Set up team workflow](./template-only-docs/set-up-team-workflow.md)
 2. [Set up resources needed to manage infrastructure as code (IaC)](./template-only-docs/set-up-infrastructure-as-code.md)
 3. [Set up continuous integration](./template-only-docs/set-up-ci.md)
-4. [Set up application](./docs/infra/set-up-app.md)
-5. [Set up application environments](./docs/infra/set-up-app-env.md)
+4. [Set up application's build repository](./template-only-docs/set-up-app-build-repository.md)
+5. [Set up application environments](./template-only-docs/set-up-app-env.md)
 6. [Set up continous deployment](./template-only-docs/set-up-cd.md)
