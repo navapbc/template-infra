@@ -1,20 +1,21 @@
 name: Deploy
 
 on:
-  push:
-    branches: ["main"]
-  workflow_dispatch: 
+  # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
+  # push:
+  #   branches: ["main"]
+  workflow_dispatch:
     inputs:
       env_name:
-        description: 'env_name input'
+        description: "env_name input"
         required: true
-        default: 'dev' 
+        default: "dev"
         type: choice
         options:
-        - dev
-        - staging
-        - prod 
-  
+          - dev
+          - staging
+          - prod
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
