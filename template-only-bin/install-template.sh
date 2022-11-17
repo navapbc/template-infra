@@ -4,7 +4,7 @@ set -euo pipefail
 echo "Fetch latest version of template-infra"
 git clone --single-branch --branch main --depth 1 git@github.com:navapbc/template-infra.git
 
-echo "Copy files form template-infra"
+echo "Copy files from template-infra"
 cp -r \
   template-infra/.github \
   template-infra/bin \
