@@ -40,4 +40,6 @@ jobs:
         run: make release-publish
 
       - name: Deploy release
-        run: make release-deploy ENV_NAME=${{ inputs.env_name }}
+        run: |
+          ENV_NAME=${{inputs.env_name:-dev}}
+          make release-deploy ENV_NAME=$ENV_NAME
