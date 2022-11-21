@@ -17,10 +17,10 @@ on:
           - prod
 
 env:
-  ENV_NAME: ${{ inputs.env_name }} || "dev"
+  ENV_NAME: ${{ inputs.env_name || 'dev' }}
 
-concurrency:
-  group: cd-${{ env.ENV_NAME }}
+# Need to repeat the expression since env.ENV_NAME is not accessible in this context
+concurrency: cd-${{ inputs.env_name || 'dev' }}
 
 jobs:
   deploy:
