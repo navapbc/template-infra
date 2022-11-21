@@ -41,5 +41,5 @@ jobs:
 
       - name: Deploy release
         run: |
-          ENV_NAME=${{inputs.env_name:-dev}}
+          ENV_NAME=${${{inputs.env_name}}:-dev}
           make release-deploy ENV_NAME=$ENV_NAME
