@@ -11,14 +11,10 @@
 # then visit localhost in a browser (or can use curl from a terminal)
 
 FROM busybox:latest AS release
-ENV PORT=8000
 
 ADD index.html /www/index.html
 ADD health /www/health
-
-EXPOSE $PORT
-
-HEALTHCHECK CMD nc -z localhost $PORT
+ADD start-server.sh /bin/start-server.sh
 
 # Create a basic webserver and run it until the container is stopped
-CMD echo "httpd started" && trap "exit 0;" TERM INT; httpd -v -p $PORT -h /www -f & wait
+CMD start-server.sh
