@@ -16,6 +16,12 @@ on:
           - staging
           - prod
 
+env:
+  ENV_NAME: ${{ inputs.env_name || "dev" }}
+
+concurrency:
+  group: cd-${{ env.ENV_NAME }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -30,17 +36,14 @@ jobs:
       - name: Build release
         run: make release-build
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v1
-      #   with:
-      #     role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
-      #     aws-region: us-east-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::430004246987:role/platform-test-github-actions
+          aws-region: us-east-1
 
       - name: Publish release
         run: make release-publish
 
       - name: Deploy release
-        run: |
-          ENV_NAME_INPUT="${{inputs.env_name}}"
-          ENV_NAME="${ENV_NAME_INPUT:-dev}"
-          make release-deploy ENV_NAME="$ENV_NAME"
+        run: make release-deploy ENV_NAME="$ENV_NAME"
