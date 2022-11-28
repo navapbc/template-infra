@@ -1,0 +1,65 @@
+name: Template Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+# Only allow one workflow at a time to prevent race conditions when pushing changes to the project repo
+concurrency: platform-template-only-cd
+
+jobs:
+  deploy:
+    name: Deploy to platform-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout template-infra repo
+        uses: actions/checkout@v3
+        with:
+          path: template-infra
+      - name: Checkout project repo
+        uses: actions/checkout@v3
+        with:
+          path: project-repo
+          repository: navapbc/platform-test
+          token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+      - name: Reinstall infra template
+        working-directory: project-repo
+        run: |
+          # TODO(lorenyu) move all these steps into a script so we can do something like
+          # ../template-infra/template-only-bin/install-template.sh
+
+          cp -r \
+            ../template-infra/.github \
+            ../template-infra/bin \
+            ../template-infra/docs \
+            ../template-infra/infra \
+            ../template-infra/Makefile \
+            .
+          rm .github/workflows/template-only-*
+
+          # Restore project files with project-specific configuration that was defined as part of project setup.
+          # This includes the terraform backend configuration blocks and the project-config module
+          # Also restore project files that had lines that were commented out in the template, such as Makefile
+          # and cd.yml workflow
+          # Updates in any of these files need to be manually applied to the projects
+          git checkout HEAD -- \
+            infra/project-config/main.tf \
+            infra/accounts/account/main.tf \
+            infra/app/build-repository/main.tf \
+            infra/app/envs/dev/main.tf \
+            infra/app/envs/prod/main.tf \
+            infra/app/envs/staging/main.tf \
+            Makefile \
+            .github/workflows/cd.yml
+
+      - name: Push changes to project repo
+        working-directory: project-repo
+        run: |
+          git config user.name nava-platform-bot
+          git config user.email platform-admins@navapbc.com
+          git add --all
+          # Commit changes (if no changes then no-op)
+          git diff-index --quiet HEAD || git commit -m "Template infra deploy #${{ github.run_id }}"
+          git push
