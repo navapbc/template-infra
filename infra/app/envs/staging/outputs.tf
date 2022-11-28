@@ -6,7 +6,7 @@ output "region" {
   value = data.aws_region.current.name
 }
 
-output "public_endpoint" {
-  description = "The DNS name of the load balancer that is created in the service module."
-  value       = module.app.public_endpoint
+output "service_endpoint" {
+  description = "The public endpoint for the service."
+  value       = module.app.service_endpoint
 }

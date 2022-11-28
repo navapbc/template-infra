@@ -1,0 +1,91 @@
+package test
+
+import (
+	"fmt"
+	"strings"
+	"testing"
+	"time"
+
+	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
+	"github.com/gruntwork-io/terratest/modules/random"
+	"github.com/gruntwork-io/terratest/modules/shell"
+	"github.com/gruntwork-io/terratest/modules/terraform"
+)
+
+func TestDev(t *testing.T) {
+	BuildAndPublish(t)
+
+	uniqueId := strings.ToLower(random.UniqueId())
+	workspaceName := fmt.Sprintf("t-%s", uniqueId)
+	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
+		Command:    "git",
+		Args:       []string{"rev-parse", "HEAD"},
+		WorkingDir: "./",
+	})
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../app/envs/dev/",
+		Vars: map[string]interface{}{
+			"image_tag": imageTag,
+		},
+	})
+
+	defer DestroyDevEnvironmentAndWorkspace(t, terraformOptions, workspaceName)
+	CreateDevEnvironmentInWorkspace(t, terraformOptions, workspaceName)
+	WaitForServiceToBeStable(t, workspaceName)
+	RunEndToEndTests(t, terraformOptions)
+}
+
+func BuildAndPublish(t *testing.T) {
+	terraform.Init(t, &terraform.Options{
+		TerraformDir: "../app/build-repository/",
+	})
+
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"release-build"},
+		WorkingDir: "../../",
+	})
+
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"release-publish"},
+		WorkingDir: "../../",
+	})
+}
+
+func CreateDevEnvironmentInWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
+	fmt.Printf("::group::Create dev environment in new workspace '%s\n'", workspaceName)
+	terraform.Init(t, terraformOptions)
+	terraform.WorkspaceSelectOrNew(t, terraformOptions, workspaceName)
+	terraform.Apply(t, terraformOptions)
+	fmt.Println("::endgroup::")
+}
+
+func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
+	fmt.Println("::group::Wait for service to be stable")
+	appName := "app"
+	environmentName := "dev"
+	serviceName := fmt.Sprintf("%s-%s-%s", workspaceName, appName, environmentName)
+	shell.RunCommand(t, shell.Command{
+		Command:    "aws",
+		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName},
+		WorkingDir: "../../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
+	fmt.Println("::group::Check service for healthy status 200")
+	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
+	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
+		return responseStatus == 200
+	})
+	fmt.Println("::endgroup::")
+}
+
+func DestroyDevEnvironmentAndWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
+	fmt.Println("::group::Destroy environment and workspace")
+	terraform.Destroy(t, terraformOptions)
+	terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
+	fmt.Println("::endgroup::")
+}

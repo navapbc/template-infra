@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
+	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -46,6 +48,14 @@ func SubtestBuildRepository(t *testing.T) {
 	defer TeardownBuildRepository(t)
 	SetUpBuildRepository(t, projectName)
 	ValidateBuildRepository(t, projectName)
+
+	t.Run("TestDevEnvironment", SubtestDevEnvironment)
+}
+
+func SubtestDevEnvironment(t *testing.T) {
+	defer TeardownDevEnvironment(t)
+	SetUpDevEnvironment(t)
+	ValidateDevEnvironment(t)
 }
 
 func SetUpProject(t *testing.T, projectName string) {
@@ -86,6 +96,22 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
+}
+
+func SetUpDevEnvironment(t *testing.T) {
+	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
+	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
+		Command:    "git",
+		Args:       []string{"rev-parse", "HEAD"},
+		WorkingDir: "./",
+	})
+
+	terraform.InitAndApply(t, terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../infra/app/envs/dev/",
+		Vars: map[string]interface{}{
+			"image_tag": imageTag,
+		},
+	}))
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
@@ -133,6 +159,27 @@ func ValidateBuildRepository(t *testing.T, projectName string) {
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 
 	fmt.Println("::endgroup::")
+}
+
+func ValidateDevEnvironment(t *testing.T) {
+	// Wait for service to be stable
+	appName := "app"
+	environmentName := "dev"
+	serviceName := fmt.Sprintf("%s-%s", appName, environmentName)
+	shell.RunCommand(t, shell.Command{
+		Command:    "aws",
+		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName},
+		WorkingDir: "../../",
+	})
+
+	// Hit the service endpoint to see if it returns status 200
+	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
+		TerraformDir: "../infra/app/envs/dev/",
+	})
+	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
+	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
+		return responseStatus == 200
+	})
 }
 
 func TeardownAccount(t *testing.T) {
