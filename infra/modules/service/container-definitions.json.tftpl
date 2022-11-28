@@ -14,6 +14,12 @@
         "curl -f http://localhost:${container_port}/health || exit 1"
       ]
     },
+    "environment": [
+      {
+        "name": "PORT",
+        "value": "${container_port}"
+      }
+    ],
     "portMappings": [
       {
         "containerPort": ${container_port}

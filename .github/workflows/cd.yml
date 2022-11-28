@@ -1,23 +1,34 @@
 name: Deploy
 
 on:
-  push:
-    branches: ["main"]
-  workflow_dispatch: 
+  # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
+  # push:
+  #   branches: ["main"]
+  workflow_dispatch:
     inputs:
       env_name:
-        description: 'env_name input'
+        description: "env_name input"
         required: true
-        default: 'dev' 
+        default: "dev"
         type: choice
         options:
-        - dev
-        - staging
-        - prod 
-  
+          - dev
+          - staging
+          - prod
+
+env:
+  ENV_NAME: ${{ inputs.env_name || 'dev' }}
+
+# Need to repeat the expression since env.ENV_NAME is not accessible in this context
+concurrency: cd-${{ inputs.env_name || 'dev' }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
 
     steps:
       - uses: actions/checkout@v3
@@ -25,8 +36,14 @@ jobs:
       - name: Build release
         run: make release-build
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::430004246987:role/platform-test-github-actions
+          aws-region: us-east-1
+
       - name: Publish release
         run: make release-publish
 
       - name: Deploy release
-        run: make release-deploy ENV_NAME=${{ inputs.env_name }}
+        run: make release-deploy ENV_NAME="$ENV_NAME"

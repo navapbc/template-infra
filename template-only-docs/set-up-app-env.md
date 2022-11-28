@@ -1,5 +1,12 @@
 # Set up application environment
 
+## Requirements
+
+Before setting up the application's environments you'll need to have:
+
+1. [A compatible application in the app folder](./application-requirements.md)
+2. [Set up the application build repository](./set-up-app-build-repository.md)
+
 ## 1. Configure backend
 
 To set up To get started with an environment, copy the backend configuration information created from the relevant account
@@ -31,11 +38,18 @@ Then initialize terraform
 terraform init
 ```
 
-## 2. Create application resources
-
-Now run the following commands to create the resources, making sure to verify the plan very applying.
+## 2. Build and publish the application to the application build repository
 
 ```bash
-terraform plan -out=plan.out
+make release-build
+make release-publish
+```
+
+## 3. Create application resources with the image tag that was published
+
+Now run the following commands to create the resources, using the image tag that was published from the previous step.
+
+```bash
+terraform plan -out=plan.out -var image_tag=<IMAGE_TAG>
 terraform apply plan.out
 ```

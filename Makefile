@@ -104,4 +104,5 @@ ifneq ($(filter $(ENV_NAME),$(ENVIRONMENTS)),)
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENV_NAME)
 else
 	@echo "Please enter: make release-deploy ENV_NAME=<env_name>. The value for env_name must be one of these: $(ENVIRONMENTS)"
+	exit 1
 endif
