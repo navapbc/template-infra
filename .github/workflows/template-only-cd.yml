@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch:
 
-# Only allow on workflow at a time to prevent race conditions when pushing changes to the project repo
+# Only allow one workflow at a time to prevent race conditions when pushing changes to the project repo
 concurrency: platform-template-only-cd
 
 jobs:
