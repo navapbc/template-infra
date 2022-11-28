@@ -54,12 +54,15 @@ func BuildAndPublish(t *testing.T) {
 }
 
 func CreateDevEnvironmentInWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
+	fmt.Printf("::group::Create dev environment in new workspace '%s\n'", workspaceName)
 	terraform.Init(t, terraformOptions)
 	terraform.WorkspaceSelectOrNew(t, terraformOptions, workspaceName)
 	terraform.Apply(t, terraformOptions)
+	fmt.Println("::endgroup::")
 }
 
 func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
+	fmt.Println("::group::Wait for service to be stable")
 	appName := "app"
 	environmentName := "dev"
 	serviceName := fmt.Sprintf("%s-%s-%s", workspaceName, appName, environmentName)
@@ -68,16 +71,21 @@ func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
 		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName},
 		WorkingDir: "../../",
 	})
+	fmt.Println("::endgroup::")
 }
 
 func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
+	fmt.Println("::group::Check service for healthy status 200")
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
+	fmt.Println("::endgroup::")
 }
 
 func DestroyDevEnvironmentAndWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
+	fmt.Println("::group::Destroy environment and workspace")
 	terraform.Destroy(t, terraformOptions)
 	terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
+	fmt.Println("::endgroup::")
 }
