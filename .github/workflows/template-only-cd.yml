@@ -24,25 +24,10 @@ jobs:
           path: project-repo
           repository: navapbc/platform-test
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
-      - name: Reinstall infra template
-        working-directory: project-repo
-        run: |
-          ../template-infra/template-only-bin/install-template.sh
 
-          # Restore project files with project-specific configuration that was defined as part of project setup.
-          # This includes the terraform backend configuration blocks and the project-config module
-          # Also restore project files that had lines that were commented out in the template, such as Makefile
-          # and cd.yml workflow
-          # Updates in any of these files need to be manually applied to the projects
-          git checkout HEAD -- \
-            infra/project-config/main.tf \
-            infra/accounts/account/main.tf \
-            infra/app/build-repository/main.tf \
-            infra/app/envs/dev/main.tf \
-            infra/app/envs/prod/main.tf \
-            infra/app/envs/staging/main.tf \
-            Makefile \
-            .github/workflows/cd.yml
+      - name: Update infra template
+        working-directory: project-repo
+        run: ../template-infra/template-only-bin/update-template.sh
 
       - name: Push changes to project repo
         working-directory: project-repo
