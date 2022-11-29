@@ -1,12 +1,8 @@
 locals {
-  project_name = module.project_config.project_name
+  project_name = var.project_name
   vpc_name     = "vpc-${local.project_name}"
   region       = module.project_config.default_region
   cidr_prefix  = "172.30." # Value should be between "172.16." & "172.31."
-}
-
-module "project_config" {
-  source = "../../project-config"
 }
 
 module "vpc" {

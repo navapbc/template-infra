@@ -8,7 +8,8 @@ locals {
 }
 
 module "aws_vpc" {
-  source = "../../modules/vpc"
+  source       = "../../modules/vpc"
+  project_name = module.project_config.project_name
 }
 
 module "project_config" {
