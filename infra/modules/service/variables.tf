@@ -50,3 +50,8 @@ variable "subnet_ids" {
   type        = list(any)
   description = "Private subnet id from vpc module"
 }
+
+variable "subnet_ids_public" {
+  type        = list(any)
+  description = "Public subnet id from vpc module"
+}
