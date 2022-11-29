@@ -27,6 +27,8 @@ jobs:
       - name: Reinstall infra template
         working-directory: project-repo
         run: |
+          git config user.name nava-platform-bot
+          git config user.email platform-admins@navapbc.com
           ../template-infra/template-only-bin/install-template.sh
 
           # Restore project files with project-specific configuration that was defined as part of project setup.
