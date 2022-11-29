@@ -23,7 +23,7 @@ resource "aws_lb" "alb" {
   idle_timeout    = "120"
   internal        = false
   security_groups = [aws_security_group.alb.id]
-  subnets         = var.subnet_ids
+  subnets         = var.subnet_ids_public
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
   # checkov:skip=CKV2_AWS_20:Redirect HTTP to HTTPS as part of implementing HTTPS support
@@ -126,7 +126,7 @@ resource "aws_ecs_service" "app" {
 
   network_configuration {
     # TODO(https://github.com/navapbc/template-infra/issues/152) set assign_public_ip = false after using private subnets
-    assign_public_ip = true
+    assign_public_ip = false
     subnets          = var.subnet_ids
     security_groups  = [aws_security_group.app.id]
   }
@@ -302,6 +302,8 @@ resource "aws_security_group" "app" {
   lifecycle {
     create_before_destroy = true
   }
+
+  vpc_id = var.vpc_id
 
   ingress {
     description     = "Allow HTTP traffic to application container port"
