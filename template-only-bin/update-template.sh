@@ -2,7 +2,7 @@
 #
 # This script updates template-infra in your project. Run
 # This script from your project's root directory.
-set -euox pipefail
+set -euo pipefail
 
 SCRIPT_DIR=$(dirname $0)
 
