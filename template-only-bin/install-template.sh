@@ -1,22 +1,23 @@
 #!/bin/bash
-set -euo pipefail
+#
+# This script installs the template-infra to your project. Run
+# This script from your project's root directory.
+set -euox pipefail
 
-echo "Fetch latest version of template-infra"
-git clone --single-branch --branch main --depth 1 git@github.com:navapbc/template-infra.git
+CUR_DIR=$(pwd)
+SCRIPT_DIR=$(dirname $0)
+TEMPLATE_DIR="$SCRIPT_DIR/.."
 
 echo "Copy files from template-infra"
-cd template-infra
+cd $TEMPLATE_DIR
 cp -r \
   .github \
   bin \
   docs \
   infra \
   Makefile \
-  ..
-cd ..
+  $CUR_DIR
+cd -
 
 echo "Remove files relevant only to template development"
 rm .github/workflows/template-only-*
-
-echo "Clean up template-infra folder"
-rm -fr template-infra
