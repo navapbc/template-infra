@@ -11,48 +11,28 @@ concurrency: platform-template-only-cd
 
 jobs:
   deploy:
-    name: Deploy to platform-test
+    name: Deploy to ${{ matrix.project_repo }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        project_repo: [navapbc/platform-test, navapbc/platform-test-nextjs]
     steps:
       - name: Checkout template-infra repo
         uses: actions/checkout@v3
         with:
           path: template-infra
+          ref: lorenyu/cdnextjs
       - name: Checkout project repo
         uses: actions/checkout@v3
         with:
           path: project-repo
-          repository: navapbc/platform-test
+          repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
-      - name: Reinstall infra template
+
+      - name: Update infra template
         working-directory: project-repo
-        run: |
-          # TODO(lorenyu) move all these steps into a script so we can do something like
-          # ../template-infra/template-only-bin/install-template.sh
-
-          cp -r \
-            ../template-infra/.github \
-            ../template-infra/bin \
-            ../template-infra/docs \
-            ../template-infra/infra \
-            ../template-infra/Makefile \
-            .
-          rm .github/workflows/template-only-*
-
-          # Restore project files with project-specific configuration that was defined as part of project setup.
-          # This includes the terraform backend configuration blocks and the project-config module
-          # Also restore project files that had lines that were commented out in the template, such as Makefile
-          # and cd.yml workflow
-          # Updates in any of these files need to be manually applied to the projects
-          git checkout HEAD -- \
-            infra/project-config/main.tf \
-            infra/accounts/account/main.tf \
-            infra/app/build-repository/main.tf \
-            infra/app/envs/dev/main.tf \
-            infra/app/envs/prod/main.tf \
-            infra/app/envs/staging/main.tf \
-            Makefile \
-            .github/workflows/cd.yml
+        run: ../template-infra/template-only-bin/update-template.sh
 
       - name: Push changes to project repo
         working-directory: project-repo
