@@ -10,6 +10,7 @@ locals {
 module "aws_vpc" {
   source       = "../../modules/vpc"
   project_name = module.project_config.project_name
+  region       = module.project_config.default_region
 }
 
 module "project_config" {
