@@ -39,7 +39,8 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: arn:aws:iam::430004246987:role/platform-test-github-actions
+          # !! Update the role-to-assume with the GitHub actions role ARN
+          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
           aws-region: us-east-1
 
       - name: Publish release
