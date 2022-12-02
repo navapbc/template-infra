@@ -18,7 +18,7 @@ The template infra is intended to work with multiple application templates. See 
 To get started using the template infrastructure on your project, run the following command to execute the [install script](https://github.com/navapbc/template-infra/tree/main/template-only-bin/install-template.sh), which clones the template repository, copies the template files to your repository, and removes any files that are only relevant to the template itself:
 
 ```bash
-curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-template.sh | bash -s
+curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/download-and-install-template.sh | bash -s
 ```
 
 Now you're ready to set up the various pieces of your infrastructure.
