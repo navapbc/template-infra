@@ -27,24 +27,24 @@ The [anchore/scan-action](https://github.com/anchore/scan-action) scanner is bui
 
 ### Trivy
 
-The [aquasecurity/trivy-action](https://github.com/aquasecurity/trivy-action) scanner is another vulnerability scanner. The list of supported image types are not readily available compared to other scanners, but it is confirmed to work with both python and java images. 
+The [aquasecurity/trivy-action](https://github.com/aquasecurity/trivy-action) scanner is another vulnerability scanner. The list of supported image types are not readily available compared to other scanners, but it is confirmed to work with both python and java images.
 
 ## To use this action
 
 To scan an image, use the following code block as a guideline, making sure to fill in the needed information
 
 ```
-      - name: Build and tag Docker image
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.ECR_REPO }}
-          IMAGE_TAG: ${{ steps.construct-image-tag.outputs.image-tag }}
-        run: |
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+- name: Build and tag Docker image
+  id: build-image
+  env:
+    ECR_REGISTRY: "Your ECR registry goes here"
+    ECR_REPOSITORY: "Your ECR repo goes here"
+    IMAGE_TAG: "The image tag goes here"
+  run: |
+    echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Scan docker image
-        uses: ./.github/actions/image-scan
-        with:
-          image: ${{ steps.build-image.outputs.image }}
+- name: Scan docker image
+  uses: ./.github/actions/image-scan
+  with:
+    image: ${{ steps.build-image.outputs.image }}
 ```

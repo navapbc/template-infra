@@ -1,5 +1,5 @@
 ignore:
-  # List of vulnerabilities to ignore
+  # List of vulnerabilities to ignore for the anchore scan in ./github/actions/image-scan
   # https://github.com/anchore/grype#specifying-matches-to-ignore
 
   # Example ways to skip or recast CVEs
