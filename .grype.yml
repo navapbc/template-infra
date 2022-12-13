@@ -1,23 +1,23 @@
+# List of vulnerabilities to ignore for the anchore scan
+# https://github.com/anchore/grype#specifying-matches-to-ignore
+# More info can be found in the docs/infra/vulnerability-management.md file
+
+# Please add whitelists in the following format to make it easier when checking
+# Package/module name: URL to vulnerability for checking updates
+#  Dependencies: Name of any other packages or modules that are dependent on this version
+#                 Link to the dependencies for ease of checking for updates
+#  Last checked: Date last checked in scans
+# - vulnerability: The-CVE-or-vuln-id # Remove comment at start of line
+
 ignore:
-  # List of vulnerabilities to ignore for the anchore scan in ./github/actions/image-scan
-  # https://github.com/anchore/grype#specifying-matches-to-ignore
+  # Cleo: https://www.cybersecurity-help.cz/vdb/SB2022112226
+  #  Dependencies: poetry-core - latest version of poetry is not compatible with
+  #                 the latest of cleo, https://pypi.org/project/poetry-core/#history
+  #                 The version poetry is able to use has the finding
+  #  Last checked: 12-12-2022
 
-  # Example ways to skip or recast CVEs
-  # Python CVE for cleo package, poetry requires an older version of cleo that has this CVE
-  # - vulnerability: GHSA-2p9h-ccw7-33gf
-
-# This is the full set of supported rule fields:
-  # - vulnerability: CVE-2008-4318
-  #   fix-state: unknown
-  #   package:
-  #     name: libcurl
-  #     version: 1.5.1
-  #     type: npm
-  #     location: "/usr/local/lib/node_modules/**"
-
-  # We can make rules to match just by vulnerability ID:
-  # - vulnerability: CVE-2017-41432
-
-  # ...or just by a single package field:
-  # - package:
-  #     type: gem
+  - vulnerability: GHSA-2p9h-ccw7-33gf
+  # Certifi: https://cve.report/CVE-2022-23491
+  #  Dependencies: None
+  #  Last checked: 12-12-2022
+  - vulnerability: GHSA-43fp-rhv2-5gv8
