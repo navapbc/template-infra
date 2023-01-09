@@ -5,7 +5,7 @@
 
 # 1. Accept an optional variable during a terraform plan/apply.
 variable "image_tag" {
-  description = "Docker tag of the API release to deploy."
+  description = "Docker tag of the app release to deploy."
   type        = string
   default     = null
 }

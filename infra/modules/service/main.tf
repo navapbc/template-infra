@@ -17,7 +17,7 @@ locals {
 ## Load balancer ##
 ###################
 
-# ALB for an API running in ECS
+# ALB for an app running in ECS
 resource "aws_lb" "alb" {
   name            = var.service_name
   idle_timeout    = "120"
@@ -67,13 +67,13 @@ resource "aws_lb_listener" "alb_listener_http" {
   }
 }
 
-resource "aws_lb_listener_rule" "api_http_forward" {
+resource "aws_lb_listener_rule" "app_http_forward" {
   listener_arn = aws_lb_listener.alb_listener_http.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.api_tg.arn
+    target_group_arn = aws_lb_target_group.app_tg.arn
   }
   condition {
     path_pattern {
@@ -83,9 +83,9 @@ resource "aws_lb_listener_rule" "api_http_forward" {
 }
 
 
-resource "aws_lb_target_group" "api_tg" {
+resource "aws_lb_target_group" "app_tg" {
   # you must use a prefix, to facilitate successful tg changes
-  name_prefix          = "api-"
+  name_prefix          = "app-"
   port                 = var.container_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
@@ -132,7 +132,7 @@ resource "aws_ecs_service" "app" {
   }
 
   load_balancer {
-    target_group_arn = aws_lb_target_group.api_tg.arn
+    target_group_arn = aws_lb_target_group.app_tg.arn
     container_name   = var.service_name
     container_port   = var.container_port
   }
@@ -143,7 +143,7 @@ resource "aws_ecs_task_definition" "app" {
   execution_role_arn = aws_iam_role.task_executor.arn
 
   # when is this needed?
-  # task_role_arn      = aws_iam_role.api_service.arn
+  # task_role_arn      = aws_iam_role.app_service.arn
   container_definitions = templatefile(
     "${path.module}/container-definitions.json.tftpl",
     {
