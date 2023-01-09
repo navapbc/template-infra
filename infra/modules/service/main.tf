@@ -86,7 +86,7 @@ resource "aws_lb_listener_rule" "api_http_forward" {
 resource "aws_lb_target_group" "api_tg" {
   # you must use a prefix, to facilitate successful tg changes
   name_prefix          = "api-"
-  port                 = "8080"
+  port                 = var.container_port
   protocol             = "HTTP"
   vpc_id               = var.vpc_id
   target_type          = "ip"
@@ -94,7 +94,7 @@ resource "aws_lb_target_group" "api_tg" {
 
   health_check {
     path                = "/health"
-    port                = 8080
+    port                = var.container_port
     healthy_threshold   = 2
     unhealthy_threshold = 10
     interval            = 30
