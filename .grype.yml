@@ -2,22 +2,29 @@
 # https://github.com/anchore/grype#specifying-matches-to-ignore
 # More info can be found in the docs/infra/vulnerability-management.md file
 
-# Please add whitelists in the following format to make it easier when checking
+# List of vulnerabilities to ignore for the anchore scan
+# https://github.com/anchore/grype#specifying-matches-to-ignore
+# More info can be found in the docs/infra/vulnerability-management.md file
+
+# Please add safelists in the following format to make it easier when checking
 # Package/module name: URL to vulnerability for checking updates
+#  Versions:     URL to the version history
 #  Dependencies: Name of any other packages or modules that are dependent on this version
 #                 Link to the dependencies for ease of checking for updates
-#  Last checked: Date last checked in scans
+#  Issue:         Why there is a finding and why this is here or not been removed
+#  Last checked:  Date last checked in scans
 # - vulnerability: The-CVE-or-vuln-id # Remove comment at start of line
 
 ignore:
-  # Cleo: https://www.cybersecurity-help.cz/vdb/SB2022112226
-  #  Dependencies: poetry-core - latest version of poetry is not compatible with
-  #                 the latest of cleo, https://pypi.org/project/poetry-core/#history
-  #                 The version poetry is able to use has the finding
-  #  Last checked: 12-12-2022
+  # These settings ignore any findings that fall into these categories
+  - fix-state: not-fixed
+  - fix-state: wont-fix
+  - fix-state: unknown
 
-  - vulnerability: GHSA-2p9h-ccw7-33gf
-  # Certifi: https://cve.report/CVE-2022-23491
+  # Certifi:       https://cve.report/CVE-2022-23491
+  #  Versions:     https://pypi.org/project/certifi/#history
   #  Dependencies: None
-  #  Last checked: 12-12-2022
+  #  Issue:        No update in the last month to resolve the finding, however the finding is showing the latest
+  #                version being the same one as the finding, with a 0 - 2022.12.7 (latest) vs 2022.12.07 (non-existent version)
+  #  Last checked: 01-09-2023
   - vulnerability: GHSA-43fp-rhv2-5gv8

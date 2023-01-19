@@ -29,6 +29,9 @@ The [anchore/scan-action](https://github.com/anchore/scan-action) scanner is bui
 
 The [aquasecurity/trivy-action](https://github.com/aquasecurity/trivy-action) scanner is another vulnerability scanner. The list of supported image types are not readily available compared to other scanners, but it is confirmed to work with both python and java images.
 
+### Dockle
+The [hands-lab/dockle-action](https://github.com/hands-lab/dockle-action) scanner scans the Docker image for any dangerous items, best-practices, and vulnerabilities. It is able to scan any Docker image, but the depth of findings depends on the OS of the image scanned.
+
 ## To use this action
 
 To scan an image, use the following code block as a guideline, making sure to fill in the needed information
