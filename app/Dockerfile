@@ -12,6 +12,9 @@
 
 FROM busybox:uclibc AS release
 
+ARG RUN_USER=nodummy
+USER ${RUN_USER}
+
 COPY index.html /www/index.html
 COPY health /www/health
 COPY start-server.sh /bin/start-server.sh

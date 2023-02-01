@@ -106,3 +106,12 @@ else
 	@echo "Please enter: make release-deploy ENV_NAME=<env_name>. The value for env_name must be one of these: $(ENVIRONMENTS)"
 	exit 1
 endif
+
+release-image-name: ## Prints the image name of the release image
+	@echo $(IMAGE_NAME)
+
+release-image-tag: ## Prints the image tag of the release image
+	@echo $(IMAGE_TAG)
+
+help: ## Prints the help documentation and info about each command
+	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
