@@ -10,11 +10,14 @@
 #
 # then visit localhost in a browser (or can use curl from a terminal)
 
-FROM busybox:latest AS release
+FROM busybox:uclibc AS release
 
-ADD index.html /www/index.html
-ADD health /www/health
-ADD start-server.sh /bin/start-server.sh
+ARG RUN_USER=nodummy
+USER ${RUN_USER}
+
+COPY index.html /www/index.html
+COPY health /www/health
+COPY start-server.sh /bin/start-server.sh
 
 # Create a basic webserver and run it until the container is stopped
-CMD start-server.sh
+CMD ["start-server.sh"]
