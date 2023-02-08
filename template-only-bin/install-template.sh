@@ -16,6 +16,10 @@ cp -r \
   docs \
   infra \
   Makefile \
+  .dockleconfig \
+  .grype.yml \
+  .hadolint.yaml \
+  .trivyignore \
   $CUR_DIR
 cd -
 
