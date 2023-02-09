@@ -113,5 +113,39 @@ release-image-name: ## Prints the image name of the release image
 release-image-tag: ## Prints the image tag of the release image
 	@echo $(IMAGE_TAG)
 
+########################
+## Scripts and Helper ##
+########################
+_get-changes:
+	find * ! -name '*template*' -not -path "*template*" -print0 | \
+		xargs -0 git diff ${CHANGES_IN_REPO} ${ORIGINAL_REPO} ${DIFF_FLAGS}
+
+get-last-changes-summary: ## Displays the number of changes to what files in the last commit to non-template files
+get-last-changes-summary: CHANGES_IN_REPO = HEAD^^ 
+get-last-changes-summary: ORIGINAL_REPO = HEAD
+get-last-changes-summary: DIFF_FLAGS = --compact-summary
+get-last-changes-summary: _get-changes
+
+get-last-changes: ## Displays the changes to what files in the last commit to non-template files
+get-last-changes: CHANGES_IN_REPO = HEAD^^ 
+get-last-changes: ORIGINAL_REPO = HEAD
+get-last-changes: DIFF_FLAGS = 
+get-last-changes: _get-changes
+
+get-local-changes-summary: ## Displays the number of changes to what files in the last pull from main to non-template files
+get-local-changes-summary: CHANGES_IN_REPO = main
+get-local-changes-summary: ORIGINAL_REPO = origin/main
+get-local-changes-summary: DIFF_FLAGS = --compact-summary
+get-local-changes-summary: _get-changes
+
+get-local-changes: ## Displays the changes to what files in the last pull from main to non-template files
+get-local-changes: CHANGES_IN_REPO = main
+get-local-changes: ORIGINAL_REPO = origin/main
+get-local-changes: DIFF_FLAGS =
+get-local-changes: _get-changes
+
+update-template: ## Runs the script that pulls the specified updated files from the template repo
+	sh ./template-only-bin/download-and-install-template.sh
+
 help: ## Prints the help documentation and info about each command
 	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
