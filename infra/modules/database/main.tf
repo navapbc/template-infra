@@ -30,7 +30,7 @@ resource "aws_rds_cluster" "postgresql" {
 
 }
 
-resource "aws_rds_cluster_instance" "postgresql-cluster" {
+resource "aws_rds_cluster_instance" "primary" {
   cluster_identifier         = aws_rds_cluster.postgresql.id
   instance_class             = "db.serverless"
   engine                     = aws_rds_cluster.postgresql.engine
@@ -44,11 +44,10 @@ resource "random_password" "random_db_password" {
   length           = 48
   special          = true
   min_special      = 6
-  override_special = "!#$%&*()-_=+[]{}<>:?"
 }
 
 resource "aws_ssm_parameter" "random_db_password" {
-  name  = "/metadata/db/admin-password"
+  name  = "/db/${var.name}/master-password"
   type  = "SecureString"
   value = random_password.random_db_password.result
 }
@@ -196,6 +195,6 @@ data "aws_iam_policy_document" "db_access" {
     actions = [
       "rds:AddTagToResource"
     ]
-    resources = [aws_rds_cluster_instance.postgresql-cluster.arn]
+    resources = [aws_rds_cluster_instance.primary.arn]
   }
 }
