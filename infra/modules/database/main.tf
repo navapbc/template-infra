@@ -62,7 +62,7 @@ resource "aws_backup_plan" "postgresql" {
   rule {
     rule_name         = "${var.name}-backup-rule"
     target_vault_name = "${var.name}-vault"
-    schedule          = "cron(0 12 ? * SUN *)"
+    schedule          = "cron(0 7 ? * SUN *)" # Run Sundays at 12pm (EST)
   }
 }
 
