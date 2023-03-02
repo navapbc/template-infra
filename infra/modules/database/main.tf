@@ -41,9 +41,9 @@ resource "aws_rds_cluster_instance" "primary" {
 }
 
 resource "random_password" "random_db_password" {
-  length           = 48
-  special          = true
-  min_special      = 6
+  length      = 48
+  special     = true
+  min_special = 6
 }
 
 resource "aws_ssm_parameter" "random_db_password" {
@@ -64,6 +64,17 @@ resource "aws_backup_plan" "postgresql" {
     target_vault_name = "${var.name}-vault"
     schedule          = "cron(0 12 ? * SUN *)"
   }
+}
+
+# backup selection
+resource "aws_backup_selection" "postgresql_backup" {
+  iam_role_arn = aws_iam_role.postgresql_backup.arn
+  name         = "${var.name}-backup"
+  plan_id      = aws_backup_plan.postgresql.id
+
+  resources = [
+    aws_rds_cluster.db.arn
+  ]
 }
 
 # KMS Key for the vault
@@ -101,16 +112,6 @@ data "aws_iam_policy_document" "postgresql_backup" {
       identifiers = ["backup.amazonaws.com"]
     }
   }
-}
-# backup selection
-resource "aws_backup_selection" "postgresql_backup" {
-  iam_role_arn = aws_iam_role.postgresql_backup.arn
-  name         = "${var.name}-backup"
-  plan_id      = aws_backup_plan.postgresql.id
-
-  resources = [
-    aws_rds_cluster.db.arn
-  ]
 }
 
 ################################################################################
@@ -152,13 +153,15 @@ resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
   description = "Default cluster parameter group"
 
   parameter {
-    name  = "log_statement"
-    value = "ddl" 
+    name = "log_statement"
+    # Logs data definition statements (e.g. DROP, ALTER, CREATE)
+    value = "ddl"
   }
 
   parameter {
-    name  = "log_min_duration_statement"
-    value = "1"
+    name = "log_min_duration_statement"
+    # Logs all statements that run 100ms or longer
+    value = "100"
   }
 }
 
