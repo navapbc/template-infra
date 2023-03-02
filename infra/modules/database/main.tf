@@ -5,7 +5,7 @@ data "aws_region" "current" {}
 ###########################
 ## Database Configuration ##
 ###########################
-resource "aws_rds_cluster" "postgresql" {
+resource "aws_rds_cluster" "db" {
   # checkov:skip=CKV2_AWS_27:have concerns about sensitive data in logs; want better way to get this information
   # checkov:skip=CKV2_AWS_8:TODO add backup selection plan using tags
   cluster_identifier = var.name
@@ -31,10 +31,10 @@ resource "aws_rds_cluster" "postgresql" {
 }
 
 resource "aws_rds_cluster_instance" "primary" {
-  cluster_identifier         = aws_rds_cluster.postgresql.id
+  cluster_identifier         = aws_rds_cluster.db.id
   instance_class             = "db.serverless"
-  engine                     = aws_rds_cluster.postgresql.engine
-  engine_version             = aws_rds_cluster.postgresql.engine_version
+  engine                     = aws_rds_cluster.db.engine
+  engine_version             = aws_rds_cluster.db.engine_version
   auto_minor_version_upgrade = true
   monitoring_role_arn        = aws_iam_role.rds_enhanced_monitoring.arn
   monitoring_interval        = 30
@@ -57,10 +57,10 @@ resource "aws_ssm_parameter" "random_db_password" {
 ################################################################################
 
 resource "aws_backup_plan" "postgresql" {
-  name = "${var.name}_backup_plan"
+  name = "${var.name}-backup-plan"
 
   rule {
-    rule_name         = "${var.name}_backup_rule"
+    rule_name         = "${var.name}-backup-rule"
     target_vault_name = "${var.name}-vault"
     schedule          = "cron(0 12 ? * SUN *)"
   }
@@ -109,7 +109,7 @@ resource "aws_backup_selection" "postgresql_backup" {
   plan_id      = aws_backup_plan.postgresql.id
 
   resources = [
-    aws_rds_cluster.postgresql.arn
+    aws_rds_cluster.db.arn
   ]
 }
 
@@ -179,7 +179,7 @@ data "aws_iam_policy_document" "db_access" {
       "rds:ModifyDBInstance",
       "rds:CreateDBSnapshot"
     ]
-    resources = [aws_rds_cluster.postgresql.arn]
+    resources = [aws_rds_cluster.db.arn]
   }
 
   statement {
@@ -187,7 +187,7 @@ data "aws_iam_policy_document" "db_access" {
     actions = [
       "rds:Describe*"
     ]
-    resources = [aws_rds_cluster.postgresql.arn]
+    resources = [aws_rds_cluster.db.arn]
   }
 
   statement {
