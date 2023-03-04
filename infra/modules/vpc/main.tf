@@ -16,6 +16,6 @@ module "vpc" {
   single_nat_gateway = var.single_nat_gateway
 
   tags = {
-    Environment = var.environment_name
+    Environment = var.project_name
   }
 }

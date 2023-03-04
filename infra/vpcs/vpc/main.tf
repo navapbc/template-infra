@@ -44,9 +44,10 @@ provider "aws" {
 }
 
 module "vpc" {
-  source    = "../../modules/vpc"
-  vpc_name  = local.vpc_name
-  vpc_cider = "10.0.0.0/20"
+  source       = "../../modules/vpc"
+  project_name = module.project_config.project_name
+  vpc_name     = local.vpc_name
+  vpc_cider    = "10.0.0.0/20"
   # 512 hosts per subnet (plus a gap in between for expansion e.g. 4 az's)
   private_subnets = ["10.0.0.0/23", "10.0.2.0/23", "10.0.4.0/23"]
   public_subnets  = ["10.0.10.0/23", "10.0.12.0/23", "10.0.14.0/23"]
