@@ -17,7 +17,7 @@ locals {
   app_name     = module.app_config.app_name
   service_name = "${local.prefix}${local.app_name}-${var.environment_name}"
   # AWS Default VPC and subnet
-  vpc_cidr = "172.31.0.0/16"
+  vpc_cidr           = "172.31.0.0/16"
   subnet_cidr_blocks = ["172.31.0.0/20", "172.31.16.0/20", "172.31.32.0/20"]
   # User created VPC (see infra/vpcs/vpc)
   # vpc_cidr = "10.0.0.0/20"
