@@ -1,23 +1,29 @@
-output "project_name" {
-  value = module.project_config.project_name
+output "vpc_id" {
+  description = "VPC ID"
+  value       = module.vpc.vpc_id
 }
 
-output "account_id" {
-  value = data.aws_caller_identity.current.account_id
+output "public_subnets" {
+  description = "Public Subnets"
+  value       = module.vpc.public_subnets
 }
 
-output "region" {
-  value = data.aws_region.current.name
+output "private_subnets" {
+  description = "Public Subnets"
+  value       = module.vpc.private_subnets
 }
 
-output "tf_state_bucket_name" {
-  value = module.bootstrap.tf_state_bucket_name
+output "public_subnets_cidr_blocks" {
+  description = "Public Subnets CIDR Blocks"
+  value       = module.vpc.public_subnets_cidr_blocks
 }
 
-output "tf_log_bucket_name" {
-  value = module.bootstrap.tf_log_bucket_name
+output "private_subnets_cidr_blocks" {
+  description = "Private Subnets CIDR Blocks"
+  value       = module.vpc.public_subnets_cidr_blocks
 }
 
-output "tf_locks_table_name" {
-  value = module.bootstrap.tf_locks_table_name
+output "nat_gateway_public_ips" {
+  description = "NAT Gateway Public IP's"
+  value       = module.vpc.nat_public_ips
 }
