@@ -2,6 +2,11 @@ variable "project_name" {
   type = string
 }
 
+variable "azs" {
+  type        = list(string)
+  description = "List of az's"
+}
+
 variable "vpc_name" {
   type        = string
   description = "VPC Name"
@@ -22,6 +27,14 @@ variable "public_subnets" {
   # e.g. ["10.0.10.0/23", "10.0.12.0/23", "10.0.14.0/23"]
   type    = list(string)
   default = []
+}
+
+variable "enable_vpn_gateway" {
+  # typical recommended pattern is to use publicly accessible
+  # ingresses and use AWS SSM Remote Session to access EC2 instances
+  # but you may choose to use VPN Gateway
+  type    = bool
+  default = false
 }
 
 variable "single_nat_gateway" {

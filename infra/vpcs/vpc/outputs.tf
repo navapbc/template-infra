@@ -23,7 +23,7 @@ output "private_subnets_cidr_blocks" {
   value       = module.vpc.public_subnets_cidr_blocks
 }
 
-output "nat_gateway_public_ips" {
+output "nat_public_ips" {
   description = "NAT Gateway Public IP's"
   value       = module.vpc.nat_public_ips
 }

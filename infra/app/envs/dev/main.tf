@@ -8,7 +8,7 @@ locals {
   # if you choose not to use workspaces set this value to "dev" 
   prefix = terraform.workspace
   # Choose the region where this infrastructure should be deployed.
-  region = "us-east-1"
+  region = "<REGION>"
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = local.environment_name
@@ -17,6 +17,12 @@ locals {
 
   tfstate_bucket = "<TF_STATE_BUCKET_NAME>"
   tfstate_key    = "infra/<APP_NAME>/environments/dev.tfstate"
+  # AWS Default VPC and subnet
+  vpc_cidr           = "172.31.0.0/16"
+  subnet_cidr_blocks = ["172.31.0.0/20", "172.31.16.0/20", "172.31.32.0/20"]
+  # Example User created VPC (see infra/vpcs/vpc)
+  # vpc_cidr = "10.0.0.0/20"
+  # subnet_cidr_blocks = ["10.0.0.0/23", "10.0.2.0/23", "10.0.4.0/23"]
 }
 
 terraform {
@@ -52,7 +58,9 @@ module "project_config" {
 }
 
 module "app" {
-  source           = "../../env-template"
-  environment_name = local.environment_name
-  image_tag        = local.image_tag
+  source             = "../../env-template"
+  environment_name   = local.environment_name
+  image_tag          = local.image_tag
+  vpc_cidr           = local.vpc_cidr
+  subnet_cidr_blocks = local.subnet_cidr_blocks
 }
