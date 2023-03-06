@@ -16,11 +16,15 @@ $SCRIPT_DIR/install-template.sh
 # Updates in any of these files need to be manually applied to the projects
 echo "Restore modified project files"
 git checkout HEAD -- \
-  infra/project-config/main.tf \
+  .dockleconfig \
+  .github/workflows/cd.yml \
+  .grype.yml \
+  .hadolint.yaml \
+  .trivyignore
   infra/accounts/account/main.tf \
   infra/app/build-repository/main.tf \
   infra/app/envs/dev/main.tf \
   infra/app/envs/prod/main.tf \
   infra/app/envs/staging/main.tf \
+  infra/project-config/main.tf \
   Makefile \
-  .github/workflows/cd.yml
