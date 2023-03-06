@@ -20,11 +20,11 @@ git checkout HEAD -- \
   .github/workflows/cd.yml \
   .grype.yml \
   .hadolint.yaml \
-  .trivyignore
+  .trivyignore \
   infra/accounts/account/main.tf \
   infra/app/build-repository/main.tf \
   infra/app/envs/dev/main.tf \
   infra/app/envs/prod/main.tf \
   infra/app/envs/staging/main.tf \
   infra/project-config/main.tf \
-  Makefile \
+  Makefile
