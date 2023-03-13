@@ -2,9 +2,9 @@ variable "project_name" {
   type = string
 }
 
-variable "azs" {
+variable "availability_zones" {
   type        = list(string)
-  description = "List of az's"
+  description = "List of aws availability zones, typically 3"
 }
 
 variable "vpc_name" {

@@ -2,7 +2,7 @@
 # provides a few variations of a basic VPC, based on input
 # variables
 
-module "vpc" {
+module "network-aws" {
   source = "terraform-aws-modules/vpc/aws"
 
   name = var.vpc_name
