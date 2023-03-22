@@ -10,12 +10,12 @@ Once [CI is set up](./set-up-ci.md), consider [adding branch protection rules](h
 
 Recommended settings:
 
-* Require pull request before merging
-* Require minimum of 1 approval
-* Require CI status checks to pass before merging
-* Require branches to be up to date before merging
+- Require pull request before merging
+- Require minimum of 1 approval
+- Require CI status checks to pass before merging
+- Require branches to be up to date before merging
 
-*Some projects choose to dismiss stale pull request approvals when new commits are pushed but note that this makes it more difficult for PR authors to address nits and non-blocking suggestions.
+\*Some projects choose to dismiss stale pull request approvals when new commits are pushed but note that this makes it more difficult for PR authors to address nits and non-blocking suggestions.
 
 ## Pull request settings
 
@@ -23,9 +23,9 @@ Update pull request settings in Settings > General > Pull Requests.
 
 Recommended settings:
 
-* Only allow squash merging. This keeps the main branch history clean and easy to read, which is particularly useful for deploys and generating release notes. Default commit message to pull request title and description to encourage more consistent commit messages.
-* Always suggest updating pull request branches. This encourages pull requests to be updated when they deviate from `main`.
-* Automatically delete head branches. This helps prevent remote branches from proliferating.
+- Only allow squash merging. This keeps the main branch history clean and easy to read, which is particularly useful for deploys and generating release notes. Default commit message to pull request title and description to encourage more consistent commit messages.
+- Always suggest updating pull request branches. This encourages pull requests to be updated when they deviate from `main`.
+- Automatically delete head branches. This helps prevent remote branches from proliferating.
 
 ## Collaborators
 
@@ -33,11 +33,17 @@ In Settings > Collaborators, add all collaborators that should have access to th
 
 ## Code security and analysis
 
-In Settings > Code security and analysis, enable "Dependabot alerts" and enable "Dependabot security updates".
+After you've added the templates to your repo, enable GitHub's security features:
 
-* "Dependabot version updates" is controlled by `.github/dependabot.yml`
-* "Code scanning" is controlled by `.github/codeql-analysis.yml`
-* "Secret scanning" is enabled by default
+In Settings > Code security and analysis, enable the following features:
+
+- Dependabot
+  - Dependabot alerts
+  - Dependabot security updates
+  - Dependabot version updates - follow GitHub's setup flow for configuring Dependabot
+- Code scanning
+  - CodeQL analysis - follow GitHub's flow for configuring CodeQL. The "Default" set up option is typically all that's needed for JS and Python codebases.
+- Secret scanning
 
 ## Other Github features
 
