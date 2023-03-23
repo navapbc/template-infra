@@ -33,11 +33,17 @@ In Settings > Collaborators, add all collaborators that should have access to th
 
 ## Code security and analysis
 
-In Settings > Code security and analysis, enable "Dependabot alerts" and enable "Dependabot security updates".
+After you've added the templates to your repo, enable GitHub's security features:
 
-* "Dependabot version updates" is controlled by `.github/dependabot.yml`
-* "Code scanning" is controlled by `.github/codeql-analysis.yml`
-* "Secret scanning" is enabled by default
+In Settings > Code security and analysis, enable the following features:
+
+- Dependabot
+  - Dependabot alerts
+  - Dependabot security updates
+  - Dependabot version updates - follow GitHub's setup flow for configuring Dependabot
+- Code scanning
+  - CodeQL analysis - follow GitHub's flow for configuring CodeQL. The "Default" set up option is typically all that's needed for JS and Python codebases.
+- Secret scanning
 
 ## Other Github features
 
