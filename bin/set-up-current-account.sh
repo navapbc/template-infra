@@ -19,15 +19,16 @@ echo "=================="
 echo "Setting up account"
 echo "=================="
 echo "ACCOUNT=$ACCOUNT"
+echo "REGION=$REGION"
 echo
 
 echo "------------------------------------------------------------------------------"
 echo "Bootstrapping the account by creating an S3 backend with minimal configuration"
 echo "------------------------------------------------------------------------------"
 echo 
-
 echo "Creating bucket: $TF_STATE_BUCKET_NAME"
 aws s3api create-bucket --bucket $TF_STATE_BUCKET_NAME --region $REGION > /dev/null
+echo
 
 echo "----------------------------------"
 echo "Creating rest of account resources"
@@ -52,9 +53,11 @@ terraform apply \
 
 cd -
 
-echo "-------------------------------------------------------------------"
-echo "Creating backend configuration file: $BACKEND_CONFIG_FILE"
-echo "-------------------------------------------------------------------"
+echo "-----------------------------------"
+echo "Creating backend configuration file"
+echo "-----------------------------------"
+echo "BACKEND_CONFIG_FILE=$BACKEND_CONFIG_FILE"
+echo
 
 cd infra/accounts
 
