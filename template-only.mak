@@ -11,7 +11,6 @@ GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-ac
 .PHONY : \
   clean \
 	test \
-	set-up-account \
 	setup-app-backends \
 	check-github-actions-auth \
 	destroy-account
@@ -21,9 +20,6 @@ test:
 
 set-up-project:
 	./template-only-bin/set-up-project.sh $(PROJECT_NAME) $(PROJECT_OWNER) $(PROJECT_REGION)
-
-set-up-account: set-up-project
-	./template-only-bin/set-up-account.sh $(ACCOUNT)
 
 set-up-app-backends:
 	./template-only-bin/set-up-app-backends.sh $(PROJECT_NAME)

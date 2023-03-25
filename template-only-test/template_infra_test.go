@@ -72,7 +72,7 @@ func SetUpAccount(t *testing.T) {
 	fmt.Println("::group::Setting up account")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-account"},
+		Args:       []string{"infra-account-setup"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
