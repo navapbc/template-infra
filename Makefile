@@ -37,10 +37,7 @@ infra-account-setup:  # Set up the AWS account for the first time
 	./bin/set-up-current-account.sh
 
 infra-account:
-	BACKEND_CONFIG=$(ACCOUNT).s3.tfbackend && \
-	cd infra/accounts && \
-	terraform init -input=false -reconfigure -backend-config=$$BACKEND_CONFIG && \
-	terraform apply
+	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT)
 
 # Validate all infra root and child modules.
 infra-validate: \
