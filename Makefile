@@ -6,6 +6,8 @@ PROJECT_NAME ?= $(notdir $(PWD))
 # on will be determined by the APP_NAME Makefile argument
 APP_NAME ?= app
 
+ACCOUNT := `./bin/current-account-alias.sh`
+
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
@@ -33,6 +35,12 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 
 infra-account-setup:  # Set up the AWS account for the first time
 	./bin/set-up-current-account.sh
+
+infra-account:
+	BACKEND_CONFIG=$(ACCOUNT).s3.tfbackend && \
+	cd infra/accounts && \
+	terraform init -input=false -reconfigure -backend-config=$$BACKEND_CONFIG && \
+	terraform apply
 
 # Validate all infra root and child modules.
 infra-validate: \

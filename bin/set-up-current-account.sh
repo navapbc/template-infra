@@ -26,6 +26,7 @@ echo "Bootstrapping the account by creating an S3 backend with minimal configura
 echo "------------------------------------------------------------------------------"
 echo 
 
+echo "Creating bucket: $TF_STATE_BUCKET_NAME"
 aws s3api create-bucket --bucket $TF_STATE_BUCKET_NAME --region $REGION > /dev/null
 
 echo "----------------------------------"
