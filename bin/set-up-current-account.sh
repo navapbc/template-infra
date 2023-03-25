@@ -2,11 +2,11 @@
 set -euo pipefail
 
 # Name the account based on the current account alias
-ACCOUNT="$(aws iam list-account-aliases --query "AccountAliases" --max-items 1 --output text)"
+ACCOUNT="$(./bin/current-account-alias.sh)"
 BACKEND_CONFIG_FILE=$ACCOUNT.s3.tfbackend
 
 echo "====================================="
-echo "Setting up account $ACCOUNT"
+echo "Setting up account: $ACCOUNT"
 echo "====================================="
 
 echo "-------------------------------------------------"
@@ -32,7 +32,7 @@ rm -fr .terraform*
 cd -
 
 echo "-------------------------------------------------------------------"
-echo "Creating backend configuration file $BACKEND_CONFIG_FILE"
+echo "Creating backend configuration file: $BACKEND_CONFIG_FILE"
 echo "-------------------------------------------------------------------"
 
 cd infra/accounts
