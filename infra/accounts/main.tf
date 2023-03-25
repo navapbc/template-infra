@@ -1,5 +1,6 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+data "aws_iam_account_alias" "current" {}
 
 locals {
   # Choose the region where this infrastructure should be deployed.
@@ -22,16 +23,7 @@ terraform {
     }
   }
 
-  # Terraform does not allow interpolation here, values must be hardcoded.
-
-  #uncomment# backend "s3" {
-  #uncomment#   bucket         = "<TF_STATE_BUCKET_NAME>"
-  #uncomment#   dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-  #uncomment#   key            = "infra/account.tfstate"
-  #uncomment#   region         = "<REGION>"
-  #uncomment#   encrypt        = "true"
-  #uncomment# }
-
+  backend "s3" {}
 }
 
 provider "aws" {
@@ -42,16 +34,16 @@ provider "aws" {
 }
 
 module "project_config" {
-  source = "../../project-config"
+  source = "../project-config"
 }
 
 module "bootstrap" {
-  source       = "../../modules/terraform-backend-s3"
+  source       = "../modules/terraform-backend-s3"
   project_name = module.project_config.project_name
 }
 
 module "auth_github_actions" {
-  source                   = "../../modules/auth-github-actions"
+  source                   = "../modules/auth-github-actions"
   github_actions_role_name = module.project_config.github_actions_role_name
   github_repository        = module.project_config.code_repository
 }
