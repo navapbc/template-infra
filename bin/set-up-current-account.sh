@@ -3,32 +3,52 @@ set -euo pipefail
 
 # Name the account based on the current account alias
 ACCOUNT="$(./bin/current-account-alias.sh)"
-BACKEND_CONFIG_FILE=$ACCOUNT.s3.tfbackend
+REGION="$(./bin/current-region.sh)"
+BACKEND_CONFIG_FILE="$ACCOUNT.s3.tfbackend"
 
-echo "====================================="
-echo "Setting up account: $ACCOUNT"
-echo "====================================="
+# Get project name
+cd infra/project-config
+terraform refresh
+PROJECT_NAME=$(terraform output -raw project_name)
+cd -
 
-echo "-------------------------------------------------"
-echo "Bootstrapping the account by creating the backend"
-echo "-------------------------------------------------"
 
-cd infra/accounts/bootstrap
+TF_STATE_BUCKET_NAME="$PROJECT_NAME-$ACCOUNT-$REGION-tf"
+
+echo "=================="
+echo "Setting up account"
+echo "=================="
+echo "ACCOUNT=$ACCOUNT"
+echo
+
+echo "------------------------------------------------------------------------------"
+echo "Bootstrapping the account by creating an S3 backend with minimal configuration"
+echo "------------------------------------------------------------------------------"
+echo 
+
+aws s3api create-bucket --bucket $TF_STATE_BUCKET_NAME --region $REGION > /dev/null
+
+echo "----------------------------------"
+echo "Creating rest of account resources"
+echo "----------------------------------"
+echo 
+
+cd infra/accounts
 
 # Create the infrastructure for the terraform backend such as the S3 bucket
 # for storing tfstate files and the DynamoDB table for tfstate locks.
-terraform init -input=false
-terraform apply -input=false -auto-approve
+terraform init \
+  -input=false \
+  -backend-config="bucket=$TF_STATE_BUCKET_NAME" \
+  -backend-config="region=$REGION"
 
-# Get the name of the S3 bucket that was created to store the tf state
-# and the name of the DynamoDB table that was created for tf state locks.
-# This will be used to configure the S3 backend in main.tf
-TF_STATE_BUCKET_NAME=$(terraform output -raw tf_state_bucket_name)
-TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
-REGION=$(terraform output -raw region)
+# Import the S3 bucket that was created in the previous step so we don't recreate it
+terraform import module.backend.aws_s3_bucket.tf_state $TF_STATE_BUCKET_NAME
 
-# Cleanup local tfstate
-rm -fr .terraform*
+terraform apply \
+  -input=false \
+  -auto-approve
+
 cd -
 
 echo "-------------------------------------------------------------------"
@@ -38,6 +58,13 @@ echo "-------------------------------------------------------------------"
 cd infra/accounts
 
 cp example.s3.tfbackend $BACKEND_CONFIG_FILE
+
+# Get the name of the S3 bucket that was created to store the tf state
+# and the name of the DynamoDB table that was created for tf state locks.
+# This will be used to configure the S3 backend in main.tf
+TF_STATE_BUCKET_NAME=$(terraform output -raw tf_state_bucket_name)
+TF_LOCKS_TABLE_NAME=$(terraform output -raw tf_locks_table_name)
+REGION=$(terraform output -raw region)
 
 # Configure the S3 backend in main.tf by replacing the placeholder
 # values with the actual values from the previous step, then

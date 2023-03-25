@@ -1,5 +1,3 @@
 bucket         = "<TF_STATE_BUCKET_NAME>"
 dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-key            = "infra/account.tfstate"
 region         = "<REGION>"
-encrypt        = "true"

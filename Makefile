@@ -31,6 +31,9 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 	db-migrate-down \
 	db-migrate-create
 
+infra-account:
+	./bin/set-up-current-account.sh
+
 # Validate all infra root and child modules.
 infra-validate: \
 	infra-validate-modules \

@@ -3,6 +3,9 @@ data "aws_region" "current" {}
 data "aws_iam_account_alias" "current" {}
 
 locals {
+  # This must match the name of the bucket created while bootstrapping the account in set-up-current-account.sh
+  tf_state_bucket_name = "${module.project_config.project_name}-${data.aws_iam_account_alias.current.account_alias}-${data.aws_region.current.name}-tf"
+
   # Choose the region where this infrastructure should be deployed.
   region = module.project_config.default_region
 
@@ -23,7 +26,10 @@ terraform {
     }
   }
 
-  backend "s3" {}
+  backend "s3" {
+    key     = "infra/account.tfstate"
+    encrypt = "true"
+  }
 }
 
 provider "aws" {
@@ -37,9 +43,9 @@ module "project_config" {
   source = "../project-config"
 }
 
-module "bootstrap" {
-  source       = "../modules/terraform-backend-s3"
-  project_name = module.project_config.project_name
+module "backend" {
+  source = "../modules/terraform-backend-s3"
+  name   = local.tf_state_bucket_name
 }
 
 module "auth_github_actions" {
