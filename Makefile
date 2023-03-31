@@ -33,7 +33,7 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 	db-migrate-down \
 	db-migrate-create
 
-infra-account-setup:  # Set up the AWS account for the first time
+infra-set-up-account:  # Set up the AWS account for the first time
 	./bin/set-up-current-account.sh
 
 infra-account:
