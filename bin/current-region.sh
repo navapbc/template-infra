@@ -1,5 +1,5 @@
 #!/bin/bash
 set -euo pipefail
 
-# Printthe current account alias
-echo -n "$(aws configure get region)"
+# Print the current region
+echo -n "$(aws configure list | grep region | awk '{print $2}')"
