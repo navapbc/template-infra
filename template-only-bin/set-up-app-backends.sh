@@ -8,12 +8,16 @@ PROJECT_NAME=$1
 # infrastructure code. Defaults to "app".
 APP_NAME=${2:-app}
 
+
 # The list of modules we need to set up
-MODULES="\
-  build-repository \
-  envs/dev \
-  envs/staging \
-  envs/prod \
+SHARED_MODULES="build-repository"
+
+PER_ENVIRONMENT_MODULES="service"
+
+ENVIRONMENTS="\
+  dev \
+  staging \
+  prod \
   "
 
 # Get the name of the S3 bucket that was created to store the tf state
@@ -24,29 +28,43 @@ TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/accounts output -raw tf_state_buck
 TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts output -raw tf_locks_table_name)
 REGION=$(terraform -chdir=infra/accounts output -raw region)
 
-echo "Setup configuration"
+echo "====================================="
+echo "Setting up terraform backends for app"
+echo "====================================="
 echo "PROJECT_NAME=$PROJECT_NAME"
 echo "APP_NAME=$APP_NAME"
 echo "TF_STATE_BUCKET_NAME=$TF_STATE_BUCKET_NAME"
 echo "TF_LOCKS_TABLE_NAME=$TF_LOCKS_TABLE_NAME"
+echo "REGION=$REGION"
 
-for MODULE in ${MODULES[*]}
-do
-  echo "Setting up $MODULE"
+function set_up_backend_config_file() {
+  echo "----------------------------"
+  echo "Creating backend config file"
+  echo "----------------------------"
+  echo "BACKEND_CONFIG_FILE=$BACKEND_CONFIG_FILE"
 
-  # Go into app module
-  cd infra/$APP_NAME/$MODULE/
+  cp infra/example.s3.tfbackend $BACKEND_CONFIG_FILE
 
   # Replace the placeholder values in the module
-  sed -i.bak "s/<PROJECT_NAME>/$PROJECT_NAME/g" main.tf
-  sed -i.bak "s/<APP_NAME>/$APP_NAME/g" main.tf
-  sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" main.tf
-  sed -i.bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" main.tf
-  sed -i.bak "s/<REGION>/$REGION/g" main.tf
+  sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $BACKEND_CONFIG_FILE
+  sed -i.bak "s/<TF_STATE_KEY>/$TF_STATE_KEY/g" $BACKEND_CONFIG_FILE
+  sed -i.bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" $BACKEND_CONFIG_FILE
+  sed -i.bak "s/<REGION>/$REGION/g" $BACKEND_CONFIG_FILE
+}
 
-  # Initialize backend
-  terraform init
+echo "Setting up modules for resources that are shared between environments"
+for MODULE in ${SHARED_MODULES[*]}
+do
+  BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/shared.s3.tfbackend"
+  set_up_backend_config_file
+done
 
-  # Go back up to project root
-  cd - > /dev/null
+echo "Setting up modules for resources that are separate for each environments"
+for MODULE in ${PER_ENVIRONMENT_MODULES[*]}
+do
+  for ENVIRONMENT in ${ENVIRONMENTS[*]}
+  do
+    BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/$ENVIRONMENT.s3.tfbackend"
+    set_up_backend_config_file
+  done
 done
