@@ -7,11 +7,8 @@ REGION="$(./bin/current-region.sh)"
 BACKEND_CONFIG_FILE="$ACCOUNT.s3.tfbackend"
 
 # Get project name
-cd infra/project-config
-terraform refresh
-PROJECT_NAME=$(terraform output -raw project_name)
-cd -
-
+terraform -chdir=infra/project-config refresh > /dev/null
+PROJECT_NAME=$(terraform -chdir=infra/project-config output -raw project_name)
 
 TF_STATE_BUCKET_NAME="$PROJECT_NAME-$ACCOUNT-$REGION-tf"
 
