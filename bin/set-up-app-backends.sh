@@ -1,13 +1,14 @@
 #!/bin/bash
 set -euo pipefail
 
-PROJECT_NAME=$1
-
 # APP_NAME is the name of the directory that holds the application code,
 # as well as the subdirectory of /infra that holds the application
 # infrastructure code. Defaults to "app".
-APP_NAME=${2:-app}
+APP_NAME=${1:-app}
 
+# Get project name
+terraform -chdir=infra/project-config refresh > /dev/null
+PROJECT_NAME=$(terraform -chdir=infra/project-config output -raw project_name)
 
 # The list of modules we need to set up
 SHARED_MODULES="build-repository"

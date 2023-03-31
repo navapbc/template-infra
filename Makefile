@@ -36,6 +36,9 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 infra-set-up-account:  # Set up the AWS account for the first time
 	./bin/set-up-current-account.sh
 
+infra-set-up-app-backends:	# Set up the terraform backends for the various app modules
+	./bin/set-up-app-backends.sh $(APP_NAME)
+
 infra-account:
 	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT)
 
