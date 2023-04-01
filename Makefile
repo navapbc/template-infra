@@ -45,6 +45,10 @@ infra-account:
 infra-app-build-repository:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
 
+infra-app-service:
+	./bin/terraform-init-and-apply.sh infra/$(APP)/services $(ENVIRONMENT)
+
+
 # Validate all infra root and child modules.
 infra-validate: \
 	infra-validate-modules \
