@@ -39,6 +39,9 @@ infra-set-up-account:  # Set up the AWS account for the first time
 infra-set-up-app-backends:	# Set up the terraform backends for the various app modules
 	./bin/set-up-app-backends.sh $(APP_NAME)
 
+infra-set-up-app-build-repository:
+	./bin/set-up-app-build-repository.sh $(APP_NAME)
+
 infra-account:
 	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT)
 

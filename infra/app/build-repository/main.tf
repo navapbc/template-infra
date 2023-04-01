@@ -4,7 +4,7 @@ data "aws_iam_role" "github_actions" {
 
 locals {
   project_name = module.project_config.project_name
-  app_name     = "<APP_NAME>"
+  app_name     = module.app_config.app_name
   region       = "<REGION>"
 
   # Set project tags that will be used to tag all resources.
@@ -31,7 +31,7 @@ terraform {
 }
 
 provider "aws" {
-  region = local.region
+  region = var.region
   default_tags {
     tags = local.tags
   }
