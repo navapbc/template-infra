@@ -38,11 +38,8 @@ echo "TF_STATE_BUCKET_NAME=$TF_STATE_BUCKET_NAME"
 echo "TF_LOCKS_TABLE_NAME=$TF_LOCKS_TABLE_NAME"
 echo "REGION=$REGION"
 
-function set_up_backend_config_file() {
-  echo "----------------------------"
-  echo "Creating backend config file"
-  echo "----------------------------"
-  echo "BACKEND_CONFIG_FILE=$BACKEND_CONFIG_FILE"
+function set_up_module() {
+  echo "  Creating backend config file: $BACKEND_CONFIG_FILE"
 
   cp infra/example.s3.tfbackend $BACKEND_CONFIG_FILE
 
@@ -53,21 +50,27 @@ function set_up_backend_config_file() {
   sed -i.bak "s/<REGION>/$REGION/g" $BACKEND_CONFIG_FILE
 }
 
+echo "---------------------------------------------------------------------"
 echo "Setting up modules for resources that are shared between environments"
+echo
 for MODULE in ${SHARED_MODULES[*]}
 do
+  echo "shared $MODULE module:"
   BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/shared.s3.tfbackend"
   TF_STATE_KEY="infra/$APP_NAME/$MODULE.tfstate"
-  set_up_backend_config_file
+  set_up_module
 done
 
+echo "------------------------------------------------------------------------"
 echo "Setting up modules for resources that are separate for each environments"
+echo
 for MODULE in ${PER_ENVIRONMENT_MODULES[*]}
 do
   for ENVIRONMENT in ${ENVIRONMENTS[*]}
   do
+    echo "$ENVIRONMENT $MODULE module:"
     BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/$ENVIRONMENT.s3.tfbackend"
     TF_STATE_KEY="infra/$APP_NAME/environments/$ENVIRONMENT.tfstate"
-    set_up_backend_config_file
+    set_up_module
   done
 done
