@@ -106,12 +106,11 @@ func SetUpDevEnvironment(t *testing.T) {
 		WorkingDir: "./",
 	})
 
-	terraform.InitAndApply(t, terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
-		Vars: map[string]interface{}{
-			"image_tag": imageTag,
-		},
-	}))
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-app-service", "APP_NAME=app", "ENVIRONMENT=dev", fmt.Sprintf("TF_APPLY_ARGS='-input=false -auto-approve -var=\"image_tag=%s\"'", imageTag)},
+		WorkingDir: "../",
+	})
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
