@@ -82,7 +82,7 @@ func SetUpAppBackends(t *testing.T, projectName string) {
 	fmt.Println("::group::Configuring terraform backends for application modules")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-app-backends", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"infra-set-up-app-backends", "APP_NAME=app"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")

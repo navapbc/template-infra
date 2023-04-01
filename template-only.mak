@@ -24,9 +24,6 @@ test:
 set-up-project:
 	./template-only-bin/set-up-project.sh $(PROJECT_NAME) $(PROJECT_OWNER) $(PROJECT_REGION)
 
-set-up-app-backends:
-	./template-only-bin/set-up-app-backends.sh $(PROJECT_NAME)
-
 set-up-app-build-repository:
 	./template-only-bin/set-up-app-build-repository.sh $(PROJECT_NAME)
 
