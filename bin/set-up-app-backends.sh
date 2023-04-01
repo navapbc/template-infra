@@ -48,7 +48,7 @@ function set_up_backend_config_file() {
 
   # Replace the placeholder values in the module
   sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $BACKEND_CONFIG_FILE
-  sed -i.bak "s/<TF_STATE_KEY>/$TF_STATE_KEY/g" $BACKEND_CONFIG_FILE
+  sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" $BACKEND_CONFIG_FILE
   sed -i.bak "s/<TF_LOCKS_TABLE_NAME>/$TF_LOCKS_TABLE_NAME/g" $BACKEND_CONFIG_FILE
   sed -i.bak "s/<REGION>/$REGION/g" $BACKEND_CONFIG_FILE
 }
