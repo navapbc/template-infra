@@ -57,6 +57,7 @@ echo "Setting up modules for resources that are shared between environments"
 for MODULE in ${SHARED_MODULES[*]}
 do
   BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/shared.s3.tfbackend"
+  TF_STATE_KEY="infra/$APP_NAME/$MODULE.tfstate"
   set_up_backend_config_file
 done
 
@@ -66,6 +67,7 @@ do
   for ENVIRONMENT in ${ENVIRONMENTS[*]}
   do
     BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/$ENVIRONMENT.s3.tfbackend"
+    TF_STATE_KEY="infra/$APP_NAME/environments/$ENVIRONMENT.tfstate"
     set_up_backend_config_file
   done
 done
