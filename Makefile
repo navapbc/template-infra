@@ -42,6 +42,9 @@ infra-set-up-app-backends:	# Set up the terraform backends for the various app m
 infra-account:
 	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT)
 
+infra-app-build-repository:
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+
 # Validate all infra root and child modules.
 infra-validate: \
 	infra-validate-modules \

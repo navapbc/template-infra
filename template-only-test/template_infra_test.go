@@ -92,7 +92,7 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 	fmt.Println("::group::Creating build repository resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-app-build-repository", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"infra-app-build-repository", "APP_NAME=app"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
