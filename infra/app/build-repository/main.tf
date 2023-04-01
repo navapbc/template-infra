@@ -25,14 +25,8 @@ terraform {
     }
   }
 
-  # Terraform does not allow interpolation here, values must be hardcoded.
-
   backend "s3" {
-    bucket         = "<TF_STATE_BUCKET_NAME>"
-    key            = "infra/<APP_NAME>/dist.tfstate"
-    dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-    region         = "<REGION>"
-    encrypt        = "true"
+    encrypt = "true"
   }
 }
 
