@@ -13,8 +13,8 @@ crash.log
 # version control.
 #
 # *.tfvar
-# !example.tfvars
 *.tfvars
+!example.tfvars
 !terraform.tfvars
 
 
