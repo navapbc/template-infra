@@ -30,7 +30,7 @@ echo "  APP_NAME=$APP_NAME"
 echo
 
 # Create output file from example file
-cp infra/$APP_NAME/build-repository/example.tfvars $TF_VARS_FILE
+cp $MODULE_DIR/example.tfvars $TF_VARS_FILE
 
 # Replace the placeholder values
 sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
