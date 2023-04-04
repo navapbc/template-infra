@@ -70,7 +70,7 @@ do
   do
     echo "$ENVIRONMENT $MODULE module:"
     BACKEND_CONFIG_FILE="infra/$APP_NAME/$MODULE/$ENVIRONMENT.s3.tfbackend"
-    TF_STATE_KEY="infra/$APP_NAME/environments/$ENVIRONMENT.tfstate"
+    TF_STATE_KEY="infra/$APP_NAME/$MODULE/environments/$ENVIRONMENT.tfstate"
     set_up_module
   done
 done
