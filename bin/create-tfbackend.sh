@@ -28,15 +28,6 @@ echo "Input parameters"
 echo "  MODULE_DIR=$MODULE_DIR"
 echo "  BACKEND_CONFIG_NAME=$BACKEND_CONFIG_NAME"
 echo
-echo "Output file"
-echo "  BACKEND_CONFIG_FILE=$BACKEND_CONFIG_FILE"
-echo
-echo "Backend config values"
-echo "  TF_STATE_BUCKET_NAME=$TF_STATE_BUCKET_NAME"
-echo "  TF_LOCKS_TABLE_NAME=$TF_LOCKS_TABLE_NAME"
-echo "  TF_STATE_KEY=$TF_STATE_KEY"
-echo "  REGION=$REGION"
-echo
 
 # Create output file from example file
 cp infra/example.s3.tfbackend $BACKEND_CONFIG_FILE
@@ -49,3 +40,9 @@ sed -i.bak "s/<REGION>/$REGION/g" $BACKEND_CONFIG_FILE
 
 # Remove the backup file created by sed
 rm $BACKEND_CONFIG_FILE.bak
+
+
+echo "Created file: $BACKEND_CONFIG_FILE"
+echo "---------------------- start ----------------------"
+cat $BACKEND_CONFIG_FILE
+echo "----------------------- end -----------------------"

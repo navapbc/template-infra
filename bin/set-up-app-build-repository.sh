@@ -19,7 +19,7 @@ BACKEND_CONFIG_NAME="shared"
 # Create tfvars file
 #--------------------
 
-TF_VARS_FILE="infra/$APP_NAME/build-repository/terraform.tfvars"
+TF_VARS_FILE="$MODULE_DIR/terraform.tfvars"
 REGION=$(terraform -chdir=infra/accounts output -raw region)
 
 echo "==========================================="
@@ -27,12 +27,6 @@ echo "Setting up tfvars file for build-repository"
 echo "==========================================="
 echo "Input parameters"
 echo "  APP_NAME=$APP_NAME"
-echo
-echo "Output file"
-echo "  TF_VARS_FILE=$TF_VARS_FILE"
-echo
-echo "Variable config values"
-echo "  REGION=$REGION"
 echo
 
 # Create output file from example file
@@ -43,3 +37,8 @@ sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
 
 # Remove the backup file created by sed
 rm $TF_VARS_FILE.bak
+
+echo "Created file: $TF_VARS_FILE"
+echo "---------------------- start ----------------------"
+cat $TF_VARS_FILE
+echo "----------------------- end -----------------------"
