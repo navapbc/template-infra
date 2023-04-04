@@ -5,7 +5,6 @@ data "aws_iam_role" "github_actions" {
 locals {
   project_name = module.project_config.project_name
   app_name     = module.app_config.app_name
-  region       = "<REGION>"
 
   # Set project tags that will be used to tag all resources.
   tags = merge(module.project_config.default_tags, {
