@@ -6,10 +6,6 @@ set -euo pipefail
 # infrastructure code. Defaults to "app".
 APP_NAME=${1:-app}
 
-# Get project name
-terraform -chdir=infra/project-config refresh > /dev/null
-PROJECT_NAME=$(terraform -chdir=infra/project-config output -raw project_name)
-
 # The list of modules we need to set up
 SHARED_MODULES="build-repository"
 
@@ -32,7 +28,6 @@ REGION=$(terraform -chdir=infra/accounts output -raw region)
 echo "====================================="
 echo "Setting up terraform backends for app"
 echo "====================================="
-echo "PROJECT_NAME=$PROJECT_NAME"
 echo "APP_NAME=$APP_NAME"
 echo "TF_STATE_BUCKET_NAME=$TF_STATE_BUCKET_NAME"
 echo "TF_LOCKS_TABLE_NAME=$TF_LOCKS_TABLE_NAME"
