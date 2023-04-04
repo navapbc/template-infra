@@ -43,7 +43,7 @@ echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
 
-cp infra/$APP_NAME/build-repository/example.tfvars $TF_VARS_FILE
+cp infra/$APP_NAME/service/example.tfvars $TF_VARS_FILE
 sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" $TF_VARS_FILE
 sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $TF_VARS_FILE
 sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" $TF_VARS_FILE
