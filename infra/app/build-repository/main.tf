@@ -3,12 +3,9 @@ data "aws_iam_role" "github_actions" {
 }
 
 locals {
-  project_name = module.project_config.project_name
-  app_name     = module.app_config.app_name
-
   # Set project tags that will be used to tag all resources.
   tags = merge(module.project_config.default_tags, {
-    application      = local.app_name
+    application      = module.app_config.app_name
     application_role = "build-repository"
     description      = "Backend resources required for storing built release candidate artifacts to be used for deploying to environments."
   })
