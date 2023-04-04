@@ -34,3 +34,6 @@ sed -i.bak "s|<REPO_URL>|$REPO_URL|" main.tf
 # Replace remaining placeholder values
 sed -i.bak "s/<OWNER>/$OWNER/" main.tf
 sed -i.bak "s/<DEFAULT_REGION>/$DEFAULT_REGION/" main.tf
+
+# Remove the backup file created by sed
+rm main.tf.bak
