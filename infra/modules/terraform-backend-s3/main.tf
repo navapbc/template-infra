@@ -5,7 +5,7 @@ data "aws_iam_account_alias" "current" {}
 
 locals {
   tf_state_bucket_name = "${var.project_name}-${data.aws_iam_account_alias.current.account_alias}-${data.aws_region.current.name}-tf-state"
-  tf_logs_bucket_name  = "${var.project_name}-${data.aws_iam_account_alias.current.account_alias}-${data.aws_region.current.name}-tf-logs"
+  tf_logs_bucket_name  = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
   tf_locks_table_name  = "${var.project_name}-tf-state-locks"
 }
 
