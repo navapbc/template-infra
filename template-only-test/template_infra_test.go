@@ -92,13 +92,24 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 	fmt.Println("::group::Creating build repository resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-app-build-repository", "APP_NAME=app"},
+		Args:       []string{"infra-set-up-app-build-repository", "APP_NAME=app"},
+		WorkingDir: "../",
+	})
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-app-build-repository", "APP_NAME=app", "TF_APPLY_ARGS='-input=false -auto-approve'"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
 }
 
 func SetUpDevEnvironment(t *testing.T) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-set-up-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
+		WorkingDir: "../",
+	})
+
 	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
 	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
 		Command:    "git",
