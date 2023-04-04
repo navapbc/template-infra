@@ -33,5 +33,11 @@ clean:
 check-github-actions-auth:
 	./bin/check-github-actions-auth.sh $(GITHUB_ACTIONS_ROLE)
 
+destroy-app-service:
+	./template-only-bin/destroy-app-service.sh
+
+destroy-app-build-repository:
+	./template-only-bin/destroy-app-build-repository.sh
+
 destroy-account:
 	./template-only-bin/destroy-account.sh

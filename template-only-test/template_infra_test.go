@@ -182,16 +182,20 @@ func TeardownAccount(t *testing.T) {
 
 func TeardownBuildRepository(t *testing.T) {
 	fmt.Println("::group::Destroying build repository resources")
-	terraform.Destroy(t, &terraform.Options{
-		TerraformDir: "../infra/app/build-repository/",
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-app-build-repository"},
+		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
 }
 
 func TeardownDevEnvironment(t *testing.T) {
 	fmt.Println("::group::Destroying dev environment resources")
-	terraform.Destroy(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-app-service"},
+		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
 }
