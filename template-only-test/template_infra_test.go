@@ -24,7 +24,7 @@ func TestSetUpAccount(t *testing.T) {
 	SetUpAccount(t)
 
 	t.Run("ValidateAccount", ValidateAccount)
-	t.Run("SetUpAppBackends", SubtestSetUpAppBackends)
+	t.Run("TestBuildRepository", SubtestBuildRepository)
 }
 
 func ValidateAccount(t *testing.T) {
@@ -33,14 +33,6 @@ func ValidateAccount(t *testing.T) {
 	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
-}
-
-func SubtestSetUpAppBackends(t *testing.T) {
-	projectName := projectName
-	SetUpAppBackends(t, projectName)
-	ValidateAppBackends(t)
-
-	t.Run("TestBuildRepository", SubtestBuildRepository)
 }
 
 func SubtestBuildRepository(t *testing.T) {
@@ -73,16 +65,6 @@ func SetUpAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-set-up-account"},
-		WorkingDir: "../",
-	})
-	fmt.Println("::endgroup::")
-}
-
-func SetUpAppBackends(t *testing.T, projectName string) {
-	fmt.Println("::group::Configuring terraform backends for application modules")
-	shell.RunCommand(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"infra-set-up-app-backends", "APP_NAME=app"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
@@ -145,10 +127,6 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 	fmt.Println("::endgroup::")
-}
-
-func ValidateAppBackends(t *testing.T) {
-	// TODO
 }
 
 func ValidateBuildRepository(t *testing.T, projectName string) {
