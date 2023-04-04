@@ -2,7 +2,7 @@
 	release-build
 
 release-build:
-	docker buildx build \
+	docker build \
 		--target release \
 		--platform=linux/amd64 \
 		$(OPTS) \
