@@ -12,7 +12,7 @@ terraform -chdir=infra/project-config refresh > /dev/null
 PROJECT_NAME=$(terraform -chdir=infra/project-config output -raw project_name)
 
 TF_STATE_BUCKET_NAME="$PROJECT_NAME-$ACCOUNT_ID-$REGION-tf"
-TF_STATE_KEY="infra/accounts.tfstate"
+TF_STATE_KEY="infra/account.tfstate"
 
 echo "=================="
 echo "Setting up account"
