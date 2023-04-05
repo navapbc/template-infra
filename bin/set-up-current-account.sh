@@ -11,6 +11,7 @@ terraform -chdir=infra/project-config refresh > /dev/null
 PROJECT_NAME=$(terraform -chdir=infra/project-config output -raw project_name)
 
 TF_STATE_BUCKET_NAME="$PROJECT_NAME-$ACCOUNT-$REGION-tf"
+TF_STATE_KEY="infra/accounts.tfstate"
 
 echo "=================="
 echo "Setting up account"
@@ -39,6 +40,7 @@ cd infra/accounts
 terraform init \
   -input=false \
   -backend-config="bucket=$TF_STATE_BUCKET_NAME" \
+  -backend-config="key=$TF_STATE_KEY" \
   -backend-config="region=$REGION"
 
 # Import the S3 bucket that was created in the previous step so we don't recreate it
