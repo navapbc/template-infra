@@ -120,7 +120,6 @@ data "aws_iam_policy_document" "tf_state" {
 
 resource "aws_sns_topic" "tf_state" {
   name   = "s3-event-notification-topic-tf_state"
-  policy = data.aws_iam_policy_document.tf_state.json
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
