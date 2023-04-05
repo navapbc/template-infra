@@ -40,7 +40,10 @@ cd infra/accounts
 
 # Create the infrastructure for the terraform backend such as the S3 bucket
 # for storing tfstate files and the DynamoDB table for tfstate locks.
+# -reconfigure is used in case this isn't the first account being set up
+# and there is already a .terraform directory
 terraform init \
+  -reconfigure \
   -input=false \
   -backend-config="bucket=$TF_STATE_BUCKET_NAME" \
   -backend-config="key=$TF_STATE_KEY" \
