@@ -27,7 +27,6 @@ terraform {
   }
 
   backend "s3" {
-    key     = "infra/account.tfstate"
     encrypt = "true"
   }
 }

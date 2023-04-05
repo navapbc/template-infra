@@ -1,3 +1,0 @@
-bucket         = "<TF_STATE_BUCKET_NAME>"
-dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-region         = "<REGION>"
