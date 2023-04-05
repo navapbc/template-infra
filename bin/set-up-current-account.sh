@@ -60,4 +60,4 @@ cd -
 
 MODULE_DIR=infra/accounts
 BACKEND_CONFIG_NAME=$ACCOUNT_ALIAS
-./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
+./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME $TF_STATE_KEY
