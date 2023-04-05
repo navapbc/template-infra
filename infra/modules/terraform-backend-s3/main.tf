@@ -123,7 +123,7 @@ resource "aws_sns_topic" "tf_state" {
   kms_master_key_id = aws_kms_key.tf_backend.arn
 }
 
-resource "aws_s3_bucket_notification" "bucket_notification" {
+resource "aws_s3_bucket_notification" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
 
   topic {
@@ -289,7 +289,7 @@ resource "aws_sns_topic" "tf_log" {
   kms_master_key_id = aws_kms_key.tf_backend.arn
 }
 
-resource "aws_s3_bucket_notification" "bucket_notification" {
+resource "aws_s3_bucket_notification" "tf_log" {
   bucket = aws_s3_bucket.tf_log.id
 
   topic {
