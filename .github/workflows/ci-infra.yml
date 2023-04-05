@@ -47,7 +47,7 @@ jobs:
         with:
           python-version: "3.10"
       - name: Run Checkov check
-        uses: bridgecrewio/checkov-action@master
+        uses: bridgecrewio/checkov-action@v10
         with:
           directory: infra
           framework: terraform
