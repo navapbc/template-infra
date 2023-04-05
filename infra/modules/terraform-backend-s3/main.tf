@@ -119,7 +119,7 @@ data "aws_iam_policy_document" "tf_state" {
 }
 
 resource "aws_sns_topic" "tf_state" {
-  name              = "s3-event-notification-topic-tf_state"
+  name              = "s3-event-notification-infra-test-topic-tf_state"
   kms_master_key_id = aws_kms_key.tf_backend.arn
 }
 
@@ -289,7 +289,7 @@ data "aws_iam_policy_document" "tf_log" {
 }
 
 resource "aws_sns_topic" "tf_log" {
-  name              = "s3-event-notification-topic-tf_log"
+  name              = "s3-event-notification-infra-test-topic-tf_log"
   kms_master_key_id = aws_kms_key.tf_backend.arn
 }
 
