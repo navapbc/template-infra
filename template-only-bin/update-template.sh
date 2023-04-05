@@ -21,10 +21,5 @@ git checkout HEAD -- \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
-  infra/accounts/account/main.tf \
-  infra/app/build-repository/main.tf \
-  infra/app/envs/dev/main.tf \
-  infra/app/envs/prod/main.tf \
-  infra/app/envs/staging/main.tf \
   infra/project-config/main.tf \
   Makefile
