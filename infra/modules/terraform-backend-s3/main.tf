@@ -55,6 +55,41 @@ resource "aws_s3_bucket" "tf_state" {
   }
 }
 
+data "aws_iam_policy_document" "topic" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["s3.amazonaws.com"]
+    }
+
+    actions   = ["SNS:Publish"]
+    resources = ["arn:aws:sns:*:*:s3-event-notification-topic"]
+
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = [aws_s3_bucket.tf_state.arn]
+    }
+  }
+}
+
+resource "aws_sns_topic" "topic" {
+  name   = "s3-event-notification-topic"
+  policy = data.aws_iam_policy_document.topic.json
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.tf_state.id
+
+  topic {
+    topic_arn     = aws_sns_topic.topic.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_suffix = ".log"
+  }
+}
+
 resource "aws_s3_bucket_versioning" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
   versioning_configuration {
@@ -87,6 +122,30 @@ resource "aws_s3_bucket_ownership_controls" "tf_state" {
 
   rule {
     object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "tf_state" {
+  bucket                = aws_s3_bucket.tf_state.id
+  expected_bucket_owner = data.aws_caller_identity.current.account_id
+
+  rule {
+    id     = "move-s3-to-ia"
+    status = "Enabled"
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 15
+    }
+
+    transition {
+      days          = 30
+      storage_class = "STANDARD_IA"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = 30
+      storage_class   = "STANDARD_IA"
+    }
   }
 }
 
