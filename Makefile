@@ -6,7 +6,7 @@ PROJECT_NAME ?= $(notdir $(PWD))
 # on will be determined by the APP_NAME Makefile argument
 APP_NAME ?= app
 
-ACCOUNT := `./bin/current-account-alias.sh`
+ACCOUNT_ALIAS := `./bin/current-account-alias.sh`
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
@@ -43,7 +43,7 @@ infra-set-up-app-service:
 	./bin/set-up-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-account:
-	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT) $(TF_APPLY_ARGS)
+	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT_ALIAS) $(TF_APPLY_ARGS)
 
 infra-app-build-repository:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared $(TF_APPLY_ARGS)
