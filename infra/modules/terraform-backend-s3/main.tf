@@ -118,10 +118,6 @@ data "aws_iam_policy_document" "tf_state" {
   }
 }
 
-resource "aws_s3_bucket_notification" "tf_state" {
-  bucket = aws_s3_bucket.tf_state.id
-}
-
 resource "aws_s3_bucket_policy" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
   policy = data.aws_iam_policy_document.tf_state.json
@@ -275,10 +271,6 @@ data "aws_iam_policy_document" "tf_log" {
       ]
     }
   }
-}
-
-resource "aws_s3_bucket_notification" "tf_log" {
-  bucket = aws_s3_bucket.tf_log.id
 }
 
 resource "aws_s3_bucket_policy" "tf_log" {
