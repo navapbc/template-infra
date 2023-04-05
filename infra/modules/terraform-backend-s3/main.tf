@@ -119,7 +119,8 @@ data "aws_iam_policy_document" "tf_state" {
 }
 
 resource "aws_sns_topic" "tf_state" {
-  name   = "s3-event-notification-topic-tf_state"
+  name              = "s3-event-notification-topic-tf_state"
+  kms_master_key_id = aws_kms_key.tf_backend.arn
 }
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
@@ -176,6 +177,20 @@ resource "aws_s3_bucket_ownership_controls" "tf_log" {
 
   rule {
     object_ownership = "BucketOwnerEnforced"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "tf_state" {
+  bucket                = aws_s3_bucket.tf_state.id
+  expected_bucket_owner = data.aws_caller_identity.current.account_id
+
+  rule {
+    id     = "expire-after-10000-days"
+    status = "Enabled"
+
+    expiration {
+      days = 10000
+    }
   }
 }
 
@@ -266,6 +281,21 @@ data "aws_iam_policy_document" "tf_log" {
         data.aws_caller_identity.current.account_id
       ]
     }
+  }
+}
+
+resource "aws_sns_topic" "tf_log" {
+  name              = "s3-event-notification-topic-tf_log"
+  kms_master_key_id = aws_kms_key.tf_backend.arn
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.tf_log.id
+
+  topic {
+    topic_arn     = aws_sns_topic.tf_log.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_suffix = ".log"
   }
 }
 
