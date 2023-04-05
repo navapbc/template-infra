@@ -125,12 +125,6 @@ resource "aws_sns_topic" "tf_state" {
 
 resource "aws_s3_bucket_notification" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
-
-  topic {
-    topic_arn     = aws_sns_topic.tf_state.arn
-    events        = ["s3:ObjectCreated:*"]
-    filter_suffix = ".log"
-  }
 }
 
 resource "aws_s3_bucket_policy" "tf_state" {
@@ -295,12 +289,6 @@ resource "aws_sns_topic" "tf_log" {
 
 resource "aws_s3_bucket_notification" "tf_log" {
   bucket = aws_s3_bucket.tf_log.id
-
-  topic {
-    topic_arn     = aws_sns_topic.tf_log.arn
-    events        = ["s3:ObjectCreated:*"]
-    filter_suffix = ".log"
-  }
 }
 
 resource "aws_s3_bucket_policy" "tf_log" {
