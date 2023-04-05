@@ -47,6 +47,7 @@ resource "aws_s3_bucket" "tf_state" {
   bucket = local.tf_state_bucket_name
 
   # checkov:skip=CKV_AWS_144:Cross region replication not required by default
+  # checkov:skip=CKV2_AWS_62:S3 bucket does not need notifications enabled
 
   # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
   lifecycle {
@@ -128,6 +129,7 @@ resource "aws_s3_bucket" "tf_log" {
   bucket = local.tf_logs_bucket_name
 
   # checkov:skip=CKV_AWS_144:Cross region replication not required by default
+  # checkov:skip=CKV2_AWS_62:S3 bucket does not need notifications enabled
 }
 
 resource "aws_s3_bucket_versioning" "tf_log" {
@@ -162,24 +164,6 @@ resource "aws_s3_bucket_ownership_controls" "tf_log" {
 
   rule {
     object_ownership = "BucketOwnerEnforced"
-  }
-}
-
-resource "aws_s3_bucket_lifecycle_configuration" "tf_state" {
-  bucket                = aws_s3_bucket.tf_state.id
-  expected_bucket_owner = data.aws_caller_identity.current.account_id
-
-  rule {
-    id     = "expire-after-10000-days"
-    status = "Enabled"
-
-    abort_incomplete_multipart_upload {
-      days_after_initiation = 15
-    }
-
-    expiration {
-      days = 10000
-    }
   }
 }
 
