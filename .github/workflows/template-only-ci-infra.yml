@@ -11,6 +11,7 @@ on:
       - template-only-test/**
       - .github/workflows/template-only-ci-infra.yml
       - app/Dockerfile
+  workflow_dispatch:
 
 # For now, only allow one workflow run at a time, since this actually provisions infra.
 concurrency: platform-template-only-ci-infra
