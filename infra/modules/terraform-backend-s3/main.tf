@@ -118,11 +118,6 @@ data "aws_iam_policy_document" "tf_state" {
   }
 }
 
-resource "aws_sns_topic" "tf_state" {
-  name              = "s3-event-notification-infra-test-topic-tf_state"
-  kms_master_key_id = aws_kms_key.tf_backend.arn
-}
-
 resource "aws_s3_bucket_notification" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
 }
@@ -280,11 +275,6 @@ data "aws_iam_policy_document" "tf_log" {
       ]
     }
   }
-}
-
-resource "aws_sns_topic" "tf_log" {
-  name              = "s3-event-notification-infra-test-topic-tf_log"
-  kms_master_key_id = aws_kms_key.tf_backend.arn
 }
 
 resource "aws_s3_bucket_notification" "tf_log" {
