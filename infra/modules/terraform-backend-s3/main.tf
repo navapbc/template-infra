@@ -118,6 +118,21 @@ data "aws_iam_policy_document" "tf_state" {
   }
 }
 
+resource "aws_sns_topic" "tf_state" {
+  name   = "s3-event-notification-topic-tf_state"
+  policy = data.aws_iam_policy_document.tf_state.json
+}
+
+resource "aws_s3_bucket_notification" "bucket_notification" {
+  bucket = aws_s3_bucket.tf_state.id
+
+  topic {
+    topic_arn     = aws_sns_topic.tf_state.arn
+    events        = ["s3:ObjectCreated:*"]
+    filter_suffix = ".log"
+  }
+}
+
 resource "aws_s3_bucket_policy" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
   policy = data.aws_iam_policy_document.tf_state.json
