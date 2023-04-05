@@ -9,6 +9,10 @@ MODULE_DIR=$1
 # as ENVIRONMENT. For shared configs, the BACKEND_CONFIG_NAME will be "shared".
 BACKEND_CONFIG_NAME=$2
 
+# TF_STATE_KEY is the S3 object key of the tfstate file in the S3 bucket
+# It is an optional parameter that defaults to [MODULE_DIR]/[BACKEND_CONFIG_NAME].tfstate
+TF_STATE_KEY="${3:-$MODULE_DIR/$BACKEND_CONFIG_NAME.tfstate}"
+
 # The local tfbackend config file that will store the terraform backend config
 BACKEND_CONFIG_FILE="$MODULE_DIR/$BACKEND_CONFIG_NAME.s3.tfbackend"
 
@@ -18,7 +22,6 @@ BACKEND_CONFIG_FILE="$MODULE_DIR/$BACKEND_CONFIG_NAME.s3.tfbackend"
 # modules
 TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/accounts output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts output -raw tf_locks_table_name)
-TF_STATE_KEY="$MODULE_DIR/$BACKEND_CONFIG_NAME.tfstate"
 REGION=$(terraform -chdir=infra/accounts output -raw region)
 
 echo "================================================================"
