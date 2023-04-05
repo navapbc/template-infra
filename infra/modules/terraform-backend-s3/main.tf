@@ -188,6 +188,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "tf_state" {
     id     = "expire-after-10000-days"
     status = "Enabled"
 
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 15
+    }
+    
     expiration {
       days = 10000
     }
