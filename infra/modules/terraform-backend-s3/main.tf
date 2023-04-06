@@ -47,6 +47,8 @@ resource "aws_s3_bucket" "tf_state" {
   bucket = local.tf_state_bucket_name
 
   # checkov:skip=CKV_AWS_144:Cross region replication not required by default
+  # checkov:skip=CKV2_AWS_62:S3 bucket does not need notifications enabled
+  # checkov:skip=CKV2_AWS_61:No need to define S3 bucket lifecycle configuration to expire or transition tfstate files since they will always be needed and the file sizes are small anyways
 
   # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
   lifecycle {
@@ -128,6 +130,7 @@ resource "aws_s3_bucket" "tf_log" {
   bucket = local.tf_logs_bucket_name
 
   # checkov:skip=CKV_AWS_144:Cross region replication not required by default
+  # checkov:skip=CKV2_AWS_62:S3 bucket does not need notifications enabled
 }
 
 resource "aws_s3_bucket_versioning" "tf_log" {
