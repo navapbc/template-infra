@@ -11,27 +11,6 @@ TF_APPLY_ARGS="${@:3}"
 # MODULE_DIR – the location of the root module to initialize and apply
 # TF_APPLY_ARGS – any additional arguments to pass to terraform apply
 
-# 1. Set working directory to the terraform root module directory
+./bin/terraform-init.sh $MODULE_DIR $CONFIG_NAME
 
-cd $MODULE_DIR
-
-# 2. Run terraform init with the named backend config file
-
-BACKEND_CONFIG_FILE="$CONFIG_NAME.s3.tfbackend"
-
-terraform init \
-  -input=false \
-  -reconfigure \
-  -backend-config=$BACKEND_CONFIG_FILE
-
-# 3. Run terraform apply with the tfvars file (if it exists) that has the same name as the backend config file
-
-TF_VARS_FILE="$CONFIG_NAME.tfvars"
-TF_VARS_OPTION=""
-if [ -f $TF_VARS_FILE ]; then
-  TF_VARS_OPTION="-var-file=$TF_VARS_FILE"
-fi
-
-terraform apply \
-  $TF_VARS_OPTION \
-  $TF_APPLY_ARGS
+./bin/terraform-apply.sh $MODULE_DIR $CONFIG_NAME $TF_APPLY_ARGS
