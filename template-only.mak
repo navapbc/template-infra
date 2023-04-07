@@ -16,9 +16,6 @@ GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-ac
 	destroy-account
 
 test:
-	echo $(REGION)
-	echo $(AWS_DEFAULT_REGION)
-	echo $(AWS_REGION)
 	cd template-only-test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 
 set-up-project:
