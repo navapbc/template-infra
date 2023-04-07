@@ -121,10 +121,10 @@ release-publish:
 
 release-deploy:
 # check the varaible against the list of enviroments and suggest one of the correct envs.
-ifneq ($(filter $(ENV_NAME),$(ENVIRONMENTS)),)
-	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENV_NAME)
+ifneq ($(filter $(ENVIRONMENT),$(ENVIRONMENTS)),)
+	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 else
-	@echo "Please enter: make release-deploy ENV_NAME=<env_name>. The value for env_name must be one of these: $(ENVIRONMENTS)"
+	@echo "Please enter: make release-deploy ENVIRONMENT=<environment>. The value for environment must be one of these: $(ENVIRONMENTS)"
 	exit 1
 endif
 
