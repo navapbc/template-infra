@@ -1,4 +1,14 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# Convenience script for running terraform init followed by terraform apply
+# See ./bin/terraform-init.sh and ./bin/terraform-apply.sh for more details.
+#
+# Positional parameters:
+# MODULE_DIR (required) – The location of the root module to initialize and apply
+# CONFIG_NAME (required) – The name of the tfbackend and tfvars config. The name
+#   is expected to be consistent for both the tfvars file and the tfbackend file.
+# TF_APPLY_ARGS (optional) – Any additional arguments to pass to terraform apply.
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
 MODULE_DIR="$1"
