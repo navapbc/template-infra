@@ -162,7 +162,7 @@ func ValidateDevEnvironment(t *testing.T) {
 
 	// Hit the service endpoint to see if it returns status 200
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
+		TerraformDir: "../infra/app/service/",
 	})
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 1*time.Second, func(responseStatus int, responseBody string) bool {
