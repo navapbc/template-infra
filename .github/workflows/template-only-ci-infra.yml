@@ -12,7 +12,8 @@ on:
       - .github/workflows/template-only-ci-infra.yml
       - app/Dockerfile
 
-# For now, only allow one workflow run at a time, since this actually provisions infra.
+# For now, only allow one workflow run at a time, since this provisions an OIDC
+# provider for github actions and only one OIDC provider can exist at a time.
 concurrency: platform-template-only-ci-infra
 
 jobs:
