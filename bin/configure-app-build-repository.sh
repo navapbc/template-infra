@@ -1,9 +1,16 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# This script configures the build-repository module for the specified application.
+# It creates a shared.tfvars file and shared.s3.tfbackend in the module directory.
+# The configuration will be shared across all of the application's environments.
+#
+# Positional parameters:
+#   APP_NAME (required) – the name of subdirectory of /infra that holds the
+#     application's infrastructure code.
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
-# APP_NAME is the name of the directory that holds the application code,
-# as well as the subdirectory of /infra that holds the application
-# infrastructure code. Defaults to "app".
+
 APP_NAME=$1
 
 #--------------------------------------
@@ -39,6 +46,6 @@ sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
 rm $TF_VARS_FILE.bak
 
 echo "Created file: $TF_VARS_FILE"
-echo "---------------------- start ----------------------"
+echo "------------------ file contents ------------------"
 cat $TF_VARS_FILE
 echo "----------------------- end -----------------------"

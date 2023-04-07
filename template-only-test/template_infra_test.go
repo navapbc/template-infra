@@ -74,7 +74,7 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 	fmt.Println("::group::Creating build repository resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-set-up-app-build-repository", "APP_NAME=app"},
+		Args:       []string{"infra-configure-app-build-repository", "APP_NAME=app"},
 		WorkingDir: "../",
 	})
 	shell.RunCommand(t, shell.Command{
@@ -88,7 +88,7 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 func SetUpDevEnvironment(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-set-up-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
+		Args:       []string{"infra-configure-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
 		WorkingDir: "../",
 	})
 

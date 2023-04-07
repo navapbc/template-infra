@@ -1,5 +1,4 @@
 #!/bin/bash
+# Print the current AWS account id
 set -euo pipefail
-
-# Printthe current account alias
 echo -n "$(aws sts get-caller-identity --query "Account" --output text)"

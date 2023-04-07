@@ -1,12 +1,16 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# This script configures the service module for the specified application
+# and environment by creating the .tfvars file and .tfbackend file for the module.
+#
+# Positional parameters:
+#   APP_NAME (required) – the name of subdirectory of /infra that holds the
+#     application's infrastructure code.
+#   ENVIRONMENT is the name of the application environment (e.g. dev, staging, prod)
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
-# APP_NAME is the name of the directory that holds the application code,
-# as well as the subdirectory of /infra that holds the application
-# infrastructure code. Defaults to "app".
 APP_NAME=$1
-
-# ENVIRONMENT is the name of the environment that will be created.
 ENVIRONMENT=$2
 
 #--------------------------------------
@@ -17,7 +21,6 @@ MODULE_DIR="infra/$APP_NAME/service"
 BACKEND_CONFIG_NAME="$ENVIRONMENT"
 
 ./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
-
 
 #--------------------
 # Create tfvars file
@@ -51,6 +54,6 @@ sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
 rm $TF_VARS_FILE.bak
 
 echo "Created file: $TF_VARS_FILE"
-echo "---------------------- start ----------------------"
+echo "------------------ file contents ------------------"
 cat $TF_VARS_FILE
 echo "----------------------- end -----------------------"
