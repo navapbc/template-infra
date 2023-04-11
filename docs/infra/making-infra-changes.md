@@ -1,0 +1,56 @@
+# Making and applying infrastructure changes
+
+## Requirements
+
+First read [Module Architecture](./module-architecture.md) to understand how the terraform modules are structured.
+
+## Using make targets (recommended)
+
+For most changes you can use the Make targets provided in the root level Makefile, and can all be run from the project root.
+
+Make changes to the account:
+
+```bash
+make infra-account
+```
+
+Make changes to the application service in the dev environment:
+
+```bash
+make infra-app-service APP_NAME=app ENVIRONMENT=dev
+```
+
+Make changes to the application build repository (Note that the build repository is shared across environments, so there is no ENVIRONMENT parameter):
+
+```bash
+make infra-app-build-repository APP_NAME=app
+```
+
+You can also pass in extra arguments to `terraform apply` by using the `TF_APPLY_ARGS` parameter:
+
+```bash
+# Example
+make infra-app-service APP_NAME=app ENVIRONMENT=dev TF_APPLY_ARGS='-input=false -auto-approve'
+make infra-app-service APP_NAME=app ENVIRONMENT=dev TF_APPLY_ARGS='-var=image_tag=abcdef1'
+```
+
+## Using terraform CLI wrapper scripts
+
+An alternative to using the Makefile is to directly use the terraform wrapper scripts that the Makefile uses:
+
+```bash
+project-root$ ./bin/terraform-init.sh app/service dev
+project-root$ ./bin/terraform-apply.sh app/service dev
+project-root$ ./bin/terraform-init-and-apply.sh app/service dev  # calls init and apply in the same script
+```
+
+Look in the script files for more details on usage.
+
+## Using terraform CLI directly
+
+Finally, if the wrapper scripts don't meet your needs, you can always run terraform directly from the root module directory. You'll need to pass in the appropriate `tfvars` and `tfbackend` files to `terraform init` and `terraform apply`. For example, to make changes to the application's service resources in the dev environment, cd to the `infra/app/service` directory and run:
+
+```bash
+infra/app/service$ terraform init -backend-config=dev.s3.tfbackend
+infra/app/service$ terraform apply -var-file=dev.tfvars
+```

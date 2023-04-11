@@ -8,20 +8,18 @@ The infrastructure code is organized as follows. [Root modules](https://www.terr
 
 ```text
 infra/                  Infrastructure code
-  accounts/             Module for IaC and IAM resources
+  accounts/             Root module for IaC and IAM resources
   app/                  Application-specific infrastructure
-    build-repository/   Module for resources storing built release candidates used for deploys
-    network/            (In development) Module for virtual network resources
-    database/           (In development) Module for database resources
-    service/            Modules for application service resources (load balancer, application service)
+    build-repository/   Root module for resources storing built release candidates used for deploys
+    network/            (In development) Root module for virtual network resources
+    database/           (In development) Root module for database resources
+    service/            Root module for application service resources (load balancer, application service)
   modules/              Reusable child modules
 ```
 
 ## Module calling structure
 
 The following diagram describes the relationship between modules and their child modules. Arrows go from the caller module to the child module.
-
-Note that `static-app` does not currently exist, but is provided as an example of what the module architecture would look like if additional applications were added to the project repo.
 
 ```mermaid
 flowchart TB
@@ -59,6 +57,10 @@ flowchart TB
   end
 ```
 
+## Application environments
+
+An application may have multiple environments (e.g. dev, staging, prod). The environments share the same root modules but will have different configurations. The configurations are saved as separate `.tfvars` and `.tfbackend` files named after the environment. For example, the `app/service` infrastructure resources for the `dev` environment will be configured via `dev.tfvars` and `dev.s3.tfbackend` files in the `infra/app/service` module directory.
+
 ## Module dependencies
 
 The following diagram illustrates the dependency structure of the root modules.
@@ -78,3 +80,7 @@ app/service --> app/network
 app/service --> app/database --> app/network --> accounts
 app/database --> accounts
 ```
+
+## Making changes to infrastructure
+
+Now that you understand how the modules are structured, see [making changes to infrastructure](./making-infra-changes.md).
