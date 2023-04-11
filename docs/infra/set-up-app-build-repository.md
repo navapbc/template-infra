@@ -1,50 +1,32 @@
-# Set up application
+# Set up application build repository
 
-To application setup process will:
+The application build repository setup process will:
 
 1. Create infrastructure resources needed to store built release candidate artifacts used to deploy the application to an environment.
-2. Create one or more application environmnets for running the application.
+2. Create one or more application environments for running the application.
 
-## Set up application deployment process
+## Requirements
 
-### 1. Configure backend
+Before setting up the application's build repository you'll need to have:
 
-Get the backend configration values for the S3 backend in production. If your prod account is in `infra/accounts/prod`, you would do
+1. [Set up the AWS account](./set-up-aws-account.md)
 
-```bash
-cd infra/accounts/prod
-terraform output -raw tf_state_bucket_name
-terraform output -raw tf_locks_table_name
-terraform output -raw region
-```
+## 1. Configure backend
 
-Now navigate to the `build-repository` module of the application you want to set up (e.g. `infra/app/build-repository`)
-
-```terraform
-# infra/app/build-repository/main.tf
-
-backend "s3" {
-  bucket         = "<TF_STATE_BUCKET_NAME>"
-  key            = "infra/<APP_NAME>/build-repository.tfstate"
-  dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-  region         = "<REGION>"
-  encrypt        = "true"
-}
-```
-
-Then initialize terraform
+To create the tfbackend file for the build repository using the backend configuration values from your current AWS account, run
 
 ```bash
-terraform init
+make infra-configure-app-build-repository APP_NAME=app
 ```
 
-### 2. Create build repository resources
+Pass in the name of the app folder within `infra`. By default this is `app`.
 
-Now run the following commands to create the resources, making sure to verify the plan very applying.
+## 2. Create build repository resources
+
+Now run the following commands to create the resources, making sure to verify the plan before confirming the apply.
 
 ```bash
-terraform plan -out=plan.out
-terraform apply plan.out
+make infra-build-repository APP_NAME=app
 ```
 
 ## Set up application environments
