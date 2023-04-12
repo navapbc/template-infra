@@ -1,4 +1,5 @@
 #!/bin/bash
+
 set -euo pipefail
 
 APP_NAME=$1
@@ -25,6 +26,15 @@ echo "Authenticating Docker with ECR"
 aws ecr get-login-password --region $REGION \
   | docker login --username AWS --password-stdin $IMAGE_REGISTRY
 echo
-echo "Publishing image"
+echo "Check if tag has already been published..."
+RESULT=""
+RESULT=$(aws ecr describe-images --repository-name $IMAGE_NAME --image-ids imageTag=$IMAGE_TAG --region $REGION 2> /dev/null ) || true
+if [ ! -z "$RESULT" ];then
+  echo "Image with tag $IMAGE_TAG already published"
+  exit 0
+fi
+
+
+echo "New tag. Publishing image"
 docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_REPOSITORY_URL:$IMAGE_TAG
 docker push $IMAGE_REPOSITORY_URL:$IMAGE_TAG
