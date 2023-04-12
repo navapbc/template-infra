@@ -34,6 +34,7 @@ if [ ! -z "$RESULT" ];then
   exit 0
 fi
 
+
 echo "New tag. Publishing image"
 docker tag $IMAGE_NAME:$IMAGE_TAG $IMAGE_REPOSITORY_URL:$IMAGE_TAG
 docker push $IMAGE_REPOSITORY_URL:$IMAGE_TAG
