@@ -1,15 +1,16 @@
 name: Deploy
 
 on:
-  push:
-    branches: 
-      - 'main'
-    paths:
-      - 'app/**'
-      - 'bin/**'
-      - 'infra/**'
-      - 'template-only-bin/**'
-      - 'template-only-test/**'
+  # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
+  # push:
+  #   branches: 
+  #     - 'main'
+  #   paths:
+  #     - 'app/**'
+  #     - 'bin/**'
+  #     - 'infra/**'
+  #     - 'template-only-bin/**'
+  #     - 'template-only-test/**'
   workflow_dispatch:
     inputs:
       env_name:
