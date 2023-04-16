@@ -9,8 +9,6 @@ on:
   #     - 'app/**'
   #     - 'bin/**'
   #     - 'infra/**'
-  #     - 'template-only-bin/**'
-  #     - 'template-only-test/**'
   workflow_dispatch:
     inputs:
       env_name:
