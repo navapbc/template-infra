@@ -3,7 +3,12 @@ name: Deploy
 on:
   # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
   # push:
-  #   branches: ["main"]
+  #   branches: 
+  #     - 'main'
+  #   paths:
+  #     - 'app/**'
+  #     - 'bin/**'
+  #     - 'infra/**'
   workflow_dispatch:
     inputs:
       env_name:
