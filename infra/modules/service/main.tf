@@ -126,6 +126,7 @@ resource "aws_ecs_service" "app" {
 
   network_configuration {
     # TODO(https://github.com/navapbc/template-infra/issues/152) set assign_public_ip = false after using private subnets
+    # checkov:skip=CKV_AWS_333:Switch to using private subnets
     assign_public_ip = true
     subnets          = var.subnet_ids
     security_groups  = [aws_security_group.app.id]
@@ -144,18 +145,46 @@ resource "aws_ecs_task_definition" "app" {
 
   # when is this needed?
   # task_role_arn      = aws_iam_role.app_service.arn
-  container_definitions = templatefile(
-    "${path.module}/container-definitions.json.tftpl",
+  container_definitions = jsonencode([
     {
-      service_name   = var.service_name
-      image_url      = local.image_url
-      container_port = var.container_port
-      cpu            = var.cpu
-      memory         = var.memory
-      awslogs_group  = aws_cloudwatch_log_group.service_logs.name
-      aws_region     = data.aws_region.current.name
+      name                   = var.service_name,
+      image                  = local.image_url,
+      memory                 = var.memory,
+      cpu                    = var.cpu,
+      networkMode            = "awsvpc",
+      essential              = true,
+      readonlyRootFilesystem = true,
+      healthcheck = {
+        command = ["CMD-SHELL",
+          "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/health || exit 1"
+        ]
+      },
+      environment = [
+        {
+          name : "PORT", value : tostring(var.container_port)
+        }
+      ],
+      portMappings = [
+        {
+          containerPort = var.container_port,
+        }
+      ],
+      linuxParameters = {
+        capabilities = {
+          drop = ["ALL"]
+        },
+        initProcessEnabled = true
+      },
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.service_logs.name,
+          "awslogs-region"        = data.aws_region.current.name,
+          "awslogs-stream-prefix" = var.service_name
+        }
+      }
     }
-  )
+  ])
 
   cpu    = var.cpu
   memory = var.memory
