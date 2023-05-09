@@ -120,7 +120,7 @@ release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:
-# check the varaible against the list of enviroments and suggest one of the correct envs.
+# check the variable against the list of enviroments and suggest one of the correct envs.
 ifneq ($(filter $(ENVIRONMENT),$(ENVIRONMENTS)),)
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 else
