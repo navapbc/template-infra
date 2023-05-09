@@ -16,15 +16,12 @@ set -euo pipefail
 MODULE_DIR="$1"
 CONFIG_NAME="$2"
 
-# 1. Set working directory to the terraform root module directory
-
-cd $MODULE_DIR
-
-# 2. Run terraform init with the named backend config file
+# Run terraform init with the named backend config file
 
 BACKEND_CONFIG_FILE="$CONFIG_NAME.s3.tfbackend"
 
-terraform init \
+# Note that the BACKEND_CONFIG_FILE path is relative to MODULE_DIR, not the current working directory
+terraform -chdir=$MODULE_DIR init \
   -input=false \
   -reconfigure \
   -backend-config=$BACKEND_CONFIG_FILE
