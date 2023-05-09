@@ -45,13 +45,13 @@ infra-configure-app-service:
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-current-account:
-	./bin/terraform-init-and-apply.sh infra/accounts $(CURRENT_ACCOUNT_ALIAS) $(TF_APPLY_ARGS)
+	./bin/terraform-init-and-apply.sh infra/accounts $(CURRENT_ACCOUNT_ALIAS)
 
 infra-update-app-build-repository:
-	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared $(TF_APPLY_ARGS)
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
 
 infra-update-app-service:
-	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT) $(TF_APPLY_ARGS)
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
 
 
 # Validate all infra root and child modules.

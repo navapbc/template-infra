@@ -44,7 +44,7 @@ This command will create the S3 tfstate bucket and the GitHub OIDC provider. It 
 If you make changes to the account terraform and want to apply those changes, run
 
 ```bash
-make infra-update-account
+make infra-update-current-account
 ```
 
 ## Destroying infrastructure

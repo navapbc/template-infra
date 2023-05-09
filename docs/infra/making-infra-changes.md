@@ -11,7 +11,7 @@ For most changes you can use the Make targets provided in the root level Makefil
 Make changes to the account:
 
 ```bash
-make infra-update-account
+make infra-update-current-account
 ```
 
 Make changes to the application service in the dev environment:
@@ -26,12 +26,12 @@ Make changes to the application build repository (Note that the build repository
 make infra-update-app-build-repository APP_NAME=app
 ```
 
-You can also pass in extra arguments to `terraform apply` by using the `TF_APPLY_ARGS` parameter:
+You can also pass in extra arguments to `terraform apply` by using the `TF_CLI_ARGS` or `TF_CLI_ARGS_apply` parameter (see [Terraform's docs on TF_CLI_ARGS and TF_CLI_ARGS_name](https://developer.hashicorp.com/terraform/cli/config/environment-variables#tf_cli_args-and-tf_cli_args_name)):
 
 ```bash
 # Example
-make infra-update-app-service APP_NAME=app ENVIRONMENT=dev TF_APPLY_ARGS='-input=false -auto-approve'
-make infra-update-app-service APP_NAME=app ENVIRONMENT=dev TF_APPLY_ARGS='-var=image_tag=abcdef1'
+TF_CLI_ARGS_apply='-input=false -auto-approve' make infra-update-app-service APP_NAME=app ENVIRONMENT=dev
+TF_CLI_ARGS_apply='-var=image_tag=abcdef1' make infra-update-app-service APP_NAME=app ENVIRONMENT=dev
 ```
 
 ## Using terraform CLI wrapper scripts
