@@ -16,6 +16,9 @@ resource "aws_iam_role" "github_actions" {
 resource "aws_iam_role_policy_attachment" "custom" {
   count = length(var.iam_role_policy_arns)
 
+  # TODO(https://github.com/navapbc/template-infra/issues/194) Set permissions for GitHub Actions role
+  # checkov:skip=CKV_AWS_274:Replace default policy of AdministratorAccess with finer grained permissions
+
   role       = aws_iam_role.github_actions.name
   policy_arn = var.iam_role_policy_arns[count.index]
 }
