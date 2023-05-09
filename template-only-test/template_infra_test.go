@@ -79,7 +79,7 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 	})
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-app-build-repository", "APP_NAME=app", "TF_APPLY_ARGS='-input=false -auto-approve'"},
+		Args:       []string{"infra-update-app-build-repository", "APP_NAME=app", "TF_APPLY_ARGS='-input=false -auto-approve'"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
@@ -101,7 +101,7 @@ func SetUpDevEnvironment(t *testing.T) {
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-app-service", "APP_NAME=app", "ENVIRONMENT=dev", fmt.Sprintf(`TF_APPLY_ARGS="-input=false -auto-approve -var=image_tag=%s"`, imageTag)},
+		Args:       []string{"infra-update-app-service", "APP_NAME=app", "ENVIRONMENT=dev", fmt.Sprintf(`TF_APPLY_ARGS="-input=false -auto-approve -var=image_tag=%s"`, imageTag)},
 		WorkingDir: "../",
 	})
 }

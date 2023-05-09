@@ -36,5 +36,5 @@ make release-publish
 Now run the following commands to create the resources, using the image tag that was published from the previous step. Review the terraform before confirming "yes" to apply the changes.
 
 ```bash
-make infra-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT> TF_APPLY_ARGS="-var=image_tag=<IMAGE_TAG>"
+make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT> TF_APPLY_ARGS="-var=image_tag=<IMAGE_TAG>"
 ```

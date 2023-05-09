@@ -42,13 +42,13 @@ infra-configure-app-build-repository:
 infra-configure-app-service:
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-account:
+infra-update-account:
 	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT_ALIAS) $(TF_APPLY_ARGS)
 
-infra-app-build-repository:
+infra-update-app-build-repository:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared $(TF_APPLY_ARGS)
 
-infra-app-service:
+infra-update-app-service:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT) $(TF_APPLY_ARGS)
 
 
