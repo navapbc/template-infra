@@ -6,7 +6,9 @@ PROJECT_NAME ?= $(notdir $(PWD))
 # on will be determined by the APP_NAME Makefile argument
 APP_NAME ?= app
 
-ACCOUNT_ALIAS := `./bin/current-account-alias.sh`
+# Use `=` instead of `:=` so that we only execute `./bin/current-account-alias.sh` when needed
+# See https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
+CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias.sh`
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
@@ -42,8 +44,8 @@ infra-configure-app-build-repository:
 infra-configure-app-service:
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-update-account:
-	./bin/terraform-init-and-apply.sh infra/accounts $(ACCOUNT_ALIAS) $(TF_APPLY_ARGS)
+infra-update-current-account:
+	./bin/terraform-init-and-apply.sh infra/accounts $(CURRENT_ACCOUNT_ALIAS) $(TF_APPLY_ARGS)
 
 infra-update-app-build-repository:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared $(TF_APPLY_ARGS)
