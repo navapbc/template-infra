@@ -268,29 +268,9 @@ resource "aws_s3_bucket_policy" "tf_log" {
   policy = data.aws_iam_policy_document.tf_log.json
 }
 
-# This is a workaround to a race condition that seems to have been recently introduced
-# by AWS S3 and at the time of writing (2023-05-09) has yet to be resolved.
-# See https://github.com/hashicorp/terraform-provider-aws/issues/31139 for more details
-# about the issue.
-# There is an outstanding PR in the Terraform AWS provider created on Apr 24, 2023 that
-# may resolve this issue: https://github.com/hashicorp/terraform-provider-aws/pull/30916
-resource "null_resource" "logging_empty_output_workaround" {
-  provisioner "local-exec" {
-    command = "sleep 15"
-  }
-
-  triggers = {
-    bucket = aws_s3_bucket.tf_state.bucket
-  }
-
-  depends_on = [aws_s3_bucket.tf_state]
-}
-
 resource "aws_s3_bucket_logging" "tf_state" {
   bucket = aws_s3_bucket.tf_state.id
 
   target_bucket = aws_s3_bucket.tf_log.id
   target_prefix = "logs/${aws_s3_bucket.tf_state.bucket}/"
-
-  depends_on = [null_resource.logging_empty_output_workaround]
 }
