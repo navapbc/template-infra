@@ -5,7 +5,6 @@ set -euo pipefail
 ACCOUNT_ALIAS="$(./bin/current-account-alias.sh)"
 ACCOUNT_ID="$(./bin/current-account-id.sh)"
 REGION="$(./bin/current-region.sh)"
-BACKEND_CONFIG_FILE="$ACCOUNT_ALIAS.s3.tfbackend"
 
 # Get project name
 terraform -chdir=infra/project-config refresh > /dev/null
