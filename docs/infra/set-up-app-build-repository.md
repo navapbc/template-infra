@@ -26,7 +26,7 @@ Pass in the name of the app folder within `infra`. By default this is `app`.
 Now run the following commands to create the resources, making sure to verify the plan before confirming the apply.
 
 ```bash
-make infra-build-repository APP_NAME=app
+make infra-app-build-repository APP_NAME=app
 ```
 
 ## Set up application environments
