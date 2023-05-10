@@ -31,13 +31,13 @@ aws iam list-account-aliases
 
 ### 2. Create backend resources and tfbackend config file
 
-Run
+Run the following command, replacing `<ACCOUNT_NAME>` with a human readable name for the AWS account that you're authenticated into. The account name will be used to prefix the created tfbackend file so that it's easier to visually identify as opposed to identifying the file using the account id. For example, you have an account per environment, the account name can be the name of the environment (e.g. "prod" or "staging"). Or if you are setting up an account for all lower environments, account name can be "lowers". If your AWS account has an account alias, you can also use that.
 
 ```bash
-make infra-set-up-account
+make infra-set-up-account ACCOUNT_NAME=<ACCOUNT_NAME>
 ```
 
-This command will create the S3 tfstate bucket and the GitHub OIDC provider. It will also create a `[account alias].s3.tfbackend` file in the `infra/accounts` directory.
+This command will create the S3 tfstate bucket and the GitHub OIDC provider. It will also create a `[account name].[account id].s3.tfbackend` file in the `infra/accounts` directory.
 
 ## Making changes to the account
 

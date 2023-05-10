@@ -10,6 +10,8 @@ APP_NAME ?= app
 # See https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
 CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias.sh`
 
+CURRENT_ACCOUNT_ID = $(./bin/current-account-id.sh)
+
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
@@ -17,6 +19,21 @@ MODULES := $(notdir $(wildcard infra/modules/*))
 # Get the list of accounts and environments in a manner similar to MODULES above
 ACCOUNTS := $(notdir $(wildcard infra/accounts/*))
 ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
+
+# Check that given variables are set and all have non-empty values,
+# die with an error otherwise.
+#
+# Params:
+#   1. Variable name(s) to test.
+#   2. (optional) Error message to print.
+# Based off of https://stackoverflow.com/questions/10858261/how-to-abort-makefile-if-variable-not-set
+check_defined = \
+	$(strip $(foreach 1,$1, \
+        $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+	$(if $(value $1),, \
+		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
+			required by target `$@')))
 
 
 .PHONY : \
@@ -36,7 +53,8 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 	db-migrate-create
 
 infra-set-up-account:  # Set up the AWS account for the first time
-	./bin/set-up-current-account.sh
+	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
+	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
 
 infra-configure-app-build-repository:
 	./bin/configure-app-build-repository.sh $(APP_NAME)
@@ -45,7 +63,7 @@ infra-configure-app-service:
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-current-account:
-	./bin/terraform-init-and-apply.sh infra/accounts $(CURRENT_ACCOUNT_ALIAS)
+	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
 
 infra-update-app-build-repository:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared

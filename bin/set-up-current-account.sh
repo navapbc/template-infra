@@ -1,8 +1,29 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# This script sets up the terraform backend for the AWS account that you are
+# currently authenticated into and creates the terraform backend config file.
+#
+# The script takes a human readable account name that is used to prefix the tfbackend
+# file that is created. This is to make it easier to visually identify while
+# tfbackend file corresponds to which AWS account. The account ID is still
+# needed since all AWS accounts are guaranteed to have an account ID, and the
+# account ID cannot change, whereas other things like the AWS account alias
+# can change and is not guaranteed to exist.
+#
+# Positional parameters:
+#   ACCOUNT_NAME (required) - human readable name for the AWS account that you're
+#     authenticated into. The account name will be used to prefix the created
+#     tfbackend file so that it's easier to visually identify as opposed to
+#     identifying the file using the account id.
+#     For example, you have an account per environment, the account name can be
+#     the name of the environment (e.g. "prod" or "staging"). Or if you are
+#     setting up an account for all lower environments, account name can be "lowers".
+#     If your AWS account has an account alias, you can also use that.
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
-# Name the account based on the current account alias
-ACCOUNT_ALIAS="$(./bin/current-account-alias.sh)"
+ACCOUNT_NAME=$1
+
 ACCOUNT_ID="$(./bin/current-account-id.sh)"
 REGION="$(./bin/current-region.sh)"
 
@@ -16,7 +37,7 @@ TF_STATE_KEY="infra/account.tfstate"
 echo "=================="
 echo "Setting up account"
 echo "=================="
-echo "ACCOUNT_ALIAS=$ACCOUNT_ALIAS"
+echo "ACCOUNT_NAME=$ACCOUNT_NAME"
 echo "ACCOUNT_ID=$ACCOUNT_ID"
 echo "PROJECT_NAME=$PROJECT_NAME"
 echo "TF_STATE_BUCKET_NAME=$TF_STATE_BUCKET_NAME"
@@ -84,5 +105,5 @@ done
 cd -
 
 MODULE_DIR=infra/accounts
-BACKEND_CONFIG_NAME=$ACCOUNT_ALIAS
+BACKEND_CONFIG_NAME="$ACCOUNT_NAME.$ACCOUNT_ID"
 ./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME $TF_STATE_KEY
