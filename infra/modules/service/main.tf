@@ -145,6 +145,7 @@ resource "aws_ecs_task_definition" "app" {
 
   # when is this needed?
   # task_role_arn      = aws_iam_role.app_service.arn
+
   container_definitions = jsonencode([
     {
       name                   = var.service_name,
@@ -154,7 +155,14 @@ resource "aws_ecs_task_definition" "app" {
       networkMode            = "awsvpc",
       essential              = true,
       readonlyRootFilesystem = true,
-      healthcheck = {
+
+      # Need to define all parameters in the healthCheck block even if we want
+      # to use AWS's defaults, otherwise the terraform plan will show a diff
+      # that will force a replacement of the task definition
+      healthCheck = {
+        interval = 30,
+        retries  = 3,
+        timeout  = 5,
         command = ["CMD-SHELL",
           "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/health || exit 1"
         ]
