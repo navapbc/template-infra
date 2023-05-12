@@ -1,13 +1,11 @@
-# TODO(https://github.com/navapbc/template-infra/issues/152) use non-default VPC
-data "aws_vpc" "default" {
-  default = true
+data "aws_vpc" "vpc" {
+  cidr_block = var.vpc_cidr
 }
 
-# TODO(https://github.com/navapbc/template-infra/issues/152) use private subnets
-data "aws_subnets" "default" {
+data "aws_subnets" "subnets" {
   filter {
-    name   = "default-for-az"
-    values = [true]
+    name   = "cidr-block"
+    values = var.subnet_cidr_blocks
   }
 }
 
@@ -18,6 +16,7 @@ locals {
   prefix       = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
   app_name     = module.app_config.app_name
   service_name = "${local.prefix}${local.app_name}-${var.environment_name}"
+
 }
 
 module "project_config" {
@@ -33,6 +32,6 @@ module "service" {
   service_name          = local.service_name
   image_repository_name = module.app_config.image_repository_name
   image_tag             = var.image_tag
-  vpc_id                = data.aws_vpc.default.id
-  subnet_ids            = data.aws_subnets.default.ids
+  vpc_id                = data.aws_vpc.vpc.id
+  subnet_ids            = data.aws_subnets.subnets.ids
 }
