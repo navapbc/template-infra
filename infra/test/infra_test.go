@@ -24,6 +24,7 @@ func TestDev(t *testing.T) {
 	})
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		TerraformDir: "../app/envs/dev/",
+		VarFiles:     []string{"dev.tfvars"},
 		Vars: map[string]interface{}{
 			"image_tag": imageTag,
 		},
@@ -56,6 +57,10 @@ func BuildAndPublish(t *testing.T) {
 func CreateDevEnvironmentInWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
 	fmt.Printf("::group::Create dev environment in new workspace '%s\n'", workspaceName)
 	terraform.Init(t, terraformOptions)
+
+	// terratest currently does not support passing a file as the -backend-config option
+	// so we need to manually call terraform rather than using terraform.Init
+	terraform.RunTerraformCommand(t, terraformOptions, "-backend-config=dev.s3.tfbackend")
 	terraform.WorkspaceSelectOrNew(t, terraformOptions, workspaceName)
 	terraform.Apply(t, terraformOptions)
 	fmt.Println("::endgroup::")
