@@ -87,6 +87,27 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 }
 
 func SetUpDevEnvironment(t *testing.T) {
+	SetUpDevNetwork(t)
+	SetUpDevService(t)
+}
+
+func SetUpDevNetwork(t *testing.T) {
+	fmt.Println("::group::Creating dev network resources")
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-configure-app-network", "APP_NAME=app", "ENVIRONMENT=dev"},
+		WorkingDir: "../",
+	})
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-update-app-network", "APP_NAME=app", "ENVIRONMENT=dev"},
+		WorkingDir: "../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func SetUpDevService(t *testing.T) {
+	fmt.Println("::group::Creating dev service resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-configure-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
@@ -106,6 +127,7 @@ func SetUpDevEnvironment(t *testing.T) {
 		Env:        map[string]string{"TF_CLI_ARGS_apply": fmt.Sprintf("-input=false -auto-approve -var=image_tag=%s", imageTag)},
 		WorkingDir: "../",
 	})
+	fmt.Println("::endgroup::")
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
@@ -193,6 +215,22 @@ func TeardownBuildRepository(t *testing.T) {
 }
 
 func TeardownDevEnvironment(t *testing.T) {
+	// Teardown in reverse order of setup
+	TeardownDevService(t)
+	TeardownDevNetwork(t)
+}
+
+func TeardownDevNetwork(t *testing.T) {
+	fmt.Println("::group::Destroying dev network resources")
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-app-network"},
+		WorkingDir: "../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func TeardownDevService(t *testing.T) {
 	fmt.Println("::group::Destroying dev environment resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",

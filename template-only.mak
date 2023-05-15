@@ -33,6 +33,9 @@ check-github-actions-auth:
 destroy-app-service:
 	./template-only-bin/destroy-app-service.sh
 
+destroy-app-network:
+	./template-only-bin/destroy-app-network.sh
+
 destroy-app-build-repository:
 	./template-only-bin/destroy-app-build-repository.sh
 
