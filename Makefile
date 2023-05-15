@@ -59,6 +59,10 @@ infra-set-up-account:  # Set up the AWS account for the first time
 infra-configure-app-build-repository:
 	./bin/configure-app-build-repository.sh $(APP_NAME)
 
+infra-configure-app-network:
+	@:$(call check_defined, ENVIRONMENT, the application environment (e.g. dev, staging, prod))
+	./bin/configure-app-network.sh $(APP_NAME) $(ENVIRONMENT)
+
 infra-configure-app-service:
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
@@ -67,6 +71,10 @@ infra-update-current-account:
 
 infra-update-app-build-repository:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+
+infra-update-app-network:
+	@:$(call check_defined, ENVIRONMENT, the application environment (e.g. dev, staging, prod))
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/network $(ENVIRONMENT)
 
 infra-update-app-service:
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
