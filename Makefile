@@ -16,10 +16,6 @@ CURRENT_ACCOUNT_ID = $(./bin/current-account-id.sh)
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
 
-# Get the list of accounts and environments in a manner similar to MODULES above
-ACCOUNTS := $(notdir $(wildcard infra/accounts/*))
-ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
-
 # Check that given variables are set and all have non-empty values,
 # die with an error otherwise.
 #
@@ -140,13 +136,8 @@ release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:
-# check the variable against the list of enviroments and suggest one of the correct envs.
-ifneq ($(filter $(ENVIRONMENT),$(ENVIRONMENTS)),)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
-else
-	@echo "Please enter: make release-deploy ENVIRONMENT=<environment>. The value for environment must be one of these: $(ENVIRONMENTS)"
-	exit 1
-endif
 
 release-image-name: ## Prints the image name of the release image
 	@echo $(IMAGE_NAME)
