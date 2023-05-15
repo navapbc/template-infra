@@ -60,15 +60,20 @@ infra-configure-app-build-repository:
 	./bin/configure-app-build-repository.sh $(APP_NAME)
 
 infra-configure-app-service:
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-current-account:
 	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
 
 infra-update-app-build-repository:
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
 
 infra-update-app-service:
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
 
 
