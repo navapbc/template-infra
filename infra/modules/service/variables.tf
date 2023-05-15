@@ -6,6 +6,16 @@ variable "service_name" {
   }
 }
 
+variable "load_balancer_security_group_id" {
+  type        = string
+  description = "The ID of the security group to associate with the load balancer."
+}
+
+variable "service_security_group_id" {
+  type        = string
+  description = "The ID of the security group to associate with the application service."
+}
+
 variable "image_tag" {
   type        = string
   description = "The tag of the image to deploy"

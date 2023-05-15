@@ -22,7 +22,7 @@ resource "aws_lb" "alb" {
   name            = var.service_name
   idle_timeout    = "120"
   internal        = false
-  security_groups = [aws_security_group.alb.id]
+  security_groups = [var.load_balancer_security_group_id]
   subnets         = var.subnet_ids
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
@@ -129,7 +129,7 @@ resource "aws_ecs_service" "app" {
     # checkov:skip=CKV_AWS_333:Switch to using private subnets
     assign_public_ip = true
     subnets          = var.subnet_ids
-    security_groups  = [aws_security_group.app.id]
+    security_groups  = [var.service_security_group_id]
   }
 
   load_balancer {
@@ -293,66 +293,45 @@ resource "aws_iam_role_policy" "task_executor" {
 ## Network Configuration ##
 ###########################
 
-resource "aws_security_group" "alb" {
-  # Specify name_prefix instead of name because when a change requires creating a new
-  # security group, sometimes the change requires the new security group to be created
-  # before the old one is destroyed. In this situation, the new one needs a unique name
-  name_prefix = "${var.service_name}-alb"
-  description = "Allow TCP traffic to application load balancer"
-
-  lifecycle {
-    create_before_destroy = true
-
-    # changing the description is a destructive change
-    # just ignore it
-    ignore_changes = [description]
-  }
-
-  vpc_id = var.vpc_id
+resource "aws_vpc_security_group_ingress_rule" "lb" {
+  security_group_id = var.load_balancer_security_group_id
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Disallow incoming traffic to port 80
   # checkov:skip=CKV_AWS_260:Disallow ingress from 0.0.0.0:0 to port 80 when implementing HTTPS support in issue #163
-  ingress {
-    description = "Allow HTTP traffic from public internet"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
-  egress {
-    description = "Allow all outgoing traffic"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  description = "Allow HTTP traffic from public internet"
+  from_port   = 80
+  to_port     = 80
+  ip_protocol = "tcp"
+  cidr_ipv4   = "0.0.0.0/0"
 }
 
-# Security group to allow access to Fargate tasks
-resource "aws_security_group" "app" {
-  # Specify name_prefix instead of name because when a change requires creating a new
-  # security group, sometimes the change requires the new security group to be created
-  # before the old one is destroyed. In this situation, the new one needs a unique name
-  name_prefix = "${var.service_name}-app"
-  description = "Allow inbound TCP access to application container port"
-  lifecycle {
-    create_before_destroy = true
-  }
+resource "aws_vpc_security_group_egress_rule" "lb" {
+  security_group_id = var.load_balancer_security_group_id
 
-  ingress {
-    description     = "Allow HTTP traffic to application container port"
-    protocol        = "tcp"
-    from_port       = var.container_port
-    to_port         = var.container_port
-    security_groups = [aws_security_group.alb.id]
-  }
+  description = "Allow all outgoing traffic"
+  from_port   = 0
+  to_port     = 0
+  ip_protocol = "-1"
+  cidr_ipv4   = "0.0.0.0/0"
+}
 
-  egress {
-    description = "Allow all outgoing traffic from application"
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_vpc_security_group_ingress_rule" "app" {
+  security_group_id = var.service_security_group_id
+
+  description                  = "Allow HTTP traffic to application container port"
+  ip_protocol                  = "tcp"
+  from_port                    = var.container_port
+  to_port                      = var.container_port
+  referenced_security_group_id = var.load_balancer_security_group_id
+}
+
+resource "aws_vpc_security_group_egress_rule" "app" {
+  security_group_id = var.service_security_group_id
+
+  description = "Allow all outgoing traffic from application"
+  ip_protocol = "-1"
+  from_port   = 0
+  to_port     = 0
+  cidr_ipv4   = "0.0.0.0/0"
 }

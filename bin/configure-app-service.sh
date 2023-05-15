@@ -28,7 +28,10 @@ BACKEND_CONFIG_NAME="$ENVIRONMENT"
 
 TF_VARS_FILE="$MODULE_DIR/$ENVIRONMENT.tfvars"
 
+
 # Get values needed to populate the tfvars file (see infra/app/service/example.tfvars)
+LOAD_BALANCER_SECURITY_GROUP_ID=$(terraform -chdir=infra/$APP_NAME/network output -raw load_balancer_security_group_id)
+SERVICE_SECURITY_GROUP_ID=$(terraform -chdir=infra/$APP_NAME/network output -raw service_security_group_id)
 TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/accounts output -raw tf_state_bucket_name)
 TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts output -raw tf_locks_table_name)
 TF_STATE_KEY="$MODULE_DIR/$BACKEND_CONFIG_NAME.tfstate"
@@ -45,6 +48,8 @@ echo
 
 cp $MODULE_DIR/example.tfvars $TF_VARS_FILE
 sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" $TF_VARS_FILE
+sed -i.bak "s/<LOAD_BALANCER_SECURITY_GROUP_ID>/$LOAD_BALANCER_SECURITY_GROUP_ID/g" $TF_VARS_FILE
+sed -i.bak "s/<SERVICE_SECURITY_GROUP_ID>/$SERVICE_SECURITY_GROUP_ID/g" $TF_VARS_FILE
 sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $TF_VARS_FILE
 sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" $TF_VARS_FILE
 sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
