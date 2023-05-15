@@ -9,7 +9,7 @@ In order to use the template infrastructure, you need an application that meets 
 
 ## Example Application
 
-The infra template includes an example "hello, world" application that works with the template. This application is fully deployed and can be viewed at the endpoint <http://platform-test-app-dev-751272791.us-east-1.elb.amazonaws.com/>. The source code for this test application is at <https://github.com/navapbc/platform-test>.
+The infra template includes an example "hello, world" application that works with the template. This application is fully deployed and can be viewed at the endpoint <http://app-dev-1582588227.us-east-1.elb.amazonaws.com/>. The source code for this test application is at <https://github.com/navapbc/platform-test>.
 
 ## Template Applications
 
