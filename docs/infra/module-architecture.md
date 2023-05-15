@@ -8,14 +8,12 @@ The infrastructure code is organized as follows. [Root modules](https://www.terr
 
 ```text
 infra/                  Infrastructure code
-  accounts/             Account root modules for IaC and IAM resources
+  accounts/             Root module for IaC and IAM resources
   app/                  Application-specific infrastructure
     build-repository/   Root module for resources storing built release candidates used for deploys
-    env-template        Child module defining resources needed to run the application
-    envs/               Root modules for each environment
-      dev/              Dev environment root module
-      staging/          Staging environment root module
-      prod/             Prod environment root module
+    network/            (In development) Root module for virtual network resources
+    database/           (In development) Root module for database resources
+    service/            Root module for application service resources (load balancer, application service)
   modules/              Reusable child modules
 ```
 
@@ -23,59 +21,45 @@ infra/                  Infrastructure code
 
 The following diagram describes the relationship between modules and their child modules. Arrows go from the caller module to the child module.
 
-Note that `static-app` does not currently exist, but is provided as an example of what the module architecture would look like if additional applications were added to the project repo.
-
 ```mermaid
 flowchart TB
 
-  subgraph accounts
-    account
-  end
+  classDef default fill:#FFF,stroke:#000
+  classDef root-module fill:#F37100,stroke-width:3,font-family:Arial
+  classDef child-module fill:#F8E21A,font-family:Arial
 
-  subgraph app
-    app/build-repository[build-repository]
-    app/env-template[env-template]
+  subgraph infra
+    account:::root-module
 
-    subgraph app/envs[envs]
-      app/envs/dev[dev]
-      app/envs/prod[prod]
+    subgraph app
+      app/build-repository[build-repository]:::root-module
+      app/network[network]:::root-module
+      app/database[database]:::root-module
+      app/service[service]:::root-module
     end
 
-    app/envs/dev --> app/env-template
-    app/envs/prod --> app/env-template
-  end
-
-  subgraph static-app
-    static-app/build-repository[build-repository]
-    static-app/env-template[env-template]
-
-    subgraph static-app/envs[envs]
-      static-app/envs/dev[dev]
-      static-app/envs/prod[prod]
+    subgraph modules
+      terraform-backend-s3:::child-module
+      auth-github-actions:::child-module
+      container-image-repository:::child-module
+      network:::child-module
+      database:::child-module
+      web-app:::child-module
     end
 
-    static-app/envs/dev --> static-app/env-template
-    static-app/envs/prod --> static-app/env-template
-  end
+    account --> terraform-backend-s3
+    account --> auth-github-actions
+    app/build-repository --> container-image-repository
+    app/network --> network
+    app/database --> database
+    app/service --> web-app
 
-  subgraph modules
-    modules/terraform-backend-s3
-    auth-github-actions
-    container-image-repository
-    web-app
-    database
-    static-bundle-repository
-    modules/static-app[static-app]
   end
-
-  account --> modules/terraform-backend-s3
-  account --> auth-github-actions
-  app/build-repository --> container-image-repository
-  app/env-template --> web-app
-  app/env-template --> database
-  static-app/build-repository --> static-bundle-repository
-  static-app/env-template --> modules/static-app
 ```
+
+## Application environments
+
+An application may have multiple environments (e.g. dev, staging, prod). The environments share the same root modules but will have different configurations. The configurations are saved as separate `.tfvars` and `.tfbackend` files named after the environment. For example, the `app/service` infrastructure resources for the `dev` environment will be configured via `dev.tfvars` and `dev.s3.tfbackend` files in the `infra/app/service` module directory.
 
 ## Module dependencies
 
@@ -88,6 +72,15 @@ The following diagram illustrates the dependency structure of the root modules.
 ```mermaid
 flowchart RL
 
-app/envs/* --> app/build-repository --> accounts/*
-app/envs/* --> accounts/*
+classDef default fill:#F8E21A,stroke:#000,font-family:Arial
+
+app/service --> app/build-repository --> accounts
+app/service --> accounts
+app/service --> app/network
+app/service --> app/database --> app/network --> accounts
+app/database --> accounts
 ```
+
+## Making changes to infrastructure
+
+Now that you understand how the modules are structured, see [making changes to infrastructure](./making-infra-changes.md).

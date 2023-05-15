@@ -7,5 +7,5 @@ output "image_repository_url" {
 }
 
 output "region" {
-  value = local.region
+  value = var.region
 }

@@ -1,4 +1,4 @@
-variable "project_name" {
+variable "name" {
   type        = string
-  description = "The name of the project. This will be used to prefix the names of the bootstrap resources."
+  description = "The name of the backend resource. This will be used to prefix the names of the other backend resources."
 }

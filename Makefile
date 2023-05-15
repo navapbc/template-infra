@@ -6,6 +6,12 @@ PROJECT_NAME ?= $(notdir $(PWD))
 # on will be determined by the APP_NAME Makefile argument
 APP_NAME ?= app
 
+# Use `=` instead of `:=` so that we only execute `./bin/current-account-alias.sh` when needed
+# See https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
+CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias.sh`
+
+CURRENT_ACCOUNT_ID = $(./bin/current-account-id.sh)
+
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
@@ -13,6 +19,21 @@ MODULES := $(notdir $(wildcard infra/modules/*))
 # Get the list of accounts and environments in a manner similar to MODULES above
 ACCOUNTS := $(notdir $(wildcard infra/accounts/*))
 ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
+
+# Check that given variables are set and all have non-empty values,
+# die with an error otherwise.
+#
+# Params:
+#   1. Variable name(s) to test.
+#   2. (optional) Error message to print.
+# Based off of https://stackoverflow.com/questions/10858261/how-to-abort-makefile-if-variable-not-set
+check_defined = \
+	$(strip $(foreach 1,$1, \
+        $(call __check_defined,$1,$(strip $(value 2)))))
+__check_defined = \
+	$(if $(value $1),, \
+		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
+			required by target `$@')))
 
 
 .PHONY : \
@@ -30,6 +51,26 @@ ENVIRONMENTS := $(notdir $(wildcard infra/app/envs/*))
 	db-migrate \
 	db-migrate-down \
 	db-migrate-create
+
+infra-set-up-account:  # Set up the AWS account for the first time
+	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
+	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
+
+infra-configure-app-build-repository:
+	./bin/configure-app-build-repository.sh $(APP_NAME)
+
+infra-configure-app-service:
+	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
+
+infra-update-current-account:
+	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
+
+infra-update-app-build-repository:
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+
+infra-update-app-service:
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
+
 
 # Validate all infra root and child modules.
 infra-validate: \
@@ -99,11 +140,11 @@ release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-deploy:
-# check the varaible against the list of enviroments and suggest one of the correct envs.
-ifneq ($(filter $(ENV_NAME),$(ENVIRONMENTS)),)
-	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENV_NAME)
+# check the variable against the list of enviroments and suggest one of the correct envs.
+ifneq ($(filter $(ENVIRONMENT),$(ENVIRONMENTS)),)
+	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 else
-	@echo "Please enter: make release-deploy ENV_NAME=<env_name>. The value for env_name must be one of these: $(ENVIRONMENTS)"
+	@echo "Please enter: make release-deploy ENVIRONMENT=<environment>. The value for environment must be one of these: $(ENVIRONMENTS)"
 	exit 1
 endif
 

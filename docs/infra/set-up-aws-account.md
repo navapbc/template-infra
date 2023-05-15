@@ -15,51 +15,37 @@ The approach to backend management allows Terraform to both create the resources
 
 ## Instructions
 
-### 1. Configure backend resources
+### 1. Make sure you're authenticated into the AWS account you want to configure
 
-In your account module's `main.tf` file, replace the placeholders in the `locals {}` block at the top of main.tf to match the desired deployment setup. Update the region if you want to use a region other than what is there by default.
-
-### 2. Review the backend resources that will be created
-
-Open a terminal and cd into your infra/accounts/account directory and run the following commands:
+The account set up sets up whatever account you're authenticated into. To see which account that is, run
 
 ```bash
-terraform init
-terraform plan -out=plan.out
+aws sts get-caller-identity
 ```
 
-Review the plan to make sure that the resources look correct.
-
-### 3. Create the backend resources
+To see a more human readable account alias instead of the account, run
 
 ```bash
-terraform apply plan.out
+aws iam list-account-aliases
 ```
 
-### 4. Reconfigure backend to use S3 backend
+### 2. Create backend resources and tfbackend config file
 
-Now that the S3 bucket for storing Terraform state files and the DynamoDB table for managing tfstate locks have been created, reconfigure the backend in `main.tf` to use the S3 bucket as a backend. To do this, uncomment out the `backend "s3" {}` block and fill in the appropriate information from the outputs from the previous step.
-
-```terraform
-  # infra/accounts/account/main.tf
-
-  backend "s3" {
-    bucket         = "<TF_STATE_BUCKET_NAME>"
-    dynamodb_table = "<TF_LOCKS_TABLE_NAME>"
-    region         = "<REGION>"
-    ...
-  }
-```
-
-### 5. Copy local tfstate file to remote backend
-
-Now run following command to copy the `terraform.tfstate` file from your local machine to the remote backend.
+Run the following command, replacing `<ACCOUNT_NAME>` with a human readable name for the AWS account that you're authenticated into. The account name will be used to prefix the created tfbackend file so that it's easier to visually identify as opposed to identifying the file using the account id. For example, you have an account per environment, the account name can be the name of the environment (e.g. "prod" or "staging"). Or if you are setting up an account for all lower environments, account name can be "lowers". If your AWS account has an account alias, you can also use that.
 
 ```bash
-terraform init -force-copy
+make infra-set-up-account ACCOUNT_NAME=<ACCOUNT_NAME>
 ```
 
-Once these steps are complete, this should not need to be touched again.
+This command will create the S3 tfstate bucket and the GitHub OIDC provider. It will also create a `[account name].[account id].s3.tfbackend` file in the `infra/accounts` directory.
+
+## Making changes to the account
+
+If you make changes to the account terraform and want to apply those changes, run
+
+```bash
+make infra-update-current-account
+```
 
 ## Destroying infrastructure
 

@@ -3,9 +3,9 @@ data "aws_region" "current" {}
 data "aws_partition" "current" {}
 
 locals {
-  tf_state_bucket_name = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-state"
-  tf_logs_bucket_name  = "${var.project_name}-${data.aws_caller_identity.current.account_id}-${data.aws_region.current.name}-tf-logs"
-  tf_locks_table_name  = "${var.project_name}-tf-state-locks"
+  tf_state_bucket_name = var.name
+  tf_logs_bucket_name  = "${var.name}-logs"
+  tf_locks_table_name  = "${var.name}-state-locks"
 }
 
 # Create the dynamodb table required for state locking.

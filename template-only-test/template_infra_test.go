@@ -24,7 +24,7 @@ func TestSetUpAccount(t *testing.T) {
 	SetUpAccount(t)
 
 	t.Run("ValidateAccount", ValidateAccount)
-	t.Run("SetUpAppBackends", SubtestSetUpAppBackends)
+	t.Run("TestBuildRepository", SubtestBuildRepository)
 }
 
 func ValidateAccount(t *testing.T) {
@@ -33,14 +33,6 @@ func ValidateAccount(t *testing.T) {
 	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
-}
-
-func SubtestSetUpAppBackends(t *testing.T) {
-	projectName := projectName
-	SetUpAppBackends(t, projectName)
-	ValidateAppBackends(t)
-
-	t.Run("TestBuildRepository", SubtestBuildRepository)
 }
 
 func SubtestBuildRepository(t *testing.T) {
@@ -72,17 +64,7 @@ func SetUpAccount(t *testing.T) {
 	fmt.Println("::group::Setting up account")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-account"},
-		WorkingDir: "../",
-	})
-	fmt.Println("::endgroup::")
-}
-
-func SetUpAppBackends(t *testing.T, projectName string) {
-	fmt.Println("::group::Configuring terraform backends for application modules")
-	shell.RunCommand(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-app-backends", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"infra-set-up-account", "ACCOUNT_NAME=prod"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
@@ -92,13 +74,25 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 	fmt.Println("::group::Creating build repository resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-app-build-repository", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"infra-configure-app-build-repository", "APP_NAME=app"},
+		WorkingDir: "../",
+	})
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-update-app-build-repository", "APP_NAME=app"},
+		Env:        map[string]string{"TF_CLI_ARGS_apply": "-input=false -auto-approve"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
 }
 
 func SetUpDevEnvironment(t *testing.T) {
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-configure-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
+		WorkingDir: "../",
+	})
+
 	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
 	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
 		Command:    "git",
@@ -106,17 +100,17 @@ func SetUpDevEnvironment(t *testing.T) {
 		WorkingDir: "./",
 	})
 
-	terraform.InitAndApply(t, terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
-		Vars: map[string]interface{}{
-			"image_tag": imageTag,
-		},
-	}))
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-update-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
+		Env:        map[string]string{"TF_CLI_ARGS_apply": fmt.Sprintf("-input=false -auto-approve -var=image_tag=%s", imageTag)},
+		WorkingDir: "../",
+	})
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
 	fmt.Println("::group::Validating terraform backend for account")
-	expectedTfStateBucket := fmt.Sprintf("%s-368823044688-%s-tf-state", projectName, region)
+	expectedTfStateBucket := fmt.Sprintf("%s-368823044688-%s-tf", projectName, region)
 	expectedTfStateKey := "infra/account.tfstate"
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
 	_, err := aws.GetS3ObjectContentsE(t, region, expectedTfStateBucket, expectedTfStateKey)
@@ -135,10 +129,6 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 	fmt.Println("::endgroup::")
-}
-
-func ValidateAppBackends(t *testing.T) {
-	// TODO
 }
 
 func ValidateBuildRepository(t *testing.T, projectName string) {
@@ -174,10 +164,10 @@ func ValidateDevEnvironment(t *testing.T) {
 
 	// Hit the service endpoint to see if it returns status 200
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
+		TerraformDir: "../infra/app/service/",
 	})
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
-	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 1*time.Second, func(responseStatus int, responseBody string) bool {
+	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
 }
@@ -194,16 +184,20 @@ func TeardownAccount(t *testing.T) {
 
 func TeardownBuildRepository(t *testing.T) {
 	fmt.Println("::group::Destroying build repository resources")
-	terraform.Destroy(t, &terraform.Options{
-		TerraformDir: "../infra/app/build-repository/",
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-app-build-repository"},
+		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
 }
 
 func TeardownDevEnvironment(t *testing.T) {
 	fmt.Println("::group::Destroying dev environment resources")
-	terraform.Destroy(t, &terraform.Options{
-		TerraformDir: "../infra/app/envs/dev/",
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-app-service"},
+		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
 }

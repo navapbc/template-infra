@@ -3,12 +3,7 @@
 #
 # This works as follows:
 
-# 1. Accept an optional variable during a terraform plan/apply.
-variable "image_tag" {
-  description = "Docker tag of the app release to deploy."
-  type        = string
-  default     = null
-}
+#  1. Accept an optional variable during a terraform plan/apply. (see "image_tag" variable in variables.tf)
 
 #  2. Read the output used from the last terraform state using "terraform_remote_state".
 data "terraform_remote_state" "current_image_tag" {
@@ -19,9 +14,9 @@ data "terraform_remote_state" "current_image_tag" {
   backend = "s3"
 
   config = {
-    bucket = local.tfstate_bucket
-    key    = local.tfstate_key
-    region = local.region
+    bucket = var.tfstate_bucket
+    key    = var.tfstate_key
+    region = var.region
   }
 
   defaults = {
