@@ -51,6 +51,8 @@ resource "aws_rds_cluster" "db" {
   }
 
   vpc_security_group_ids = [aws_security_group.db.id]
+
+  enabled_cloudwatch_logs_exports = ["postgresql"]
 }
 
 resource "aws_rds_cluster_instance" "primary" {
@@ -77,7 +79,8 @@ resource "aws_ssm_parameter" "random_db_password" {
 }
 
 resource "aws_kms_key" "db" {
-  description = "Key for RDS cluster ${var.name}"
+  description         = "Key for RDS cluster ${var.name}"
+  enable_key_rotation = true
 }
 
 #-----------------------#
@@ -303,6 +306,10 @@ resource "aws_lambda_function" "role_manager" {
   tracing_config {
     mode = "Active"
   }
+
+  # checkov:skip=CKV_AWS_272:TODO(https://github.com/navapbc/template-infra/issues/283)
+
+  # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
 }
 
 # Installs python packages needed by the role manager lambda function before
@@ -349,5 +356,6 @@ data "aws_iam_policy" "lambda_vpc_access" {
 
 # KMS key used to encrypt role manager's environment variables
 resource "aws_kms_key" "role_manager" {
-  description = "Key for Lambda function ${local.role_manager_name}"
+  description         = "Key for Lambda function ${local.role_manager_name}"
+  enable_key_rotation = true
 }

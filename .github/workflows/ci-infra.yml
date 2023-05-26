@@ -47,7 +47,11 @@ jobs:
         with:
           python-version: "3.10"
       - name: Run Checkov check
-        uses: bridgecrewio/checkov-action@master
+        # Pins to checkov-action v12.2296.0
+        # which in turn pins to checkov v2.3.194
+        # which is the latest release version at time of commit:
+        # - https://github.com/bridgecrewio/checkov/releases/tag/2.3.194
+        uses: bridgecrewio/checkov-action@v12.2296.0
         with:
           directory: infra
           framework: terraform
