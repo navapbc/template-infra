@@ -19,7 +19,7 @@ brew install tfenv
 Then install the version of Terraform you need.
 
 ```bash
-tfenv install 1.2.1
+tfenv install 1.4.6
 ```
 
 If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./introduction-to-terraform.md).
