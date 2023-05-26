@@ -1,4 +1,4 @@
-# Manage 
+# Provision database users with serverless function
 
 * Status: proposed
 * Deciders: @lorenyu @kyeah @shawnvanderjagt @rocketnova
