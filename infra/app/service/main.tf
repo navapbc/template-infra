@@ -62,6 +62,7 @@ module "service" {
   service_name          = local.service_name
   image_repository_name = module.app_config.image_repository_name
   image_tag             = local.image_tag
+  dns_zone              = var.dns_zone
   vpc_id                = data.aws_vpc.default.id
   subnet_ids            = data.aws_subnets.default.ids
 }

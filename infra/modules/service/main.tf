@@ -82,6 +82,39 @@ resource "aws_lb_listener_rule" "app_http_forward" {
   }
 }
 
+resource "aws_lb_listener" "alb_listener_https" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  certificate_arn   = aws_acm_certificate.app.arn
+  depends_on        = [aws_acm_certificate_validation.validation]
+
+  default_action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "Not Found"
+      status_code  = "404"
+    }
+  }
+}
+
+resource "aws_lb_listener_rule" "app_https_forward" {
+  listener_arn = aws_lb_listener.alb_listener_https.arn
+  priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+  condition {
+    path_pattern {
+      values = ["/*"]
+    }
+  }
+}
+
 
 resource "aws_lb_target_group" "app_tg" {
   # you must use a prefix, to facilitate successful tg changes
@@ -316,6 +349,14 @@ resource "aws_security_group" "alb" {
     description = "Allow HTTP traffic from public internet"
     from_port   = 80
     to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow HTTPS traffic from public internet"
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }

@@ -9,6 +9,11 @@ variable "image_tag" {
   default     = null
 }
 
+variable "dns_zone" {
+  type        = string
+  description = "Route 53 zone to use for public address"
+}
+
 variable "tfstate_bucket" {
   type = string
 }
