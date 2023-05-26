@@ -35,7 +35,7 @@ resource "aws_rds_cluster" "db" {
   master_username   = local.master_username
   master_password   = aws_ssm_parameter.random_db_password.value
   storage_encrypted = true
-  kms_key_id        = aws_kms_key.db.id
+  kms_key_id        = aws_kms_key.db.arn
 
   # checkov:skip=CKV_AWS_128:Auth decision needs to be ironed out
   # checkov:skip=CKV_AWS_162:Auth decision needs to be ironed out
