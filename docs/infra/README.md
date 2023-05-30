@@ -4,8 +4,8 @@
 
 * [Set up infrastructure developer tools](./set-up-infrastructure-tools.md)
 * [Set up AWS account](./set-up-aws-account.md)
-* [Set up application](./set-up-app.md)
-* [Set up app environment](./set-up-app-env.md)
+* [Set up application build repository](./set-up-app-build-repository.md)
+* [Set up application environment](./set-up-app-env.md)
 
 ## Technical Design
 
