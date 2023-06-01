@@ -49,7 +49,14 @@ echo "Bootstrapping the account by creating an S3 backend with minimal configura
 echo "------------------------------------------------------------------------------"
 echo 
 echo "Creating bucket: $TF_STATE_BUCKET_NAME"
-aws s3api create-bucket --bucket $TF_STATE_BUCKET_NAME --region $REGION --create-bucket-configuration LocationConstraint=$REGION > /dev/null
+# For creating buckets outside of us-east-1, a LocationConstraint needs to be set
+# For creating buckets in us-east-1, LocationConstraint cannot be set
+# See https://docs.aws.amazon.com/cli/latest/reference/s3api/create-bucket.html
+CREATE_BUCKET_CONFIGURATION=""
+if [ $REGION != "us-east-1" ]; then
+  CREATE_BUCKET_CONFIGURATION="--create-bucket-configuration LocationConstraint=$REGION"
+fi
+aws s3api create-bucket --bucket $TF_STATE_BUCKET_NAME --region $REGION $CREATE_BUCKET_CONFIGURATION > /dev/null
 echo
 echo "----------------------------------"
 echo "Creating rest of account resources"
