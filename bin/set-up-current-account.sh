@@ -50,7 +50,7 @@ echo "--------------------------------------------------------------------------
 echo 
 echo "Creating bucket: $TF_STATE_BUCKET_NAME"
 CREATE_BUCKET_CONFIGURATION=""
-if [ $REGION = "us-east-1" ]; then
+if [ $REGION != "us-east-1" ]; then
   CREATE_BUCKET_CONFIGURATION="--create-bucket-configuration LocationConstraint=$REGION"
 fi
 aws s3api create-bucket --bucket $TF_STATE_BUCKET_NAME --region $REGION $CREATE_BUCKET_CONFIGURATION > /dev/null
