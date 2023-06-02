@@ -28,28 +28,10 @@ env:
 concurrency: cd-${{ inputs.environment || 'dev' }}
 
 jobs:
+  build-and-publish:
+    uses: ./.github/workflows/build-and-publish.yml
   deploy:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write
-
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Build release
-        run: make release-build
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          # !! Update the role-to-assume with the GitHub actions role ARN
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
-          aws-region: us-east-1
-
-      - name: Publish release
-        run: make release-publish
-
       - name: Deploy release
         run: make release-deploy ENVIRONMENT="$ENVIRONMENT"
