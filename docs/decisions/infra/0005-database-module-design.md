@@ -12,7 +12,7 @@ We want to design the template infrastructure so that each infrastructure layer 
 
 There are some dependencies to keep in mind:
 
-1. The creation of the application service layer depends on the creation of database layer, since the a proper application healthcheck will need to hit the database.
+1. The creation of the application service layer depends on the creation of database layer, since a proper application healthcheck will need to hit the database.
 2. The database layer includes the creation and configuring of the database users (i.e. PostgreSQL users) that will be used by the application and migration processes in addition to the database cluster infrastructure resources.
 3. The network rule that allows inbound traffic to the database from the application depends on both the database and application service.
 
