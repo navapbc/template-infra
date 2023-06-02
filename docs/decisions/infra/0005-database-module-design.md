@@ -46,7 +46,6 @@ Cons:
 
 * The application service's healthcheck depends on the database cluster to be created and the database user to be provisioned. This cannot easily be done in a single terraform apply.
 * Changes to the database infrastructure are often more complex than changes to application infrastructure. Unlike application infrastructure, database changes cannot take the approach of spinning up new infrastructure in desired configuration, redirecting traffic to new infrastructure, then destroying old infrastructure. This is because application infrastructure can be designed to be stateless while databases are inherently stateful. In such cases, making database changes may require careful coordination and block changes to the application infrastructure, potentially including blocking deploys, while the database changes are made.
-* Application deploys would be slower since there is more state for terraform to fetch during the terraform plan and apply steps.
 
 ### Option B: Separate the database infrastructure into a separate layer
 
