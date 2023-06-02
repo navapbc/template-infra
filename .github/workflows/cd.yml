@@ -30,6 +30,8 @@ concurrency: cd-${{ inputs.environment || 'dev' }}
 jobs:
   build-and-publish:
     uses: ./.github/workflows/build-and-publish.yml
+    with:
+      ref: ${{ github.ref }}
   deploy:
     runs-on: ubuntu-latest
     steps:

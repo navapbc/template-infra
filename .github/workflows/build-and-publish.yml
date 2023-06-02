@@ -5,13 +5,13 @@ on:
     inputs:
       ref:
         description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
-        default: ${{ github.ref }}
+        required: true
         type: string
   workflow_dispatch:
     inputs:
       ref:
         description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
-        default: ${{ github.ref }}
+        required: true
         type: string
 
 jobs:
