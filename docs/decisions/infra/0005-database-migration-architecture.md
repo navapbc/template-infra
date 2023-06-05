@@ -14,18 +14,21 @@ tools or languages the migration will be run with, that will be dependent on the
 Questions that need to be addressed:
  1. How will the method get the latest migration code to run?
  2. What infrastructure is required to use this method?
- 3. How is the migration deployment re-ran in case of errors?
+ 3. How is the migration deployment re-run in case of errors?
 
 ## Decision Drivers <!-- optional -->
 
-* [driver 1, e.g., a force, facing concern, …]
-* [driver 2, e.g., a force, facing concern, …]
-* … <!-- numbers of drivers can vary -->
+* Scalability: the accepted solution would ideally scale for the needs of large projects (ie, large database)
+* Simplicity: the accepted solution should be easy possible to update and maintain
+* Security: The solution should be prevent malicious action and provide auditable history of database activity
+* Flexibility: the accepted solution would ideally incorporate structural changes to the project (ie, connecting to multiple services like logging or caching tools) 
+* Cost
 
 ## Considered Options
 
-* Ran via a Lambda Function
-* Ran via an ECS Fargate Task
+* Execute migrations via direct database connection from Github Actions
+* Execute migrations via a Lambda Function
+* Execute migrations via an ECS Fargate Task
 
 ## Decision Outcome
 
@@ -43,7 +46,19 @@ Chosen option: "[option 1]", because [justification. e.g., only option, which me
 
 ## Pros and Cons of the Options <!-- optional -->
 
-### Ran via a Lambda Function
+### Execute via a Direct Database Connection in Github Action
+
+In this method, the github action runner connects to the database directly to run migrations as part of the ci/cd workflow. There is no cost associated with connecting to the database via github actions.
+
+This method gets the necessary permissions, packages, and versions from the github action runner and the necessary scripts can be written in the Makefile.  <!-- optional -->
+
+#### Pros
+This approach uses existing scripts from the application codebase and is quick and simple to set up.
+
+#### Cons
+
+
+### Execute via a Lambda Function
 
 [example | description | pointer to more information | …] <!-- optional -->
 
@@ -55,7 +70,7 @@ Chosen option: "[option 1]", because [justification. e.g., only option, which me
 
 
 
-### Ran via an ECS Fargate Task
+### Execute via an ECS Fargate Task
 
 In this method, the migration is ran by an ECS task that spins up in a cluster.
 This task will be destroyed once the migration is completed, so it will not need to be
