@@ -1,15 +1,15 @@
 # Database Migration Infrastructure and Deployment
 
 * Status: proposed
-* Deciders: [list everyone involved in the decision] <!-- optional -->
-* Date: [YYYY-MM-DD when the decision was last updated] <!-- optional -->
+* Deciders: Loren Yu, Daphne Gold, Michael Chouinard, Josh Long, Addy Wolf, Sawyer Hollenshead, Aaron Couch, Sammy Steiner
+ <!-- optional -->
+* Date: 2023-06-05 <!-- optional -->
 
 ## Context and Problem Statement
 
 What is the most optimal setup for database migrations infrastructure and deployment?
-This will break down the different options for how the migration is ran, but not the
-tools or languages the migration will be ran with, that will be dependent on the framework
-the application is using.
+This will break down the different options for how the migration is run, but not the
+tools or languages the migration will be run with, that will be dependent on the framework the application is using.
 
 Questions that need to be addressed:
  1. How will the method get the latest migration code to run?
