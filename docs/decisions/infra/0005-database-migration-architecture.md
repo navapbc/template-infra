@@ -60,14 +60,32 @@ This approach uses existing scripts from the application codebase and is quick a
 
 ### Execute via a Lambda Function
 
-[example | description | pointer to more information | …] <!-- optional -->
+In this method, a Lambda function is used as the primary method of migration. Either the Lambda is the only compute infrastructure, or it works in conjunction with an EC2 instance or ECS task running something like Flyway. The Lambda needs some sort of stateful supporting infrastructure (like S3 or EC2) for saving the state of the migration, as Lambdas are inherently stateless.
+
+#### Infrastructure Required
+
+- Lambda function to run the migration code
+- Log group for storing logs
+- IAM role for the Lambda to use
+- Some other infrastructure to store the state of the migration (S3, EC2, ECS)
+- Any associated IAM roles for the state-storing infrastructure to use
+- Security group that allows connection to the database
+- IAM role that Github can assume to run the task
+- (optional) A queueing method for the Lambda to feed off of, like SQS
 
 #### Pros
 
+Lambda functions can be very cost effective and fast, as well as simple to use.
 
+Lambdas are low maintenance, and don't stick around after the task.
+
+Even though this solution requires additional support, the compute portion of the task run by AWS Lambda is very simple.
 
 #### Cons
 
+By nature, database migrations need to keep track of state--changes between the previous version, the next version, and at what point the migration is currently at. Lambda functions are stateless by design, so an additional component will be needed to keep track of state.
+
+Lambdas have a comparatively short running time. Either find a way to split up the migrations into small tasks, or extend the running time of the Lambda. This might not scale well with large changesets.
 
 
 ### Execute via an ECS Fargate Task
