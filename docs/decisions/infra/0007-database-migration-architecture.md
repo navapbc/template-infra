@@ -63,7 +63,7 @@ This approach uses existing scripts from the application codebase and is quick a
 
 ### Execute via a Lambda Function
 
-In this method, a Lambda function is used as the primary method of migration. Either the Lambda is the only compute infrastructure, or it works in conjunction with an EC2 instance or ECS task running something like Flyway. The Lambda needs some sort of stateful supporting infrastructure (like S3 or EC2) for saving the state of the migration, as Lambdas are inherently stateless.
+In this method, a Lambda function is used as the primary method of migration. Either the Lambda is the only compute infrastructure, or it works in conjunction with an EC2 instance or ECS task running something like Flyway. The Lambda needs some sort of stateful supporting infrastructure (like S3 or EC2, or even a temporary table in the database) for saving the state of the migration, as Lambdas are inherently stateless.
 
 #### Infrastructure Required
 
@@ -86,9 +86,9 @@ Even though this solution requires additional support, the compute portion of th
 
 #### Cons
 
-By nature, database migrations need to keep track of state--changes between the previous version, the next version, and at what point the migration is currently at. Lambda functions are stateless by design, so an additional component will be needed to keep track of state.
+By nature, database migrations need to keep track of state--changes between the previous version, the next version, and at what point the migration is currently at. Lambda functions are stateless by design, so an additional component will be needed to keep track of state. This can either be something like an EC2 instance or S3, or even a temporary table in the database that's being migrated.
 
-Lambdas have a comparatively short running time. Either find a way to split up the migrations into small tasks, or extend the running time of the Lambda. This might not scale well with large changesets.
+Lambdas have a comparatively short maximum running time of 15 minutes long. Either find a way to split up the migrations into small tasks, or extend the running time of the Lambda. This might not scale well with large changesets.
 
 
 ### Execute via an ECS Fargate Task
