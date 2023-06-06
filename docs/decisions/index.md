@@ -9,7 +9,7 @@ This log lists the architectural decisions for [project name].
 * [ADR-0002](infra/0002-use-custom-implementation-of-github-oidc.md) - Use custom implementation of GitHub OIDC to authenticate GitHub actions with AWS rather than using module in Terraform Registry
 * [ADR-0003](infra/0003-manage-ecr-in-prod-account-module.md) - Manage ECR in prod account module
 * [ADR-0004](infra/0004-separate-terraform-backend-configs-into-separate-config-files.md) - Separate tfbackend configs into separate files
-* [ADR-0005](infra/0005-database-migration-architecture.md) - Database Migration Infrastructure and Deployment
+* [ADR-0007](infra/0007-database-migration-architecture.md) - Database Migration Infrastructure and Deployment
 
 <!-- adrlogstop -->
 
