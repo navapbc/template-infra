@@ -129,7 +129,8 @@ resource "aws_iam_policy" "db_access" {
 }
 
 data "aws_iam_policy_document" "db_access" {
-  # Policy to allow connection to RDS via IAM database authentication as pfml_api user
+  # Policy to allow connection to RDS via IAM database authentication
+  # which is more secure than traditional username/password authentication
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
   statement {
     actions = [
