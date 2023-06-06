@@ -1,5 +1,6 @@
 locals {
   # Machine readable project name (lower case letters, dashes, and underscores)
+  # This will be used in names of AWS resources
   project_name = "<PROJECT_NAME>"
 
   # Project owner
