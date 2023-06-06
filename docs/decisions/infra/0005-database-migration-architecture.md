@@ -2,7 +2,7 @@
 
 * Status: proposed
 * Deciders: @lorenyu, @daphnegold, @chouinar, @Nava-JoshLong, @addywolf-nava, @sawyerh, @acouch, @SammySteiner
- 
+
  <!-- optional -->
 * Date: 2023-06-05 <!-- optional -->
 
@@ -11,6 +11,8 @@
 What is the most optimal setup for database migrations infrastructure and deployment?
 This will break down the different options for how the migration is run, but not the
 tools or languages the migration will be run with, that will be dependent on the framework the application is using.
+
+Both the Lambda and ECS task options will be running on the same Docker image as the application. A requirement of this approach is that the application is configured to run migrations from inside the image so that local migrations are ran the same way as in AWS. This reduces the overhead of needing to maintain another image and reduce costs because we aren't storing another image. How this is achieved is by telling the Lambda where the entry point of the function is, and by overloading the command in the ECS task configuration JSON so the task knows what function to run. You can see this setup in the template flask repo, where you run `db-migrate-*` commands to migrate the database.
 
 Questions that need to be addressed:
  1. How will the method get the latest migration code to run?
@@ -22,7 +24,7 @@ Questions that need to be addressed:
 * Scalability: the accepted solution would ideally scale for the needs of large projects (ie, large database)
 * Simplicity: the accepted solution should be easy possible to update and maintain
 * Security: The solution should be prevent malicious action and provide auditable history of database activity
-* Flexibility: the accepted solution would ideally incorporate structural changes to the project (ie, connecting to multiple services like logging or caching tools) 
+* Flexibility: the accepted solution would ideally incorporate structural changes to the project (ie, connecting to multiple services like logging or caching tools)
 * Cost
 
 ## Considered Options
@@ -111,18 +113,18 @@ from the ECS task's configuration JSON.
 
 #### Pros
 
-Depending on the application, you can overload the ECS task configuration to run
-the migration command and use the same app image, so there is no need to maintain
-a different image. This allows you to run the same code locally as in AWS to try
-and catches errors before merging. (An example of this is the flask application)
-
 Cheaper to run compared to Lambda, ~$0.015/hour vs ~$0.06/hour
+
+Can run indefinitely compared to the 15 minute limit of Lambdas
 
 #### Cons
 
 The only way to re-run migrations if there is a failure, is to re-run the workflow from GitHub.
 
-Start-up time is slower compared to Lambda
+Start-up time is slower compared to Lambda. Lambda can use cold-start to provision the
+runtime environment so that the function is ready to run when triggered, while the
+ECS task will need to run that same provisioning when triggered. More information
+about cold start can be found [here](https://aws.amazon.com/blogs/compute/operating-lambda-performance-optimization-part-1/)
 
 ## Links <!-- optional -->
 
