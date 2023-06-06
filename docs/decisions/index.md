@@ -2,7 +2,7 @@
 
 This log lists the architectural decisions for [project name].
 
-<!-- adrlog -- Regenerate the content by using "adr-log -i". You can install it via "npm install -g adr-log" -->
+<!-- adrlog -- Regenerate the content by using "adr-log -i -e template.md". You can install it via "npm install -g adr-log" -->
 
 * [ADR-0000](infra/0000-use-markdown-architectural-decision-records.md) - Use Markdown Architectural Decision Records
 * [ADR-0001](infra/0001-ci-cd-interface.md) - CI/CD Interface
@@ -10,7 +10,6 @@ This log lists the architectural decisions for [project name].
 * [ADR-0003](infra/0003-manage-ecr-in-prod-account-module.md) - Manage ECR in prod account module
 * [ADR-0004](infra/0004-separate-terraform-backend-configs-into-separate-config-files.md) - Separate tfbackend configs into separate files
 * [ADR-0005](infra/0005-database-migration-architecture.md) - Database Migration Infrastructure and Deployment
-* [ADR-1](template.md) - [short title of solved problem and solution]
 
 <!-- adrlogstop -->
 
