@@ -1,7 +1,8 @@
 # Database Migration Infrastructure and Deployment
 
 * Status: proposed
-* Deciders: Loren Yu, Daphne Gold, Michael Chouinard, Josh Long, Addy Wolf, Sawyer Hollenshead, Aaron Couch, Sammy Steiner
+* Deciders: @lorenyu, @daphnegold, @chouinar, @Nava-JoshLong, @addywolf-nava, @sawyerh, @acouch, @SammySteiner
+ 
  <!-- optional -->
 * Date: 2023-06-05 <!-- optional -->
 
