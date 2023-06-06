@@ -319,7 +319,7 @@ resource "terraform_data" "role_manager_python_vendor_packages" {
   triggers_replace = file("${path.module}/role_manager/requirements.txt")
 
   provisioner "local-exec" {
-    command = "pip install -r ${path.module}/role_manager/requirements.txt -t ${path.module}/role_manager/vendor"
+    command = "pip3 install -r ${path.module}/role_manager/requirements.txt -t ${path.module}/role_manager/vendor"
   }
 }
 
