@@ -62,10 +62,10 @@ def get_password() -> str:
 
 
 def get_roles(conn: Connection) -> list[str]:
-    return [row[0] for row in conn.run("SELECT rolname \
-                                       FROM pg_roles \
-                                       WHERE rolname NOT LIKE 'pg_%'\
-                                       AND rolname NOT LIKE 'rds%'")]
+    return [row[0] for row in conn.run("SELECT rolname "
+                                       "FROM pg_roles "
+                                       "WHERE rolname NOT LIKE 'pg_%' "
+                                       "AND rolname NOT LIKE 'rds%'")]
 
 
 def get_roles_with_groups(conn: Connection) -> list[tuple[str, str]]:

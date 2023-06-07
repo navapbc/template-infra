@@ -42,7 +42,7 @@ Trigger the role manager Lambda function that was created in the previous step i
 make infra-update-app-database-roles APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
 
-The Lambda function's response should describe the resulting PostgreSQL roles and groups that are configured in the dataabase. It should look like a minified version of the following:
+The Lambda function's response should describe the resulting PostgreSQL roles and groups that are configured in the database. It should look like a minified version of the following:
 
 ```json
 {
