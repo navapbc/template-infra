@@ -68,7 +68,7 @@ def get_roles(conn: Connection) -> list[str]:
                                        "AND rolname NOT LIKE 'rds%'")]
 
 
-def get_roles_with_groups(conn: Connection) -> list[tuple[str, str]]:
+def get_roles_with_groups(conn: Connection) -> dict[str, str]:
     roles_groups = conn.run("SELECT u.rolname AS user, g.rolname AS group \
                             FROM pg_roles u \
                             INNER JOIN pg_auth_members a ON u.oid = a.member \
