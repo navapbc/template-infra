@@ -55,6 +55,12 @@ infra-set-up-account:  # Set up the AWS account for the first time
 infra-configure-app-build-repository:
 	./bin/configure-app-build-repository.sh $(APP_NAME)
 
+infra-configure-app-database:
+	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/configure-app-database.sh $(APP_NAME) $(ENVIRONMENT)
+
 infra-configure-app-service:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -68,6 +74,18 @@ infra-update-app-build-repository:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+
+infra-update-app-database:
+	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/database $(ENVIRONMENT)
+
+infra-update-app-database-roles:
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
+
 
 infra-update-app-service:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed

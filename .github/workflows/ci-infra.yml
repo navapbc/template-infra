@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.2.1
+          terraform_version: 1.4.6
           terraform_wrapper: false
       - name: Run infra-lint
         run: |
@@ -34,7 +34,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.2.1
+          terraform_version: 1.4.6
           terraform_wrapper: false
       - name: Run infra-validate
         run: make infra-validate
@@ -47,7 +47,12 @@ jobs:
         with:
           python-version: "3.10"
       - name: Run Checkov check
-        uses: bridgecrewio/checkov-action@master
+        # Pin to specific checkov version rather than running from checkov@master
+        # since checkov frequently adds new checks that can cause CI checks to fail unpredictably.
+        # There is currently no way to specify the checkov version to pin to (See https://github.com/bridgecrewio/checkov-action/issues/41)
+        # so we need to pin the version of the checkov-action, which indirectly pins the checkov version.
+        # In this case, checkov-action v12.2296.0 is mapped to checkov v2.3.194.
+        uses: bridgecrewio/checkov-action@v12.2296.0
         with:
           directory: infra
           framework: terraform

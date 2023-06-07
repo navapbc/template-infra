@@ -21,19 +21,19 @@ locals {
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = var.environment_name
-    description = "Application resources created in ${var.environment_name} environment"
+    description = "Database resources for the ${var.environment_name} environment"
   })
 
-  service_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
+  db_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
 }
 
 terraform {
-  required_version = ">= 1.2.0, < 2.0.0"
+  required_version = ">=1.4.0"
 
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~>4.20.1"
+      version = "~>4.67.0"
     }
   }
 
@@ -57,12 +57,10 @@ module "app_config" {
   source = "../app-config"
 }
 
-module "service" {
-  source                = "../../modules/service"
-  service_name          = local.service_name
-  image_repository_name = module.app_config.image_repository_name
-  image_tag             = local.image_tag
-  dns_zone              = var.dns_zone
-  vpc_id                = data.aws_vpc.default.id
-  subnet_ids            = data.aws_subnets.default.ids
+module "database" {
+  source = "../../modules/database"
+  name   = local.db_name
+  vpc_id = data.aws_vpc.default.id
+
+  private_subnet_ids = data.aws_subnets.default.ids
 }
