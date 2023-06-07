@@ -27,7 +27,7 @@ echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
 echo "Invoking Lambda function: $DB_ROLE_MANAGER_FUNCTION_NAME"
-aws lambda invoke --function-name $DB_ROLE_MANAGER_FUNCTION_NAME response.json > /dev/null
+aws lambda invoke --function-name $DB_ROLE_MANAGER_FUNCTION_NAME --no-cli-pager response.json
 echo "Lambda function response:"
 cat response.json
 rm response.json
