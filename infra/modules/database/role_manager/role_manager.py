@@ -1,3 +1,4 @@
+import boto3
 import itertools
 from operator import itemgetter
 import os
@@ -43,10 +44,21 @@ def connect() -> Connection:
     user = os.environ.get("DB_USER")
     host = os.environ.get("DB_HOST")
     port = os.environ.get("DB_PORT")
-    password = os.environ.get("DB_PASSWORD")
+    password = get_password()
 
     logger.info("Connecting to database: user=%s host=%s port=%s", user, host, port)
     return Connection(user=user, host=host, port=port, password=password)
+
+
+def get_password() -> str:
+    ssm = boto3.client("ssm")
+    param_name = os.environ.get("DB_PASSWORD_PARAM_NAME")
+    logger.info("Fetching password from parameter store")
+    result = ssm.get_parameter(
+        Name=param_name,
+        WithDecryption=True,
+    )
+    return result["Parameter"]["Value"]
 
 
 def get_roles(conn: Connection) -> list[str]:
