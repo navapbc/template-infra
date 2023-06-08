@@ -13,6 +13,8 @@ set -euo pipefail
 APP_NAME=$1
 ENVIRONMENT=$2
 
+DNS_ZONE=platform.navateam.com
+
 #--------------------------------------
 # Create terraform backend config file
 #--------------------------------------
@@ -64,6 +66,7 @@ fi
 
 cp $EXAMPLE_TFVARS_FILE $TF_VARS_FILE
 sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" $TF_VARS_FILE
+sed -i.bak "s/<DNS_ZONE>/$DNS_ZONE/g" $TF_VARS_FILE
 sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $TF_VARS_FILE
 sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" $TF_VARS_FILE
 sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE

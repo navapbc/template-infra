@@ -41,6 +41,11 @@ variable "container_port" {
   default     = 8000
 }
 
+variable "dns_zone" {
+  type        = string
+  description = "Route 53 zone to use for public address"
+}
+
 variable "vpc_id" {
   type        = string
   description = "Uniquely identifies the VPC."
