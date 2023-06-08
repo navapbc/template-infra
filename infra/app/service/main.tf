@@ -33,7 +33,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~>4.20.1"
+      version = ">= 4.56.0, < 5.0.0"
     }
   }
 
@@ -64,4 +64,6 @@ module "service" {
   image_tag             = local.image_tag
   vpc_id                = data.aws_vpc.default.id
   subnet_ids            = data.aws_subnets.default.ids
+
+  db_vars = var.db_vars
 }

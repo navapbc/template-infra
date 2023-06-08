@@ -50,3 +50,19 @@ variable "subnet_ids" {
   type        = list(any)
   description = "Private subnet id from vpc module"
 }
+
+variable "db_vars" {
+  description = "Variables for integrating the app service with a database"
+  type = object({
+    security_group_id = string
+    access_policy_arn = string
+    connection_info = object({
+      host        = string
+      port        = string
+      user        = string
+      db_name     = string
+      schema_name = string
+    })
+  })
+  default = null
+}

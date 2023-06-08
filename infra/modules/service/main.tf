@@ -11,11 +11,24 @@ locals {
   log_group_name          = "service/${var.service_name}"
   task_executor_role_name = "${var.service_name}-task-executor"
   image_url               = "${data.aws_ecr_repository.app.repository_url}:${var.image_tag}"
+
+  base_environment_variables = [
+    { name : "PORT", value : tostring(var.container_port) },
+    { name : "AWS_REGION", value : data.aws_region.current.name },
+  ]
+  db_environment_variables = var.db_vars == null ? [] : [
+    { name : "DB_HOST", value : var.db_vars.connection_info.host },
+    { name : "DB_PORT", value : var.db_vars.connection_info.port },
+    { name : "DB_USER", value : var.db_vars.connection_info.user },
+    { name : "DB_NAME", value : var.db_vars.connection_info.db_name },
+    { name : "DB_SCHEMA", value : var.db_vars.connection_info.schema_name },
+  ]
+  environment_variables = concat(local.base_environment_variables, local.db_environment_variables)
 }
 
-###################
-## Load balancer ##
-###################
+#---------------
+# Load balancer
+#---------------
 
 # ALB for an app running in ECS
 resource "aws_lb" "alb" {
@@ -107,9 +120,9 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
-#######################
-## Service Execution ##
-#######################
+#-------------------
+# Service Execution
+#-------------------
 
 resource "aws_ecs_service" "app" {
   name            = var.service_name
@@ -142,6 +155,7 @@ resource "aws_ecs_service" "app" {
 resource "aws_ecs_task_definition" "app" {
   family             = var.service_name
   execution_role_arn = aws_iam_role.task_executor.arn
+  task_role_arn      = aws_iam_role.service.arn
 
   # when is this needed?
   # task_role_arn      = aws_iam_role.app_service.arn
@@ -167,11 +181,7 @@ resource "aws_ecs_task_definition" "app" {
           "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/health || exit 1"
         ]
       },
-      environment = [
-        {
-          name : "PORT", value : tostring(var.container_port)
-        }
-      ],
+      environment = local.environment_variables,
       portMappings = [
         {
           containerPort = var.container_port,
@@ -212,9 +222,9 @@ resource "aws_ecs_cluster" "cluster" {
   }
 }
 
-##########
-## Logs ##
-##########
+#------
+# Logs
+#------
 
 # Cloudwatch log group to for streaming ECS application logs.
 resource "aws_cloudwatch_log_group" "service_logs" {
@@ -228,18 +238,23 @@ resource "aws_cloudwatch_log_group" "service_logs" {
   # checkov:skip=CKV_AWS_158:Encrypt service logs with customer key in future work
 }
 
-####################
-## Access Control ##
-####################
+#----------------
+# Access Control
+#----------------
 
 resource "aws_iam_role" "task_executor" {
   name               = local.task_executor_role_name
-  assume_role_policy = data.aws_iam_policy_document.ecs_assume_task_executor_role.json
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
 }
 
-data "aws_iam_policy_document" "ecs_assume_task_executor_role" {
+resource "aws_iam_role" "service" {
+  name               = var.service_name
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
+}
+
+data "aws_iam_policy_document" "ecs_tasks_assume_role_policy" {
   statement {
-    sid = "ECSTaskExecution"
+    sid = "ECSTasksAssumeRole"
     actions = [
       "sts:AssumeRole"
     ]
@@ -282,16 +297,15 @@ data "aws_iam_policy_document" "task_executor" {
   }
 }
 
-# Link access policies to the ECS task execution role.
 resource "aws_iam_role_policy" "task_executor" {
   name   = "${var.service_name}-task-executor-role-policy"
   role   = aws_iam_role.task_executor.id
   policy = data.aws_iam_policy_document.task_executor.json
 }
 
-###########################
-## Network Configuration ##
-###########################
+#-----------------------
+# Network Configuration
+#-----------------------
 
 resource "aws_security_group" "alb" {
   # Specify name_prefix instead of name because when a change requires creating a new
@@ -336,6 +350,7 @@ resource "aws_security_group" "app" {
   # before the old one is destroyed. In this situation, the new one needs a unique name
   name_prefix = "${var.service_name}-app"
   description = "Allow inbound TCP access to application container port"
+  vpc_id      = var.vpc_id
   lifecycle {
     create_before_destroy = true
   }
@@ -355,4 +370,27 @@ resource "aws_security_group" "app" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+#-----------------
+# Database Access 
+#-----------------
+
+resource "aws_vpc_security_group_ingress_rule" "db_ingress_from_service" {
+  count = var.db_vars != null ? 1 : 0
+
+  security_group_id = var.db_vars.security_group_id
+  description       = "Allow inbound requests to database from ${var.service_name} service"
+
+  from_port                    = tonumber(var.db_vars.connection_info.port)
+  to_port                      = tonumber(var.db_vars.connection_info.port)
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.app.id
+}
+
+resource "aws_iam_role_policy_attachment" "app_db_access" {
+  count = var.db_vars != null ? 1 : 0
+
+  role       = aws_iam_role.service.name
+  policy_arn = var.db_vars.access_policy_arn
 }
