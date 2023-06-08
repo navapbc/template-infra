@@ -1,18 +1,3 @@
-# Simple hello, world image mostly copied
-# from https://github.com/crccheck/docker-hello-world
-#
-# Testing
-# -------
-# After running `make release-build` (see [Releases](../docs/releases.md)),
-# you can verify the image works by running
-#
-#   docker run -e PORT=8000 -p 80:8000 template-infra-app
-#
-# then visit localhost in a browser (or can use curl from a terminal)
-
-# Based on the image defined here: https://github.com/AerialTechnologies/docker-alpine-aws-cli/blob/master/Dockerfile
-# and here: https://github.com/AerialTechnologies/docker-alpine-aws-cli-postgresql/blob/master/Dockerfile
-
 FROM python:alpine as release
 
 RUN adduser --system --disabled-password --no-create-home app
