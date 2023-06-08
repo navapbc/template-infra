@@ -34,6 +34,7 @@ TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts output -raw tf_locks_table
 TF_STATE_KEY="$MODULE_DIR/$BACKEND_CONFIG_NAME.tfstate"
 REGION=$(terraform -chdir=infra/accounts output -raw region)
 
+terraform -chdir=infra/$APP_NAME/app-config init > /dev/null
 terraform -chdir=infra/$APP_NAME/app-config refresh > /dev/null
 HAS_DATABASE=$(terraform -chdir=infra/$APP_NAME/app-config output -raw has_database)
 
