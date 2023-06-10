@@ -16,7 +16,10 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        project_repo: [navapbc/platform-test, navapbc/platform-test-nextjs]
+        project_repo:
+          - navapbc/platform-test
+          - navapbc/platform-test-flask
+          - navapbc/platform-test-nextjs
     steps:
       - name: Checkout template-infra repo
         uses: actions/checkout@v3
