@@ -108,6 +108,14 @@ from the ECS task's configuration JSON.
  - (Optional) ECR to store the image. This is dependent on the application used
  - Security group that allows connection to the database
  - IAM role that GitHub can assume to run the task
+ - SSM parameters to store the security group ID and subnet to run the task in
+
+#### How to run this migration
+
+  1. Generate the JSON configuration for the ECS task
+  2. Deploy the configuration file to ECS
+  3. Pull the SSM parameters for the security group and subnet ID
+  4. Run bash script to provide the last configuration for the task and wait for migration to complete
 
 #### Pros
 
