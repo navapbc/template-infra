@@ -17,6 +17,7 @@ $SCRIPT_DIR/install-template.sh
 echo "Restore modified project files"
 git checkout HEAD -- \
   .dockleconfig \
+  .github/workflows/build-and-publish.yml \
   .github/workflows/cd.yml \
   .github/workflows/ci-infra.yml \
   .grype.yml \
