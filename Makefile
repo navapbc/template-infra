@@ -161,6 +161,9 @@ release-build:
 release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
+release-run-database-migrations:
+	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
+
 release-deploy:
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
