@@ -1,0 +1,12 @@
+#!/bin/sh
+set -euo pipefail
+
+export PGPASSWORD=$(aws rds generate-db-auth-token --hostname=$DB_HOST --port=$DB_PORT --username=$DB_USER)
+psql \
+  --host=$DB_HOST \
+  --port=$DB_PORT \
+  --username=$DB_USER \
+  --dbname=$DB_NAME \
+  --variable=ON_ERROR_STOP=1 \
+  --echo-all \
+  --file=migrations.sql
