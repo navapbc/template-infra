@@ -83,3 +83,9 @@ echo "Created file: $TF_VARS_FILE"
 echo "------------------ file contents ------------------"
 cat $TF_VARS_FILE
 echo "----------------------- end -----------------------"
+
+#---------------------------------------------
+# Configure role to assume for GitHub Actions
+#---------------------------------------------
+
+./bin/configure-github-actions-role-to-assume.sh $APP_NAME $ENVIRONMENT

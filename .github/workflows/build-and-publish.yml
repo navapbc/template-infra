@@ -14,6 +14,10 @@ on:
         required: true
         type: string
 
+env:
+  APP_NAME: app
+  ENVIRONMENT: shared
+
 jobs:
   build-and-publish:
     name: Build and publish
@@ -31,13 +35,14 @@ jobs:
       - name: Build release
         run: make release-build
 
+      - name: Get role to assume
+        run: echo "ROLE_TO_ASSUME=$(./bin/github-actions-role-to-assume.sh $APP_NAME $ENVIRONMENT)" >> "$GITHUB_ENV"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          # !! Update the role-to-assume with the GitHub actions role ARN
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
+          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
           aws-region: us-east-1
 
       - name: Publish release
         run: make release-publish
-

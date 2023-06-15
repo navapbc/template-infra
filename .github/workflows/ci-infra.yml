@@ -13,6 +13,11 @@ on:
       - test/**
       - .github/workflows/ci-infra.yml
 
+env:
+  APP_NAME: app
+  # Run infra CI on dev environment
+  ENVIRONMENT: dev
+
 jobs:
   check-terraform-format:
     name: Check Terraform format
@@ -88,11 +93,12 @@ jobs:
   #     - uses: actions/setup-go@v3
   #       with:
   #         go-version: ">=1.19.0"
+  #     - name: Get role to assume
+  #       run: echo "ROLE_TO_ASSUME=$(./bin/github-actions-role-to-assume.sh $APP_NAME $ENVIRONMENT)" >> "$GITHUB_ENV"
   #     - name: Configure AWS credentials
   #       uses: aws-actions/configure-aws-credentials@v1
   #       with:
-  #         # !! Update the role-to-assume with the GitHub actions role ARN
-  #         role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
+  #         role-to-assume: ${{ env.ROLE_TO_ASSUME }}
   #         aws-region: us-east-1
   #     - name: Run Terratest
   #       run: make infra-test

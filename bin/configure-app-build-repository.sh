@@ -18,9 +18,9 @@ APP_NAME=$1
 #--------------------------------------
 
 MODULE_DIR="infra/$APP_NAME/build-repository"
-BACKEND_CONFIG_NAME="shared"
+CONFIG_NAME="shared"
 
-./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
+./bin/create-tfbackend.sh $MODULE_DIR $CONFIG_NAME
 
 #--------------------
 # Create tfvars file
@@ -49,3 +49,9 @@ echo "Created file: $TF_VARS_FILE"
 echo "------------------ file contents ------------------"
 cat $TF_VARS_FILE
 echo "----------------------- end -----------------------"
+
+#---------------------------------------------
+# Configure role to assume for GitHub Actions
+#---------------------------------------------
+
+./bin/configure-github-actions-role-to-assume.sh $APP_NAME $CONFIG_NAME
