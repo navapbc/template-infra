@@ -20,6 +20,7 @@ git checkout HEAD -- \
   .github/workflows/build-and-publish.yml \
   .github/workflows/cd.yml \
   .github/workflows/ci-infra.yml \
+  .github/workflows/database-migrations.yml \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \

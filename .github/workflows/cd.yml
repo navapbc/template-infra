@@ -28,15 +28,17 @@ env:
 concurrency: cd-${{ inputs.environment || 'dev' }}
 
 jobs:
-  build-and-publish:
-    name: Build
-    uses: ./.github/workflows/build-and-publish.yml
+  # Don't need to call the build-and-publish workflow since the database-migrations
+  # workflow already calls it
+  database-migrations:
+    name: Database migrations
+    uses: ./.github/workflows/database-migrations.yml
     with:
-      ref: ${{ github.ref }}
+      environment: ${{ inputs.environment }}
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build-and-publish]
+    needs: [database-migrations]
     permissions:
       contents: read
       id-token: write

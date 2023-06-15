@@ -7,6 +7,18 @@ In order to use the template infrastructure, you need an application that meets 
 * The web application needs to listen on the port defined by the environment variable `PORT`, rather than hardcode the `PORT`. This allows the infrastructure to configure the application to listen on a container port specified by the infrastructure. See [The Twelve-Factor App](https://12factor.net/) to learn more about designing applications to be portable to different infrastructure environments using environment variables.
 * The web application needs to have a health check endpoint at `/health` that returns an HTTP 200 OK response when the application is healthy and ready to accept requests.
 
+## Database Requirements
+
+If your application needs a database, it must also:
+
+* Have a `db-migrate` command available in the container's PATH for running migrations. If you use a migration framework like [Alembic](https://alembic.sqlalchemy.org/) or [Flyway](https://flywaydb.org/) you can create a `db-migrate` script that then calls your framework's binary.
+* Both the application service container and the container running the `db-migrate` script will receive the following environment variables that are needed to [connect to the database using IAM authentication](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html):
+  * `DB_HOST` - the hostname to connect to
+  * `DB_PORT` - the port that the database is listening on
+  * `DB_NAME` - the PostgreSQL database to connect to
+  * `DB_USER` - the username to log in as. For the application it will be `app`, and for the database migrations it will be `migrator`
+  * `DB_SCHEMA` - the name of the PostgreSQL schema to be used by the application
+
 ## Example Application
 
 The infra template includes an example "hello, world" application that works with the template. This application is fully deployed and can be viewed at the endpoint <http://app-dev-2068097977.us-east-1.elb.amazonaws.com/>. The source code for this test application is at <https://github.com/navapbc/platform-test>.
