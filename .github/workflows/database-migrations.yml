@@ -1,13 +1,6 @@
 name: Database migrations
 
 on:
-  push:
-    branches:
-      - 'main'
-    paths:
-      - 'app/**'
-      - 'bin/**'
-      - 'infra/**'
   workflow_call:
     inputs:
       app_name:

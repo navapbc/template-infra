@@ -22,6 +22,8 @@ on:
           - prod
 
 env:
+  # Need to set a default value for when the workflow is triggered from a git push,
+  # which bypasses the default configuration for inputs
   ENVIRONMENT: ${{ inputs.environment || 'dev' }}
 
 # Need to repeat the expression since env.ENV_NAME is not accessible in this context
@@ -34,7 +36,7 @@ jobs:
     name: Database migrations
     uses: ./.github/workflows/database-migrations.yml
     with:
-      environment: ${{ inputs.environment }}
+      environment: ${{ env.ENVIRONMENT }}
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
