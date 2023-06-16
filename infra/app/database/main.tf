@@ -24,7 +24,10 @@ locals {
     description = "Database resources for the ${var.environment_name} environment"
   })
 
-  db_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
+  environment_config = module.app_config.environment_configs[var.environment_name]
+  database_config    = local.environment_config.database_config
+
+  db_name = "${local.prefix}${local.database_config.cluster_name}"
 }
 
 terraform {
