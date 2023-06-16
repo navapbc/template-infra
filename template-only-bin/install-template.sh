@@ -17,9 +17,13 @@ cp -r \
   infra \
   Makefile \
   .dockleconfig \
+  .dockle_format.jq \
   .grype.yml \
+  .anchore_format.jq \
   .hadolint.yaml \
+  .hadolint_format.jq \
   .trivyignore \
+  .trivyignore_format.jq \
   $CUR_DIR
 cd -
 

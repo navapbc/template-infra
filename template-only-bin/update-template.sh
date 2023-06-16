@@ -17,13 +17,17 @@ $SCRIPT_DIR/install-template.sh
 echo "Restore modified project files"
 git checkout HEAD -- \
   .dockleconfig \
+  .dockle_format.jq \
   .github/workflows/build-and-publish.yml \
   .github/workflows/cd.yml \
   .github/workflows/ci-infra.yml \
   .github/workflows/database-migrations.yml \
   .grype.yml \
+  .anchore_format.jq \
   .hadolint.yaml \
+  .hadolint_format.jq \
   .trivyignore \
+  .trivyignore_format.jq \
   infra/project-config/main.tf \
   infra/app/app-config/main.tf \
   Makefile
