@@ -287,6 +287,7 @@ resource "aws_lambda_function" "role_manager" {
       DB_HOST                = aws_rds_cluster.db.endpoint
       DB_PORT                = aws_rds_cluster.db.port
       DB_USER                = local.master_username
+      DB_NAME                = aws_rds_cluster.db.database_name
       DB_PASSWORD_PARAM_NAME = aws_ssm_parameter.random_db_password.name
       SCHEMA_NAME            = local.schema_name
       APP_USER               = local.app_username
