@@ -14,6 +14,7 @@ psql \
   --port=$DB_PORT \
   --username=$DB_USER \
   --dbname=$DB_NAME \
-  --variable=ON_ERROR_STOP=1 \
+  --set=SEARCH_PATH=$DB_SCHEMA \
+  --set=ON_ERROR_STOP=1 \
   --echo-all \
   --file=migrations.sql
