@@ -41,18 +41,19 @@ def lambda_handler(event, context):
     }
 
 def connect() -> Connection:
-    user = os.environ.get("DB_USER")
-    host = os.environ.get("DB_HOST")
-    port = os.environ.get("DB_PORT")
+    user = os.environ["DB_USER"]
+    host = os.environ["DB_HOST"]
+    port = os.environ["DB_PORT"]
+    database = os.environ["DB_NAME"]
     password = get_password()
 
-    logger.info("Connecting to database: user=%s host=%s port=%s", user, host, port)
-    return Connection(user=user, host=host, port=port, password=password)
+    logger.info("Connecting to database: user=%s host=%s port=%s database=%s", user, host, port, database)
+    return Connection(user=user, host=host, port=port, database=database, password=password)
 
 
 def get_password() -> str:
     ssm = boto3.client("ssm")
-    param_name = os.environ.get("DB_PASSWORD_PARAM_NAME")
+    param_name = os.environ["DB_PASSWORD_PARAM_NAME"]
     logger.info("Fetching password from parameter store")
     result = ssm.get_parameter(
         Name=param_name,
