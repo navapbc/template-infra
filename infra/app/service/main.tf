@@ -25,6 +25,9 @@ locals {
   })
 
   service_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
+
+  environment_config = module.app_config.environment_configs[var.environment_name]
+  database_config    = local.environment_config.database_config
 }
 
 terraform {
@@ -57,6 +60,16 @@ module "app_config" {
   source = "../app-config"
 }
 
+data "aws_rds_cluster" "db_cluster" {
+  count              = module.app_config.has_database ? 1 : 0
+  cluster_identifier = local.database_config.cluster_name
+}
+
+data "aws_iam_policy" "db_access_policy" {
+  count = module.app_config.has_database ? 1 : 0
+  name  = local.database_config.access_policy_name
+}
+
 module "service" {
   source                = "../../modules/service"
   service_name          = local.service_name
@@ -65,5 +78,15 @@ module "service" {
   vpc_id                = data.aws_vpc.default.id
   subnet_ids            = data.aws_subnets.default.ids
 
-  db_vars = var.db_vars
+  db_vars = module.app_config.has_database ? {
+    security_group_ids = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
+    access_policy_arn  = data.aws_iam_policy.db_access_policy[0].arn
+    connection_info = {
+      host        = data.aws_rds_cluster.db_cluster[0].endpoint
+      port        = data.aws_rds_cluster.db_cluster[0].port
+      user        = local.database_config.app_username
+      db_name     = data.aws_rds_cluster.db_cluster[0].database_name
+      schema_name = local.database_config.schema_name
+    }
+  } : null
 }

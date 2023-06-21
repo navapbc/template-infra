@@ -13,3 +13,7 @@ output "has_database" {
 output "image_repository_name" {
   value = local.image_repository_name
 }
+
+output "environment_configs" {
+  value = local.environment_configs
+}
