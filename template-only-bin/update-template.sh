@@ -25,5 +25,4 @@ git checkout HEAD -- \
   .hadolint.yaml \
   .trivyignore \
   infra/project-config/main.tf \
-  infra/app/app-config/main.tf \
-  Makefile
+  infra/app/app-config/main.tf
