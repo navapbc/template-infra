@@ -1,5 +1,4 @@
-# PROJECT_NAME defaults to name of the current directory.
-PROJECT_NAME ?= $(notdir $(PWD))
+PROJECT_ROOT ?= $(notdir $(PWD))
 
 # For now only support a single app in the folder `app/` within the repo
 # In the future, support multiple apps, and which app is being operated
@@ -138,7 +137,7 @@ infra-test:
 
 # Include project name in image name so that image name
 # does not conflict with other images during local development
-IMAGE_NAME := $(PROJECT_NAME)-$(APP_NAME)
+IMAGE_NAME := $(PROJECT_ROOT)-$(APP_NAME)
 
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
 
