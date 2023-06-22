@@ -1,4 +1,5 @@
 name: Deploy
+run-name: Deploy ${{ github.ref_name }} to ${{ env.ENVIRONMENT }}
 
 on:
   # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
