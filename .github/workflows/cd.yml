@@ -4,8 +4,6 @@ name: Deploy
 # since env context is not accessible in this context
 run-name: Deploy ${{ github.ref_name }} to ${{ inputs.environment || 'dev' }}
 
-concurrency: cd-${{ inputs.environment || 'dev' }}
-
 on:
   # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
   # push:
