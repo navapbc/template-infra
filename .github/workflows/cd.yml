@@ -1,5 +1,10 @@
 name: Deploy
-run-name: Deploy ${{ github.ref_name }} to ${{ env.ENVIRONMENT }}
+# Need to set a default value for when the workflow is triggered from a git push,
+# which bypasses the default configuration for inputs and cannot use env.ENVIRONMENT
+# since env context is not accessible in this context
+run-name: Deploy ${{ github.ref_name }} to ${{ inputs.environment || 'dev' }}
+
+concurrency: cd-${{ inputs.environment || 'dev' }}
 
 on:
   # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
@@ -27,7 +32,7 @@ env:
   # which bypasses the default configuration for inputs
   ENVIRONMENT: ${{ inputs.environment || 'dev' }}
 
-# Need to repeat the expression since env.ENV_NAME is not accessible in this context
+# Need to repeat the expression since env.ENVIRONMENT is not accessible in this context
 concurrency: cd-${{ inputs.environment || 'dev' }}
 
 jobs:
