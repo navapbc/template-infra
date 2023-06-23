@@ -6,4 +6,3 @@ variable "service_name" {
 variable "load_balancer_arn_suffix" {
   type        = string
   description = "The ARN suffix for use with CloudWatch Metrics."
-}
