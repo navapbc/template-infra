@@ -90,3 +90,8 @@ module "service" {
     }
   } : null
 }
+
+module "monitoring" {
+  source   = "../../modules/monitoring"
+  ecs_name = module.service.ecs_name
+}
