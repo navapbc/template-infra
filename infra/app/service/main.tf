@@ -92,6 +92,15 @@ module "service" {
 }
 
 module "monitoring" {
-  source   = "../../modules/monitoring"
+  source = "../../modules/monitoring"
+  #Module take ecs cluster name to link all alerts with ECS monitored cluster
   ecs_name = module.service.ecs_name
+
+  #To enable alert uncomment appropriate line
+  cpu_threshold                  = "80"
+  #memory_util_threshold          = "70"
+  #task_health_threshold          = "100"
+  #task_placement_threshold       = "0"
+  #service_availability_threshold = "1"
+  #network_connectivity_threshold = "1"
 }
