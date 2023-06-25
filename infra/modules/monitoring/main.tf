@@ -14,7 +14,6 @@ resource "aws_cloudwatch_metric_alarm" "cpu" {
   alarm_actions             = [aws_sns_topic.this.arn]
   ok_actions                = [aws_sns_topic.this.arn]
   insufficient_data_actions = [aws_sns_topic.this.arn]
-  #treat_missing_data        = "breaching"
 
   dimensions = {
     ClusterName = var.ecs_name
@@ -22,6 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
+  count                     = var.memory_util_threshold != "" ? 1 : 0
   alarm_name                = "${var.ecs_name}-memory-utilization"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 3
@@ -40,6 +40,7 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "task_health_alarm" {
+  count                     = var.task_health_threshold != "" ? 1 : 0
   alarm_name                = "${var.ecs_name}-task-health"
   comparison_operator       = "LessThanThreshold"
   evaluation_periods        = 1
@@ -58,6 +59,7 @@ resource "aws_cloudwatch_metric_alarm" "task_health_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "task_placement_errors_alarm" {
+  count                     = var.task_placement_threshold != "" ? 1 : 0
   alarm_name                = "${var.ecs_name}-task-placement-errors"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 3
@@ -76,6 +78,7 @@ resource "aws_cloudwatch_metric_alarm" "task_placement_errors_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "service_availability_alarm" {
+  count                     = var.service_availability_threshold != "" ? 1 : 0
   alarm_name                = "${var.ecs_name}-service-availability"
   comparison_operator       = "LessThanThreshold"
   evaluation_periods        = 1
@@ -94,6 +97,7 @@ resource "aws_cloudwatch_metric_alarm" "service_availability_alarm" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "network_connectivity_alarm" {
+  count                     = var.network_connectivity_threshold != "" ? 1 : 0
   alarm_name                = "${var.ecs_name}-network-connectivity"
   comparison_operator       = "LessThanThreshold"
   evaluation_periods        = 1
