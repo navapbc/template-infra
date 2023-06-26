@@ -119,4 +119,6 @@ resource "aws_cloudwatch_metric_alarm" "network_connectivity_alarm" {
 
 resource "aws_sns_topic" "this" {
   name = "${var.ecs_name}-monitoring-notifications"
+
+  # checkov:skip=CKV_AWS_26:SNS encryption for alerts is unnecessary 
 }
