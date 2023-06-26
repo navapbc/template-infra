@@ -97,7 +97,7 @@ module "monitoring" {
   ecs_name = module.service.ecs_name
 
   #To enable alert uncomment appropriate line
-  cpu_threshold                  = "80"
+  cpu_threshold = "80"
   #memory_util_threshold          = "70"
   #task_health_threshold          = "100"
   #task_placement_threshold       = "0"
