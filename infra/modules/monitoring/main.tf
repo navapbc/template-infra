@@ -64,3 +64,24 @@ resource "aws_cloudwatch_metric_alarm" "high_app_response_time" {
     LoadBalancer = var.load_balancer_arn_suffix
   }
 }
+
+#email integration
+
+resource "aws_sns_topic_subscription" "email_integration" {
+  for_each  = var.email_alerts
+  topic_arn = aws_sns_topic.this.arn
+  protocol  = "email"
+  endpoint  = each.value
+}
+
+#Pagerduty integration
+resource "aws_sns_topic_subscription" "pagerduty" {
+  count = var.pagerduty_alerts_endpoint != "" ? 1 : 0
+
+  endpoint               = var.pagerduty_alerts_endpoint
+  endpoint_auto_confirms = true
+  protocol               = "https"
+  topic_arn              = aws_sns_topic.this.arn
+}
+
+>>>>>>> feat: sns integrations
