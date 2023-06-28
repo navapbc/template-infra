@@ -21,7 +21,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu" {
 }
 
 resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
-  count                     = var.high_memory_util_threshold != null  ? 1 : 0
+  count                     = var.high_memory_util_threshold != null ? 1 : 0
   alarm_name                = "${var.cluster_name}-memory-utilization"
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 3
