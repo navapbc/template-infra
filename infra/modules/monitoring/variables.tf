@@ -1,40 +1,40 @@
-variable "ecs_name" {
+variable "cluster_name" {
   type        = string
   description = "Target ECS cluster name"
 }
 
-variable "cpu_threshold" {
-  type        = string
-  default     = ""
+variable "high_cpu_usage_alert_threshold" {
+  type        = number
+  default     = null
   description = "CPU threshold for cloudwatch CPU alarm"
 }
 
-variable "memory_util_threshold" {
-  type        = string
-  default     = ""
+variable "high_memory_util_threshold" {
+  type        = number 
+  default     = null
   description = "Memory utilization threshold for cloudwatch alarm"
 }
 
-variable "task_health_threshold" {
-  type        = string
-  default     = ""
+variable "task_health_percentage_threshold" {
+  type        = number
+  default     = null
   description = "Task health threshoold for cloudwatch alarm"
 }
 
-variable "network_connectivity_threshold" {
-  type        = string
-  default     = ""
+variable "high_network_packet_loss_threshold" {
+  type        = number
+  default     = null
   description = "Network connectivity threshold for cloudwatch alarm"
 }
 
 variable "service_availability_threshold" {
-  type        = string
-  default     = ""
+  type        = number
+  default     = null
   description = "Service availability threshold for cloudwatch alarm"
 }
 
-variable "task_placement_threshold" {
-  type        = string
-  default     = ""
+variable "task_placement_error_threshold" {
+  type        = number
+  default     = null
   description = "Task placement threshold for cloudwatch alarm"
 }
