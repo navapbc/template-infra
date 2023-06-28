@@ -10,7 +10,7 @@ variable "high_cpu_usage_alert_threshold" {
 }
 
 variable "high_memory_util_threshold" {
-  type        = number 
+  type        = number
   default     = null
   description = "Memory utilization threshold for cloudwatch alarm"
 }
