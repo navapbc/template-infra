@@ -31,7 +31,8 @@ data "tls_certificate" "github" {
 }
 
 locals {
-  oidc_thumbprint_github = data.tls_certificate.github.certificates.0.sha1_fingerprint
+  github_certificates    = data.tls_certificate.github.certificates
+  oidc_thumbprint_github = local.github_certificates[length(local.github_certificates) - 1].sha1_fingerprint
 }
 
 # Set up assume role policy for GitHub Actions to allow GitHub actions
