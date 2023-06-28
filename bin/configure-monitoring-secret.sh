@@ -16,8 +16,7 @@ APP_NAME=$1
 ENVIRONMENT=$2
 URL=$3
 
-#REGION="$(./bin/current-region.sh)"
-REGION="$(./current-region.sh)"
+REGION="$(./bin/current-region.sh)"
 
 SECRET_NAME="Incident-management-integration-url-$APP_NAME-$ENVIRONMENT"
 
@@ -34,6 +33,6 @@ echo "Creating SSM secret: $SECRET_NAME"
 aws ssm put-parameter \
     --name "$SECRET_NAME" \
     --value "$URL" \
-    --type String 
+    --type String \
     --overwrite
 
