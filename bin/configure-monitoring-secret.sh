@@ -1,7 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# This script configures the service module for the specified application
-# and environment by creating the .tfvars file and .tfbackend file for the module.
+# This script creates SSM parameter for storing integration URL for incident management
+# services. Script creates new SSM attribute or updates existing. 
 #
 # Positional parameters:
 #   APP_NAME (required) – the name of subdirectory of /infra that holds the
