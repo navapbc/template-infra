@@ -17,6 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu" {
 
   dimensions = {
     ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
 }
 
@@ -36,6 +37,7 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
   insufficient_data_actions = [aws_sns_topic.this.arn]
   dimensions = {
     ClusterName = var.cluster_name
+    ServiceName = var.service_name
   }
 }
 

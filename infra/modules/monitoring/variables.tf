@@ -3,6 +3,11 @@ variable "cluster_name" {
   description = "Target ECS cluster name"
 }
 
+variable "service_name" {
+  type        = string
+  description = "List of services running within ECS cluster"
+}
+
 variable "high_cpu_usage_alert_threshold" {
   type        = number
   default     = null

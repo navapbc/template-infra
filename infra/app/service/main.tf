@@ -93,8 +93,9 @@ module "service" {
 
 module "monitoring" {
   source = "../../modules/monitoring"
-  #Module take ecs cluster name to link all alerts with ECS monitored cluster
+  # Module take ecs cluster name to link all alerts with ECS monitored cluster
   cluster_name = module.service.cluster_name
+  service_name = local.service_name
 
   #To enable alert uncomment appropriate line
   high_cpu_usage_alert_threshold = 80
