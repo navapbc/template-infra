@@ -6,6 +6,11 @@ resource "aws_sns_topic" "this" {
   # checkov:skip=CKV_AWS_26:SNS encryption for alerts is unnecessary 
 }
 
+data "aws_lb" "this" {
+  name = var.load_balancer_name
+}
+
+
 # Create CloudWatch alarms for the service
 
 resource "aws_cloudwatch_metric_alarm" "http_target_5xx_error_count_threshold" {
@@ -24,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "http_target_5xx_error_count_threshold" {
   insufficient_data_actions = [aws_sns_topic.this.arn]
 
   dimensions = {
-    LoadBalancer = var.load_balancer_name
+    LoadBalancer = data.aws_lb.this.arn_suffix
   }
 }
 
@@ -44,7 +49,7 @@ resource "aws_cloudwatch_metric_alarm" "http_elb_5xx_error_count_threshold" {
   insufficient_data_actions = [aws_sns_topic.this.arn]
 
   dimensions = {
-    LoadBalancer = var.load_balancer_name
+    LoadBalancer = data.aws_lb.this.arn_suffix
   }
 }
 
@@ -64,6 +69,6 @@ resource "aws_cloudwatch_metric_alarm" "high_target_response_time_threshold" {
   insufficient_data_actions = [aws_sns_topic.this.arn]
 
   dimensions = {
-    LoadBalancer = var.load_balancer_name
+    LoadBalancer = data.aws_lb.this.arn_suffix
   }
 }
