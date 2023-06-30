@@ -6,3 +6,8 @@ output "public_endpoint" {
 output "cluster_name" {
   value = aws_ecs_cluster.cluster.name
 }
+
+output "load_balancer_name" {
+  value = aws_lb.alb.name
+}
+
