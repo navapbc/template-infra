@@ -93,9 +93,7 @@ module "service" {
 
 module "monitoring" {
   source = "../../modules/monitoring"
-  #Module take ecs cluster name to link all alerts with ECS monitored cluster
+  # Module takes service and ALB names to link all alerts with corresponding targets
   service_name       = local.service_name
   load_balancer_name = module.service.load_balancer_name
-
-  
 }
