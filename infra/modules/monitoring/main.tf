@@ -6,11 +6,6 @@ resource "aws_sns_topic" "this" {
   # checkov:skip=CKV_AWS_26:SNS encryption for alerts is unnecessary 
 }
 
-data "aws_lb" "this" {
-  name = var.load_balancer_name
-}
-
-
 # Create CloudWatch alarms for the service
 
 resource "aws_cloudwatch_metric_alarm" "high_app_http_5xx_count" {
