@@ -3,9 +3,9 @@ variable "service_name" {
   description = "List of services running within ECS cluster"
 }
 
-variable "load_balancer_name" {
+variable "load_balancer_arn_suffix" {
   type        = string
-  description = "ALB target name"
+  description = "The ARN suffix for use with CloudWatch Metrics."
 }
 
 variable "high_http_target_5xx_error_count_threshold" {
