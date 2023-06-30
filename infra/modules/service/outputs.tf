@@ -7,7 +7,7 @@ output "cluster_name" {
   value = aws_ecs_cluster.cluster.name
 }
 
-output "load_balancer_name" {
-  value = aws_lb.alb.name
+output "load_balancer_arn_suffix" {
+  value = aws_lb.alb.arn_suffix
 }
 
