@@ -8,7 +8,7 @@ resource "aws_sns_topic" "this" {
 
 # Create CloudWatch alarms for the service
 
-resource "aws_cloudwatch_metric_alarm" "http_target_5xx_error_count_threshold"{
+resource "aws_cloudwatch_metric_alarm" "http_target_5xx_error_count_threshold" {
   count                     = var.high_http_target_5xx_error_count_threshold != null ? 1 : 0
   alarm_name                = "${var.service_name}-high-http-target-5xx-error-count-threshold"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_metric_alarm" "http_target_5xx_error_count_threshold"{
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "http_elb_5xx_error_count_threshold"{
+resource "aws_cloudwatch_metric_alarm" "http_elb_5xx_error_count_threshold" {
   count                     = var.high_http_elb_5xx_error_count_threshold != null ? 1 : 0
   alarm_name                = "${var.service_name}-high-http-elb-5xx-error-count-threshold"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
@@ -48,7 +48,7 @@ resource "aws_cloudwatch_metric_alarm" "http_elb_5xx_error_count_threshold"{
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "high_target_response_time_threshold"{
+resource "aws_cloudwatch_metric_alarm" "high_target_response_time_threshold" {
   count                     = var.high_target_response_time_threshold != null ? 1 : 0
   alarm_name                = "${var.service_name}-high_target_response_time_threshold"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
