@@ -9,6 +9,6 @@ output "cluster_name" {
 
 output "load_balancer_arn_suffix" {
   description = "The ARN suffix for use with CloudWatch Metrics."
-  value = aws_lb.alb.arn_suffix
+  value       = aws_lb.alb.arn_suffix
 }
 
