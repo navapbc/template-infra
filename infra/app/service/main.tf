@@ -74,7 +74,7 @@ data "aws_iam_policy" "db_access_policy" {
 
 data "aws_ssm_parameter" "this" {
   count = module.project_config.aws_ssm_name != "<INTEGRATION_URL>" ? 1 : 0
-  name = "Incident-management-integration-url-${module.app_config.app_name}-${var.environment_name}"
+  name  = "Incident-management-integration-url-${module.app_config.app_name}-${var.environment_name}"
 }
 
 module "service" {
