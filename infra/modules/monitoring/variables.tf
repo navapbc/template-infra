@@ -6,4 +6,15 @@ variable "service_name" {
 variable "load_balancer_arn_suffix" {
   type        = string
   description = "The ARN suffix for use with CloudWatch Metrics."
-}  
+}
+
+variable "email_alerts" {
+  type        = set(string)
+  default     = []
+  description = "List of emails for aler subscription"
+
+}
+
+variable "ssm_secret" {
+  description = "SSM secret for external Incindent management tools"
+}

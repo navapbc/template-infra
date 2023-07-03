@@ -1,8 +1,3 @@
-# Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
-
-data "aws_ssm_parameter" "this" {
-  name = "Incident-management-integration-url-${var.app_name}-${var.environment}"
-}
 
 # Create SNS topic for all email and external incident management tools notifications
 
@@ -83,9 +78,9 @@ resource "aws_sns_topic_subscription" "email_integration" {
 #External incident management service integration
 
 resource "aws_sns_topic_subscription" "ext_incident_management_tool" {
-  count = data.aws_ssm_parameter.this.value != "" ? 1 : 0
+  count = var.ssm_secret  != [] ? 1 : 0
 
-  endpoint               = data.aws_ssm_parameter.this.value
+  endpoint               = var.ssm_secret[0].value
   endpoint_auto_confirms = true
   protocol               = "https"
   topic_arn              = aws_sns_topic.this.arn

@@ -34,3 +34,7 @@ output "default_tags" {
 output "github_actions_role_name" {
   value = local.github_actions_role_name
 }
+
+output "aws_ssm_name" {
+  value = local.aws_ssm_name
+}
