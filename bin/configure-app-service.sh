@@ -30,7 +30,6 @@ TF_VARS_FILE="$MODULE_DIR/$ENVIRONMENT.tfvars"
 
 # Get values needed to populate the tfvars file (see infra/app/service/example.tfvars)
 TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/accounts output -raw tf_state_bucket_name)
-TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts output -raw tf_locks_table_name)
 TF_STATE_KEY="$MODULE_DIR/$BACKEND_CONFIG_NAME.tfstate"
 REGION=$(terraform -chdir=infra/accounts output -raw region)
 
