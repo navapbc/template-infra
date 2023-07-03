@@ -70,6 +70,13 @@ data "aws_iam_policy" "db_access_policy" {
   name  = local.database_config.access_policy_name
 }
 
+# Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
+
+data "aws_ssm_parameter" "this" {
+  count = module.project_config.aws_ssm_name != "<INTEGRATION_URL>" ? 1 : 0
+  name = "Incident-management-integration-url-${module.app_config.app_name}-${var.environment_name}"
+}
+
 module "service" {
   source                = "../../modules/service"
   service_name          = local.service_name
@@ -96,4 +103,5 @@ module "monitoring" {
   # Module takes service and ALB names to link all alerts with corresponding targets
   service_name             = local.service_name
   load_balancer_arn_suffix = module.service.load_balancer_arn_suffix
+  ssm_secret               = data.aws_ssm_parameter.this
 }
