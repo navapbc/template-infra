@@ -34,3 +34,7 @@ output "default_tags" {
 output "github_actions_role_name" {
   value = local.github_actions_role_name
 }
+
+output "app_configs" {
+  value = local.app_configs
+}

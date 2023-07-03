@@ -13,4 +13,15 @@ locals {
   default_region = "<DEFAULT_REGION>"
 
   github_actions_role_name = "${local.project_name}-github-actions"
+
+  # Map of app names to the associated configuration for the app
+  app_configs = {
+    app = module.app_config
+  }
 }
+
+module "app_config" {
+  source       = "../app/app-config"
+  project_name = local.project_name
+}
+

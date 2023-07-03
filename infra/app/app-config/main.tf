@@ -1,14 +1,11 @@
 locals {
-  app_name              = "app"
+  # App name is the name of the directory that contains the app infra code
+  app_name = basename(dirname(abspath(path.module)))
+
   environments          = ["dev", "staging", "prod"]
-  project_name          = module.project_config.project_name
-  image_repository_name = "${local.project_name}-${local.app_name}"
+  image_repository_name = "${var.project_name}-${local.app_name}"
   has_database          = false
   environment_configs   = { for environment in local.environments : environment => module.env_config[environment] }
-}
-
-module "project_config" {
-  source = "../../project-config"
 }
 
 module "env_config" {

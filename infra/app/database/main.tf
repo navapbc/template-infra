@@ -18,16 +18,19 @@ locals {
   # if you choose not to use workspaces set this value to "dev" 
   prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
 
+  # App name is the name of the directory that contains the app infra code
+  app_name           = basename(dirname(abspath(path.module)))
+  app_config         = module.project_config.app_configs[local.app_name]
+  environment_config = local.app_config.environment_configs[var.environment_name]
+  database_config    = local.environment_config.database_config
+
+  db_name = "${local.prefix}${local.database_config.cluster_name}"
+
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = var.environment_name
     description = "Database resources for the ${var.environment_name} environment"
   })
-
-  environment_config = module.app_config.environment_configs[var.environment_name]
-  database_config    = local.environment_config.database_config
-
-  db_name = "${local.prefix}${local.database_config.cluster_name}"
 }
 
 terraform {
@@ -54,10 +57,6 @@ provider "aws" {
 
 module "project_config" {
   source = "../../project-config"
-}
-
-module "app_config" {
-  source = "../app-config"
 }
 
 module "database" {
