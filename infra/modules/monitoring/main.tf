@@ -78,7 +78,7 @@ resource "aws_sns_topic_subscription" "email_integration" {
 #External incident management service integration
 
 resource "aws_sns_topic_subscription" "ext_incident_management_tool" {
-  count = var.ssm_secret  != [] ? 1 : 0
+  count = var.ssm_secret != [] ? 1 : 0
 
   endpoint               = var.ssm_secret[0].value
   endpoint_auto_confirms = true
