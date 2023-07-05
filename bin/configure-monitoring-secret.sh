@@ -14,9 +14,7 @@ set -euo pipefail
 
 APP_NAME=$1
 ENVIRONMENT=$2
-URL=$3
-
-REGION="$(./bin/current-region.sh)"
+INTEGRATION_ENDPOINT_URL=$3
 
 SECRET_NAME="Incident-management-integration-url-$APP_NAME-$ENVIRONMENT"
 
@@ -25,14 +23,13 @@ echo "Setting up SSM secret"
 echo "====================="
 echo "APPLICATION_NAME=$APP_NAME"
 echo "ENVIRONMENT=$ENVIRONMENT"
-echo "INTEGRATION_URL=$URL" 
-echo "REGION=$REGION"
+echo "INTEGRATION_URL=$INTEGRATION_ENDPOINT_URL" 
 echo
 echo "Creating SSM secret: $SECRET_NAME"
 
 aws ssm put-parameter \
     --name "$SECRET_NAME" \
-    --value "$URL" \
+    --value "$INTEGRATION_ENDPOINT_URL" \
     --type String \
     --overwrite
 
