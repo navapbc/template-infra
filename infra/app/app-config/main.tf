@@ -6,6 +6,8 @@ locals {
   has_database          = false
   external_integration  = true
   environment_configs   = { for environment in local.environments : environment => module.env_config[environment] }
+  # AWS SSM parameter name for external Incident management tool
+  aws_ssm_name = ""
 }
 
 module "project_config" {
