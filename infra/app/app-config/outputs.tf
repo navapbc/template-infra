@@ -10,6 +10,10 @@ output "has_database" {
   value = local.has_database
 }
 
+output "external_integration" {
+  value = local.external_integration
+}
+
 output "image_repository_name" {
   value = local.image_repository_name
 }

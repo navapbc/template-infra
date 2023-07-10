@@ -10,3 +10,7 @@ variable "environment" {
 variable "has_database" {
   type = bool
 }
+
+variable "external_integration" {
+  type = bool
+}
