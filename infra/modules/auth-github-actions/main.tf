@@ -2,6 +2,10 @@
 resource "aws_iam_openid_connect_provider" "github" {
   url            = "https://token.actions.githubusercontent.com"
   client_id_list = ["sts.amazonaws.com"]
+
+  # AWS already trusts the GitHub OIDC identity provider's library of root certificate authorities
+  # so no thumbprints from intermediate certificates are needed
+  thumbprint_list = []
 }
 
 # Create IAM role for GitHub Actions
