@@ -5,7 +5,9 @@ resource "aws_iam_openid_connect_provider" "github" {
 
   # AWS already trusts the GitHub OIDC identity provider's library of root certificate authorities
   # so no thumbprints from intermediate certificates are needed
-  thumbprint_list = []
+  # At the time of writing (July 12, 2023), the thumbprint_list parameter
+  # is required to be a non-empty array, so we are passign an array with an empty string
+  thumbprint_list = [""]
 }
 
 # Create IAM role for GitHub Actions
