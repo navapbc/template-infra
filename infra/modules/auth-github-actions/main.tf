@@ -1,8 +1,15 @@
 # Set up GitHub's OpenID Connect provider in AWS account
 resource "aws_iam_openid_connect_provider" "github" {
-  url             = "https://token.actions.githubusercontent.com"
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [local.oidc_thumbprint_github]
+  url            = "https://token.actions.githubusercontent.com"
+  client_id_list = ["sts.amazonaws.com"]
+
+  # AWS already trusts the GitHub OIDC identity provider's library of root certificate authorities
+  # so no thumbprints from intermediate certificates are needed
+  # At the time of writing (July 12, 2023), the thumbprint_list parameter
+  # is required to be a non-empty array, so we are passing an array with a dummy string that passes validation
+  # TODO(https://github.com/navapbc/template-infra/issues/350) Remove this parameter thumbprint_list is no
+  # longer required (see https://github.com/hashicorp/terraform-provider-aws/issues/32480)
+  thumbprint_list = ["0000000000000000000000000000000000000000"]
 }
 
 # Create IAM role for GitHub Actions
@@ -21,18 +28,6 @@ resource "aws_iam_role_policy_attachment" "custom" {
 
   role       = aws_iam_role.github_actions.name
   policy_arn = var.iam_role_policy_arns[count.index]
-}
-
-# Get GitHub's OIDC provider's thumbprint
-# See https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc_verify-thumbprint.html
-
-data "tls_certificate" "github" {
-  url = "https://token.actions.githubusercontent.com"
-}
-
-locals {
-  github_certificates    = data.tls_certificate.github.certificates
-  oidc_thumbprint_github = local.github_certificates[length(local.github_certificates) - 1].sha1_fingerprint
 }
 
 # Set up assume role policy for GitHub Actions to allow GitHub actions
