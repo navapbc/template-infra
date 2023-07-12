@@ -6,6 +6,7 @@ In order to use the template infrastructure, you need an application that meets 
 * The application folder needs to have a `Makefile` that has a build target `release-build` that takes in a Makefile variable `OPTS`, and passes those `OPTS` as options to the `docker build` command. The top level [Makefile](./Makefile) in this repo will call the application's `release-build` make target passing in release tags to tag the docker image with.
 * The web application needs to listen on the port defined by the environment variable `PORT`, rather than hardcode the `PORT`. This allows the infrastructure to configure the application to listen on a container port specified by the infrastructure. See [The Twelve-Factor App](https://12factor.net/) to learn more about designing applications to be portable to different infrastructure environments using environment variables.
 * The web application needs to have a health check endpoint at `/health` that returns an HTTP 200 OK response when the application is healthy and ready to accept requests.
+* The Docker image needs to have `wget` installed. This is used in the container task defintion's healthcheck configuration in order to ping the application's `/health` endpoint. If you want to use a different healthcheck command (e.g. `curl`) then you'll need to modify the health_check configuration in the `aws_ecs_task_definition` resource in [modules/service/main.tf](/infra/modules/service/main.tf).
 
 ## Database Requirements
 
