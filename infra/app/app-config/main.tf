@@ -4,7 +4,7 @@ locals {
   project_name                                = module.project_config.project_name
   image_repository_name                       = "${local.project_name}-${local.app_name}"
   has_database                                = false
-  has_incident_management_service_integration = true
+  has_incident_management_service_integration = false
   environment_configs                         = { for environment in local.environments : environment => module.env_config[environment] }
 }
 
