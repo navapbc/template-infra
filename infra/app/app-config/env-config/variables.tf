@@ -11,6 +11,6 @@ variable "has_database" {
   type = bool
 }
 
-variable "external_integration" {
+variable "has_incident_management_service_integration" {
   type = bool
 }

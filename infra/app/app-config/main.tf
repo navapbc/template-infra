@@ -1,13 +1,11 @@
 locals {
-  app_name              = "app"
-  environments          = ["dev", "staging", "prod"]
-  project_name          = module.project_config.project_name
-  image_repository_name = "${local.project_name}-${local.app_name}"
-  has_database          = false
-  external_integration  = false
-  environment_configs   = { for environment in local.environments : environment => module.env_config[environment] }
-  # AWS SSM parameter name for external Incident management tool
-  aws_ssm_name = ""
+  app_name                                    = "app"
+  environments                                = ["dev", "staging", "prod"]
+  project_name                                = module.project_config.project_name
+  image_repository_name                       = "${local.project_name}-${local.app_name}"
+  has_database                                = false
+  has_incident_management_service_integration = true
+  environment_configs                         = { for environment in local.environments : environment => module.env_config[environment] }
 }
 
 module "project_config" {
@@ -17,9 +15,9 @@ module "project_config" {
 module "env_config" {
   for_each = toset(local.environments)
 
-  source               = "./env-config"
-  app_name             = local.app_name
-  environment          = each.key
-  has_database         = local.has_database
-  external_integration = local.external_integration
+  source                                      = "./env-config"
+  app_name                                    = local.app_name
+  environment                                 = each.key
+  has_database                                = local.has_database
+  has_incident_management_service_integration = local.has_incident_management_service_integration
 }

@@ -69,7 +69,7 @@ resource "aws_cloudwatch_metric_alarm" "high_app_response_time" {
 #email integration
 
 resource "aws_sns_topic_subscription" "email_integration" {
-  for_each  = var.email_alerts
+  for_each  = var.email_alerts_subscription_list
   topic_arn = aws_sns_topic.this.arn
   protocol  = "email"
   endpoint  = each.value
@@ -77,10 +77,9 @@ resource "aws_sns_topic_subscription" "email_integration" {
 
 #External incident management service integration
 
-resource "aws_sns_topic_subscription" "ext_incident_management_tool" {
-  count = var.ssm_secret != [] ? 1 : 0
-
-  endpoint               = var.ssm_secret[0].value
+resource "aws_sns_topic_subscription" "incident_management_service_integration" {
+  count                  = var.incident_management_service_integration_url != [] ? 1 : 0
+  endpoint               = var.incident_management_service_integration_url[0].value
   endpoint_auto_confirms = true
   protocol               = "https"
   topic_arn              = aws_sns_topic.this.arn

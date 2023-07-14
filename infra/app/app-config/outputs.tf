@@ -10,8 +10,8 @@ output "has_database" {
   value = local.has_database
 }
 
-output "external_integration" {
-  value = local.external_integration
+output "has_incident_management_service_integration" {
+  value = local.has_incident_management_service_integration
 }
 
 output "image_repository_name" {

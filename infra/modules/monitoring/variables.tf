@@ -8,13 +8,13 @@ variable "load_balancer_arn_suffix" {
   description = "The ARN suffix for use with CloudWatch Metrics."
 }
 
-variable "email_alerts" {
+variable "email_alerts_subscription_list" {
   type        = set(string)
   default     = []
-  description = "List of emails for aler subscription"
+  description = "List of emails to subscribe to alerts"
 
 }
 
-variable "ssm_secret" {
+variable "incident_management_service_integration_url" {
   description = "SSM secret for external Incindent management tools"
 }

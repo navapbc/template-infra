@@ -13,8 +13,4 @@ locals {
   default_region = "<DEFAULT_REGION>"
 
   github_actions_role_name = "${local.project_name}-github-actions"
-
-  # AWS SSM parameter name for external Incident management tool
-  aws_ssm_name = "<INTEGRATION_URL>"
-
 }

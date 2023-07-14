@@ -26,9 +26,9 @@ locals {
 
   service_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
 
-  environment_config = module.app_config.environment_configs[var.environment_name]
-  database_config    = local.environment_config.database_config
-  secret_name        = local.environment_config.secret_name
+  environment_config                      = module.app_config.environment_configs[var.environment_name]
+  database_config                         = local.environment_config.database_config
+  incident_management_service_integration = local.environment_config.incident_management_service_integration
 }
 
 terraform {
@@ -73,9 +73,9 @@ data "aws_iam_policy" "db_access_policy" {
 
 # Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
 
-data "aws_ssm_parameter" "integration_url" {
-  count = module.app_config.external_integration ? 1 : 0
-  name  = local.secret_name.aws_ssm_name
+data "aws_ssm_parameter" "incident_management_service_integration_url" {
+  count = module.app_config.has_incident_management_service_integration ? 1 : 0
+  name  = local.incident_management_service_integration.aws_ssm_name
 }
 
 module "service" {
@@ -102,7 +102,7 @@ module "service" {
 module "monitoring" {
   source = "../../modules/monitoring"
   # Module takes service and ALB names to link all alerts with corresponding targets
-  service_name             = local.service_name
-  load_balancer_arn_suffix = module.service.load_balancer_arn_suffix
-  ssm_secret               = data.aws_ssm_parameter.integration_url
+  service_name                                = local.service_name
+  load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
+  incident_management_service_integration_url = data.aws_ssm_parameter.incident_management_service_integration_url
 }

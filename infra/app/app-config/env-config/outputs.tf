@@ -8,8 +8,8 @@ output "database_config" {
   } : null
 }
 
-output "secret_name" {
-  value = var.external_integration ? {
+output "incident_management_service_integration" {
+  value = var.has_incident_management_service_integration ? {
     aws_ssm_name = "Incident-management-integration-url-${var.app_name}-${var.environment}"
   } : null
 }
