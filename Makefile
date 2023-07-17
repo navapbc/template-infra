@@ -160,7 +160,7 @@ release-build:
 release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
-release-run-database-migrations:
+release-run-database-migrations: ## Run database migrations
 	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-deploy:
