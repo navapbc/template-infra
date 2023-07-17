@@ -2,9 +2,7 @@
 
 * Status: proposed
 * Deciders: @lorenyu, @daphnegold, @chouinar, @Nava-JoshLong, @addywolf-nava, @sawyerh, @acouch, @SammySteiner
-
- <!-- optional -->
-* Date: 2023-06-05 <!-- optional -->
+* Date: 2023-06-05
 
 ## Context and Problem Statement
 
@@ -12,14 +10,13 @@ What is the most optimal setup for database migrations infrastructure and deploy
 This will break down the different options for how the migration is run, but not the
 tools or languages the migration will be run with, that will be dependent on the framework the application is using.
 
-Both the Lambda and ECS task options will be running on the same Docker image as the application. A requirement of this approach is that the application is configured to run migrations from inside the image so that local migrations are ran the same way as in AWS. This reduces the overhead of needing to maintain another image and reduce costs because we aren't storing another image. How this is achieved is by telling the Lambda where the entry point of the function is, and by overloading the command in the ECS task configuration JSON so the task knows what function to run. You can see this setup in the template flask repo, where you run `db-migrate-*` commands to migrate the database.
-
 Questions that need to be addressed:
+
  1. How will the method get the latest migration code to run?
  2. What infrastructure is required to use this method?
  3. How is the migration deployment re-run in case of errors?
 
-## Decision Drivers <!-- optional -->
+## Decision Drivers
 
 * Scalability: the accepted solution would ideally scale for the needs of large projects (ie, large database)
 * Simplicity: the accepted solution should be easy possible to update and maintain
@@ -29,31 +26,44 @@ Questions that need to be addressed:
 
 ## Considered Options
 
-* Execute migrations via direct database connection from Github Actions
-* Execute migrations via a Lambda Function
-* Execute migrations via an ECS Fargate Task
+* Run migrations from GitHub Actions
+* Run migrations from a Lambda function
+* Run migrations from an ECS task
+* Run migrations from self-hosted GitHub Actions runners
 
 ## Decision Outcome
 
+Both the Lambda and ECS task options will be running on the same Docker image as the application. A requirement of this approach is that the application is configured to run migrations from inside the image so that local migrations are ran the same way as in AWS. This reduces the overhead of needing to maintain another image and reduce costs because we aren't storing another image. How this is achieved is by telling the Lambda where the entry point of the function is, and by overloading the command in the ECS task configuration JSON so the task knows what function to run. You can see this setup in the template flask repo, where you run `db-migrate-*` commands to migrate the database.
+
 Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
 
-### Positive Consequences <!-- optional -->
+
+Do not support database rollbacks
+See https://octopus.com/blog/database-rollbacks-pitfalls
+
+
+
+i’ve been thinking – the simplest way to do migrations might actually not require any additional infra resources. we can do aws run-task on the existing task definition with a container override for the command that gets run. we’ll override the command to ["db-migrate"] instead of ["python", "-m", "app"]
+
+
+
+### Positive Consequences
 
 * [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
 * …
 
-### Negative Consequences <!-- optional -->
+### Negative Consequences
 
 * [e.g., compromising quality attribute, follow-up decisions required, …]
 * …
 
-## Pros and Cons of the Options <!-- optional -->
+## Pros and Cons of the Options
 
 ### Execute via a Direct Database Connection in Github Action
 
 In this method, the github action runner connects to the database directly to run migrations as part of the ci/cd workflow. There is no cost associated with connecting to the database via github actions.
 
-This method gets the necessary permissions, packages, and versions from the github action runner and the necessary scripts can be written in the Makefile.  <!-- optional -->
+This method gets the necessary permissions, packages, and versions from the github action runner and the necessary scripts can be written in the Makefile. 
 
 #### Pros
 This approach uses existing scripts from the application codebase and is quick and simple to set up.
@@ -87,6 +97,8 @@ The compute portion of the task run by AWS Lambda is very simple.
 #### Cons
 
 Lambdas have a comparatively short maximum running time of 15 minutes long. Either find a way to split up the migrations into small tasks, or extend the running time of the Lambda. This might not scale well with large changesets.
+
+i think we need to go with ecs, looking into it, [lambda only works if the image implements the lambda runtime api](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/), which i think is too complex of a constraint to put on applications.
 
 
 ### Execute via an ECS Fargate Task
@@ -132,7 +144,7 @@ runtime environment so that the function is ready to run when triggered, while t
 ECS task will need to run that same provisioning when triggered. More information
 about cold start can be found [here](https://aws.amazon.com/blogs/compute/operating-lambda-performance-optimization-part-1/)
 
-## Links <!-- optional -->
+## Links
 
 * [Link type] [Link to ADR] <!-- example: Refined by [ADR-0005](0005-example.md) -->
 * … <!-- numbers of links can vary -->
