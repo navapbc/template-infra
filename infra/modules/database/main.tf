@@ -3,9 +3,6 @@ data "aws_region" "current" {}
 
 locals {
   master_username       = "postgres"
-  app_username          = "app"
-  migrator_username     = "migrator"
-  schema_name           = "app"
   primary_instance_name = "${var.name}-primary"
   role_manager_name     = "${var.name}-role-manager"
   role_manager_package  = "${path.root}/role_manager.zip"
@@ -120,7 +117,7 @@ resource "aws_vpc_security_group_ingress_rule" "db_ingress_from_role_manager" {
 # --------------
 
 resource "aws_iam_policy" "db_access" {
-  name   = "${var.name}-db-access"
+  name   = var.access_policy_name
   policy = data.aws_iam_policy_document.db_access.json
 }
 
@@ -134,8 +131,8 @@ data "aws_iam_policy_document" "db_access" {
     ]
 
     resources = [
-      "${local.db_user_arn_prefix}/${local.app_username}",
-      "${local.db_user_arn_prefix}/${local.migrator_username}",
+      "${local.db_user_arn_prefix}/${var.app_username}",
+      "${local.db_user_arn_prefix}/${var.migrator_username}",
     ]
   }
 }
@@ -289,9 +286,9 @@ resource "aws_lambda_function" "role_manager" {
       DB_USER                = local.master_username
       DB_NAME                = aws_rds_cluster.db.database_name
       DB_PASSWORD_PARAM_NAME = aws_ssm_parameter.random_db_password.name
-      DB_SCHEMA              = local.schema_name
-      APP_USER               = local.app_username
-      MIGRATOR_USER          = local.migrator_username
+      DB_SCHEMA              = var.schema_name
+      APP_USER               = var.app_username
+      MIGRATOR_USER          = var.migrator_username
       PYTHONPATH             = "vendor"
     }
   }
