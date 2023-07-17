@@ -36,7 +36,7 @@ if [ $HAS_DATABASE = "false" ]; then
   exit 0
 fi
 
-DB_MIGRATOR_USER=$(terraform -chdir=infra/$APP_NAME/app-config output -json environment_configs | jq -r ".dev.database_config.migrator_username")
+DB_MIGRATOR_USER=$(terraform -chdir=infra/$APP_NAME/app-config output -json environment_configs | jq -r ".$ENVIRONMENT.database_config.migrator_username")
 
 echo
 echo "Step 1. Update task definition without updating service"
