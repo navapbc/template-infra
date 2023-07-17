@@ -32,7 +32,7 @@ This template assumes that you have an application to deploy. See [application r
 1. [Set up team workflow](./template-only-docs/set-up-team-workflow.md)
 2. [Configure the project](./infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
 3. [Set up AWS account(s) with resources needed to manage infrastructure as code (IaC)](./docs/infra/set-up-aws-account.md)
-4. [Set up continuous integration](./template-only-docs/set-up-ci.md)
+4. [Set up GitHub Actions workflows](./template-only-docs/set-up-ci.md)
 5. [Set up application's build repository](./docs/infra/set-up-app-build-repository.md)
 6. [Set up application environments](./docs/infra/set-up-app-env.md)
 7. [Set up continuous deployment](./template-only-docs/set-up-cd.md)

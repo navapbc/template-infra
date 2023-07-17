@@ -9,11 +9,13 @@ The application environment setup process will:
 Before setting up the application's environments you'll need to have:
 
 1. [A compatible application in the app folder](./application-requirements.md)
-2. [Set up the application build repository](./set-up-app-build-repository.md)
+2. [Configure the app](/infra/app/app-config/main.tf). Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
+3. (If the application has a database) [Set up the database for the application](./set-up-database.md)
+4. [Set up the application build repository](./set-up-app-build-repository.md)
 
 ## 1. Configure backend
 
-To create the tfbackend file for the new application environment, run
+To create the tfbackend and tfvars files for the new application environment, run
 
 ```bash
 make infra-configure-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
@@ -21,6 +23,8 @@ make infra-configure-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
+
+Depending on the value of `has_database` in the [app-config module](/infra/app/app-config/main.tf), the application will be configured with or without database access.
 
 ## 2. Build and publish the application to the application build repository
 

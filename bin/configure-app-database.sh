@@ -1,6 +1,6 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# This script configures the service module for the specified application
+# This script configures the database module for the specified application
 # and environment by creating the .tfvars file and .tfbackend file for the module.
 #
 # Positional parameters:
@@ -17,7 +17,7 @@ ENVIRONMENT=$2
 # Create terraform backend config file
 #--------------------------------------
 
-MODULE_DIR="infra/$APP_NAME/service"
+MODULE_DIR="infra/$APP_NAME/database"
 BACKEND_CONFIG_NAME="$ENVIRONMENT"
 
 ./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
@@ -28,14 +28,19 @@ BACKEND_CONFIG_NAME="$ENVIRONMENT"
 
 TF_VARS_FILE="$MODULE_DIR/$ENVIRONMENT.tfvars"
 
-# Get values needed to populate the tfvars file (see infra/app/service/example.tfvars)
+# Get the name of the S3 bucket that was created to store the tf state
+# and the name of the DynamoDB table that was created for tf state locks.
+# This will be used to configure the S3 backends in all the application
+# modules
 TF_STATE_BUCKET_NAME=$(terraform -chdir=infra/accounts output -raw tf_state_bucket_name)
+TF_LOCKS_TABLE_NAME=$(terraform -chdir=infra/accounts output -raw tf_locks_table_name)
 TF_STATE_KEY="$MODULE_DIR/$BACKEND_CONFIG_NAME.tfstate"
 REGION=$(terraform -chdir=infra/accounts output -raw region)
 
-echo "======================================"
-echo "Setting up tfvars file for app service"
-echo "======================================"
+
+echo "======================================="
+echo "Setting up tfvars file for app database"
+echo "======================================="
 echo "Input parameters"
 echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
@@ -43,8 +48,6 @@ echo
 
 cp $MODULE_DIR/example.tfvars $TF_VARS_FILE
 sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" $TF_VARS_FILE
-sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $TF_VARS_FILE
-sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" $TF_VARS_FILE
 sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
 rm $TF_VARS_FILE.bak
 

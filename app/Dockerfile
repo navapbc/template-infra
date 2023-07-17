@@ -1,23 +1,27 @@
-# Simple hello, world image mostly copied
-# from https://github.com/crccheck/docker-hello-world
-#
-# Testing
-# -------
-# After running `make release-build` (see [Releases](../docs/releases.md)),
-# you can verify the image works by running
-#
-#   docker run -e PORT=8000 -p 80:8000 template-infra-app
-#
-# then visit localhost in a browser (or can use curl from a terminal)
+FROM python:3-alpine as release
 
-FROM busybox:uclibc AS release
+RUN adduser --system --disabled-password --no-create-home app
 
-ARG RUN_USER=nobody
-USER ${RUN_USER}
+WORKDIR /app
 
-COPY index.html /www/index.html
-COPY health /www/health
-COPY start-server.sh /bin/start-server.sh
+RUN apk --no-cache add \
+  aws-cli~=2 \
+  postgresql14-client~=14
+
+COPY requirements.txt ./
+
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+COPY db-migrate /usr/bin/
+COPY migrations.sql /app/
+COPY app.py /app/
+
+# Set the host to 0.0.0.0 to make the server available external
+# to the Docker container that it's running in.
+ENV HOST=0.0.0.0
+
+# Run as non-root user
+USER app
 
 # Create a basic webserver and run it until the container is stopped
-CMD ["start-server.sh"]
+CMD ["python", "-m", "app"]

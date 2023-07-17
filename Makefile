@@ -1,5 +1,4 @@
-# PROJECT_NAME defaults to name of the current directory.
-PROJECT_NAME ?= $(notdir $(PWD))
+PROJECT_ROOT ?= $(notdir $(PWD))
 
 # For now only support a single app in the folder `app/` within the repo
 # In the future, support multiple apps, and which app is being operated
@@ -55,6 +54,12 @@ infra-set-up-account:  # Set up the AWS account for the first time
 infra-configure-app-build-repository:
 	./bin/configure-app-build-repository.sh $(APP_NAME)
 
+infra-configure-app-database:
+	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/configure-app-database.sh $(APP_NAME) $(ENVIRONMENT)
+
 infra-configure-app-service:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -68,6 +73,18 @@ infra-update-app-build-repository:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+
+infra-update-app-database:
+	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/database $(ENVIRONMENT)
+
+infra-update-app-database-roles:
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
+
 
 infra-update-app-service:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
@@ -120,7 +137,7 @@ infra-test:
 
 # Include project name in image name so that image name
 # does not conflict with other images during local development
-IMAGE_NAME := $(PROJECT_NAME)-$(APP_NAME)
+IMAGE_NAME := $(PROJECT_ROOT)-$(APP_NAME)
 
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
 
@@ -142,6 +159,9 @@ release-build:
 
 release-publish:
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
+
+release-run-database-migrations:
+	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-deploy:
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")

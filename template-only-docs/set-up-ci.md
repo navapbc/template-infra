@@ -6,8 +6,17 @@ CI should automatically be set up once the CI files in `.github/workflows` are c
 
 Some checks are disabled until you've completed certain setup steps:
 
-* After [setting up the dev environment](../docs/infra/set-up-app-env.md), look for `!!` in [ci-infra.yml](../.github/workflows/ci-infra.yml), update the `role-to-assume` with the GitHub actions ARN, and uncomment the infra end-to-end tests.
+### After setting up the AWS account
 
-You can verify that CI is running and passing by clicking into the Actions tab in GitHub.
+After [setting up the AWS account](/docs/infra/set-up-aws-account.md) update the `role-to-assume` with the GitHub actions ARN by searching for `!!` in the following files:
 
-Note that this repo only contains CI for infra (`ci-infra.yml`). Application CI (`ci-app.yml`) is included as part of the application templates.
+* [build-and-publish.yml](/.github/workflows/build-and-publish.yml)
+* [cd.yml](/.github/workflows/cd.yml)
+* [ci-infra.yml](/.github/workflows/ci-infra.yml)
+
+### After setting up the application environment
+
+After [setting up the app environment](/docs/infra/set-up-app-env.md):
+
+* Uncomment the infra end-to-end tests in [ci-infra.yml](/.github/workflows/ci-infra.yml). You can verify that CI is running and passing by clicking into the Actions tab in GitHub. Note that this repo only contains CI for infra (`ci-infra.yml`). Application CI (`ci-app.yml`) is included as part of the application templates.
+* Uncomment the push trigger in [cd.yml](/.github/workflows/cd.yml)
