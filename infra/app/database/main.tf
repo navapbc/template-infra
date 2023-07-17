@@ -26,8 +26,6 @@ locals {
 
   environment_config = module.app_config.environment_configs[var.environment_name]
   database_config    = local.environment_config.database_config
-
-  db_name = "${local.prefix}${local.database_config.cluster_name}"
 }
 
 terraform {
@@ -62,8 +60,13 @@ module "app_config" {
 
 module "database" {
   source = "../../modules/database"
-  name   = local.db_name
-  vpc_id = data.aws_vpc.default.id
 
+  name               = "${local.prefix}${local.database_config.cluster_name}"
+  access_policy_name = "${local.prefix}${local.database_config.access_policy_name}"
+  app_username       = "${local.prefix}${local.database_config.app_username}"
+  migrator_username  = "${local.prefix}${local.database_config.migrator_username}"
+  schema_name        = "${local.prefix}${local.database_config.schema_name}"
+
+  vpc_id             = data.aws_vpc.default.id
   private_subnet_ids = data.aws_subnets.default.ids
 }
