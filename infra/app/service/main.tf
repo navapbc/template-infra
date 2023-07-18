@@ -104,5 +104,5 @@ module "monitoring" {
   # Module takes service and ALB names to link all alerts with corresponding targets
   service_name                                = local.service_name
   load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
-  incident_management_service_integration_url = data.aws_ssm_parameter.incident_management_service_integration_url[0].value
+  incident_management_service_integration_url = module.app_config.has_incident_management_service_integration ? data.aws_ssm_parameter.incident_management_service_integration_url[0].value : ""
 }
