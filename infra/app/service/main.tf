@@ -75,7 +75,7 @@ data "aws_iam_policy" "db_access_policy" {
 
 data "aws_ssm_parameter" "incident_management_service_integration_url" {
   count = module.app_config.has_incident_management_service_integration ? 1 : 0
-  name  = local.incident_management_service_integration.aws_ssm_name
+  name  = local.incident_management_service_integration.ssm_incident_management_secret_name
 }
 
 module "service" {
@@ -104,5 +104,5 @@ module "monitoring" {
   # Module takes service and ALB names to link all alerts with corresponding targets
   service_name                                = local.service_name
   load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
-  incident_management_service_integration_url = data.aws_ssm_parameter.incident_management_service_integration_url
+  incident_management_service_integration_url = data.aws_ssm_parameter.incident_management_service_integration_url[0].value
 }

@@ -16,7 +16,7 @@ APP_NAME=$1
 ENVIRONMENT=$2
 INTEGRATION_ENDPOINT_URL=$3
 
-SECRET_NAME="Incident-management-integration-url-$APP_NAME-$ENVIRONMENT"
+SECRET_NAME=$(./bin/get_monitoring_secret_name.sh | sed "s/\$APP_NAME/$APP_NAME/" | sed "s/\$ENVIRONMENT/$ENVIRONMENT/")
 
 echo "====================="
 echo "Setting up SSM secret"

@@ -16,5 +16,6 @@ variable "email_alerts_subscription_list" {
 }
 
 variable "incident_management_service_integration_url" {
+  type        = string
   description = "SSM secret for external Incindent management tools"
 }

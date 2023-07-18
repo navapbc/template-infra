@@ -10,6 +10,6 @@ output "database_config" {
 
 output "incident_management_service_integration" {
   value = var.has_incident_management_service_integration ? {
-    aws_ssm_name = "Incident-management-integration-url-${var.app_name}-${var.environment}"
+    ssm_incident_management_secret_name = "Incident-management-integration-url-${var.app_name}-${var.environment}"
   } : null
 }

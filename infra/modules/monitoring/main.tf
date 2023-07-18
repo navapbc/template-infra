@@ -79,7 +79,7 @@ resource "aws_sns_topic_subscription" "email_integration" {
 
 resource "aws_sns_topic_subscription" "incident_management_service_integration" {
   count                  = var.incident_management_service_integration_url != [] ? 1 : 0
-  endpoint               = var.incident_management_service_integration_url[0].value
+  endpoint               = var.incident_management_service_integration_url
   endpoint_auto_confirms = true
   protocol               = "https"
   topic_arn              = aws_sns_topic.this.arn
