@@ -18,11 +18,9 @@ Questions that need to be addressed:
 
 ## Decision Drivers
 
-* Scalability: the accepted solution would ideally scale for the needs of large projects (ie, large database)
-* Simplicity: the accepted solution should be easy possible to update and maintain
-* Security: The solution should be prevent malicious action and provide auditable history of database activity
-* Flexibility: the accepted solution would ideally incorporate structural changes to the project (ie, connecting to multiple services like logging or caching tools)
-* Cost
+* Security
+* Simplicity
+* Flexibility
 
 ## Considered Options
 
@@ -33,118 +31,62 @@ Questions that need to be addressed:
 
 ## Decision Outcome
 
-Both the Lambda and ECS task options will be running on the same Docker image as the application. A requirement of this approach is that the application is configured to run migrations from inside the image so that local migrations are ran the same way as in AWS. This reduces the overhead of needing to maintain another image and reduce costs because we aren't storing another image. How this is achieved is by telling the Lambda where the entry point of the function is, and by overloading the command in the ECS task configuration JSON so the task knows what function to run. You can see this setup in the template flask repo, where you run `db-migrate-*` commands to migrate the database.
+Run migrations from an ECS task using the same container image that is used for running the web service. Require a `db-migrate` script in the application container image that performs the migration. When running the migration task using [AWS CLI's run-task command](https://docs.aws.amazon.com/cli/latest/reference/ecs/run-task.html), use the `--overrides` option to override the command to the `db-migrate` command.
 
-Chosen option: "[option 1]", because [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
+Default to rolling forward instead of rolling back when issues arise (See [Pitfalls with SQL rollbacks and automated database deployments](https://octopus.com/blog/database-rollbacks-pitfalls)). Do not support rolling back out of the box, but still project teams to easily implement database rollbacks through the mechanism of running an application-specific database rollback script through a general purpose `run-command.sh` script.
 
+Pros
 
-Do not support database rollbacks
-See https://octopus.com/blog/database-rollbacks-pitfalls
+* No changes to the database network configuration are needed. The database can remain inaccessible from the public internet.
+* Database migrations are agnostic to the migration framework that the application uses as long as the application is able to provide a `db-migrate` script that is accessible from the container's PATH and is able to use IAM authentication for connecting to the database. Applications can use [alembic](https://alembic.sqlalchemy.org/), [flyway](https://flywaydb.org/), [prisma](https://www.prisma.io/), another migration framework, or custom built migrations.
+* Database migrations use the same application image and task definition as the base application.
 
+Cons
 
+* Running migrations require doing a [targeted terraform apply](https://developer.hashicorp.com/terraform/tutorials/state/resource-targeting) to update the task definition without updating the service. Terraform recommends against targeting individual resources as part of a normal workflow. However, this is done to ensure migrations are run before the service is updated.
 
-i’ve been thinking – the simplest way to do migrations might actually not require any additional infra resources. we can do aws run-task on the existing task definition with a container override for the command that gets run. we’ll override the command to ["db-migrate"] instead of ["python", "-m", "app"]
+## Other options considered
 
+### Run migrations from GitHub Actions using a direct database connection
 
+Temporarily update the database to be accessible from the internet and allow incoming network traffic from the GitHub Action runner's IP address. Then run the migrations directly from the GitHub Action runner. At the end, revert the database configuration changes.
 
-### Positive Consequences
+Pros:
 
-* [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
-* …
+* Simple. Requires no additional infrastructure
 
-### Negative Consequences
+Cons:
 
-* [e.g., compromising quality attribute, follow-up decisions required, …]
-* …
+* This method requires temporarily exposing the database to incoming connections from the internet, which may not comply with agency security policies.
 
-## Pros and Cons of the Options
+### Run migrations from a Lambda function
 
-### Execute via a Direct Database Connection in Github Action
+Run migrations from an AWS Lambda function that uses the application's container image. The application container image needs to [implement the lambda runtime api](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) either by using an AWS base image for Lambda or by implementing the Lambda runtime (see [Working with Lambda container images](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html)).
 
-In this method, the github action runner connects to the database directly to run migrations as part of the ci/cd workflow. There is no cost associated with connecting to the database via github actions.
+Pros:
 
-This method gets the necessary permissions, packages, and versions from the github action runner and the necessary scripts can be written in the Makefile. 
+* Relatively simple. Lambdas are already used for managing database roles.
+* The Lambda function can run from within the VPC, avoiding the need to expose the database to the public internet.
+* The Lambda function is separate from the application service, so we avoid the need to modify the service's task definition.
 
-#### Pros
-This approach uses existing scripts from the application codebase and is quick and simple to set up.
+Cons:
 
-#### Cons
+* Lambda function container images need to [implement the lambda runtime api](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/). This is a complex application requirement that would significantly limit the ease of use of the infrastructure.
+* Lambda functions have a maximum runtime of 15 minutes, which can limit certain kinds of migrations.
 
+### Run migrations from self-hosted GitHub Actions runners
 
-### Execute via a Lambda Function
+Then run the migrations directly from a [self-hosted GitHub Action runner](https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners). Configure the runner to have network access to the database.
 
-In this method, a Lambda function is used as the primary method of migration. Either the Lambda is the only compute infrastructure, or it works in conjunction with an EC2 instance or ECS task running something like Flyway.
+Pros
 
-#### Infrastructure Required
+* If a project already uses self-hosted runners, this can be the simplest option as it provides all the benefits running migrations directly from GitHub Actions without the security impact.
 
-- Lambda function to run the migration code
-- Log group for storing logs
-- IAM role for the Lambda to use
-- Some other infrastructure to store the state of the migration (S3, EC2, ECS)
-- Any associated IAM roles for the state-storing infrastructure to use
-- Security group that allows connection to the database
-- IAM role that Github can assume to run the task
-- (optional) A queueing method for the Lambda to feed off of, like SQS
+Cons
 
-#### Pros
+* The main downside is that this requires maintaining self-hosted GitHub Action runners, which is too costly to implement and maintain for projects that don't already have it set up.
 
-Lambda functions can be very cost effective and fast, as well as simple to use.
+## Related ADRS:
 
-Lambdas are low maintenance, and don't stick around after the task.
-
-The compute portion of the task run by AWS Lambda is very simple.
-
-#### Cons
-
-Lambdas have a comparatively short maximum running time of 15 minutes long. Either find a way to split up the migrations into small tasks, or extend the running time of the Lambda. This might not scale well with large changesets.
-
-i think we need to go with ecs, looking into it, [lambda only works if the image implements the lambda runtime api](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/), which i think is too complex of a constraint to put on applications.
-
-
-### Execute via an ECS Fargate Task
-
-In this method, the migration is ran by an ECS task that spins up in a cluster.
-This task will be destroyed once the migration is completed, so it will not need to be
-a long running service.
-
-This method gets the latest configuration by creating a Dockerized image from the
-workflow and pushing it to AWS ECR. This image has a function that will be called
-from the ECS task's configuration JSON.
-
-#### Infrastructure Required
-
- - ECS cluster to run the task in, which can be the same cluster as the application
- - Log group for storing logs
- - IAM role for the task to use
- - (Optional) IAM policy with permission to connection if using IAM authentication on the database
- - (Optional) ECR to store the image. This is dependent on the application used
- - Security group that allows connection to the database
- - IAM role that GitHub can assume to run the task
- - SSM parameters to store the security group ID and subnet to run the task in
-
-#### How to run this migration
-
-  1. Generate the JSON configuration for the ECS task
-  2. Deploy the configuration file to ECS
-  3. Pull the SSM parameters for the security group and subnet ID
-  4. Run bash script to provide the last configuration for the task and wait for migration to complete
-
-#### Pros
-
-Cheaper to run compared to Lambda, ~$0.015/hour vs ~$0.06/hour
-
-Can run indefinitely compared to the 15 minute limit of Lambdas
-
-#### Cons
-
-The only way to re-run migrations if there is a failure, is to re-run the workflow from GitHub.
-
-Start-up time is slower compared to Lambda. Lambda can use cold-start to provision the
-runtime environment so that the function is ready to run when triggered, while the
-ECS task will need to run that same provisioning when triggered. More information
-about cold start can be found [here](https://aws.amazon.com/blogs/compute/operating-lambda-performance-optimization-part-1/)
-
-## Links
-
-* [Link type] [Link to ADR] <!-- example: Refined by [ADR-0005](0005-example.md) -->
-* … <!-- numbers of links can vary -->
+* [Database module design](./0005-database-module-design.md)
+* [Provision database users with serverless function](./0006-provision-database-users-with-serverless-function.md)
