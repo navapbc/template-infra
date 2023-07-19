@@ -94,7 +94,7 @@ infra-update-app-service:
 infra-monitoring-secrets:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	@:$(call check_defined, URL, endpoint integration URL e.g. "Splunk-On-Call" or "Pagerduty")
+	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
 	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
 
 
