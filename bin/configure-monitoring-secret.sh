@@ -39,6 +39,6 @@ echo "Creating SSM secret: $SECRET_NAME"
 aws ssm put-parameter \
     --name "$SECRET_NAME" \
     --value "$INTEGRATION_ENDPOINT_URL" \
-    --type String \
+    --type SecureString \
     --overwrite
 

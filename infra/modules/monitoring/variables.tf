@@ -17,5 +17,6 @@ variable "email_alerts_subscription_list" {
 
 variable "incident_management_service_integration_url" {
   type        = string
+  default     = null
   description = "URL for integrating with for external incident management services"
 }
