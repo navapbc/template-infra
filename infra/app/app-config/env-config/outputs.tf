@@ -9,7 +9,7 @@ output "database_config" {
 }
 
 output "incident_management_service_integration" {
-  value = var.has_incident_management_service_integration ? {
-    ssm_incident_management_secret_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
+  value = var.has_incident_management_service ? {
+    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
   } : null
 }

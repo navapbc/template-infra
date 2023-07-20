@@ -91,7 +91,7 @@ infra-update-app-service:
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
 
-infra-monitoring-secrets:
+infra-configure-monitoring-secrets:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
