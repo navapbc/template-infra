@@ -16,10 +16,6 @@ APP_NAME=$1
 ENVIRONMENT=$2
 INTEGRATION_ENDPOINT_URL=$3
 
-#SECRET_NAME=$(./bin/get_monitoring_secret_name.sh | sed "s/\$APP_NAME/$APP_NAME/" | sed "s/\$ENVIRONMENT/$ENVIRONMENT/")
-
-
-
 terraform -chdir=infra/$APP_NAME/app-config init > /dev/null
 terraform -chdir=infra/$APP_NAME/app-config refresh > /dev/null
 
@@ -29,10 +25,7 @@ if [ $HAS_INCIDENT_MANAGEMENT_SERVICE = "false" ]; then
   exit 0
 fi
 
-
-
 SECRET_NAME=$(terraform -chdir=infra/$APP_NAME/app-config output -json environment_configs | jq -r ".$ENVIRONMENT.incident_management_service_integration.integration_url_param_name")
-
 
 echo "====================="
 echo "Setting up SSM secret"
@@ -43,9 +36,9 @@ echo "INTEGRATION_URL=$INTEGRATION_ENDPOINT_URL"
 echo
 echo "Creating SSM secret: $SECRET_NAME"
 
-#aws ssm put-parameter \
-#    --name "$SECRET_NAME" \
-#    --value "$INTEGRATION_ENDPOINT_URL" \
-#    --type String \
-#    --overwrite
+aws ssm put-parameter \
+    --name "$SECRET_NAME" \
+    --value "$INTEGRATION_ENDPOINT_URL" \
+    --type String \
+    --overwrite
 
