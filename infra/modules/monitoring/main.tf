@@ -1,3 +1,4 @@
+
 # Create SNS topic for all email and external incident management tools notifications
 
 resource "aws_sns_topic" "this" {
@@ -21,6 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "high_app_http_5xx_count" {
   alarm_actions             = [aws_sns_topic.this.arn]
   ok_actions                = [aws_sns_topic.this.arn]
   insufficient_data_actions = [aws_sns_topic.this.arn]
+  treat_missing_data        = "breaching"
 
   dimensions = {
     LoadBalancer = var.load_balancer_arn_suffix
@@ -40,6 +42,7 @@ resource "aws_cloudwatch_metric_alarm" "high_load_balancer_http_5xx_count" {
   alarm_actions             = [aws_sns_topic.this.arn]
   ok_actions                = [aws_sns_topic.this.arn]
   insufficient_data_actions = [aws_sns_topic.this.arn]
+  treat_missing_data        = "breaching"
 
   dimensions = {
     LoadBalancer = var.load_balancer_arn_suffix
@@ -63,4 +66,23 @@ resource "aws_cloudwatch_metric_alarm" "high_app_response_time" {
   dimensions = {
     LoadBalancer = var.load_balancer_arn_suffix
   }
+}
+
+#email integration
+
+resource "aws_sns_topic_subscription" "email_integration" {
+  for_each  = var.email_alerts_subscription_list
+  topic_arn = aws_sns_topic.this.arn
+  protocol  = "email"
+  endpoint  = each.value
+}
+
+#External incident management service integration
+
+resource "aws_sns_topic_subscription" "incident_management_service_integration" {
+  count                  = var.incident_management_service_integration_url != null ? 1 : 0
+  endpoint               = var.incident_management_service_integration_url
+  endpoint_auto_confirms = true
+  protocol               = "https"
+  topic_arn              = aws_sns_topic.this.arn
 }
