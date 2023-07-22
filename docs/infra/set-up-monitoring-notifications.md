@@ -15,7 +15,7 @@ Before setting up the monitoring notifications you'll need to have application e
 
 [Set up application environment](./set-up-app-env.md)
 
-##Configure monitoring alerts
+## Configure monitoring alerts
 
 1. Setting up email alerts.
 
@@ -45,4 +45,12 @@ module "monitoring" {
 
 If any of the alerts described by the module will be triggered notification will be send to all email specified in the list `email_alerts_subscription_list`
 
+2. Setting up External incident management service integration.
 
+* Enable external incident management integration by modifying [application config](../infra/app/app-config/main.tf) 
+Set `has_incident_management_service = true`
+
+* Create or modify SSM secret with webhook URL of the external service which should recieve alerts from Cloudwatch.
+```
+make infra-configure-monitoring-secrets APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT> URL=<WEBHOOK_URL>
+```
