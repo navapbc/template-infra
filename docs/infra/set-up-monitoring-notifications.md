@@ -17,13 +17,13 @@ Before proceeding with setting up monitoring notifications, ensure that you have
 
 ## Configure monitoring alerts
 
-### Setting up email alerts.
-
 The Monitoring Module is an integral part of the application environment setup, and any changes to it can be applied by running the following command to create or update application resources:
 
 ```
 TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
+
+### Setting up email alerts.
 
 To enable email alerts, you need to add the `email_alerts_subscription_list` variable to monitoring module call from [application code](../../infra/app/service/main.tf)
 
