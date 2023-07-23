@@ -6,29 +6,28 @@ The Monitoring Module is responsible for presenting monitoring information from 
 
 ## Features
 
-Real time alerts: Module supports alerting rules to notify stakeholders when specific thresholds are breached.
-Notification channels: it supports various notification channels, specifically email alerts notifications and integration with external Incident management tools like Splunk-On-Call or Pagerduty.
+* Real time alerts: Module supports alerting rules to notify stakeholders when specific thresholds are breached.
+* Notification channels: it supports various notification channels, specifically email alerts notifications and integration with external Incident management tools like Splunk-On-Call or Pagerduty.
 
 ## Requirements
 
-Before setting up the monitoring notifications you'll need to have application environment setup finished:
+Before proceeding with setting up monitoring notifications, ensure that you have completed the setup for your application environment. Refer to the following guide for the necessary steps:
 
 [Set up application environment](./set-up-app-env.md)
 
 ## Configure monitoring alerts
 
-1. Setting up email alerts.
+### Setting up email alerts.
 
-Monitoring module is a part of application environment setup and any changes to it are applied by running command to create or update application resources:
+The Monitoring Module is an integral part of the application environment setup, and any changes to it can be applied by running the following command to create or update application resources:
 
 ```
 TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
 
-In order to enable email alerts `email_alerts_subscription_list` variable should be added to monitoring module call from [application code](../infra/app/service/main.tf)
+To enable email alerts, you need to add the `email_alerts_subscription_list` variable to monitoring module call from [application code](../../infra/app/service/main.tf)
 
-
-Module call example
+Example of the module call in the application code:
 
 ```
 module "monitoring" {
@@ -43,14 +42,24 @@ module "monitoring" {
 }
 ``` 
 
-If any of the alerts described by the module will be triggered notification will be send to all email specified in the list `email_alerts_subscription_list`
+When any of the alerts described by the module are triggered notification will be send to all email specified in the `email_alerts_subscription_list`
 
-2. Setting up External incident management service integration.
+### Setting up External incident management service integration.
 
-* Enable external incident management integration by modifying [application config](../infra/app/app-config/main.tf) 
+1. Enable external incident management integration by modifying [application config](../infra/app/app-config/main.tf) 
 Set `has_incident_management_service = true`
 
-* Create or modify SSM secret with webhook URL of the external service which should recieve alerts from Cloudwatch.
+2. Create or modify SSM secret with webhook URL of the external service that should recieve alerts from Cloudwatch.
 ```
 make infra-configure-monitoring-secrets APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT> URL=<WEBHOOK_URL>
 ```
+
+
+### Additional monitoring alerts.
+
+You can add additional alerts and use the same notification channel provided by the module. As an output, the module returns the SNS ARN, which is used for alerting. You can fetch this output from the appicaltion environment [code](../../infra/app/service/) using the following method.
+```
+module.monitoring.sns_notification_channel
+```
+
+This allows you to extend the monitoring capabilities and integrate with other tools seamlessly.
