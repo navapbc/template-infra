@@ -42,3 +42,9 @@ Now run the following commands to create the resources, using the image tag that
 ```bash
 TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
+
+## 4. Configure monitoring alerts
+
+Configure email alerts, external incident management service integration and additional Cloudwatch Alerts. 
+[Configure monitoring module](./set-up-monitoring-notifications.md)
+

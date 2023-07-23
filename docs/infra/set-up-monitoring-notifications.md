@@ -46,7 +46,7 @@ When any of the alerts described by the module are triggered notification will b
 
 ### Setting up External incident management service integration.
 
-1. Enable external incident management integration by modifying [application config](../infra/app/app-config/main.tf) 
+1. Enable external incident management integration by modifying [application config](../../infra/app/app-config/main.tf) 
 Set `has_incident_management_service = true`
 
 2. Create or modify SSM secret with webhook URL of the external service that should recieve alerts from Cloudwatch.
