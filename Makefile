@@ -85,12 +85,17 @@ infra-update-app-database-roles:
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
-
 infra-update-app-service:
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
+
+infra-configure-monitoring-secrets:
+	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
+	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
 
 
 # Validate all infra root and child modules.

@@ -10,3 +10,7 @@ variable "environment" {
 variable "has_database" {
   type = bool
 }
+
+variable "has_incident_management_service" {
+  type = bool
+}

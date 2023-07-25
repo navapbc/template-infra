@@ -10,6 +10,10 @@ output "has_database" {
   value = local.has_database
 }
 
+output "has_incident_management_service" {
+  value = local.has_incident_management_service
+}
+
 output "image_repository_name" {
   value = local.image_repository_name
 }
