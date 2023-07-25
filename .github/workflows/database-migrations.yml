@@ -39,6 +39,4 @@ jobs:
           aws-region: us-east-1
       - name: Run migrations
         run: |
-          echo "::group::Database Migrations"
           make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
-          echo "::endgroup::"
