@@ -26,7 +26,7 @@ echo "  APP_NAME=$APP_NAME"
 echo "  IMAGE_TAG=$IMAGE_TAG"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
-echo "::group::Step 0. Check if app has a database"
+echo "Step 0. Check if app has a database"
 
 terraform -chdir=infra/$APP_NAME/app-config init > /dev/null
 terraform -chdir=infra/$APP_NAME/app-config refresh > /dev/null
@@ -38,7 +38,6 @@ fi
 
 DB_MIGRATOR_USER=$(terraform -chdir=infra/$APP_NAME/app-config output -json environment_configs | jq -r ".$ENVIRONMENT.database_config.migrator_username")
 
-echo "::endgroup::"
 echo
 echo "::group::Step 1. Update task definition without updating service"
 
