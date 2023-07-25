@@ -38,4 +38,5 @@ jobs:
           role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
           aws-region: us-east-1
       - name: Run migrations
-        run: make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
+        run: |
+          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
