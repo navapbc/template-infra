@@ -69,7 +69,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_s3_bucket" "load_balancer_logs" {
-  bucket = "${var.service_name}-access-logs${var.s3_suffix}"
+  bucket_prefix = "${var.service_name}-access-logs"
 }
 
 resource "aws_s3_bucket_policy" "log_access_bucket_policy" {
