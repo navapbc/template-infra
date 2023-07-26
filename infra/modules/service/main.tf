@@ -118,7 +118,7 @@ resource "aws_s3_bucket_policy" "load_balancer_logs_put_access" {
   policy = data.aws_iam_policy_document.log_access_bucket_pol_doc.json
 }
 
-data "aws_iam_policy_document" "log_access_bucket_pol_doc" {
+data "aws_iam_policy_document" "load_balancer_logs_put_access" {
   statement {
     effect = "Allow"
     resources = [
