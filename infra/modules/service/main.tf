@@ -24,6 +24,14 @@ locals {
     { name : "DB_SCHEMA", value : var.db_vars.connection_info.schema_name },
   ]
   environment_variables = concat(local.base_environment_variables, local.db_environment_variables)
+
+  # It would be great if this were a more complete list or if there was a data lookup for this
+  elb_account_map = {
+    "us-east-1" : "127311923021",
+    "us-east-2" : "033677994240",
+    "us-west-1" : "027434742980",
+    "us-west-2" : "797873946194"
+  }
 }
 
 #---------------
@@ -52,9 +60,37 @@ resource "aws_lb" "alb" {
   # Note that header names cannot contain underscores
   # https://docs.bridgecrew.io/docs/ensure-that-alb-drops-http-headers
   drop_invalid_header_fields = true
-
-  # TODO(https://github.com/navapbc/template-infra/issues/162) Add access logs
   # checkov:skip=CKV_AWS_91:Add access logs in future PR
+  access_logs {
+    bucket  = aws_s3_bucket.load_balancer_logs.id
+    prefix  = "${var.service_name}-lb"
+    enabled = true
+  }
+}
+
+resource "aws_s3_bucket" "load_balancer_logs" {
+  bucket = "${var.service_name}-access-logs${var.s3_suffix}"
+}
+
+resource "aws_s3_bucket_policy" "log_access_bucket_policy" {
+  bucket = aws_s3_bucket.load_balancer_logs.id
+  policy = data.aws_iam_policy_document.log_access_bucket_pol_doc.json
+}
+
+data "aws_iam_policy_document" "log_access_bucket_pol_doc" {
+  statement {
+    effect = "Allow"
+    resources = [
+      aws_s3_bucket.load_balancer_logs.arn,
+      "${aws_s3_bucket.load_balancer_logs.arn}/*"
+    ]
+    actions = ["s3:PutObject"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.elb_account_map[data.aws_region.current.name]}:root"]
+    }
+  }
 }
 
 # NOTE: for the demo we expose private http endpoint

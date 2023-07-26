@@ -66,3 +66,9 @@ variable "db_vars" {
   })
   default = null
 }
+
+variable "s3_suffix" {
+  description = "S3 bucket names must be globally unique. Use this var to add a suffix to default bucket names if necessary to avoid conflict"
+  type        = string
+  default     = ""
+}
