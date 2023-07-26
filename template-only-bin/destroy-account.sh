@@ -17,6 +17,7 @@ cd infra/accounts
 sed -i.bak 's/resource "aws_s3_bucket" "tf_state" {/&\n  force_destroy = true/' ../modules/terraform-backend-s3/main.tf
 sed -i.bak 's/resource "aws_s3_bucket" "tf_log" {/&\n  force_destroy = true/' ../modules/terraform-backend-s3/main.tf
 sed -i.bak 's/prevent_destroy = true/prevent_destroy = false/g' ../modules/terraform-backend-s3/main.tf
+sed -i.bak 's/resource "aws_s3_bucket" "tf_log" {/&\n  force_destroy = true/' ../modules/terraform-backend-s3/main.tf
 
 terraform init -reconfigure -backend-config=$BACKEND_CONFIG_FILE
 

@@ -25,7 +25,9 @@ locals {
   ]
   environment_variables = concat(local.base_environment_variables, local.db_environment_variables)
 
-  # It would be great if this were a more complete list or if there was a data lookup for this
+  # Maintain a list of AWS account IDs for Elastic Load Balancing for each of the US-based Amazon regions.
+  # This is needed to grant permissions to the ELB service for sending access logs to S3.
+  # The list was obtained from https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html
   elb_account_map = {
     "us-east-1" : "127311923021",
     "us-east-2" : "033677994240",
@@ -59,8 +61,8 @@ resource "aws_lb" "alb" {
   # Drop invalid HTTP headers for improved security
   # Note that header names cannot contain underscores
   # https://docs.bridgecrew.io/docs/ensure-that-alb-drops-http-headers
+
   drop_invalid_header_fields = true
-  # checkov:skip=CKV_AWS_91:Add access logs in future PR
   access_logs {
     bucket  = aws_s3_bucket.load_balancer_logs.id
     prefix  = "${var.service_name}-lb"
@@ -70,7 +72,36 @@ resource "aws_lb" "alb" {
 
 resource "aws_s3_bucket" "load_balancer_logs" {
   bucket = "${var.service_name}-access-logs${var.s3_suffix}"
+  force_destroy = false
 }
+
+resource "aws_s3_bucket_versioning" "load_balancer_logs" {
+  bucket = aws_s3_bucket.load_balancer_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
+  bucket = aws_s3_bucket.load_balancer_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.tf_backend.arn
+      sse_algorithm     = "aws:kms"
+    }
+    bucket_key_enabled = true
+  }
+}
+
+# resource "aws_s3_bucket_notification" "load_balancer_logs" {
+#   bucket = aws_s3_bucket.load_balancer_logs.id
+#   topic {
+#     topic_arn = aws_sns_topic.WHAT_TOPIC.arn
+#     events = [
+#       WHAT_EVENTS
+#     ]
+#   }
+# }
 
 resource "aws_s3_bucket_policy" "log_access_bucket_policy" {
   bucket = aws_s3_bucket.load_balancer_logs.id
