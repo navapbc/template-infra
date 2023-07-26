@@ -70,70 +70,6 @@ resource "aws_lb" "alb" {
   }
 }
 
-resource "aws_s3_bucket" "load_balancer_logs" {
-  bucket_prefix = "${var.service_name}-access-logs"
-  force_destroy = false
-}
-
-resource "aws_s3_bucket_versioning" "load_balancer_logs" {
-  bucket = aws_s3_bucket.load_balancer_logs.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
-  bucket = aws_s3_bucket.load_balancer_logs.id
-  rule {
-    apply_server_side_encryption_by_default {
-      kms_master_key_id = aws_kms_key.tf_backend.arn
-      sse_algorithm     = "aws:kms"
-    }
-    bucket_key_enabled = true
-  }
-}
-
-# resource "aws_s3_bucket_notification" "load_balancer_logs" {
-#   bucket = aws_s3_bucket.load_balancer_logs.id
-#   topic {
-#     topic_arn = aws_sns_topic.WHAT_TOPIC.arn
-#     events = [
-#       WHAT_EVENTS
-#     ]
-#   }
-# }
-
-# resource "aws_s3_bucket_notification" "load_balancer_logs" {
-#   bucket = aws_s3_bucket.load_balancer_logs.id
-#   topic {
-#     topic_arn = aws_sns_topic.WHAT_TOPIC.arn
-#     events = [
-#       WHAT_EVENTS
-#     ]
-#   }
-# }
-
-resource "aws_s3_bucket_policy" "load_balancer_logs_put_access" {
-  bucket = aws_s3_bucket.load_balancer_logs.id
-  policy = data.aws_iam_policy_document.log_access_bucket_pol_doc.json
-}
-
-data "aws_iam_policy_document" "load_balancer_logs_put_access" {
-  statement {
-    effect = "Allow"
-    resources = [
-      aws_s3_bucket.load_balancer_logs.arn,
-      "${aws_s3_bucket.load_balancer_logs.arn}/*"
-    ]
-    actions = ["s3:PutObject"]
-
-    principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${local.elb_account_map[data.aws_region.current.name]}:root"]
-    }
-  }
-}
-
 # NOTE: for the demo we expose private http endpoint
 # due to the complexity of acquiring a valid TLS/SSL cert.
 # In a production system we would provision an https listener
@@ -194,6 +130,71 @@ resource "aws_lb_target_group" "app_tg" {
 
   lifecycle {
     create_before_destroy = true
+  }
+}
+
+#---------------
+## Load balancer logs
+#---------------
+resource "aws_s3_bucket" "load_balancer_logs" {
+  bucket_prefix = "${var.service_name}-access-logs"
+  force_destroy = false
+  # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
+}
+
+# resource "aws_s3_bucket_lifecycle_configuration" "load_balancer_logs" {
+#   count = var.log_file_transition != [] || var.log_file_deletion !=0 ? 1 : 0
+#   bucket =   aws_s3_bucket.load_balancer_logs.id
+#   rule {
+#     id = "Logfile Lifecycle"
+#     filter {
+#       prefix = "${var.service_name}-lb"
+#       dynamic "transition" {
+#         for_each = var.log_file_transition
+#         content {
+          
+#         }
+#       }
+#     }
+#   }
+# }
+
+resource "aws_s3_bucket_versioning" "load_balancer_logs" {
+  bucket = aws_s3_bucket.load_balancer_logs.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
+  bucket = aws_s3_bucket.load_balancer_logs.id
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.tf_backend.arn
+      sse_algorithm     = "aws:kms"
+    }
+    bucket_key_enabled = true
+  }
+}
+
+resource "aws_s3_bucket_policy" "load_balancer_logs_put_access" {
+  bucket = aws_s3_bucket.load_balancer_logs.id
+  policy = data.aws_iam_policy_document.log_access_bucket_pol_doc.json
+}
+
+data "aws_iam_policy_document" "load_balancer_logs_put_access" {
+  statement {
+    effect = "Allow"
+    resources = [
+      aws_s3_bucket.load_balancer_logs.arn,
+      "${aws_s3_bucket.load_balancer_logs.arn}/*"
+    ]
+    actions = ["s3:PutObject"]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${local.elb_account_map[data.aws_region.current.name]}:root"]
+    }
   }
 }
 
