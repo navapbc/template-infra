@@ -71,7 +71,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_s3_bucket" "load_balancer_logs" {
-  bucket = "${var.service_name}-access-logs${var.s3_suffix}"
+  bucket_prefix = "${var.service_name}-access-logs"
   force_destroy = false
 }
 
@@ -103,7 +103,17 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "tf_state" {
 #   }
 # }
 
-resource "aws_s3_bucket_policy" "log_access_bucket_policy" {
+# resource "aws_s3_bucket_notification" "load_balancer_logs" {
+#   bucket = aws_s3_bucket.load_balancer_logs.id
+#   topic {
+#     topic_arn = aws_sns_topic.WHAT_TOPIC.arn
+#     events = [
+#       WHAT_EVENTS
+#     ]
+#   }
+# }
+
+resource "aws_s3_bucket_policy" "load_balancer_logs_put_access" {
   bucket = aws_s3_bucket.load_balancer_logs.id
   policy = data.aws_iam_policy_document.log_access_bucket_pol_doc.json
 }
