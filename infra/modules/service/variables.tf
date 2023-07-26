@@ -67,8 +67,16 @@ variable "db_vars" {
   default = null
 }
 
-variable "s3_suffix" {
-  description = "S3 bucket names must be globally unique. Use this var to add a suffix to default bucket names if necessary to avoid conflict"
-  type        = string
-  default     = ""
-}
+
+# variable "IA_move_alb_logs" {
+#   description = "How long until the lifecycle should send log files to infrequent access tier? Leave at 0 to never trigger this action"
+#   default = 
+# }
+
+# variable "glacier_move_alb_logs" {
+#   description = "How long until the lifecycle should send log files to glacier? Leave at 0 to never trigger this action"
+# }
+
+# variable "delete_alb_logs" {
+#   description = "How long until the lifecycle for the access logs bucket should delete logs? Leave at 0 to never trigger this action"
+# }
