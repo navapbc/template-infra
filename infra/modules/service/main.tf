@@ -152,7 +152,7 @@ resource "aws_s3_bucket" "load_balancer_logs" {
 #       dynamic "transition" {
 #         for_each = var.log_file_transition
 #         content {
-          
+
 #         }
 #       }
 #     }
