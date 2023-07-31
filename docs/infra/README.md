@@ -2,6 +2,7 @@
 
 ## Setup
 
+* [Configure the project](../../infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
 * [Set up infrastructure developer tools](./set-up-infrastructure-tools.md)
 * [Set up AWS account](./set-up-aws-account.md)
 * [Set up application build repository](./set-up-app-build-repository.md)
