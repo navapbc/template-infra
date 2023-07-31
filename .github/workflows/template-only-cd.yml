@@ -18,8 +18,8 @@ jobs:
       matrix:
         project_repo:
           - navapbc/platform-test
-          - navapbc/platform-test-flask
-          - navapbc/platform-test-nextjs
+          # - navapbc/platform-test-flask
+          # - navapbc/platform-test-nextjs
     steps:
       - name: Checkout template-infra repo
         uses: actions/checkout@v3
@@ -29,6 +29,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           path: project-repo
+          ref: 352/update-template-script
           repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
 
