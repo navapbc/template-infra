@@ -3,7 +3,7 @@ locals {
   # This will be used in names of AWS resources
   project_name = "<PROJECT_NAME>"
 
-  # Project owner (e.g. navapbc)
+  # Project owner (e.g. navapbc). Used for tagging infra resources.
   owner = "<OWNER>"
 
   # URL of project source code repository
