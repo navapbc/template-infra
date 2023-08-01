@@ -29,11 +29,9 @@ $SCRIPT_DIR/install-template.sh
 
 
 # This is the HEAD of the main branch before the commit is merged
-CUR_VERSION=$(cat ./temp-track-template-version)
+CUR_VERSION=$(cat ./temp-track-template-version.sh)
 echo $CURRENT_VERSION
 
-# This should be the commit going in 
-NEW_VERSION=$(git rev-parse HEAD)
 git diff $CUR_VERSION -- .dockleconfig \
   .github/workflows/build-and-publish.yml \
   .github/workflows/cd.yml \
@@ -46,5 +44,5 @@ git diff $CUR_VERSION -- .dockleconfig \
   infra/app/app-config/main.tf > template.patch # filter certain files.
 
 git apply template.patch
-echo $NEW_VERSION # check new branch HEAD
+
 rm template.patch
