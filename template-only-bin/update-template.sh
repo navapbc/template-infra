@@ -16,26 +16,34 @@ $SCRIPT_DIR/install-template.sh
 # Updates in any of these files need to be manually applied to the projects
 # echo "Restore modified project files"
 # git checkout HEAD -- \
-#   .dockleconfig \
-#   .github/workflows/build-and-publish.yml \
-#   .github/workflows/cd.yml \
-#   .github/workflows/ci-infra.yml \
-#   .github/workflows/database-migrations.yml \
-#   .grype.yml \
-#   .hadolint.yaml \
-#   .trivyignore \
-#   infra/project-config/main.tf \
-#   infra/app/app-config/main.tf
+  .dockleconfig \
+  .github/workflows/build-and-publish.yml \
+  .github/workflows/cd.yml \
+  .github/workflows/ci-infra.yml \
+  .github/workflows/database-migrations.yml \
+  .grype.yml \
+  .hadolint.yaml \
+  .trivyignore \
+  infra/project-config/main.tf \
+  infra/app/app-config/main.tf
 
 
-cd template-infra
 # This is the HEAD of the main branch before the commit is merged
 CUR_VERSION=$(cat ./temp-track-template-version)
 
 # This should be the commit going in 
 NEW_VERSION=$(git rev-parse HEAD)
-git diff $CUR_VERSION -- filter > template.patch # filter certain files.
-# cd -
+git diff $CUR_VERSION -- .dockleconfig \
+  .github/workflows/build-and-publish.yml \
+  .github/workflows/cd.yml \
+  .github/workflows/ci-infra.yml \
+  .github/workflows/database-migrations.yml \
+  .grype.yml \
+  .hadolint.yaml \
+  .trivyignore \
+  infra/project-config/main.tf \
+  infra/app/app-config/main.tf > template.patch # filter certain files.
+
 git apply template.patch
 echo $NEW_VERSION # check new branch HEAD
 rm template.patch
