@@ -29,8 +29,7 @@ $SCRIPT_DIR/install-template.sh
 
 
 # This is the HEAD of the main branch before the commit is merged
-CURRENT_VERSION=$(cat $SCRIPT_DIR/temp-track-template-version.sh)
-echo $CURRENT_VERSION
+CURRENT_VERSION=$(git rev-parse HEAD)
 
 git diff $CURRENT_VERSION -- .dockleconfig \
   .github/workflows/build-and-publish.yml \
