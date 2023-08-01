@@ -29,7 +29,7 @@ $SCRIPT_DIR/install-template.sh
 
 
 # This is the HEAD of the main branch before the commit is merged
-CUR_VERSION=$(cat ./temp-track-template-version.sh)
+CUR_VERSION=$(cat $SCRIPT_DIR/temp-track-template-version.sh)
 echo $CURRENT_VERSION
 
 git diff $CUR_VERSION -- .dockleconfig \
