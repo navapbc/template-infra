@@ -29,10 +29,10 @@ $SCRIPT_DIR/install-template.sh
 
 
 # This is the HEAD of the main branch before the commit is merged
-CUR_VERSION=$(cat $SCRIPT_DIR/temp-track-template-version.sh)
+CURRENT_VERSION=$(cat $SCRIPT_DIR/temp-track-template-version.sh)
 echo $CURRENT_VERSION
 
-git diff $CUR_VERSION -- .dockleconfig \
+git diff $CURRENT_VERSION -- .dockleconfig \
   .github/workflows/build-and-publish.yml \
   .github/workflows/cd.yml \
   .github/workflows/ci-infra.yml \
