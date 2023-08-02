@@ -39,8 +39,7 @@ git diff $CURRENT_VERSION -- .dockleconfig \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
-  infra/project-config/main.tf \
-  infra/app/app-config/main.tf > template.patch # filter certain files.
+  infra/ app/ bin/ docs/ -p > template.patch # filter certain files.
 
 git apply template.patch
 
