@@ -39,4 +39,5 @@ jobs:
           environment: ${{ inputs.environment }}
 
       - name: Run migrations
-        run: make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
+        run: |
+          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}

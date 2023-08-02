@@ -15,7 +15,7 @@ The template infra is intended to work with multiple application templates. See 
 
 ## Installation
 
-To get started using the template infrastructure on your project, run the following command to execute the [install script](https://github.com/navapbc/template-infra/tree/main/template-only-bin/install-template.sh), which clones the template repository, copies the template files to your repository, and removes any files that are only relevant to the template itself:
+To get started using the template infrastructure on your project, run the following command in your project's directory to execute the [download and install script](https://github.com/navapbc/template-infra/tree/main/template-only-bin/download-and-install-template.sh), which clones the template repository, copies the template files to your repository, and removes any files that are only relevant to the template itself:
 
 ```bash
 curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/download-and-install-template.sh | bash -s
@@ -25,13 +25,13 @@ Now you're ready to set up the various pieces of your infrastructure.
 
 ## Application Requirements
 
-This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template.
+This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template. If you're using one of the Platform application templates, these requirements are already met.
 
 ## Setup
 
-1. [Set up team workflow](./template-only-docs/set-up-team-workflow.md)
-2. [Configure the project](./infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
-3. [Set up AWS account(s) with resources needed to manage infrastructure as code (IaC)](./docs/infra/set-up-aws-account.md)
-4. [Set up application's build repository](./docs/infra/set-up-app-build-repository.md)
-5. [Set up application environments](./docs/infra/set-up-app-env.md)
-6. [Set up continuous integration and continuous deployment](./template-only-docs/set-up-ci-cd.md)
+After downloading and installing the template into your project:
+
+1. Follow the steps in [`docs/infra/README.md`](./docs/infra/README.md) to setup the infrastructure for your application.
+1. After setting up AWS resources, you can [set up GitHub Actions workflows](./template-only-docs/set-up-ci.md).
+1. After configuring GitHub Actions, you can [set up continuous deployment](./template-only-docs/set-up-cd.md).
+1. At any point, [set up your team workflow](./template-only-docs/set-up-team-workflow.md).

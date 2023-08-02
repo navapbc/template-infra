@@ -96,7 +96,7 @@ def configure_database(conn: Connection) -> None:
     logger.info("Configuring database")
     app_username = os.environ.get("APP_USER")
     migrator_username = os.environ.get("MIGRATOR_USER")
-    schema_name = os.environ.get("SCHEMA_NAME")
+    schema_name = os.environ.get("DB_SCHEMA")
 
     configure_roles(conn, [migrator_username, app_username])
     configure_schema(conn, schema_name, migrator_username, app_username)

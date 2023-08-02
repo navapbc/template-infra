@@ -36,18 +36,18 @@ if [ $HAS_DATABASE = "false" ]; then
   exit 0
 fi
 
+DB_MIGRATOR_USER=$(terraform -chdir=infra/$APP_NAME/app-config output -json environment_configs | jq -r ".$ENVIRONMENT.database_config.migrator_username")
+
 echo
-echo "Step 1. Update task definition without updating service"
+echo "::group::Step 1. Update task definition without updating service"
 
 MODULE_DIR="infra/$APP_NAME/service"
 CONFIG_NAME="$ENVIRONMENT"
 TF_CLI_ARGS_apply="-input=false -auto-approve -target=module.service.aws_ecs_task_definition.app -var=image_tag=$IMAGE_TAG" ./bin/terraform-init-and-apply.sh $MODULE_DIR $CONFIG_NAME
 
+echo "::endgroup::"
 echo
-echo 'Step 2. Run "db-migrate" command'
-
-./bin/terraform-init.sh infra/$APP_NAME/database $ENVIRONMENT
-DB_MIGRATOR_USER=$(terraform -chdir=infra/$APP_NAME/database output -raw migrator_username)
+echo '::group::Step 2. Run "db-migrate" command'
 
 COMMAND='["db-migrate"]'
 
@@ -58,3 +58,4 @@ EOF
 )
 
 ./bin/run-command.sh $APP_NAME $ENVIRONMENT "$COMMAND" "$ENVIRONMENT_VARIABLES"
+echo "::endgroup::"
