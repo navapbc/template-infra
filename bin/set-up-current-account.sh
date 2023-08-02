@@ -76,8 +76,12 @@ terraform init \
   -backend-config="key=$TF_STATE_KEY" \
   -backend-config="region=$REGION"
 
-# Import the S3 bucket that was created in the previous step so we don't recreate it
-terraform import module.backend.aws_s3_bucket.tf_state $TF_STATE_BUCKET_NAME
+# Import the bucket that we created in the previous step so we don't recreate it
+# But first check if the bucket already exists in the state file. If we are
+# re-running account setup and the bucket already exists then skip the import step
+if ! terraform state list module.backend.aws_s3_bucket.tf_state; then
+  terraform import module.backend.aws_s3_bucket.tf_state $TF_STATE_BUCKET_NAME
+fi
 
 terraform apply \
   -input=false \
