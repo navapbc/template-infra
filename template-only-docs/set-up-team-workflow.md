@@ -6,7 +6,7 @@ If desired, update the [pull request template](../.github/pull_request_template.
 
 ## Branch protections
 
-Consider [adding branch protection rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/managing-a-branch-protection-rule) for the `main` branch.
+Once [CI is set up](./set-up-ci.md), consider [adding branch protection rules](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/defining-the-mergeability-of-pull-requests/managing-a-branch-protection-rule) for the `main` branch.
 
 Recommended settings:
 
