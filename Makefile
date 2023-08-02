@@ -48,7 +48,7 @@ __check_defined = \
 	db-migrate-down \
 	db-migrate-create
 
-infra-set-up-account:  # Set up the AWS account for the first time
+infra-set-up-account:  ## Set up the AWS account for the first time
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
 	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
 
@@ -67,7 +67,7 @@ infra-configure-app-service:
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-update-current-account:
+infra-update-current-account:  ## Init and apply changes to current AWS account
 	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
 
 infra-update-app-build-repository:

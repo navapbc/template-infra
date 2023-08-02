@@ -32,13 +32,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get role to assume
-        run: echo "ROLE_TO_ASSUME=$(./bin/github-actions-role-to-assume.sh $INPUT_APP_NAME $INPUT_ENVIRONMENT)" >> "$GITHUB_ENV"
-
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: ./.github/actions/configure-aws-credentials
         with:
-          role-to-assume: ${{ env.ROLE_TO_ASSUME }}
-          aws-region: us-east-1
+          app_name: ${{ inputs.app_name }}
+          environment: ${{ inputs.environment }}
+
       - name: Run migrations
         run: make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
