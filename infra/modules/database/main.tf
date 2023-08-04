@@ -304,10 +304,6 @@ resource "aws_lambda_function" "role_manager" {
   # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
 }
 
-output "role_manager_function_name" {
-  value = aws_lambda_function.role_manager.function_name
-}
-
 # Installs python packages needed by the role manager lambda function before
 # creating the zip archive. Reinstalls whenever requirements.txt changes
 resource "terraform_data" "role_manager_python_vendor_packages" {
