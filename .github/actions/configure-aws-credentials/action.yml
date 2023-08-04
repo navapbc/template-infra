@@ -1,7 +1,7 @@
 name: 'Configure AWS Credentials'
 description: 'Configure AWS Credentials for a given application and |
   environment so that the GitHub Actions workflow can access AWS resources. |
-  This is wrapper around https://github.com/aws-actions/configure-aws-credentials |
+  This is a wrapper around https://github.com/aws-actions/configure-aws-credentials |
   that first determines the account, role, and region based on the |
   account_names_by_environment configuration in app-config'
 inputs:
