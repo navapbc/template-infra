@@ -34,13 +34,9 @@ runs:
         ACCOUNT_NAME=$(terraform -chdir=infra/${{ inputs.app_name }}/app-config output -json account_names_by_environment | jq -r .${{ inputs.environment }})
         echo "ACCOUNT_NAME=$ACCOUNT_NAME"
 
-        # Get the account id associated with the account name
-        # by listing files in the infra/accounts folder,
-        # filtering to files that start with the account name followed by a period,
-        # filtering to files that end in s3.tfbackend
-        # (there should be one file that looks like <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend),
-        # and then stripping the suffix and prefix to just end up with <ACCOUNT_ID>.
-        ACCOUNT_ID=$(ls -1 infra/accounts | grep "$ACCOUNT_NAME." | grep s3.tfbackend | sed 's/.s3.tfbackend//' | sed "s/$ACCOUNT_NAME.//")
+        # Get the account id associated with the account name extracting the
+        # second part of tfbackend file name <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend,
+        ACCOUNT_ID=$(ls infra/accounts/$ACCOUNT_NAME.*.s3.tfbackend | cut --delimiter=. --fields=2)
         echo "ACCOUNT_ID=$ACCOUNT_ID"
 
         AWS_ROLE_TO_ASSUME=arn:aws:iam::$ACCOUNT_ID:role/$GITHUB_ACTIONS_ROLE_NAME
