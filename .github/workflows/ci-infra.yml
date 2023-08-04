@@ -82,18 +82,22 @@ jobs:
   #
   #   steps:
   #     - uses: actions/checkout@v3
+
   #     - uses: hashicorp/setup-terraform@v2
   #       with:
   #         terraform_version: 1.2.1
   #         terraform_wrapper: false
+
   #     - uses: actions/setup-go@v3
   #       with:
   #         go-version: ">=1.19.0"
+
   #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
+  #       uses: ./.github/actions/configure-aws-credentials
   #       with:
-  #         # !! Update the role-to-assume with the GitHub actions role ARN
-  #         role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
-  #         aws-region: us-east-1
+  #         app_name: app
+  #         # Run infra CI on dev environment
+  #         environment: dev
+
   #     - name: Run Terratest
   #       run: make infra-test
