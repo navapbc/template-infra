@@ -47,55 +47,51 @@ __check_defined = \
 	db-migrate-down \
 	db-migrate-create
 
-infra-set-up-account:  # Set up the AWS account for the first time
+infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
 	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
 
-infra-configure-app-build-repository:
+infra-configure-app-build-repository: ## Configure infra/$APP_NAME/build-repository tfbackend and tfvars files
 	./bin/configure-app-build-repository.sh $(APP_NAME)
 
-infra-configure-app-database:
-	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+infra-configure-app-database: ## Configure infra/$APP_NAME/database module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/configure-app-database.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-configure-app-service:
-	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+infra-configure-monitoring-secrets: ## Set $APP_NAME's incident management service integration URL for $ENVIRONMENT
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
+	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
+
+infra-configure-app-service: ## Configure infra/$APP_NAME/service module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-update-current-account:
+infra-update-current-account: ## Update infra resources for current AWS profile
 	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
 
-infra-update-app-build-repository:
-	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
+infra-update-app-build-repository: ## Create or update $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
 
-infra-update-app-database:
+infra-update-app-database: ## Create or update $APP_NAME's database module for $ENVIRONMENT
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/database $(ENVIRONMENT)
 
-infra-update-app-database-roles:
+infra-update-app-database-roles: ## Create or update database roles and schemas for $APP_NAME's database in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-update-app-service:
+infra-update-app-service: ## Create or update $APP_NAME's web service module
 	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
-
-infra-configure-monitoring-secrets:
-	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
-	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
 
 
 # Validate all infra root and child modules.
@@ -127,13 +123,13 @@ infra-check-compliance-checkov:
 infra-check-compliance-tfsec:
 	tfsec infra
 
-infra-lint:
+infra-lint: ## Lint infra code
 	terraform fmt -recursive -check infra
 
-infra-format:
+infra-format: ## Format infra code
 	terraform fmt -recursive infra
 
-infra-test:
+infra-test: ## Run end-to-end infra Terratest test suite
 	cd infra/test && go test -v -timeout 30m
 
 ########################
@@ -158,17 +154,17 @@ endif
 DATE := $(shell date -u '+%Y%m%d.%H%M%S')
 INFO_TAG := $(DATE).$(USER)
 
-release-build:
+release-build: ## Build release for $APP_NAME and tag it with current git hash
 	cd $(APP_NAME) && $(MAKE) release-build \
 		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
-release-publish:
+release-publish: ## Publish release to $APP_NAME's build repository
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
-release-run-database-migrations: ## Run database migrations
+release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
-release-deploy:
+release-deploy: ## Deploy release to $APP_NAME's web service in $ENVIRONMENT
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
