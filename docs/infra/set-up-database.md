@@ -28,7 +28,7 @@ make infra-configure-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 
 ## 2. Create database resources
 
-Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes.
+Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes. This can take over 5 minutes.
 
 ```bash
 make infra-update-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
