@@ -21,7 +21,6 @@ resource "aws_cloudwatch_metric_alarm" "high_app_http_5xx_count" {
   alarm_description         = "High HTTP service 5XX error count"
   alarm_actions             = [aws_sns_topic.this.arn]
   ok_actions                = [aws_sns_topic.this.arn]
-  insufficient_data_actions = [aws_sns_topic.this.arn]
 
   dimensions = {
     LoadBalancer = var.load_balancer_arn_suffix
@@ -40,7 +39,6 @@ resource "aws_cloudwatch_metric_alarm" "high_load_balancer_http_5xx_count" {
   alarm_description         = "High HTTP ELB 5XX error count"
   alarm_actions             = [aws_sns_topic.this.arn]
   ok_actions                = [aws_sns_topic.this.arn]
-  insufficient_data_actions = [aws_sns_topic.this.arn]
 
   dimensions = {
     LoadBalancer = var.load_balancer_arn_suffix
@@ -59,7 +57,6 @@ resource "aws_cloudwatch_metric_alarm" "high_app_response_time" {
   alarm_description         = "High target latency alert"
   alarm_actions             = [aws_sns_topic.this.arn]
   ok_actions                = [aws_sns_topic.this.arn]
-  insufficient_data_actions = [aws_sns_topic.this.arn]
 
   dimensions = {
     LoadBalancer = var.load_balancer_arn_suffix
