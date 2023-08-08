@@ -56,7 +56,7 @@ resource "aws_lb" "alb" {
   # Note that header names cannot contain underscores
   # https://docs.bridgecrew.io/docs/ensure-that-alb-drops-http-headers
   drop_invalid_header_fields = true
-  
+
   access_logs {
     bucket  = aws_s3_bucket.access_logs.id
     prefix  = "${var.service_name}-lb"
