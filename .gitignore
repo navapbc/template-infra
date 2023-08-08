@@ -15,6 +15,3 @@
 # Ignore local environment variables which can contain environment secrets
 .env
 .envrc
-
-# Terraform files
-**/.terraform.lock.hcl
