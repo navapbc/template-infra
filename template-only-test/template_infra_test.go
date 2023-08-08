@@ -87,6 +87,7 @@ func SetUpBuildRepository(t *testing.T, projectName string) {
 }
 
 func SetUpDevEnvironment(t *testing.T) {
+	fmt.Println("::group::Creating web service dev environment")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-configure-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
@@ -106,6 +107,7 @@ func SetUpDevEnvironment(t *testing.T) {
 		Env:        map[string]string{"TF_CLI_ARGS_apply": fmt.Sprintf("-input=false -auto-approve -var=image_tag=%s", imageTag)},
 		WorkingDir: "../",
 	})
+	fmt.Println("::endgroup::")
 }
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
@@ -152,6 +154,8 @@ func ValidateBuildRepository(t *testing.T, projectName string) {
 }
 
 func ValidateDevEnvironment(t *testing.T) {
+	fmt.Println("::group::Validating ability to call web service endpoint")
+
 	// Wait for service to be stable
 	appName := "app"
 	environmentName := "dev"
@@ -170,6 +174,7 @@ func ValidateDevEnvironment(t *testing.T) {
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
+	fmt.Println("::endgroup::")
 }
 
 func TeardownAccount(t *testing.T) {

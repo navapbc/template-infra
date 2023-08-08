@@ -31,12 +31,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: ./.github/actions/configure-aws-credentials
         with:
-          # !! Update the role-to-assume with the GitHub actions role ARN
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
-          aws-region: us-east-1
+          app_name: ${{ inputs.app_name }}
+          environment: ${{ inputs.environment }}
+
       - name: Run migrations
         run: |
           make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}

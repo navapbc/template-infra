@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: "environment input"
+        description: "target environment"
         required: true
         default: "dev"
         type: choice
@@ -26,6 +26,7 @@ on:
           - prod
 
 env:
+  APP_NAME: app
   # Need to set a default value for when the workflow is triggered from a git push,
   # which bypasses the default configuration for inputs
   ENVIRONMENT: ${{ inputs.environment || 'dev' }}
@@ -50,11 +51,12 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v3
+
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: ./.github/actions/configure-aws-credentials
         with:
-          # !! Update the role-to-assume with the GitHub actions role ARN
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<PROJECT_NAME>-github-actions
-          aws-region: us-east-1
+          app_name: ${{ env.APP_NAME }}
+          environment: ${{ env.ENVIRONMENT }}
+
       - name: Deploy release
-        run: make release-deploy ENVIRONMENT="$ENVIRONMENT"
+        run: make release-deploy APP_NAME=$APP_NAME ENVIRONMENT="$ENVIRONMENT"
