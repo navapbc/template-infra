@@ -1,5 +1,10 @@
 locals {
-  purpose = "access-logs"
+  elb_account_map = {
+    "us-east-1" : "127311923021",
+    "us-east-2" : "033677994240",
+    "us-west-1" : "027434742980",
+    "us-west-2" : "797873946194"
+  }
 }
 
 resource "aws_s3_bucket" "alb" {

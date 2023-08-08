@@ -27,12 +27,6 @@ locals {
   # Maintain a list of AWS account IDs for Elastic Load Balancing for each of the US-based Amazon regions.
   # This is needed to grant permissions to the ELB service for sending access logs to S3.
   # The list was obtained from https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html
-  elb_account_map = {
-    "us-east-1" : "127311923021",
-    "us-east-2" : "033677994240",
-    "us-west-1" : "027434742980",
-    "us-west-2" : "797873946194"
-  }
 }
 
 
