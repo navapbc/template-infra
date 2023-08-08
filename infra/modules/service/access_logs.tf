@@ -17,7 +17,7 @@ resource "aws_s3_bucket" "access_logs" {
   # 
 }
 
-resource "aws_s3_bucket_public_access_block" "block" {
+resource "aws_s3_bucket_public_access_block" "access_logs" {
   bucket = aws_s3_bucket.access_logs.id
 
   block_public_acls       = true
