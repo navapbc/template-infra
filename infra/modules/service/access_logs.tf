@@ -7,7 +7,7 @@ locals {
   }
 }
 
-resource "aws_s3_bucket" "alb" {
+resource "aws_s3_bucket" "access_logs" {
   bucket_prefix = "${var.service_name}-access-logs"
   force_destroy = true
   # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
@@ -18,7 +18,7 @@ resource "aws_s3_bucket" "alb" {
 }
 
 resource "aws_s3_bucket_public_access_block" "block" {
-  bucket = aws_s3_bucket.alb.id
+  bucket = aws_s3_bucket.access_logs.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -30,8 +30,8 @@ data "aws_iam_policy_document" "load_balancer_logs_put_access" {
   statement {
     effect = "Allow"
     resources = [
-      aws_s3_bucket.alb.arn,
-      "${aws_s3_bucket.alb.arn}/*"
+      aws_s3_bucket.access_logs.arn,
+      "${aws_s3_bucket.access_logs.arn}/*"
     ]
     actions = ["s3:PutObject"]
 
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "load_balancer_logs_put_access" {
 
 resource "aws_s3_bucket_lifecycle_configuration" "lc" {
   count  = var.log_file_transition != [] && var.log_file_deletion != 0 ? 1 : 0
-  bucket = aws_s3_bucket.alb.id
+  bucket = aws_s3_bucket.access_logs.id
   rule {
     id     = "StorageClass"
     status = "Enabled"
@@ -77,7 +77,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "lc" {
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
-  bucket = aws_s3_bucket.alb.id
+  bucket = aws_s3_bucket.access_logs.id
   versioning_configuration {
     status = "Enabled"
   }
@@ -85,7 +85,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
-  bucket = aws_s3_bucket.alb.id
+  bucket = aws_s3_bucket.access_logs.id
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "aws:kms"
@@ -95,6 +95,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
 }
 
 resource "aws_s3_bucket_policy" "bucket_pol" {
-  bucket = aws_s3_bucket.alb.id
+  bucket = aws_s3_bucket.access_logs.id
   policy = data.aws_iam_policy_document.load_balancer_logs_put_access.json
 }
