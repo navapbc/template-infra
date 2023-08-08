@@ -6,15 +6,11 @@ locals {
     "us-west-2" : "797873946194"
   }
   log_file_transition = {
-    default = {
-      STANDARD_IA = 30
-      GLACIER     = 60
-    }
+    STANDARD_IA = 30
+    GLACIER     = 60
   }
 
-  log_file_deletion = {
-    default = 0
-  }
+  log_file_deletion = 0
 }
 
 resource "aws_s3_bucket" "access_logs" {
