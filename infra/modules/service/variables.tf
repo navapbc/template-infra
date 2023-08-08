@@ -66,14 +66,3 @@ variable "db_vars" {
   })
   default = null
 }
-
-variable "log_file_transition" {
-  default = {
-    STANDARD_IA = 30
-    GLACIER     = 60
-  }
-}
-
-variable "log_file_deletion" {
-  default = 0
-}

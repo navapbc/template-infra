@@ -5,6 +5,16 @@ locals {
     "us-west-1" : "027434742980",
     "us-west-2" : "797873946194"
   }
+  log_file_transition = {
+    default = {
+      STANDARD_IA = 30
+      GLACIER     = 60
+    }
+  }
+
+  log_file_deletion = {
+    default = 0
+  }
 }
 
 resource "aws_s3_bucket" "access_logs" {
@@ -43,13 +53,13 @@ data "aws_iam_policy_document" "load_balancer_logs_put_access" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "lc" {
-  count  = var.log_file_transition != [] && var.log_file_deletion != 0 ? 1 : 0
+  count  = local.log_file_transition != [] && local.log_file_deletion != 0 ? 1 : 0
   bucket = aws_s3_bucket.access_logs.id
   rule {
     id     = "StorageClass"
     status = "Enabled"
     dynamic "transition" {
-      for_each = var.log_file_transition
+      for_each = local.log_file_transition
       content {
         days          = transition.value
         storage_class = transition.key
@@ -64,12 +74,12 @@ resource "aws_s3_bucket_lifecycle_configuration" "lc" {
     }
   }
   dynamic "rule" {
-    for_each = var.log_file_deletion != 0 ? [1] : []
+    for_each = local.log_file_deletion != 0 ? [1] : []
     content {
       id     = "Expiration"
       status = "Enabled"
       expiration {
-        days = var.log_file_deletion
+        days = local.log_file_deletion
       }
     }
   }
