@@ -9,12 +9,12 @@ locals {
 
 resource "aws_s3_bucket" "access_logs" {
   bucket_prefix = "${var.service_name}-access-logs"
-  force_destroy = true
-  # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
-  # checkov:skip=CKV_AWS_18:Ensure the S3 bucket has access logging enabled
-  # checkov:skip=CKV_AWS_144:Ensure that S3 bucket has cross-region replication enabled  
-  # checkov:skip=CKV_AWS_300:Ensure S3 lifecycle configuration sets period for aborting failed uploads
-  # Known issue where Checkov gets confused by multiple rules
+  force_destroy = false
+  # checkov:skip=CKV2_AWS_62:Event notification not necessary for this bucket expecially due to likely use of lifecycle rules
+  # checkov:skip=CKV_AWS_18:Access logging was not considered necessary for this bucket
+  # checkov:skip=CKV_AWS_144:Not considered critical to the point of cross region replication
+  # checkov:skip=CKV_AWS_300:Known issue where Checkov gets confused by multiple rules
+  # 
 }
 
 resource "aws_s3_bucket_public_access_block" "block" {
