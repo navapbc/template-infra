@@ -153,7 +153,7 @@ resource "s3_bucket_public_access_block" "load_balancer_logs" {
 }
 
 resource "aws_s3_bucket_replication_configuration" "load_balancer_logs" {
-  
+
 }
 
 # resource "aws_s3_bucket_lifecycle_configuration" "load_balancer_logs" {
@@ -185,7 +185,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "load_balancer" {
   bucket = aws_s3_bucket.load_balancer_logs.id
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = "aws:kms"
+      sse_algorithm = "aws:kms"
     }
     bucket_key_enabled = true
   }
