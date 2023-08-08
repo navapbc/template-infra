@@ -75,5 +75,5 @@ variable "log_file_transition" {
 }
 
 variable "log_file_deletion" {
-  default = 2000
+  default = 0
 }
