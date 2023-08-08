@@ -1,9 +1,5 @@
-locals {
-  purpose = "access-logs"
-}
-
 resource "aws_s3_bucket" "alb" {
-  bucket_prefix = "${var.service_name}-${local.purpose}"
+  bucket_prefix = "${var.service_name}-access-logs"
   force_destroy = true
   # checkov:skip=CKV2_AWS_62:Ensure S3 buckets should have event notifications enabled
   # checkov:skip=CKV_AWS_18:Ensure the S3 bucket has access logging enabled
