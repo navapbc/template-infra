@@ -29,18 +29,10 @@ $SCRIPT_DIR/install-template.sh
 
 
 # This is the HEAD of the main branch before the commit is merged
-CURRENT_VERSION=$(git rev-parse HEAD)
+TEMPLATE_VERSION=$(git rev-parse --short HEAD)
 
-git diff $CURRENT_VERSION -- .dockleconfig \
-  .github/workflows/build-and-publish.yml \
-  .github/workflows/cd.yml \
-  .github/workflows/ci-infra.yml \
-  .github/workflows/database-migrations.yml \
-  .grype.yml \
-  .hadolint.yaml \
-  .trivyignore \
-  infra/ app/ bin/ docs/ -p > template.patch # filter certain files.
+git diff $PROJECT_VERSION $TEMPLATE_VERSION -p > template.patch 
 
-git apply template.patch
+git apply --ignore-whitespace --allow-empty template.patch
 
 rm template.patch

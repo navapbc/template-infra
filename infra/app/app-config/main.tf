@@ -21,4 +21,3 @@ module "env_config" {
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
 }
-# TEST CHANGE
