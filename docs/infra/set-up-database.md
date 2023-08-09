@@ -20,10 +20,10 @@ Before setting up the database you'll need to have:
 To create the tfbackend file for the new application environment, run
 
 ```bash
-make infra-configure-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
 
 ## 2. Create database resources
