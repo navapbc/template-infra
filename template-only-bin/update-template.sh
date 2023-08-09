@@ -6,8 +6,8 @@ set -euo pipefail
 
 SCRIPT_DIR=$(dirname $0)
 
-echo "Install template"
-$SCRIPT_DIR/install-template.sh
+# echo "Install template"
+# $SCRIPT_DIR/install-template.sh
 
 # Restore project files with project-specific configuration that was defined as part of project setup.
 # This includes the terraform backend configuration blocks and the project-config module

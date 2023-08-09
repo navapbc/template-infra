@@ -34,14 +34,13 @@ jobs:
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
 
       - name: get project HEAD
-        id: project-version
         working-directory: project-repo
-        run: echo "PROJECT_VERSION=$(git rev-parse --short HEAD)" >> "GITHUB.OUTPUT"
+        run: echo "PROJECT_VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Update infra template
         working-directory: project-repo
         env:
-          PROJECT_VERSION: ${{ steps.project-version.outputs.PROJECT_VERSION }}
+          PROJECT_VERSION: ${{ env.PROJECT_VERSION }}
         run: ../template-infra/template-only-bin/update-template.sh
 
       - name: Push changes to project repo
