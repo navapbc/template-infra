@@ -30,9 +30,12 @@ SCRIPT_DIR=$(dirname $0)
 
 # This is the HEAD of the main branch before the commit is merged
 TEMPLATE_VERSION=$(git rev-parse --short HEAD)
+echo $TEMPLATE_VERSION
 
-git diff $PROJECT_VERSION $TEMPLATE_VERSION -p > template.patch 
+git diff $TEMPLATE_VERSION $PROJECT_VERSION -p > template.patch 
+less template.patch
 
+echo "Applying patch"
 git apply --ignore-whitespace --allow-empty template.patch
 
 rm template.patch
