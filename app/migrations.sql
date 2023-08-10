@@ -7,11 +7,15 @@ which is to create a version table that stores the current state of the database
 */
 
 /*
-Hardcoded the app username since couldn't figure out
+Hardcode the app username since we couldn't figure out
 a simple way to pull it from environment variable
 */
 ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app;
 
+/*
+Drop the table rather than truncate it to test
+out default privileges for newly created tables
+*/
 DROP TABLE IF EXISTS migrations;
 
 CREATE TABLE IF NOT EXISTS migrations (
