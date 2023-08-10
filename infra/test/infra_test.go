@@ -98,8 +98,35 @@ func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
 	fmt.Println("::endgroup::")
 }
 
+func EnableDestroy(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
+	fmt.Println("::group::Enabling force-destroy and prevent_destroy = true for compliant s3")
+	shell.RunCommand(t, shell.Command{
+		Command: "sed",
+		Args: []string{
+			"-i.bak",
+			"s/force_destroy = false/force_destroy = true/g",
+			"infra/modules/service/access_logs.tf",
+		},
+		WorkingDir: "../../",
+	})
+	shell.RunCommand(t, shell.Command{
+		Command: "sed",
+		Args: []string{
+			"-i.bak",
+			"s/prevent_destroy = true/prevent_destroy = false/g",
+			"infra/modules/service/access_logs.tf",
+		},
+		WorkingDir: "../../",
+	})
+	terraform.RunTerraformCommand(t, terraformOptions, "init", "-backend-config=dev.s3.tfbackend")
+	terraform.Apply(t, terraformOptions)
+}
+
 func DestroyDevEnvironmentAndWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
+	EnableDestroy(t, terraformOptions, workspaceName)
 	fmt.Println("::group::Destroy environment and workspace")
+	// Need to do the replace string thing for s3 module
+	terraform.RunTerraformCommand(t, terraformOptions, "init", "-backend-config=dev.s3.tfbackend")
 	terraform.Destroy(t, terraformOptions)
 	terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
 	fmt.Println("::endgroup::")
