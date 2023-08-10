@@ -65,6 +65,10 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 }
 ```
 
+### Note on Postgres table permissions
+
+The `migrator` role will be used by the migration task to run database migrations (creating tables, altering tables, etc.), while the `app` role will be used by the web service to access the database. In Postgres, new tables won't automatically be accessible by roles other than the creator unless specifically granted, even if those other roles have usage access to the schema that the tables are created in. In other words if the `migrator` user created a new table `foo` in the `app` schema, the `app` user will not have automatically be able to access it. The way to change this is for the migrator user to run the SQL command `ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app`. This will cause all future tables created by the `migrator` user to automatically be accessible by the `app` user. See the [Postgres docs on ALTER DEFAULT PRIVILEGES](https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html) for more info. As an example see the example app's migrations file [migrations.sql](/app/migrations.sql).
+
 ## Set up application environments
 
 Once you set up the deployment process, you can proceed to [set up the application service](./set-up-app-env.md)
