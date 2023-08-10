@@ -1,15 +1,20 @@
 locals {
+  # This is needed to gran~t permissions to the ELB service for sending access logs to S3.
+  # The list was obtained from https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html
   elb_account_map = {
     "us-east-1" : "127311923021",
     "us-east-2" : "033677994240",
     "us-west-1" : "027434742980",
     "us-west-2" : "797873946194"
   }
+
+  # set log_file_transition = {} to disable lifecycle transitions. Additional lifecycle transitions can be added via a key value pair of `$STORAGE_CLASS=$DAYS`
   log_file_transition = {
     STANDARD_IA = 30
     GLACIER     = 60
   }
 
+  # If log_file_deletion = 0, automatic deletion is not put into place. If log_file_deletion is an integer greater than 1, this sets an automatic deletion lifecycle rule after that number of days
   log_file_deletion = 0
 }
 
@@ -20,7 +25,6 @@ resource "aws_s3_bucket" "access_logs" {
   # checkov:skip=CKV_AWS_18:Access logging was not considered necessary for this bucket
   # checkov:skip=CKV_AWS_144:Not considered critical to the point of cross region replication
   # checkov:skip=CKV_AWS_300:Known issue where Checkov gets confused by multiple rules
-  # 
 }
 
 resource "aws_s3_bucket_public_access_block" "access_logs" {
@@ -49,8 +53,17 @@ data "aws_iam_policy_document" "load_balancer_logs_put_access" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "lc" {
-  count  = local.log_file_transition != [] && local.log_file_deletion != 0 ? 1 : 0
+  count  = local.log_file_transition != {} || local.log_file_deletion != 0 ? 1 : 0
   bucket = aws_s3_bucket.access_logs.id
+
+  rule {
+    id     = "AbortIncompleteUpload"
+    status = "Enabled"
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
+    }
+  }
+
   rule {
     id     = "StorageClass"
     status = "Enabled"
@@ -62,13 +75,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "lc" {
       }
     }
   }
-  rule {
-    id     = "AbortIncompleteUpload"
-    status = "Enabled"
-    abort_incomplete_multipart_upload {
-      days_after_initiation = 7
-    }
-  }
+
   dynamic "rule" {
     for_each = local.log_file_deletion != 0 ? [1] : []
     content {
@@ -79,7 +86,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "lc" {
       }
     }
   }
-  # checkov:skip=CKV_AWS_300:Ensure S3 lifecycle configuration sets period for aborting failed uploads
+  # checkov:skip=CKV_AWS_300:There is a known issue where this check brings up false positives
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
