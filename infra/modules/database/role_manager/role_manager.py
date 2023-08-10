@@ -134,24 +134,6 @@ def configure_schema(conn: Connection, schema_name: str, migrator_username: str,
     logger.info("Granting schema usage privileges: schema_name=%s role=%s", schema_name, app_username)
     conn.run(f"GRANT USAGE ON SCHEMA {identifier(schema_name)} TO {identifier(app_username)}")
 
-    logger.info("Granting all table privileges on future tables: schema_name=%s role=%s", schema_name, app_username)
-    conn.run(f"ALTER DEFAULT PRIVILEGES IN SCHEMA {identifier(schema_name)} GRANT ALL ON TABLES TO {identifier(app_username)}")
-
-    logger.info("Granting all table privileges on existing tables: schema_name=%s role=%s", schema_name, app_username)
-    conn.run(f"GRANT ALL ON ALL TABLES IN SCHEMA {identifier(schema_name)} TO {identifier(app_username)}")
-
-    logger.info("Granting all sequence privileges: schema_name=%s role=%s", schema_name, app_username)
-    conn.run(
-        f"ALTER DEFAULT PRIVILEGES IN SCHEMA {identifier(schema_name)} GRANT ALL ON SEQUENCES TO {identifier(app_username)}"
-    )
-    conn.run(f"GRANT ALL ON ALL SEQUENCES IN SCHEMA {identifier(schema_name)} TO {identifier(app_username)}")
-
-    logger.info("Granting all routine privileges: schema_name=%s role=%s", schema_name, app_username)
-    conn.run(
-        f"ALTER DEFAULT PRIVILEGES IN SCHEMA {identifier(schema_name)} GRANT ALL ON ROUTINES TO {identifier(app_username)}"
-    )
-    conn.run(f"GRANT ALL ON ALL ROUTINES IN SCHEMA {identifier(schema_name)} TO {identifier(app_username)}")
-
 
 def print_roles(roles: list[str]) -> None:
     logger.info("Roles")
