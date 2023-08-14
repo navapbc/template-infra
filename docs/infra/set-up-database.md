@@ -20,10 +20,10 @@ Before setting up the database you'll need to have:
 To create the tfbackend file for the new application environment, run
 
 ```bash
-make infra-configure-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
 
 ## 2. Create database resources
@@ -64,6 +64,18 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
   }
 }
 ```
+
+### Important note on Postgres table permissions
+
+Before creating migrations that create tables, first create a migration that includes the following SQL command (or equivalent if your migrations are written in a general purpose programming language):
+
+```sql
+ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app
+```
+
+This will cause all future tables created by the `migrator` user to automatically be accessible by the `app` user. See the [Postgres docs on ALTER DEFAULT PRIVILEGES](https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html) for more info. As an example see the example app's migrations file [migrations.sql](/app/migrations.sql).
+
+Why is this needed? The reason is because the `migrator` role will be used by the migration task to run database migrations (creating tables, altering tables, etc.), while the `app` role will be used by the web service to access the database. Moreover, in Postgres, new tables won't automatically be accessible by roles other than the creator unless specifically granted, even if those other roles have usage access to the schema that the tables are created in. In other words if the `migrator` user created a new table `foo` in the `app` schema, the `app` user will not have automatically be able to access it by default.
 
 ## Set up application environments
 

@@ -1,6 +1,6 @@
 ## Ticket
 
-{LINK TO TICKET}
+Resolves #{TICKET NUMBER OR URL}
 
 ## Changes
 
