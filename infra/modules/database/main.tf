@@ -116,12 +116,12 @@ resource "aws_vpc_security_group_ingress_rule" "db_ingress_from_role_manager" {
 # Authentication
 # --------------
 
-resource "aws_iam_policy" "db_access" {
-  name   = var.access_policy_name
-  policy = data.aws_iam_policy_document.db_access.json
+resource "aws_iam_policy" "db_app_access" {
+  name   = var.app_access_policy_name
+  policy = data.aws_iam_policy_document.db_app_access.json
 }
 
-data "aws_iam_policy_document" "db_access" {
+data "aws_iam_policy_document" "db_app_access" {
   # Policy to allow connection to RDS via IAM database authentication
   # which is more secure than traditional username/password authentication
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
@@ -132,6 +132,25 @@ data "aws_iam_policy_document" "db_access" {
 
     resources = [
       "${local.db_user_arn_prefix}/${var.app_username}",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "db_migrator_access" {
+  name   = var.migrate_access_policy_name
+  policy = data.aws_iam_policy_document.db_migrator_access.json
+}
+
+data "aws_iam_policy_document" "db_migrator_access" {
+  # Policy to allow connection to RDS via IAM database authentication
+  # which is more secure than traditional username/password authentication
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+  statement {
+    actions = [
+      "rds-db:connect"
+    ]
+
+    resources = [
       "${local.db_user_arn_prefix}/${var.migrator_username}",
     ]
   }
@@ -431,4 +450,22 @@ resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_role_
   to_port                      = 443
   ip_protocol                  = "tcp"
   referenced_security_group_id = aws_security_group.role_manager.id
+}
+
+resource "aws_iam_role" "service" {
+  name               = "${var.name}-migrator"
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
+}
+
+data "aws_iam_policy_document" "ecs_tasks_assume_role_policy" {
+  statement {
+    sid = "ECSTasksAssumeRole"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
 }

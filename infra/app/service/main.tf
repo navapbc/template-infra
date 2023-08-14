@@ -11,13 +11,16 @@ data "aws_subnets" "default" {
   }
 }
 
+data "aws_region" "current" {}
+
+data "aws_caller_identity" "current" {}
 
 locals {
   # The prefix key/value pair is used for Terraform Workspaces, which is useful for projects with multiple infrastructure developers.
   # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”, 
   # if you choose not to use workspaces set this value to "dev" 
-  prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-
+  prefix             = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+  db_user_arn_prefix = "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_rds_cluster.db_cluster[0].cluster_resource_id}"
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = var.environment_name
@@ -66,9 +69,23 @@ data "aws_rds_cluster" "db_cluster" {
   cluster_identifier = local.database_config.cluster_name
 }
 
-data "aws_iam_policy" "db_access_policy" {
-  count = module.app_config.has_database ? 1 : 0
-  name  = local.database_config.access_policy_name
+resource "aws_iam_policy" "db_app_access_policy" {
+  name   = local.database_config.app_access_policy_name
+  policy = data.aws_iam_policy_document.db_app_access_policy.json
+}
+
+data "aws_iam_policy_document" "db_app_access_policy" {
+  # Policy to allow connection to RDS via IAM database authentication
+  # which is more secure than traditional username/password authentication
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+  statement {
+    actions = [
+      "rds-db:connect"
+    ]
+    resources = [
+      "${local.db_user_arn_prefix}/${local.database_config.app_username}",
+    ]
+  }
 }
 
 # Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
@@ -88,7 +105,7 @@ module "service" {
 
   db_vars = module.app_config.has_database ? {
     security_group_ids = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
-    access_policy_arn  = data.aws_iam_policy.db_access_policy[0].arn
+    access_policy_arn  = aws_iam_policy.db_app_access_policy.arn
     connection_info = {
       host        = data.aws_rds_cluster.db_cluster[0].endpoint
       port        = data.aws_rds_cluster.db_cluster[0].port
