@@ -6,7 +6,7 @@ set -euxo pipefail
 BACKEND_CONFIG_FILE="dev.s3.tfbackend"
 TF_VARS_FILE="dev.tfvars"
 
-sed -i.bak 's/resource "aws_s3_bucket" "load_balancer_logs" {/&\n  force_destroy = true/' infra/modules/service/main.tf
+sed -i.bak 's/force_destroy = true/force_destroy = true/g' infra/modules/service/main.tf
 
 cd infra/app/service
 
