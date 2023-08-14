@@ -7,7 +7,7 @@ set -euo pipefail
 SCRIPT_DIR=$(dirname $0)
 
 # echo "Install template"
-# $SCRIPT_DIR/install-template.sh
+$SCRIPT_DIR/install-template.sh
 
 # Restore project files with project-specific configuration that was defined as part of project setup.
 # This includes the terraform backend configuration blocks and the project-config module
@@ -28,13 +28,26 @@ SCRIPT_DIR=$(dirname $0)
   # infra/app/app-config/main.tf
 
 
-# This is the HEAD of the main branch before the commit is merged
-PROJECT_VERSION=$(git rev-parse --short HEAD)
-echo $PROJECT_VERSION
+# This is the last commit from template-infra that the project had access to.
+PROJECT_VERSION=$(cat bin/template-version.txt)
+# Current HEAD of the template repository
+TEMPLATE_VERSION=$(git rev-parse HEAD)
 
-git diff $TEMPLATE_VERSION $PROJECT_VERSION -p > template.patch 
+# exclude certain files from automatically being changed
+git diff $PROJECT_VERSION $TEMPLATE_VERSION -- ':(exclude).github/workflows/template-only-* :(exclude).dockleconfig \
+  :(exclude).github/workflows/build-and-publish.yml \
+  :(exclude).github/workflows/cd.yml \
+  :(exclude).github/workflows/ci-infra.yml \
+  :(exclude).github/workflows/database-migrations.yml \
+  :(exclude).grype.yml \
+  :(exclude).hadolint.yaml \
+  :(exclude).trivyignore \
+  :(exclude)infra/project-config/main.tf \ 
+  :(exclude)infra/app/app-config/main.tf' -p > bin/template.patch 
 
 echo "Applying patch"
 git apply --ignore-whitespace --allow-empty template.patch
 
+echo $TEMPLATE_VERSION > bin/template-version.txt
+# remove patch file
 rm template.patch

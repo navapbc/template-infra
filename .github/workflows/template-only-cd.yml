@@ -26,11 +26,6 @@ jobs:
         with:
           path: template-infra
 
-      - name: Get Template HEAD
-        with:
-          path: template-infra
-        run: echo "TEMPLATE_VERSION=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
       - name: Checkout project repo
         uses: actions/checkout@v3
         with:
@@ -41,8 +36,6 @@ jobs:
 
       - name: Update infra template
         working-directory: project-repo
-        env:
-          TEMPLATE_VERSION: ${{ env.TEMPLATE_VERSION }}
         run: ../template-infra/template-only-bin/update-template.sh
 
       - name: Push changes to project repo
