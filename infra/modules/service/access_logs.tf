@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "load_balancer_logs_put_access" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "lc" {
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
   count  = local.log_file_transition != {} || local.log_file_deletion != 0 ? 1 : 0
   bucket = aws_s3_bucket.access_logs.id
 
