@@ -99,7 +99,7 @@ func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
 }
 
 func EnableDestroy(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
-	fmt.Println("::group::Enabling force-destroy and prevent_destroy = true for compliant s3")
+	fmt.Println("::group::Setting force_destroy = true and prevent_destroy = false for s3 buckets")
 	shell.RunCommand(t, shell.Command{
 		Command: "sed",
 		Args: []string{
