@@ -4,7 +4,6 @@ data "aws_ecr_repository" "app" {
   name = var.image_repository_name
 }
 
-
 locals {
   alb_name                = var.service_name
   cluster_name            = var.service_name
@@ -25,6 +24,7 @@ locals {
   ]
   environment_variables = concat(local.base_environment_variables, local.db_environment_variables)
 }
+
 
 #---------------
 # Load balancer
@@ -53,8 +53,11 @@ resource "aws_lb" "alb" {
   # https://docs.bridgecrew.io/docs/ensure-that-alb-drops-http-headers
   drop_invalid_header_fields = true
 
-  # TODO(https://github.com/navapbc/template-infra/issues/162) Add access logs
-  # checkov:skip=CKV_AWS_91:Add access logs in future PR
+  access_logs {
+    bucket  = aws_s3_bucket.access_logs.id
+    prefix  = "${var.service_name}-lb"
+    enabled = true
+  }
 }
 
 # NOTE: for the demo we expose private http endpoint
@@ -94,7 +97,6 @@ resource "aws_lb_listener_rule" "app_http_forward" {
     }
   }
 }
-
 
 resource "aws_lb_target_group" "app_tg" {
   # you must use a prefix, to facilitate successful tg changes
