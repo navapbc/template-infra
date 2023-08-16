@@ -17,9 +17,6 @@ locals {
     STANDARD_IA = 30
     GLACIER     = 60
   }
-
-  # If log_file_deletion = 0, automatic deletion is not put into place. If log_file_deletion is an integer greater than 1, this sets an automatic deletion lifecycle rule after that number of days
-  log_file_deletion = 0
 }
 
 resource "aws_s3_bucket" "access_logs" {
@@ -57,7 +54,6 @@ data "aws_iam_policy_document" "access_logs_put_access" {
 }
 
 resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
-  count  = local.log_file_transition != {} || local.log_file_deletion != 0 ? 1 : 0
   bucket = aws_s3_bucket.access_logs.id
 
   rule {
@@ -80,14 +76,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
     }
   }
 
-  dynamic "rule" {
-    for_each = local.log_file_deletion != 0 ? [1] : []
-    content {
-      id     = "Expiration"
-      status = "Enabled"
-      expiration {
-        days = local.log_file_deletion
-      }
+  rule {
+    id     = "Expiration"
+    status = "Enabled"
+    expiration {
+      days = 2555
     }
   }
   # checkov:skip=CKV_AWS_300:There is a known issue where this check brings up false positives
@@ -111,7 +104,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
   }
 }
 
-resource "aws_s3_bucket_policy" "bucket_pol" {
+resource "aws_s3_bucket_policy" "access_logs" {
   bucket = aws_s3_bucket.access_logs.id
   policy = data.aws_iam_policy_document.access_logs_put_access.json
 }

@@ -32,6 +32,7 @@ locals {
 
 # ALB for an app running in ECS
 resource "aws_lb" "alb" {
+  depends_on      = [aws_s3_bucket_policy.access_logs]
   name            = var.service_name
   idle_timeout    = "120"
   internal        = false
