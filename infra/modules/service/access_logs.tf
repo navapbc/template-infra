@@ -40,7 +40,7 @@ resource "aws_s3_bucket_public_access_block" "access_logs" {
   restrict_public_buckets = true
 }
 
-data "aws_iam_policy_document" "load_balancer_logs_put_access" {
+data "aws_iam_policy_document" "access_logs_put_access" {
   statement {
     effect = "Allow"
     resources = [
@@ -56,7 +56,7 @@ data "aws_iam_policy_document" "load_balancer_logs_put_access" {
   }
 }
 
-resource "aws_s3_bucket_lifecycle_configuration" "lc" {
+resource "aws_s3_bucket_lifecycle_configuration" "access_logs" {
   count  = local.log_file_transition != {} || local.log_file_deletion != 0 ? 1 : 0
   bucket = aws_s3_bucket.access_logs.id
 
