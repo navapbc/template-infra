@@ -36,7 +36,7 @@ resource "aws_s3_bucket_public_access_block" "access_logs" {
   restrict_public_buckets = true
 }
 
-data "aws_iam_policy_document" "load_balancer_logs_put_access" {
+data "aws_iam_policy_document" "access_logs_put_access" {
   statement {
     effect = "Allow"
     resources = [
