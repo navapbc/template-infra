@@ -1,3 +1,7 @@
+# This file defines resources for load balancer access logs
+# including the S3 bucket where access logs are stored and
+# the IAM policy granting the AWS Elastic Load Balancer service
+# to write to the bucket
 locals {
   # This is needed to gran~t permissions to the ELB service for sending access logs to S3.
   # The list was obtained from https://docs.aws.amazon.com/elasticloadbalancing/latest/application/enable-access-logging.html

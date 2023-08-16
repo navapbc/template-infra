@@ -23,8 +23,6 @@ locals {
     { name : "DB_SCHEMA", value : var.db_vars.connection_info.schema_name },
   ]
   environment_variables = concat(local.base_environment_variables, local.db_environment_variables)
-  # prefix                = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  # Maintain a list of AWS account IDs for Elastic Load Balancing for each of the US-based Amazon regions.
 }
 
 

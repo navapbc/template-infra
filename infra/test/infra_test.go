@@ -125,7 +125,6 @@ func EnableDestroy(t *testing.T, terraformOptions *terraform.Options, workspaceN
 func DestroyDevEnvironmentAndWorkspace(t *testing.T, terraformOptions *terraform.Options, workspaceName string) {
 	EnableDestroy(t, terraformOptions, workspaceName)
 	fmt.Println("::group::Destroy environment and workspace")
-	// Need to do the replace string thing for s3 module
 	terraform.RunTerraformCommand(t, terraformOptions, "init", "-backend-config=dev.s3.tfbackend")
 	terraform.Destroy(t, terraformOptions)
 	terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
