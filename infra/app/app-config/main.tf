@@ -3,7 +3,7 @@ locals {
   environments                    = ["dev", "staging", "prod"]
   project_name                    = module.project_config.project_name
   image_repository_name           = "${local.project_name}-${local.app_name}"
-  has_database                    = false
+  has_database                    = true
   has_incident_management_service = false
   environment_configs             = { for environment in local.environments : environment => module.env_config[environment] }
 
