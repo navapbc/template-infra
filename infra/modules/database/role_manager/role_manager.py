@@ -98,6 +98,9 @@ def configure_database(conn: Connection) -> None:
     migrator_username = os.environ.get("MIGRATOR_USER")
     schema_name = os.environ.get("DB_SCHEMA")
 
+    conn.run("REVOKE CREATE ON SCHEMA public FROM PUBLIC;")
+    conn.run("REVOKE ALL ON DATABASE app FROM PUBLIC;")
+
     configure_roles(conn, [migrator_username, app_username])
     configure_schema(conn, schema_name, migrator_username, app_username)
 
