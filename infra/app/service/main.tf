@@ -70,11 +70,13 @@ data "aws_rds_cluster" "db_cluster" {
 }
 
 resource "aws_iam_policy" "db_app_access_policy" {
+  count              = module.app_config.has_database ? 1 : 0
   name   = local.database_config.app_access_policy_name
-  policy = data.aws_iam_policy_document.db_app_access_policy.json
+  policy = data.aws_iam_policy_document[0].db_app_access_policy.json
 }
 
 data "aws_iam_policy_document" "db_app_access_policy" {
+  count              = module.app_config.has_database ? 1 : 0
   # Policy to allow connection to RDS via IAM database authentication
   # which is more secure than traditional username/password authentication
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
