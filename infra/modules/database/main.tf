@@ -1,5 +1,14 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+module "database-networking" {
+  source = "../database-networking"
+}
+module "database-iam" {
+  source = "../database-iam"
+}
+module "database-monitoring" {
+  source = "../database-monitoring"
+}
 
 locals {
   master_username       = "postgres"
@@ -57,7 +66,7 @@ resource "aws_rds_cluster_instance" "primary" {
   engine                     = aws_rds_cluster.db.engine
   engine_version             = aws_rds_cluster.db.engine_version
   auto_minor_version_upgrade = true
-  monitoring_role_arn        = aws_iam_role.rds_enhanced_monitoring.arn
+  monitoring_role_arn        = module.database-iam.role_manager_monitoring_arn
   monitoring_interval        = 30
 }
 
@@ -78,64 +87,6 @@ resource "aws_kms_key" "db" {
   enable_key_rotation = true
 }
 
-# Network Configuration
-# ---------------------
-
-resource "aws_security_group" "db" {
-  name_prefix = "${var.name}-db"
-  description = "Database layer security group"
-  vpc_id      = var.vpc_id
-}
-
-resource "aws_security_group" "role_manager" {
-  name_prefix = "${var.name}-role-manager"
-  description = "Database role manager security group"
-  vpc_id      = var.vpc_id
-}
-
-resource "aws_vpc_security_group_egress_rule" "role_manager_egress_to_db" {
-  security_group_id = aws_security_group.role_manager.id
-  description       = "Allow role manager to access database"
-
-  from_port                    = 5432
-  to_port                      = 5432
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.db.id
-}
-
-resource "aws_vpc_security_group_ingress_rule" "db_ingress_from_role_manager" {
-  security_group_id = aws_security_group.db.id
-  description       = "Allow inbound requests to database from role manager"
-
-  from_port                    = 5432
-  to_port                      = 5432
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.role_manager.id
-}
-
-# Authentication
-# --------------
-
-resource "aws_iam_policy" "db_access" {
-  name   = var.access_policy_name
-  policy = data.aws_iam_policy_document.db_access.json
-}
-
-data "aws_iam_policy_document" "db_access" {
-  # Policy to allow connection to RDS via IAM database authentication
-  # which is more secure than traditional username/password authentication
-  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
-  statement {
-    actions = [
-      "rds-db:connect"
-    ]
-
-    resources = [
-      "${local.db_user_arn_prefix}/${var.app_username}",
-      "${local.db_user_arn_prefix}/${var.migrator_username}",
-    ]
-  }
-}
 
 # Database Backups
 # ----------------
@@ -171,69 +122,14 @@ data "aws_kms_key" "backup_vault_key" {
 resource "aws_backup_selection" "db_backup" {
   name         = "${var.name}-db-backup"
   plan_id      = aws_backup_plan.backup_plan.id
-  iam_role_arn = aws_iam_role.db_backup_role.arn
+  iam_role_arn = module.database-iam.backup_role_arn
 
   resources = [
     aws_rds_cluster.db.arn
   ]
 }
 
-# Role that AWS Backup uses to authenticate when backing up the target resource
-resource "aws_iam_role" "db_backup_role" {
-  name_prefix        = "${var.name}-db-backup-role-"
-  assume_role_policy = data.aws_iam_policy_document.db_backup_policy.json
-}
-
-data "aws_iam_policy_document" "db_backup_policy" {
-  statement {
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["backup.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "db_backup_role_policy_attachment" {
-  role       = aws_iam_role.db_backup_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
-}
-
-#----------------------------------#
-# IAM role for enhanced monitoring #
-#----------------------------------#
-
-resource "aws_iam_role" "rds_enhanced_monitoring" {
-  name_prefix        = "${var.name}-enhanced-monitoring-"
-  assume_role_policy = data.aws_iam_policy_document.rds_enhanced_monitoring.json
-}
-
-resource "aws_iam_role_policy_attachment" "rds_enhanced_monitoring" {
-  role       = aws_iam_role.rds_enhanced_monitoring.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
-}
-
-data "aws_iam_policy_document" "rds_enhanced_monitoring" {
-  statement {
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["monitoring.rds.amazonaws.com"]
-    }
-  }
-}
-
-# Query Logging
+# Query Logging -> database-monitoring
 # -------------
 
 resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
@@ -268,7 +164,7 @@ resource "aws_lambda_function" "role_manager" {
   source_code_hash = data.archive_file.role_manager.output_base64sha256
   runtime          = "python3.9"
   handler          = "role_manager.lambda_handler"
-  role             = aws_iam_role.role_manager.arn
+  role             = module.database-iam.role_manager_arn
   kms_key_arn      = aws_kms_key.role_manager.arn
 
   # Only allow 1 concurrent execution at a time
@@ -321,114 +217,11 @@ data "archive_file" "role_manager" {
   depends_on  = [terraform_data.role_manager_python_vendor_packages]
 }
 
-resource "aws_iam_role" "role_manager" {
-  name                = "${var.name}-manager"
-  assume_role_policy  = data.aws_iam_policy_document.role_manager_assume_role.json
-  managed_policy_arns = [data.aws_iam_policy.lambda_vpc_access.arn]
-}
-
-resource "aws_iam_role_policy" "ssm_access" {
-  name = "${var.name}-role-manager-ssm-access"
-  role = aws_iam_role.role_manager.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["ssm:GetParameter*"]
-        Resource = "${aws_ssm_parameter.random_db_password.arn}"
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["kms:Decrypt"]
-        Resource = [data.aws_kms_key.default_ssm_key.arn]
-      }
-    ]
-  })
-}
-
-data "aws_kms_key" "default_ssm_key" {
-  key_id = "alias/aws/ssm"
-}
-
-data "aws_iam_policy_document" "role_manager_assume_role" {
-  statement {
-    effect = "Allow"
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-# AWS managed policy required by Lambda functions in order to access VPC resources
-# see https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html
-data "aws_iam_policy" "lambda_vpc_access" {
-  name = "AWSLambdaVPCAccessExecutionRole"
-}
-
 # KMS key used to encrypt role manager's environment variables
 resource "aws_kms_key" "role_manager" {
   description         = "Key for Lambda function ${local.role_manager_name}"
   enable_key_rotation = true
 }
 
-# VPC Endpoints for accessing AWS Services
-# ----------------------------------------
-#
-# Since the role manager Lambda function is in the VPC (which is needed to be
-# able to access the database) we need to allow the Lambda function to access
-# AWS Systems Manager Parameter Store (to fetch the database password) and
-# KMS (to decrypt SecureString parameters from Parameter Store). We can do
-# this by either allowing internet access to the Lambda, or by using a VPC
-# endpoint. The latter is more secure.
-# See https://repost.aws/knowledge-center/lambda-vpc-parameter-store
-# See https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html#create-interface-endpoint
 
-resource "aws_vpc_endpoint" "ssm" {
-  vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.ssm"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.vpc_endpoints.id]
-  subnet_ids          = var.private_subnet_ids
-  private_dns_enabled = true
-}
 
-resource "aws_vpc_endpoint" "kms" {
-  vpc_id              = var.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.kms"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.vpc_endpoints.id]
-  subnet_ids          = var.private_subnet_ids
-  private_dns_enabled = true
-}
-
-resource "aws_security_group" "vpc_endpoints" {
-  name_prefix = "${var.name}-vpc-endpoints"
-  description = "VPC endpoints to access SSM and KMS"
-  vpc_id      = var.vpc_id
-}
-
-resource "aws_vpc_security_group_egress_rule" "role_manager_egress_to_vpc_endpoints" {
-  security_group_id = aws_security_group.role_manager.id
-  description       = "Allow outbound requests from role manager to VPC endpoints"
-
-  from_port                    = 443
-  to_port                      = 443
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.vpc_endpoints.id
-}
-
-resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_role_manager" {
-  security_group_id = aws_security_group.vpc_endpoints.id
-  description       = "Allow inbound requests to VPC endpoints from role manager"
-
-  from_port                    = 443
-  to_port                      = 443
-  ip_protocol                  = "tcp"
-  referenced_security_group_id = aws_security_group.role_manager.id
-}
