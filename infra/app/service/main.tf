@@ -107,7 +107,7 @@ module "service" {
 
   db_vars = module.app_config.has_database ? {
     security_group_ids = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
-    access_policy_arn  = aws_iam_policy.db_app_access_policy.arn
+    access_policy_arn  = aws_iam_policy.db_app_access_policy[0].arn
     connection_info = {
       host        = data.aws_rds_cluster.db_cluster[0].endpoint
       port        = data.aws_rds_cluster.db_cluster[0].port
