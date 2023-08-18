@@ -1,3 +1,5 @@
+data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 # Role that AWS Backup uses to authenticate when backing up the target resource
 resource "aws_iam_role" "db_backup_role" {
   name_prefix        = "${var.name}-db-backup-role-"
