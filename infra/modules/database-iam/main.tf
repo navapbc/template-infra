@@ -1,5 +1,12 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
+
+data "aws_rds_cluster" "db" {
+  cluster_identifier = var.name
+}
+locals {
+  db_user_arn_prefix = "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_rds_cluster.db.cluster_resource_id}"
+}
 # Role that AWS Backup uses to authenticate when backing up the target resource
 resource "aws_iam_role" "db_backup_role" {
   name_prefix        = "${var.name}-db-backup-role-"
@@ -88,6 +95,10 @@ data "aws_kms_key" "default_ssm_key" {
   key_id = "alias/aws/ssm"
 }
 
+data "aws_ssm_parameter" "random_db_password" {
+  name = "/db/${var.name}/master-password"
+}
+
 resource "aws_iam_role_policy" "ssm_access" {
   name = "${var.name}-role-manager-ssm-access"
   role = aws_iam_role.role_manager.id
@@ -98,7 +109,7 @@ resource "aws_iam_role_policy" "ssm_access" {
       {
         Effect   = "Allow"
         Action   = ["ssm:GetParameter*"]
-        Resource = "${aws_ssm_parameter.random_db_password.arn}"
+        Resource = "${data.aws_ssm_parameter.random_db_password.arn}"
       },
       {
         Effect   = "Allow"

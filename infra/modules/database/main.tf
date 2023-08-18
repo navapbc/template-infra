@@ -18,8 +18,11 @@ module "database-iam" {
 
 module "database-monitoring" {
   # this module has logging and backup configuration
-  source = "../database-monitoring"
-  name   = var.name
+  source             = "../database-monitoring"
+  name               = var.name
+  access_policy_name = var.access_policy_name
+  app_username       = var.app_username
+  migrator_username  = var.migrator_username
 }
 locals {
   master_username       = "postgres"
