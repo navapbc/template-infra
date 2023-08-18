@@ -20,7 +20,7 @@ locals {
   # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”, 
   # if you choose not to use workspaces set this value to "dev" 
   prefix             = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-  db_user_arn_prefix = "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_rds_cluster.db_cluster[0].cluster_resource_id}"
+  db_user_arn_prefix = module.app_config.has_database ? "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_rds_cluster.db_cluster[0].cluster_resource_id}" : ""
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = var.environment_name
