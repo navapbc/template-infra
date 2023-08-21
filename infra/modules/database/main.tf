@@ -137,7 +137,7 @@ data "aws_iam_policy_document" "db_app_access" {
 }
 
 resource "aws_iam_policy" "db_migrator_access" {
-  name   = var.migrate_access_policy_name
+  name   = var.migrator_access_policy_name
   policy = data.aws_iam_policy_document.db_migrator_access.json
 }
 

@@ -12,7 +12,7 @@ variable "app_access_policy_name" {
   type        = string
 }
 
-variable "migrate_access_policy_name" {
+variable "migrator_access_policy_name" {
   description = "name of the IAM policy to create that will be provide the ability to connect to the database as a user that will have read/write access."
   type        = string
 }
