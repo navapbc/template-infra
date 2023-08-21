@@ -100,7 +100,7 @@ resource "aws_lambda_function" "role_manager" {
 
   vpc_config {
     subnet_ids         = var.private_subnet_ids
-    security_group_ids = [aws_security_group.db.id]
+    security_group_ids = [aws_security_group.role_manager.id]
   }
 
   environment {
@@ -143,6 +143,10 @@ data "archive_file" "role_manager" {
   source_dir  = "${path.module}/role_manager"
   output_path = local.role_manager_package
   depends_on  = [terraform_data.role_manager_python_vendor_packages]
+}
+
+data "aws_kms_key" "default_ssm_key" {
+  key_id = "alias/aws/ssm"
 }
 
 # KMS key used to encrypt role manager's environment variables

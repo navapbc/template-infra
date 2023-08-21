@@ -1,3 +1,5 @@
+# Backups, Query logs and other monitoring configuration for the database can be found here
+
 # Database Backups
 # ----------------
 
@@ -26,10 +28,6 @@ data "aws_kms_key" "backup_vault_key" {
   key_id = "alias/aws/backup"
 }
 
-data "aws_rds_cluster" "db" {
-  cluster_identifier = var.name
-}
-
 # Backup selection defines which resources to backup
 # See https://docs.aws.amazon.com/aws-backup/latest/devguide/assigning-resources.html
 # and https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BackupSelection.html
@@ -39,7 +37,7 @@ resource "aws_backup_selection" "db_backup" {
   iam_role_arn = aws_iam_role.db_backup_role.arn
 
   resources = [
-    data.aws_rds_cluster.db.arn
+    aws_rds_cluster.db.arn
   ]
 }
 

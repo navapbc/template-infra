@@ -1,3 +1,28 @@
+# All the IAM policies for the database and related resources
+
+# Authentication
+# --------------
+
+resource "aws_iam_policy" "db_access" {
+  name   = var.access_policy_name
+  policy = data.aws_iam_policy_document.db_access.json
+}
+
+data "aws_iam_policy_document" "db_access" {
+  # Policy to allow connection to RDS via IAM database authentication
+  # which is more secure than traditional username/password authentication
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+  statement {
+    actions = [
+      "rds-db:connect"
+    ]
+
+    resources = [
+      "${local.db_user_arn_prefix}/${var.app_username}",
+      "${local.db_user_arn_prefix}/${var.migrator_username}",
+    ]
+  }
+}
 
 # Role that AWS Backup uses to authenticate when backing up the target resource
 resource "aws_iam_role" "db_backup_role" {
@@ -54,12 +79,32 @@ data "aws_iam_policy_document" "rds_enhanced_monitoring" {
   }
 }
 
-# Role Manager Lambda Function Roles
-
+# IAM for Role Manager lambda function
 resource "aws_iam_role" "role_manager" {
   name                = "${var.name}-manager"
   assume_role_policy  = data.aws_iam_policy_document.role_manager_assume_role.json
   managed_policy_arns = [data.aws_iam_policy.lambda_vpc_access.arn]
+}
+
+resource "aws_iam_role_policy" "ssm_access" {
+  name = "${var.name}-role-manager-ssm-access"
+  role = aws_iam_role.role_manager.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ssm:GetParameter*"]
+        Resource = "${aws_ssm_parameter.random_db_password.arn}"
+      },
+      {
+        Effect   = "Allow"
+        Action   = ["kms:Decrypt"]
+        Resource = [data.aws_kms_key.default_ssm_key.arn]
+      }
+    ]
+  })
 }
 
 data "aws_iam_policy_document" "role_manager_assume_role" {
@@ -79,59 +124,4 @@ data "aws_iam_policy_document" "role_manager_assume_role" {
 # see https://docs.aws.amazon.com/lambda/latest/dg/configuration-vpc.html
 data "aws_iam_policy" "lambda_vpc_access" {
   name = "AWSLambdaVPCAccessExecutionRole"
-}
-
-
-
-data "aws_kms_key" "default_ssm_key" {
-  key_id = "alias/aws/ssm"
-}
-
-data "aws_ssm_parameter" "random_db_password" {
-  name = "/db/${var.name}/master-password"
-}
-
-resource "aws_iam_role_policy" "ssm_access" {
-  name = "${var.name}-role-manager-ssm-access"
-  role = aws_iam_role.role_manager.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect   = "Allow"
-        Action   = ["ssm:GetParameter*"]
-        Resource = "${data.aws_ssm_parameter.random_db_password.arn}"
-      },
-      {
-        Effect   = "Allow"
-        Action   = ["kms:Decrypt"]
-        Resource = [data.aws_kms_key.default_ssm_key.arn]
-      }
-    ]
-  })
-}
-
-# Authentication
-# --------------
-
-resource "aws_iam_policy" "db_access" {
-  name   = var.access_policy_name
-  policy = data.aws_iam_policy_document.db_access.json
-}
-
-data "aws_iam_policy_document" "db_access" {
-  # Policy to allow connection to RDS via IAM database authentication
-  # which is more secure than traditional username/password authentication
-  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
-  statement {
-    actions = [
-      "rds-db:connect"
-    ]
-
-    resources = [
-      "${local.db_user_arn_prefix}/${var.app_username}",
-      "${local.db_user_arn_prefix}/${var.migrator_username}",
-    ]
-  }
 }
