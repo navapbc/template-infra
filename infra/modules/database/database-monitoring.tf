@@ -1,13 +1,3 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-module "database-iam" {
-  source             = "../database-iam"
-  name               = var.name
-  access_policy_name = var.access_policy_name
-  app_username       = var.app_username
-  migrator_username  = var.migrator_username
-}
-
 # Database Backups
 # ----------------
 
@@ -46,7 +36,7 @@ data "aws_rds_cluster" "db" {
 resource "aws_backup_selection" "db_backup" {
   name         = "${var.name}-db-backup"
   plan_id      = aws_backup_plan.backup_plan.id
-  iam_role_arn = module.database-iam.backup_role_arn
+  iam_role_arn = aws_iam_role.db_backup_role.arn
 
   resources = [
     data.aws_rds_cluster.db.arn

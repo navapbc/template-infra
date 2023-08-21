@@ -1,29 +1,6 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
-module "database-networking" {
-  source             = "../database-networking"
-  name               = var.name
-  vpc_id             = var.vpc_id
-  private_subnet_ids = var.private_subnet_ids
-}
-
-module "database-iam" {
-  source             = "../database-iam"
-  name               = var.name
-  access_policy_name = var.access_policy_name
-  app_username       = var.app_username
-  migrator_username  = var.migrator_username
-}
-
-module "database-monitoring" {
-  # this module has logging and backup configuration
-  source             = "../database-monitoring"
-  name               = var.name
-  access_policy_name = var.access_policy_name
-  app_username       = var.app_username
-  migrator_username  = var.migrator_username
-}
 locals {
   master_username       = "postgres"
   primary_instance_name = "${var.name}-primary"
@@ -68,7 +45,7 @@ resource "aws_rds_cluster" "db" {
     min_capacity = 0.5
   }
 
-  vpc_security_group_ids = [module.database-networking.database_sg_ids]
+  vpc_security_group_ids = [aws_security_group.db.id]
 
   enabled_cloudwatch_logs_exports = ["postgresql"]
 }
@@ -80,7 +57,7 @@ resource "aws_rds_cluster_instance" "primary" {
   engine                     = aws_rds_cluster.db.engine
   engine_version             = aws_rds_cluster.db.engine_version
   auto_minor_version_upgrade = true
-  monitoring_role_arn        = module.database-iam.role_manager_monitoring_arn
+  monitoring_role_arn        = aws_iam_role.rds_enhanced_monitoring.arn
   monitoring_interval        = 30
 }
 
@@ -115,7 +92,7 @@ resource "aws_lambda_function" "role_manager" {
   source_code_hash = data.archive_file.role_manager.output_base64sha256
   runtime          = "python3.9"
   handler          = "role_manager.lambda_handler"
-  role             = module.database-iam.role_manager_arn
+  role             = aws_iam_role.role_manager.arn
   kms_key_arn      = aws_kms_key.role_manager.arn
 
   # Only allow 1 concurrent execution at a time
@@ -123,7 +100,7 @@ resource "aws_lambda_function" "role_manager" {
 
   vpc_config {
     subnet_ids         = var.private_subnet_ids
-    security_group_ids = [module.database-networking.role_manager_sg_ids]
+    security_group_ids = [aws_security_group.db.id]
   }
 
   environment {

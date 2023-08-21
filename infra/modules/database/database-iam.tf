@@ -1,12 +1,4 @@
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
 
-data "aws_rds_cluster" "db" {
-  cluster_identifier = var.name
-}
-locals {
-  db_user_arn_prefix = "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${data.aws_rds_cluster.db.cluster_resource_id}"
-}
 # Role that AWS Backup uses to authenticate when backing up the target resource
 resource "aws_iam_role" "db_backup_role" {
   name_prefix        = "${var.name}-db-backup-role-"
