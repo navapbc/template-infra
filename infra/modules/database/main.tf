@@ -452,9 +452,9 @@ resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_role_
   referenced_security_group_id = aws_security_group.role_manager.id
 }
 
-resource "aws_iam_role" "service" {
-  name               = "${var.name}-migrator"
-  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
+resource "aws_iam_policy" "db_app_access_policy" {
+  name   = var.app_access_policy_name
+  policy = data.aws_iam_policy_document.db_app_access_policy.json
 }
 
 data "aws_iam_policy_document" "ecs_tasks_assume_role_policy" {
@@ -467,5 +467,19 @@ data "aws_iam_policy_document" "ecs_tasks_assume_role_policy" {
       type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
+  }
+}
+
+data "aws_iam_policy_document" "db_app_access_policy" {
+  # Policy to allow connection to RDS via IAM database authentication
+  # which is more secure than traditional username/password authentication
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.IAMPolicy.html
+  statement {
+    actions = [
+      "rds-db:connect"
+    ]
+    resources = [
+      "${local.db_user_arn_prefix}/${var.app_username}",
+    ]
   }
 }

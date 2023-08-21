@@ -397,3 +397,9 @@ resource "aws_iam_role_policy_attachment" "app_db_access" {
   role       = aws_iam_role.service.name
   policy_arn = var.db_vars.access_policy_arn
 }
+
+resource "aws_iam_role" "migrator_db_access" {
+  count              = var.db_vars != null ? 1 : 0
+  name               = "${var.service_name}-migrator"
+  assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume_role_policy.json
+}

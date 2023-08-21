@@ -61,12 +61,12 @@ module "app_config" {
 module "database" {
   source = "../../modules/database"
 
-  name                       = "${local.prefix}${local.database_config.cluster_name}"
-  app_access_policy_name     = "${local.prefix}${local.database_config.app_access_policy_name}"
+  name                        = "${local.prefix}${local.database_config.cluster_name}"
+  app_access_policy_name      = "${local.prefix}${local.database_config.app_access_policy_name}"
   migrator_access_policy_name = "${local.prefix}${local.database_config.migrator_access_policy_name}"
-  app_username               = "${local.prefix}${local.database_config.app_username}"
-  migrator_username          = "${local.prefix}${local.database_config.migrator_username}"
-  schema_name                = "${local.prefix}${local.database_config.schema_name}"
+  app_username                = "${local.prefix}${local.database_config.app_username}"
+  migrator_username           = "${local.prefix}${local.database_config.migrator_username}"
+  schema_name                 = "${local.prefix}${local.database_config.schema_name}"
 
   vpc_id             = data.aws_vpc.default.id
   private_subnet_ids = data.aws_subnets.default.ids
