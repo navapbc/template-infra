@@ -78,79 +78,23 @@ resource "aws_kms_key" "db" {
   enable_key_rotation = true
 }
 
-# Role Manager Lambda Function
-# ----------------------------
-#
-# Resources for the lambda function that is used for managing database roles
-# This includes creating and granting permissions to roles
-# as well as viewing existing roles
+# Query Logging
+# -------------
 
-resource "aws_lambda_function" "role_manager" {
-  function_name = local.role_manager_name
+resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
+  name        = var.name
+  family      = "aurora-postgresql13"
+  description = "Default cluster parameter group"
 
-  filename         = local.role_manager_package
-  source_code_hash = data.archive_file.role_manager.output_base64sha256
-  runtime          = "python3.9"
-  handler          = "role_manager.lambda_handler"
-  role             = aws_iam_role.role_manager.arn
-  kms_key_arn      = aws_kms_key.role_manager.arn
-
-  # Only allow 1 concurrent execution at a time
-  reserved_concurrent_executions = 1
-
-  vpc_config {
-    subnet_ids         = var.private_subnet_ids
-    security_group_ids = [aws_security_group.role_manager.id]
+  parameter {
+    name = "log_statement"
+    # Logs data definition statements (e.g. DROP, ALTER, CREATE)
+    value = "ddl"
   }
 
-  environment {
-    variables = {
-      DB_HOST                = aws_rds_cluster.db.endpoint
-      DB_PORT                = aws_rds_cluster.db.port
-      DB_USER                = local.master_username
-      DB_NAME                = aws_rds_cluster.db.database_name
-      DB_PASSWORD_PARAM_NAME = aws_ssm_parameter.random_db_password.name
-      DB_SCHEMA              = var.schema_name
-      APP_USER               = var.app_username
-      MIGRATOR_USER          = var.migrator_username
-      PYTHONPATH             = "vendor"
-    }
+  parameter {
+    name = "log_min_duration_statement"
+    # Logs all statements that run 100ms or longer
+    value = "100"
   }
-
-  # Ensure AWS Lambda functions with tracing are enabled
-  # https://docs.bridgecrew.io/docs/bc_aws_serverless_4
-  tracing_config {
-    mode = "Active"
-  }
-
-  # checkov:skip=CKV_AWS_272:TODO(https://github.com/navapbc/template-infra/issues/283)
-
-  # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
-}
-
-# Installs python packages needed by the role manager lambda function before
-# creating the zip archive. Reinstalls whenever requirements.txt changes
-resource "terraform_data" "role_manager_python_vendor_packages" {
-  triggers_replace = file("${path.module}/role_manager/requirements.txt")
-
-  provisioner "local-exec" {
-    command = "pip3 install -r ${path.module}/role_manager/requirements.txt -t ${path.module}/role_manager/vendor"
-  }
-}
-
-data "archive_file" "role_manager" {
-  type        = "zip"
-  source_dir  = "${path.module}/role_manager"
-  output_path = local.role_manager_package
-  depends_on  = [terraform_data.role_manager_python_vendor_packages]
-}
-
-data "aws_kms_key" "default_ssm_key" {
-  key_id = "alias/aws/ssm"
-}
-
-# KMS key used to encrypt role manager's environment variables
-resource "aws_kms_key" "role_manager" {
-  description         = "Key for Lambda function ${local.role_manager_name}"
-  enable_key_rotation = true
 }

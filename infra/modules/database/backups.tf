@@ -1,5 +1,3 @@
-# Backups, Query logs and other monitoring configuration for the database can be found here
-
 # Database Backups
 # ----------------
 
@@ -41,23 +39,28 @@ resource "aws_backup_selection" "db_backup" {
   ]
 }
 
-# Query Logging
-# -------------
+# Role that AWS Backup uses to authenticate when backing up the target resource
+resource "aws_iam_role" "db_backup_role" {
+  name_prefix        = "${var.name}-db-backup-role-"
+  assume_role_policy = data.aws_iam_policy_document.db_backup_policy.json
+}
 
-resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
-  name        = var.name
-  family      = "aurora-postgresql13"
-  description = "Default cluster parameter group"
+data "aws_iam_policy_document" "db_backup_policy" {
+  statement {
+    actions = [
+      "sts:AssumeRole",
+    ]
 
-  parameter {
-    name = "log_statement"
-    # Logs data definition statements (e.g. DROP, ALTER, CREATE)
-    value = "ddl"
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["backup.amazonaws.com"]
+    }
   }
+}
 
-  parameter {
-    name = "log_min_duration_statement"
-    # Logs all statements that run 100ms or longer
-    value = "100"
-  }
+resource "aws_iam_role_policy_attachment" "db_backup_role_policy_attachment" {
+  role       = aws_iam_role.db_backup_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSBackupServiceRolePolicyForBackup"
 }
