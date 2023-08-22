@@ -105,7 +105,7 @@ func EnableDestroy(t *testing.T, terraformOptions *terraform.Options, workspaceN
 		Args: []string{
 			"-i.bak",
 			"s/force_destroy = false/force_destroy = true/g",
-			"infra/modules/service/access_logs.tf",
+			"infra/modules/service/access-logs.tf",
 		},
 		WorkingDir: "../../",
 	})
@@ -114,7 +114,7 @@ func EnableDestroy(t *testing.T, terraformOptions *terraform.Options, workspaceN
 		Args: []string{
 			"-i.bak",
 			"s/prevent_destroy = true/prevent_destroy = false/g",
-			"infra/modules/service/access_logs.tf",
+			"infra/modules/service/access-logs.tf",
 		},
 		WorkingDir: "../../",
 	})
