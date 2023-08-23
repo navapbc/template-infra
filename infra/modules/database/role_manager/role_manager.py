@@ -101,7 +101,10 @@ def configure_database(conn: Connection) -> None:
 
     logger.info("Revoking default access on public schema")
     conn.run("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
+    logger.info("Revoking database access from public role")
     conn.run(f"REVOKE ALL ON DATABASE {identifier(database_name)} FROM PUBLIC")
+    logger.info("Setting default search path to schema=%s", schema_name)
+    conn.run(f"ALTER DATABASE {identifier(database_name)} SET search_path TO {identifier(schema_name)}")
 
     configure_roles(conn, [migrator_username, app_username], database_name)
     configure_schema(conn, schema_name, migrator_username, app_username)
