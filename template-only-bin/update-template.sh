@@ -18,7 +18,7 @@ echo "Restore modified project files"
 git checkout HEAD -- \
   .dockleconfig \
   .github/workflows/cd.yml \
-  .github/workflows/ci-infra.yml \
+  .github/workflows/ci-infra-service.yml \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
