@@ -162,6 +162,7 @@ release-publish: ## Publish release to $APP_NAME's build repository
 
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
 	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-deploy: ## Deploy release to $APP_NAME's web service in $ENVIRONMENT
