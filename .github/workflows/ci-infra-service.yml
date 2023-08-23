@@ -14,6 +14,7 @@ on:
   #     - infra/*/service/**
   #     - test/**
   #     - .github/workflows/ci-infra-service.yml
+  workflow_dispatch:
 
 jobs:
   infra-test-e2e:
