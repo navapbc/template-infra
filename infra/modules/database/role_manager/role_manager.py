@@ -99,6 +99,7 @@ def configure_database(conn: Connection) -> None:
     schema_name = os.environ.get("DB_SCHEMA")
     database_name = os.environ.get("DB_NAME")
 
+    logger.info("Revoking default access on public schema")
     conn.run("REVOKE CREATE ON SCHEMA public FROM PUBLIC")
     conn.run(f"REVOKE ALL ON DATABASE {identifier(database_name)} FROM PUBLIC")
 
