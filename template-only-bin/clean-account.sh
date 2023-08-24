@@ -23,3 +23,12 @@ for BUCKET in $BUCKETS; do
 done
 
 set -e
+
+
+# load balancers
+# security groups
+# clusters
+# sns
+# alerts
+# log groups
+# iam roles
