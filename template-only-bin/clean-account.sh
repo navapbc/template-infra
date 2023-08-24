@@ -41,6 +41,9 @@ for LOG_GROUP in $LOG_GROUPS; do
   aws logs delete-log-group --log-group-name "$LOG_GROUP"
 done
 
+aws iam delete-role --role-name app-dev
+aws iam delete-role --role-name app-dev-task-executor
+
 set -e
 
 
