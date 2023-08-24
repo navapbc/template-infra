@@ -12,12 +12,12 @@ $SCRIPT_DIR/install-template.sh
 # Restore project files with project-specific configuration that was defined as part of project setup.
 # This includes the terraform backend configuration blocks and the project-config module
 # Also restore project files that had lines that were commented out in the template, such as Makefile
-# and cd.yml workflow
+# and cd-app.yml workflow
 # Updates in any of these files need to be manually applied to the projects
 echo "Restore modified project files"
 git checkout HEAD -- \
   .dockleconfig \
-  .github/workflows/cd.yml \
+  .github/workflows/cd-app.yml \
   .github/workflows/ci-infra-service.yml \
   .grype.yml \
   .hadolint.yaml \
