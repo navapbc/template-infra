@@ -8,6 +8,10 @@ BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].Name' --outp
 
 set +e
 
+# Delete ECS cluster
+aws ecs delete-service --no-cli-pager --cluster app-dev --service app-dev --force
+aws ecs delete-cluster --no-cli-pager --cluster app-dev
+
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
 for BUCKET in $BUCKETS; do
   echo "Deleting $BUCKET"
@@ -27,8 +31,7 @@ set -e
 
 # load balancers
 # security groups
-# clusters
-# sns
+# sns topic
 # alerts
 # log groups
 # iam roles
