@@ -11,18 +11,18 @@ aws ecs delete-service --no-cli-pager --cluster app-dev --service app-dev --forc
 aws ecs delete-cluster --no-cli-pager --cluster app-dev
 
 # Delete load balancers
-LOAD_BALANCERS=$(aws elbv2 describe-load-balancers --no-cli-pager --query 'LoadBalancers[*].LoadBalancerArn' --output text)
+LOAD_BALANCERS=$(aws elbv2 describe-load-balancers --no-cli-pager --query 'LoadBalancers[*].[LoadBalancerArn]' --output text)
 for LOAD_BALANCER in $LOAD_BALANCERS; do
-  echo "Deleting $LOAD_BALANCER"
+  echo "Deleting load balancer $LOAD_BALANCER"
 
   aws elbv2 delete-load-balancer --load-balancer-arn "$LOAD_BALANCER"
 done
 
 
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
-BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].Name' --output text)
+BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].[Name]' --output text)
 for BUCKET in $BUCKETS; do
-  echo "Deleting $BUCKET"
+  echo "Deleting bucket $BUCKET"
 
   # Deleting all versioned objects
   aws s3api delete-objects --no-cli-pager --bucket $BUCKET --delete "$(aws s3api list-object-versions --bucket $BUCKET --query='{Objects: Versions[].{Key:Key,VersionId:VersionId}}')"
@@ -34,11 +34,17 @@ for BUCKET in $BUCKETS; do
   aws s3api delete-bucket --no-cli-pager --bucket $BUCKET
 done
 
+# Delete log groups
+LOG_GROUPS=$(aws logs describe-log-groups --no-cli-pager --query 'logGroups[*].[logGroupName]' --output text)
+for LOG_GROUP in $LOG_GROUPS; do
+  echo "Deleting log group $LOG_GROUP"
+  aws logs delete-log-group --log-group-name "$LOG_GROUP"
+done
+
 set -e
 
 
 # security groups
 # sns topic
 # alerts
-# log groups
 # iam roles
