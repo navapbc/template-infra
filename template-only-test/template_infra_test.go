@@ -141,14 +141,14 @@ func ValidateBuildRepository(t *testing.T, projectName string) {
 		Args:       []string{"release-build", "APP_NAME=app"},
 		WorkingDir: "../",
 	})
-	assert.NoError(t, err, "GitHub actions failed to authenticate")
+	assert.NoError(t, err, "Could not build release")
 
 	err = shell.RunCommandE(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"release-publish", "APP_NAME=app"},
 		WorkingDir: "../",
 	})
-	assert.NoError(t, err, "GitHub actions failed to authenticate")
+	assert.NoError(t, err, "Could not publish release")
 
 	fmt.Println("::endgroup::")
 }
