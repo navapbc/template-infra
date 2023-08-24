@@ -11,7 +11,8 @@ Before setting up the application's environments you'll need to have:
 1. [A compatible application in the app folder](./application-requirements.md)
 2. [Configure the app](/infra/app/app-config/main.tf). Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
 3. (If the application has a database) [Set up the database for the application](./set-up-database.md)
-4. [Set up the application build repository](./set-up-app-build-repository.md)
+4. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
+5. [Set up the application build repository](./set-up-app-build-repository.md)
 
 ## 1. Configure backend
 
@@ -49,3 +50,9 @@ Now run the following commands to create the resources, using the image tag that
 ```bash
 TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
+
+## 4. Configure monitoring alerts
+
+Configure email alerts, external incident management service integration and additional Cloudwatch Alerts. 
+[Configure monitoring module](./set-up-monitoring-alerts.md)
+
