@@ -6,7 +6,7 @@ set -euxo pipefail
 BACKEND_CONFIG_FILE="dev.s3.tfbackend"
 TF_VARS_FILE="dev.tfvars"
 
-sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/service/access_logs.tf
+sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/service/access-logs.tf
 
 cd infra/app/service
 
