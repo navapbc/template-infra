@@ -57,13 +57,13 @@ func BuildAndPublish(t *testing.T) {
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"release-build"},
+		Args:       []string{"release-build", "APP_NAME=app"},
 		WorkingDir: "../../",
 	})
 
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"release-publish"},
+		Args:       []string{"release-publish", "APP_NAME=app"},
 		WorkingDir: "../../",
 	})
 }
@@ -97,7 +97,7 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		Args: []string{
 			"-i.bak",
 			"s/force_destroy = false/force_destroy = true/g",
-			"infra/modules/service/access_logs.tf",
+			"infra/modules/service/access-logs.tf",
 		},
 		WorkingDir: "../../",
 	})
@@ -106,7 +106,7 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		Args: []string{
 			"-i.bak",
 			"s/prevent_destroy = true/prevent_destroy = false/g",
-			"infra/modules/service/access_logs.tf",
+			"infra/modules/service/access-logs.tf",
 		},
 		WorkingDir: "../../",
 	})
