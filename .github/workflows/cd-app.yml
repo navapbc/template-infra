@@ -4,13 +4,14 @@ name: Continuous Deployment - App
 run-name: Deploy ${{ github.ref_name }} to ${{ inputs.environment || 'dev' }}
 
 on:
-  push:
-    branches:
-      - "main"
-    paths:
-      - "app/**"
-      - "bin/**"
-      - "infra/**"
+  # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
+  # push:
+  #   branches:
+  #     - "main"
+  #   paths:
+  #     - "app/**"
+  #     - "bin/**"
+  #     - "infra/**"
   workflow_dispatch:
     inputs:
       app_name:
