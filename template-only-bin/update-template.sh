@@ -34,7 +34,7 @@ cd -
 
 echo "Applying patch"
 EXCLUDE_OPT="--exclude=.github/workflows/template-only-*"
-git apply $EXCLUDE_OPT --allow-empty template-infra/patch
+git apply $EXCLUDE_OPT -3 --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
 echo "$TARGET_VERSION" > .template-version
