@@ -21,10 +21,6 @@ jobs:
           - navapbc/platform-test-flask
           - navapbc/platform-test-nextjs
     steps:
-      - name: Checkout template-infra repo
-        uses: actions/checkout@v3
-        with:
-          path: template-infra
       - name: Checkout project repo
         uses: actions/checkout@v3
         with:
