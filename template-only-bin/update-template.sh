@@ -12,7 +12,7 @@ set -euo pipefail
 TARGET_VERSION=${1:-"main"}
 
 echo "Clone template-infra"
-git clone https://github.com/navapbc/template-infra.git
+git clone git@github.com:navapbc/template-infra.git
 
 # Switch to target version
 cd template-infra
