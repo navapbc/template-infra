@@ -1,11 +1,23 @@
 #!/bin/bash
-#
+# -----------------------------------------------------------------------------
 # This script updates template-infra in your project. Run
 # This script from your project's root directory.
+#
+# Positional parameters:
+#   TARGET_VERSION (optional) – the version of template-infra to upgrade to.
+#     Defaults to main.
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
-echo "Fetch latest version of template-infra"
+TARGET_VERSION=${1:-"main"}
+
+echo "Clone template-infra"
 git clone git@github.com:navapbc/template-infra.git
+
+# Switch to target version
+cd template-infra
+git checkout $TARGET_VERSION
+cd -
 
 echo "Install template"
 ./template-infra/template-only-bin/install-template.sh
