@@ -1,4 +1,4 @@
-name: Database migrations
+name: Deploy
 
 on:
   workflow_call:
@@ -12,24 +12,24 @@ on:
         required: true
         type: string
 
-concurrency: database-migrations-${{ inputs.environment }}
+concurrency: cd-${{ inputs.environment }}
 
 jobs:
-  build-and-publish:
-    name: Build
-    uses: ./.github/workflows/build-and-publish.yml
+  # Don't need to call the build-and-publish workflow since the database-migrations
+  # workflow already calls it
+  database-migrations:
+    name: Database migrations
+    uses: ./.github/workflows/database-migrations.yml
     with:
       app_name: ${{ inputs.app_name }}
-      ref: ${{ github.ref }}
-  run-migrations:
-    name: Run migrations
+      environment: ${{ inputs.environment }}
+  deploy:
+    name: Deploy
     runs-on: ubuntu-latest
-    needs: [build-and-publish]
-
+    needs: [database-migrations]
     permissions:
       contents: read
       id-token: write
-
     steps:
       - uses: actions/checkout@v3
 
@@ -39,6 +39,5 @@ jobs:
           app_name: ${{ inputs.app_name }}
           environment: ${{ inputs.environment }}
 
-      - name: Run migrations
-        run: |
-          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
+      - name: Deploy release
+        run: make release-deploy APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
