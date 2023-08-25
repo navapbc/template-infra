@@ -38,13 +38,12 @@ cd -
 
 echo "Applying patch"
 # In addition to the template-only files, also exclude cd-app.yml and
-# ci-infra.yml which have a bunch of commented out lines which can mess up the
-# patch
+# ci-infra-service.yml which have a bunch of commented out lines which can
+# mess up the patch if there are changes to those commented lines
 EXCLUDE_OPT=" \
   --exclude=.github/workflows/template-only-* \
-  --exclude=.github/workflows/cd.yml \
   --exclude=.github/workflows/cd-app.yml \
-  --exclude=.github/workflows/ci-infra.yml"
+  --exclude=.github/workflows/ci-infra-service.yml"
 git apply $EXCLUDE_OPT --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
