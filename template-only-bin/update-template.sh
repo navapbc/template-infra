@@ -19,6 +19,10 @@ git clone git@github.com:navapbc/template-infra.git
 echo "Creating patch"
 cd template-infra
 git checkout $TARGET_VERSION
+
+# Get version hash to update .template-version after patch is successful
+TARGET_VERSION_HASH=$(git rev-parse HEAD)
+
 INCLUDE_PATHS=" \
   .github \
   bin \
@@ -43,7 +47,7 @@ EXCLUDE_OPT=" \
 git apply $EXCLUDE_OPT --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
-echo "$TARGET_VERSION" > .template-version
+echo $TARGET_VERSION_HASH > .template-version
 
 echo "Clean up template-infra folder"
 rm -fr template-infra
