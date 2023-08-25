@@ -23,6 +23,7 @@ git checkout $TARGET_VERSION
 # Get version hash to update .template-version after patch is successful
 TARGET_VERSION_HASH=$(git rev-parse HEAD)
 
+# Note: Keep this list in sync with the files copied in install-template.sh
 INCLUDE_PATHS=" \
   .github \
   bin \
@@ -37,13 +38,8 @@ git diff $CURRENT_VERSION $TARGET_VERSION -- $INCLUDE_PATHS > patch
 cd -
 
 echo "Applying patch"
-# In addition to the template-only files, also exclude cd-app.yml and
-# ci-infra-service.yml which have a bunch of commented out lines which can
-# mess up the patch if there are changes to those commented lines
-EXCLUDE_OPT=" \
-  --exclude=.github/workflows/template-only-* \
-  --exclude=.github/workflows/cd-app.yml \
-  --exclude=.github/workflows/ci-infra-service.yml"
+# Note: Keep this list in sync with the removed files in install-template.sh
+EXCLUDE_OPT="--exclude=.github/workflows/template-only-*"
 git apply $EXCLUDE_OPT --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
