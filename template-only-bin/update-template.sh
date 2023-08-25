@@ -33,8 +33,10 @@ git diff $CURRENT_VERSION $TARGET_VERSION -- $INCLUDE_PATHS > patch
 cd -
 
 echo "Applying patch"
-EXCLUDE_OPT="--exclude=.github/workflows/template-only-*"
-git apply $EXCLUDE_OPT -3 --allow-empty template-infra/patch
+# In addition to the template-only files, also exclude cd.yml and ci-infra.yml which have a bunch of commented out lines
+# which can mess up the patch
+EXCLUDE_OPT="--exclude=.github/workflows/template-only-* --exclude=.github/workflows/cd.yml --exclude=.github/workflows/ci-infra.yml"
+git apply $EXCLUDE_OPT --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
 echo "$TARGET_VERSION" > .template-version
