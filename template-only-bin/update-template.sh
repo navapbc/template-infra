@@ -33,9 +33,13 @@ git diff $CURRENT_VERSION $TARGET_VERSION -- $INCLUDE_PATHS > patch
 cd -
 
 echo "Applying patch"
-# In addition to the template-only files, also exclude cd.yml and ci-infra.yml which have a bunch of commented out lines
-# which can mess up the patch
-EXCLUDE_OPT="--exclude=.github/workflows/template-only-* --exclude=.github/workflows/cd.yml --exclude=.github/workflows/ci-infra.yml"
+# In addition to the template-only files, also exclude cd-app.yml and
+# ci-infra.yml which have a bunch of commented out lines which can mess up the
+# patch
+EXCLUDE_OPT=" \
+  --exclude=.github/workflows/template-only-* \
+  --exclude=.github/workflows/cd-app.yml \
+  --exclude=.github/workflows/ci-infra.yml"
 git apply $EXCLUDE_OPT --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
