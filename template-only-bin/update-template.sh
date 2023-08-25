@@ -4,10 +4,11 @@
 # This script from your project's root directory.
 set -euo pipefail
 
-SCRIPT_DIR=$(dirname $0)
+echo "Fetch latest version of template-infra"
+git clone git@github.com:navapbc/template-infra.git
 
 echo "Install template"
-$SCRIPT_DIR/install-template.sh
+./template-infra/template-only-bin/install-template.sh
 
 # Restore project files with project-specific configuration that was defined as part of project setup.
 # This includes the terraform backend configuration blocks and the project-config module
@@ -24,3 +25,11 @@ git checkout HEAD -- \
   .trivyignore \
   infra/project-config/main.tf \
   infra/app/app-config/main.tf
+
+# Store template version in a file
+cd template-infra
+git rev-parse HEAD > ../.template-version
+cd -
+
+echo "Clean up template-infra folder"
+rm -fr template-infra
