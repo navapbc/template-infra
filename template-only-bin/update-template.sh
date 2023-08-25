@@ -42,6 +42,7 @@ echo "Applying patch"
 # patch
 EXCLUDE_OPT=" \
   --exclude=.github/workflows/template-only-* \
+  --exclude=.github/workflows/cd.yml \
   --exclude=.github/workflows/cd-app.yml \
   --exclude=.github/workflows/ci-infra.yml"
 git apply $EXCLUDE_OPT --allow-empty template-infra/patch
