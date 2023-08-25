@@ -14,7 +14,7 @@ TARGET_VERSION=${1:-"main"}
 CURRENT_VERSION=$(cat .template-version)
 
 echo "Clone template-infra"
-git clone git@github.com:navapbc/template-infra.git
+git clone https://github.com/navapbc/template-infra.git
 
 echo "Creating patch"
 cd template-infra
