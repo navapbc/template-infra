@@ -1,13 +1,26 @@
 #!/bin/bash
-#
+# -----------------------------------------------------------------------------
 # This script updates template-infra in your project. Run
 # This script from your project's root directory.
+#
+# Positional parameters:
+#   TARGET_VERSION (optional) – the version of template-infra to upgrade to.
+#     Defaults to main.
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
-SCRIPT_DIR=$(dirname $0)
+TARGET_VERSION=${1:-"main"}
+
+echo "Clone template-infra"
+git clone git@github.com:navapbc/template-infra.git
+
+# Switch to target version
+cd template-infra
+git checkout $TARGET_VERSION
+cd -
 
 echo "Install template"
-$SCRIPT_DIR/install-template.sh
+./template-infra/template-only-bin/install-template.sh
 
 # Restore project files with project-specific configuration that was defined as part of project setup.
 # This includes the terraform backend configuration blocks and the project-config module
@@ -24,3 +37,11 @@ git checkout HEAD -- \
   .trivyignore \
   infra/project-config/main.tf \
   infra/app/app-config/main.tf
+
+# Store template version in a file
+cd template-infra
+git rev-parse HEAD > ../.template-version
+cd -
+
+echo "Clean up template-infra folder"
+rm -fr template-infra
