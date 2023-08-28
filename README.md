@@ -46,6 +46,10 @@ curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only
 
 If the update fails the simplest option may be to re-run the installation script above and manually review the changes.
 
+**Remember:** Make sure to read the release notes in case there are breaking changes you need to address.
+
+### Renamed applications
+
 If you renamed your application from `infra/app` to something else like `infra/foo`, then first rename your app back to `infra/app` before applying the updates e.g.
 
 ```bash
