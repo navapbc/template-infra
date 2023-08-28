@@ -12,3 +12,7 @@ output "load_balancer_arn_suffix" {
   value       = aws_lb.alb.arn_suffix
 }
 
+output "migrator_role_arn" {
+  description = "ARN for role to use for migration"
+  value       = aws_iam_role.migrator_service.arn
+}
