@@ -26,7 +26,7 @@ The infra template includes an example "hello, world" application that works wit
 
 ## Template Applications
 
-You can the following template applications with the template infrastructure
+You can use the following template applications with the template infrastructure. Each of these includes a script to generate a working application that works with this infra template.
 
 * [template-application-nextjs](https://github.com/navapbc/template-application-nextjs)
 * [template-application-flask](https://github.com/navapbc/template-application-flask)
