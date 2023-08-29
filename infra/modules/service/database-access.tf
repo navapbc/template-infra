@@ -14,9 +14,16 @@ resource "aws_vpc_security_group_ingress_rule" "db_ingress_from_service" {
   referenced_security_group_id = aws_security_group.app.id
 }
 
-resource "aws_iam_role_policy_attachment" "app_db_access" {
+resource "aws_iam_role_policy_attachment" "app_service_db_access" {
   count = var.db_vars != null ? 1 : 0
 
-  role       = aws_iam_role.service.name
-  policy_arn = var.db_vars.access_policy_arn
+  role       = aws_iam_role.app_service.name
+  policy_arn = var.db_vars.app_access_policy_arn
+}
+
+resource "aws_iam_role_policy_attachment" "migrator_db_access" {
+  count = var.db_vars != null ? 1 : 0
+
+  role       = aws_iam_role.migrator_task.name
+  policy_arn = var.db_vars.migrator_access_policy_arn
 }

@@ -13,7 +13,9 @@ import (
 )
 
 var uniqueId = strings.ToLower(random.UniqueId())
-var workspaceName = fmt.Sprintf("t-%s", uniqueId)
+
+// var workspaceName = fmt.Sprintf("t-%s", uniqueId)
+var workspaceName = "migrate-test"
 
 func TestService(t *testing.T) {
 	BuildAndPublish(t)
@@ -34,10 +36,10 @@ func TestService(t *testing.T) {
 
 	TerraformInit(t, terraformOptions, "dev.s3.tfbackend")
 
-	defer terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
+	// defer terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
 	terraform.WorkspaceSelectOrNew(t, terraformOptions, workspaceName)
 
-	defer DestroyService(t, terraformOptions)
+	// defer DestroyService(t, terraformOptions)
 	terraform.Apply(t, terraformOptions)
 
 	WaitForServiceToBeStable(t, workspaceName)
