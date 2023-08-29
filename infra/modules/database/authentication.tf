@@ -41,8 +41,6 @@ data "aws_iam_policy_document" "app_db_access" {
 
     resources = [
       "${local.db_user_arn_prefix}/${var.app_username}",
-      # TODO: Remove migrator username. Part 3 of multipart update https://github.com/navapbc/template-infra/issues/354#issuecomment-1693973424
-      "${local.db_user_arn_prefix}/${var.migrator_username}",
     ]
   }
 }
