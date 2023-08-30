@@ -47,7 +47,7 @@ TF_CLI_ARGS_apply="-input=false -auto-approve -target=module.service.aws_ecs_tas
 
 echo "::endgroup::"
 echo
-echo '::group::Step 2. Run "db-migrate" command'
+echo 'Step 2. Run "db-migrate" command'
 
 COMMAND='["db-migrate"]'
 
@@ -58,4 +58,3 @@ EOF
 )
 
 ./bin/run-command.sh $APP_NAME $ENVIRONMENT "$COMMAND" "$ENVIRONMENT_VARIABLES"
-echo "::endgroup::"

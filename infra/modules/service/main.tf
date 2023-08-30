@@ -8,6 +8,7 @@ locals {
   alb_name                = var.service_name
   cluster_name            = var.service_name
   log_group_name          = "service/${var.service_name}"
+  log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
   image_url               = "${data.aws_ecr_repository.app.repository_url}:${var.image_tag}"
 
@@ -103,7 +104,7 @@ resource "aws_ecs_task_definition" "app" {
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.service_logs.name,
           "awslogs-region"        = data.aws_region.current.name,
-          "awslogs-stream-prefix" = var.service_name
+          "awslogs-stream-prefix" = local.log_stream_prefix
         }
       }
     }
