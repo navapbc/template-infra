@@ -35,8 +35,8 @@ jobs:
         with:
           terraform_version: 1.4.6
           terraform_wrapper: false
-      - name: Run infra-validate
-        run: make infra-validate
+      - name: Validate
+        run: make infra-validate-modules
   check-compliance-with-checkov:
     name: Check compliance with checkov
     runs-on: ubuntu-latest
