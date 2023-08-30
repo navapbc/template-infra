@@ -27,20 +27,34 @@ __check_defined = \
 
 
 .PHONY : \
-	infra-validate-modules \
-	infra-validate-env-template \
-	infra-check-compliance \
+	help \
 	infra-check-compliance-checkov \
 	infra-check-compliance-tfsec \
-	infra-lint \
+	infra-check-compliance \
+	infra-configure-app-build-repository \
+	infra-configure-app-database \
+	infra-configure-app-service \
+	infra-configure-monitoring-secrets \
+	infra-configure-network \
 	infra-format \
+	infra-lint \
+	infra-set-up-account \
+	infra-test-service \
+	infra-update-app-build-repository \
+	infra-update-app-database-roles \
+	infra-update-app-database \
+	infra-update-app-service \
+	infra-update-current-account \
+	infra-update-network \
+	infra-validate-modules \
 	release-build \
-	release-publish \
 	release-deploy \
-	image-registry-login \
-	db-migrate \
-	db-migrate-down \
-	db-migrate-create
+	release-image-name \
+	release-image-tag \
+	release-publish \
+	release-run-database-migrations
+
+
 
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
@@ -97,33 +111,21 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
 
 
-# Validate all infra root and child modules.
-infra-validate: \
-	infra-validate-modules \
-	# !! Uncomment the following line once you've set up the infra/project-config module
-	# infra-validate-env-template
-
-# Validate all infra root and child modules.
-# Validate all infra reusable child modules. The prerequisite for this rule is obtained by
+# The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
-infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) ## Run terraform validate on reusable child modules
 
 infra-validate-module-%:
 	@echo "Validate library module: $*"
 	terraform -chdir=infra/modules/$* init -backend=false
 	terraform -chdir=infra/modules/$* validate
 
-infra-validate-env-template:
-	@echo "Validate module: env-template"
-	terraform -chdir=infra/app/env-template init -backend=false
-	terraform -chdir=infra/app/env-template validate
+infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec ## Run compliance checks
 
-infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
-
-infra-check-compliance-checkov:
+infra-check-compliance-checkov: ## Run checkov compliance checks
 	checkov --directory infra
 
-infra-check-compliance-tfsec:
+infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
 infra-lint: ## Lint infra code
