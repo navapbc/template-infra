@@ -112,6 +112,13 @@ while true; do
 done
 echo
 echo
+
+# Tail logs until task stops using a loop that polls for new logs.
+# The reason why we don't use `aws logs tail` is because that command is meant
+# for interactive use. In particular, it will wait forever for new logs, even
+# after a task stops, until the user hits Ctrl+C. And the reason why we don't
+# wait until the task completes first before fetching logs is so that we can
+# show logs in near real-time, which can be useful for long running tasks.
 echo "::group::Tailing logs until task stops"
 echo "  LOG_GROUP=$LOG_GROUP"
 echo "  LOG_STREAM=$LOG_STREAM"
