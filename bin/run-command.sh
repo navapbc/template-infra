@@ -94,6 +94,12 @@ ECS_TASK_ID=$(basename $TASK_ARN)
 # See https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_awslogs.html
 LOG_STREAM="$LOG_STREAM_PREFIX/$CONTAINER_NAME/$ECS_TASK_ID"
 
+# Wait for log stream to be created before fetching the logs.
+# The reason we don't use the `aws ecs wait tasks-running` command is because
+# that command can fail on short-lived tasks. In particular, the command polls
+# every 6 seconds with describe-tasks until tasks[].lastStatus is RUNNING. A
+# task that completes quickly can go from PENDING to STOPPED, causing the wait
+# command to error out.
 echo "Waiting for log stream to be created"
 echo "  LOG_STREAM=$LOG_STREAM"
 while true; do
