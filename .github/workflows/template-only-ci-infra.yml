@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Shellcheck
-        run: make -f template-only.mal lint-template-scripts
+        run: make -f template-only.mak lint-template-scripts
   test:
     name: Infra Tests
     runs-on: ubuntu-latest
