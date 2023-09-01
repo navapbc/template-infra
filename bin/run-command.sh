@@ -88,7 +88,7 @@ echo
 
 # Get the task id by extracting the substring after the last '/' since the task ARN is of
 # the form "arn:aws:ecs:<region>:<account id>:task/<cluster name>/<task id>"
-ECS_TASK_ID=$(basename $TASK_ARN)
+ECS_TASK_ID="$(basename "$TASK_ARN")"
 
 # The log stream has the format "prefix-name/container-name/ecs-task-id"
 # See https://docs.aws.amazon.com/AmazonECS/latest/userguide/using_awslogs.html
@@ -103,7 +103,7 @@ LOG_STREAM="$LOG_STREAM_PREFIX/$CONTAINER_NAME/$ECS_TASK_ID"
 echo "Waiting for log stream to be created"
 echo "  LOG_STREAM=$LOG_STREAM"
 while true; do
-  IS_LOG_STREAM_CREATED=$(aws logs describe-log-streams --no-cli-pager --log-group-name $LOG_GROUP --query "length(logStreams[?logStreamName==\`$LOG_STREAM\`])")
+  IS_LOG_STREAM_CREATED=$(aws logs describe-log-streams --no-cli-pager --log-group-name "$LOG_GROUP" --query "length(logStreams[?logStreamName==\`$LOG_STREAM\`])")
   if [ "$IS_LOG_STREAM_CREATED" == "1" ]; then
     break
   fi
@@ -130,24 +130,24 @@ while true; do
   # then transforming them afterwards using jq
   LOG_EVENTS=$(aws logs get-log-events \
     --no-cli-pager \
-    --log-group-name $LOG_GROUP \
-    --log-stream-name $LOG_STREAM \
-    --start-time $LOGS_START_TIME_MILLIS \
+    --log-group-name "$LOG_GROUP" \
+    --log-stream-name "$LOG_STREAM" \
+    --start-time "$LOGS_START_TIME_MILLIS" \
     --start-from-head \
     --no-paginate \
     --output json)
   # Divide timestamp by 1000 since AWS timestamps are in milliseconds
-  echo $LOG_EVENTS | jq -r '.events[] | ((.timestamp / 1000 | strftime("%Y-%m-%d %H:%M:%S")) + "\t" + .message)'
+  echo "$LOG_EVENTS" | jq -r '.events[] | ((.timestamp / 1000 | strftime("%Y-%m-%d %H:%M:%S")) + "\t" + .message)'
 
   # If the task stopped, then stop tailing logs
-  LAST_TASK_STATUS=$(aws ecs describe-tasks --cluster $CLUSTER_NAME --tasks $TASK_ARN --query "tasks[0].containers[?name=='$CONTAINER_NAME'].lastStatus" --output text)
+  LAST_TASK_STATUS=$(aws ecs describe-tasks --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN" --query "tasks[0].containers[?name=='$CONTAINER_NAME'].lastStatus" --output text)
   if [ "$LAST_TASK_STATUS" = "STOPPED" ]; then
     break
   fi
 
   # If there were new logs printed, then update the logs start time filter
   # to be the last log's timestamp + 1
-  LAST_LOG_TIMESTAMP=$(echo $LOG_EVENTS | jq -r '.events[-1].timestamp' )
+  LAST_LOG_TIMESTAMP=$(echo "$LOG_EVENTS" | jq -r '.events[-1].timestamp' )
   if [ "$LAST_LOG_TIMESTAMP" != "null" ]; then
     LOGS_START_TIME_MILLIS=$((LAST_LOG_TIMESTAMP + 1))
   fi
