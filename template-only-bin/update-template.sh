@@ -39,9 +39,7 @@ cd -
 
 echo "Applying patch"
 # Note: Keep this list in sync with the removed files in install-template.sh
-EXCLUDE_OPT="--exclude=.github/workflows/template-only-* \
-  --exclude=.github/workflows/cd.yml \
-  --exclude=.github/workflows/ci-infra.yml"
+EXCLUDE_OPT="--exclude=.github/workflows/template-only-*"
 git apply $EXCLUDE_OPT --allow-empty template-infra/patch
 
 echo "Saving new template version to .template-infra"
