@@ -31,16 +31,16 @@ echo "  ENVIRONMENT_VARIABLES=$ENVIRONMENT_VARIABLES"
 echo
 
 # Use the same cluster, task definition, and network configuration that the application service uses
-CLUSTER_NAME=$(terraform -chdir=infra/$APP_NAME/service output -raw service_cluster_name)
-SERVICE_NAME=$(terraform -chdir=infra/$APP_NAME/service output -raw service_name)
+CLUSTER_NAME="$(terraform -chdir="infra/$APP_NAME/service" output -raw service_cluster_name)"
+SERVICE_NAME="$(terraform -chdir="infra/$APP_NAME/service" output -raw service_name)"
 
-SERVICE_TASK_DEFINITION_ARN=$(aws ecs describe-services --no-cli-pager --cluster $CLUSTER_NAME --services $SERVICE_NAME --query "services[0].taskDefinition" --output text)
+SERVICE_TASK_DEFINITION_ARN="$(aws ecs describe-services --no-cli-pager --cluster "$CLUSTER_NAME" --services "$SERVICE_NAME" --query "services[0].taskDefinition" --output text)"
 # For subsequent commands, use the task definition family rather than the service's task definition ARN
 # because in the case of migrations, we'll deploy a new task definition revision before updating the
 # service, so the service will be using an old revision, but we want to use the latest revision.
-TASK_DEFINITION_FAMILY=$(aws ecs describe-task-definition --no-cli-pager --task-definition $SERVICE_TASK_DEFINITION_ARN --query "taskDefinition.family" --output text)
+TASK_DEFINITION_FAMILY="$(aws ecs describe-task-definition --no-cli-pager --task-definition "$SERVICE_TASK_DEFINITION_ARN" --query "taskDefinition.family" --output text)"
 
-NETWORK_CONFIG=$(aws ecs describe-services --no-cli-pager --cluster $CLUSTER_NAME --services $SERVICE_NAME --query "services[0].networkConfiguration")
+NETWORK_CONFIG=$(aws ecs describe-services --no-cli-pager --cluster "$CLUSTER_NAME" --services "$SERVICE_NAME" --query "services[0].networkConfiguration")
 CURRENT_REGION=$(./bin/current-region.sh)
 AWS_USER_ID=$(aws sts get-caller-identity --no-cli-pager --query UserId --output text)
 
@@ -48,7 +48,7 @@ ENVIRONMENT_OVERRIDES=""
 if [ ! -z "$ENVIRONMENT_VARIABLES" ]; then
   ENVIRONMENT_OVERRIDES="\"environment\": $ENVIRONMENT_VARIABLES,"
 fi
-CONTAINER_NAME=$(aws ecs describe-task-definition --task-definition $TASK_DEFINITION_FAMILY --query "taskDefinition.containerDefinitions[0].name" --output text)
+CONTAINER_NAME=$(aws ecs describe-task-definition --task-definition "$TASK_DEFINITION_FAMILY" --query "taskDefinition.containerDefinitions[0].name" --output text)
 OVERRIDES=$(cat << EOF
 {
   "containerOverrides": [
@@ -64,10 +64,10 @@ EOF
 
 AWS_ARGS=(
   ecs run-task
-  --region=$CURRENT_REGION
-  --cluster=$CLUSTER_NAME
-  --task-definition=$TASK_DEFINITION_FAMILY
-  --started-by=$AWS_USER_ID
+  --region="$CURRENT_REGION"
+  --cluster="$CLUSTER_NAME"
+  --task-definition="$TASK_DEFINITION_FAMILY"
+  --started-by="$AWS_USER_ID"
   --launch-type=FARGATE
   --platform-version=1.4.0
   --network-configuration "$NETWORK_CONFIG"
