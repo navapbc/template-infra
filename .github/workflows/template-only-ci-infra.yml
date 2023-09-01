@@ -19,6 +19,13 @@ on:
 concurrency: platform-template-only-ci-infra
 
 jobs:
+  lint:
+    name: Lint template scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Shellcheck
+        run: make -f template-only.mal lint-template-scripts
   test:
     name: Infra Tests
     runs-on: ubuntu-latest
