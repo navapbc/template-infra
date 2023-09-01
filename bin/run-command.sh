@@ -81,16 +81,16 @@ TASK_ARN=$(aws --no-cli-pager "${AWS_ARGS[@]}" --query "tasks[0].taskArn" --outp
 echo "Waiting for task to stop"
 echo "  TASK_ARN=$TASK_ARN"
 echo
-aws ecs wait tasks-stopped --region $CURRENT_REGION --cluster $CLUSTER_NAME --tasks $TASK_ARN
+aws ecs wait tasks-stopped --region "$CURRENT_REGION" --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN"
 
-CONTAINER_EXIT_CODE=$(aws ecs describe-tasks --cluster $CLUSTER_NAME --tasks $TASK_ARN --query "tasks[0].containers[?name=='$CONTAINER_NAME'].exitCode" --output text)
+CONTAINER_EXIT_CODE=$(aws ecs describe-tasks --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN" --query "tasks[0].containers[?name=='$CONTAINER_NAME'].exitCode" --output text)
 
 if [[ "$CONTAINER_EXIT_CODE" == "null" || "$CONTAINER_EXIT_CODE" != "0" ]]; then
   echo "Task failed" >&2
   # Although we could avoid extra calls to AWS CLI if we just got the full JSON response from
   # `aws ecs describe-tasks` and parsed it with jq, we are trying to avoid unnecessary dependencies.
-  CONTAINER_STATUS=$(aws ecs describe-tasks --cluster $CLUSTER_NAME --tasks $TASK_ARN --query "tasks[0].containers[?name=='$CONTAINER_NAME'].[lastStatus,exitCode,reason]" --output text)
-  TASK_STATUS=$(aws ecs describe-tasks --cluster $CLUSTER_NAME --tasks $TASK_ARN --query "tasks[0].[lastStatus,stopCode,stoppedAt,stoppedReason]" --output text)
+  CONTAINER_STATUS=$(aws ecs describe-tasks --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN" --query "tasks[0].containers[?name=='$CONTAINER_NAME'].[lastStatus,exitCode,reason]" --output text)
+  TASK_STATUS=$(aws ecs describe-tasks --cluster "$CLUSTER_NAME" --tasks "$TASK_ARN" --query "tasks[0].[lastStatus,stopCode,stoppedAt,stoppedReason]" --output text)
 
   echo "Container status (lastStatus, exitCode, reason): $CONTAINER_STATUS" >&2
   echo "Task status (lastStatus, stopCode, stoppedAt, stoppedReason): $TASK_STATUS" >&2
