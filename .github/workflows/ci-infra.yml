@@ -38,7 +38,7 @@ jobs:
       - name: Run infra-lint-terraform
         run: |
           echo "If this fails, run 'make infra-format'"
-          make infra-lint
+          make infra-lint-terraform
   validate-terraform:
     name: Validate Terraform modules
     runs-on: ubuntu-latest
