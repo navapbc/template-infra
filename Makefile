@@ -38,6 +38,8 @@ __check_defined = \
 	infra-configure-network \
 	infra-format \
 	infra-lint \
+	infra-lint-terraform \
+	infra-lint-workflows \
 	infra-set-up-account \
 	infra-test-service \
 	infra-update-app-build-repository \
@@ -128,8 +130,13 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: ## Lint infra code
+infra-lint: infra-lint-terraform infra-lint-workflows ## Lint infra code
+
+infra-lint-terraform: ## Lint Terraform code
 	terraform fmt -recursive -check infra
+
+infra-lint-workflows: ## Lint GitHub actions
+	actionlint
 
 infra-format: ## Format infra code
 	terraform fmt -recursive infra
