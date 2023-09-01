@@ -46,6 +46,8 @@ In [app-config/main.tf](/infra/app/app-config/main.tf), update the `account_name
 
 ### 4. Check that GitHub actions can authenticate into the AWS account for the environments you associated with the account in step 3
 
+This step requires [GitHub CLI](https://cli.github.com/) to be installed. If you don't have it, you can install on Mac via `brew install gh`
+
 ```bash
 make infra-check-github-actions-auth APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
