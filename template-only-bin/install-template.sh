@@ -5,11 +5,11 @@
 set -euox pipefail
 
 CUR_DIR=$(pwd)
-SCRIPT_DIR=$(dirname $0)
+SCRIPT_DIR=$(dirname "$0")
 TEMPLATE_DIR="$SCRIPT_DIR/.."
 
 echo "Copy files from template-infra"
-cd $TEMPLATE_DIR
+cd "$TEMPLATE_DIR"
 # Note: Keep this list of paths in sync with INCLUDE_PATHS in update-template.sh
 cp -r \
   .github \
@@ -21,7 +21,7 @@ cp -r \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
-  $CUR_DIR
+  "$CUR_DIR"
 cd -
 
 echo "Remove files relevant only to template development"

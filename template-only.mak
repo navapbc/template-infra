@@ -15,6 +15,9 @@ GITHUB_ACTIONS_ROLE ?= arn:aws:iam::$(ACCOUNT_ID):role/$(PROJECT_NAME)-github-ac
 	check-github-actions-auth \
 	destroy-account
 
+lint-template-scripts: ## Lint template only scripts
+	shellcheck template-only-bin/**
+
 test:
 	cd template-only-test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 

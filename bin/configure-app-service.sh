@@ -20,7 +20,7 @@ ENVIRONMENT=$2
 MODULE_DIR="infra/$APP_NAME/service"
 BACKEND_CONFIG_NAME="$ENVIRONMENT"
 
-./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
+./bin/create-tfbackend.sh "$MODULE_DIR" "$BACKEND_CONFIG_NAME"
 
 #--------------------
 # Create tfvars file
@@ -41,14 +41,14 @@ echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
 
-cp $MODULE_DIR/example.tfvars $TF_VARS_FILE
-sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" $TF_VARS_FILE
-sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" $TF_VARS_FILE
-sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" $TF_VARS_FILE
-sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
-rm $TF_VARS_FILE.bak
+cp "$MODULE_DIR/example.tfvars" "$TF_VARS_FILE"
+sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" "$TF_VARS_FILE"
+sed -i.bak "s/<TF_STATE_BUCKET_NAME>/$TF_STATE_BUCKET_NAME/g" "$TF_VARS_FILE"
+sed -i.bak "s|<TF_STATE_KEY>|$TF_STATE_KEY|g" "$TF_VARS_FILE"
+sed -i.bak "s/<REGION>/$REGION/g" "$TF_VARS_FILE"
+rm "$TF_VARS_FILE.bak"
 
 echo "Created file: $TF_VARS_FILE"
 echo "------------------ file contents ------------------"
-cat $TF_VARS_FILE
+cat "$TF_VARS_FILE"
 echo "----------------------- end -----------------------"
