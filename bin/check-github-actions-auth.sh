@@ -17,6 +17,8 @@ ENVIRONMENT=$2
 # See comment below about "Getting workflow run id"
 PREV_RUN_CREATE_TIME=$(gh run list --workflow check-infra-auth.yml --limit 1 --json createdAt --jq ".[].createdAt")
 
+CODE_REPOSITORY=$(terraform -chdir=infra/project-config output --raw code_repository)
+
 echo "========================="
 echo "Check GitHub Actions Auth"
 echo "========================="
@@ -61,6 +63,10 @@ echo "Found newer workflow run created at $RUN_CREATE_TIME"
 echo "Get id of workflow run"
 WORKFLOW_RUN_ID=$(gh run list --workflow check-infra-auth.yml --limit 1 --json databaseId --jq ".[].databaseId")
 echo "Workflow run id: $WORKFLOW_RUN_ID"
+
+WORKFLOW_RUN_URL="https://github.com/$CODE_REPOSITORY/actions/runs/$WORKFLOW_RUN_ID"
+echo "See run logs at":
+echo "    $WORKFLOW_RUN_URL"
 
 echo "Watch workflow run until it exits"
 # --exit-status causes command to exit with non-zero status if run fails
