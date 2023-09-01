@@ -31,6 +31,7 @@ __check_defined = \
 	infra-check-compliance-checkov \
 	infra-check-compliance-tfsec \
 	infra-check-compliance \
+	infra-check-github-actions-auth \
 	infra-configure-app-build-repository \
 	infra-configure-app-database \
 	infra-configure-app-service \
