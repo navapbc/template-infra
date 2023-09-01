@@ -35,7 +35,7 @@ jobs:
         with:
           terraform_version: 1.4.6
           terraform_wrapper: false
-      - name: Run infra-lint
+      - name: Run infra-lint-terraform
         run: |
           echo "If this fails, run 'make infra-format'"
           make infra-lint
