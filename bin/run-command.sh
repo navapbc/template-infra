@@ -45,7 +45,7 @@ CURRENT_REGION=$(./bin/current-region.sh)
 AWS_USER_ID=$(aws sts get-caller-identity --no-cli-pager --query UserId --output text)
 
 ENVIRONMENT_OVERRIDES=""
-if [ ! -z "$ENVIRONMENT_VARIABLES" ]; then
+if [ -n "$ENVIRONMENT_VARIABLES" ]; then
   ENVIRONMENT_OVERRIDES="\"environment\": $ENVIRONMENT_VARIABLES,"
 fi
 CONTAINER_NAME=$(aws ecs describe-task-definition --task-definition "$TASK_DEFINITION_FAMILY" --query "taskDefinition.containerDefinitions[0].name" --output text)

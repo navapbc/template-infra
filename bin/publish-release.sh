@@ -36,7 +36,7 @@ echo
 echo "Check if tag has already been published..."
 RESULT=""
 RESULT=$(aws ecr describe-images --repository-name "$IMAGE_REPOSITORY_NAME" --image-ids "imageTag=$IMAGE_TAG" --region "$REGION" 2> /dev/null ) || true
-if [ ! -z "$RESULT" ];then
+if [ -n "$RESULT" ];then
   echo "Image with tag $IMAGE_TAG already published"
   exit 0
 fi
