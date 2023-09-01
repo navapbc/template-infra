@@ -38,6 +38,8 @@ __check_defined = \
 	infra-configure-network \
 	infra-format \
 	infra-lint \
+	infra-lint-terraform \
+	infra-lint-workflows \
 	infra-set-up-account \
 	infra-test-service \
 	infra-update-app-build-repository \
