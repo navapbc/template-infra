@@ -8,13 +8,11 @@ on:
       - bin/**
       - infra/**
       - .github/workflows/**
-      - .github/workflows/ci-infra.yml
   pull_request:
     paths:
       - bin/**
       - infra/**
       - .github/workflows/**
-      - .github/workflows/ci-infra.yml
 
 jobs:
   lint-github-actions:
