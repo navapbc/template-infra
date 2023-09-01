@@ -20,7 +20,7 @@ ENVIRONMENT=$2
 MODULE_DIR="infra/$APP_NAME/database"
 BACKEND_CONFIG_NAME="$ENVIRONMENT"
 
-./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
+./bin/create-tfbackend.sh "$MODULE_DIR" "$BACKEND_CONFIG_NAME"
 
 #--------------------
 # Create tfvars file
