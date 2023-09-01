@@ -126,7 +126,6 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	err := shell.RunCommandE(t, shell.Command{
 		Command: "make",
 		Args: []string{
-			"-f", "template-only.mak",
 			"check-github-actions-auth",
 			"APP_NAME=app",
 			"ENVIRONMENT=dev",

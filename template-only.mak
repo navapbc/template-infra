@@ -27,9 +27,6 @@ clean:
 	git reset --hard HEAD
 	git clean -f
 
-check-github-actions-auth:
-	./bin/check-github-actions-auth.sh $(GITHUB_ACTIONS_ROLE)
-
 destroy-app-service:
 	./template-only-bin/destroy-app-service.sh
 
