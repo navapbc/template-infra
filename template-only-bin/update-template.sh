@@ -34,13 +34,13 @@ INCLUDE_PATHS=" \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore"
-git diff "$CURRENT_VERSION" "$TARGET_VERSION" -- "$INCLUDE_PATHS" > 'patch'
+git diff "$CURRENT_VERSION" "$TARGET_VERSION" -- "$INCLUDE_PATHS" > update.patch
 cd -
 
 echo "Applying patch"
 # Note: Keep this list in sync with the removed files in install-template.sh
 EXCLUDE_OPT="--exclude=.github/workflows/template-only-*"
-git apply "$EXCLUDE_OPT" --allow-empty template-infra/patch
+git apply "$EXCLUDE_OPT" --allow-empty template-infra/update.patch
 
 echo "Saving new template version to .template-infra"
 echo "$TARGET_VERSION_HASH" > .template-version
