@@ -24,17 +24,7 @@ git checkout "$TARGET_VERSION"
 TARGET_VERSION_HASH=$(git rev-parse HEAD)
 
 # Note: Keep this list in sync with the files copied in install-template.sh
-INCLUDE_PATHS=" \
-  .github \
-  bin \
-  docs \
-  infra \
-  Makefile \
-  .dockleconfig \
-  .grype.yml \
-  .hadolint.yaml \
-  .trivyignore"
-git diff "$CURRENT_VERSION" "$TARGET_VERSION" -- "$INCLUDE_PATHS" > update.patch
+git diff "$CURRENT_VERSION" "$TARGET_VERSION" -- .github bin docs infra Makefile .dockleconfig .grype.yml .hadolint.yaml .trivyignore > update.patch
 cd -
 
 echo "Applying patch"
