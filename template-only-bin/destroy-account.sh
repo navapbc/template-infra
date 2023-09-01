@@ -3,7 +3,7 @@
 # the platform bootstrap process.
 set -euxo pipefail
 
-CONFIG_NAME="$(./bin/current-account-config-name.sh)"
+CONFIG_NAME=$(./bin/current-account-config-name.sh)
 BACKEND_CONFIG_FILE="$CONFIG_NAME.s3.tfbackend"
 
 cd infra/accounts

@@ -24,8 +24,8 @@ set -euo pipefail
 
 ACCOUNT_NAME=$1
 
-ACCOUNT_ID="$(./bin/current-account-id.sh)"
-REGION="$(./bin/current-region.sh)"
+ACCOUNT_ID=$(./bin/current-account-id.sh)
+REGION=$(./bin/current-region.sh)
 
 # Get project name
 terraform -chdir=infra/project-config refresh > /dev/null
