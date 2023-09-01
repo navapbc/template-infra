@@ -120,6 +120,11 @@ infra-validate-module-%:
 	terraform -chdir=infra/modules/$* init -backend=false
 	terraform -chdir=infra/modules/$* validate
 
+infra-check-github-actions-auth: ## Check that GitHub actions can authenticate to the account associated with the given application environment
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
+	./bin/check-github-actions-auth.sh $(APP_NAME) $(ENVIRONMENT)
+
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec ## Run compliance checks
 
 infra-check-compliance-checkov: ## Run checkov compliance checks

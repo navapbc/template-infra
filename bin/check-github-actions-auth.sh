@@ -1,14 +1,33 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# This script configures the database module for the specified application
+# and environment by creating the .tfvars file and .tfbackend file for the module.
+#
+# Positional parameters:
+#   APP_NAME (required) – the name of subdirectory of /infra that holds the
+#     application's infrastructure code.
+#   ENVIRONMENT is the name of the application environment (e.g. dev, staging, prod)
+# -----------------------------------------------------------------------------
 set -euo pipefail
 
-GITHUB_ACTIONS_ROLE=$1
+APP_NAME=$1
+ENVIRONMENT=$2
 
 # This is used later to determine the run id of the workflow run
 # See comment below about "Getting workflow run id"
 PREV_RUN_CREATE_TIME=$(gh run list --workflow check-infra-auth.yml --limit 1 --json createdAt --jq ".[].createdAt")
 
-echo "Run check-infra-auth workflow with role_to_assume=$GITHUB_ACTIONS_ROLE"
-gh workflow run check-infra-auth.yml --field role_to_assume=$GITHUB_ACTIONS_ROLE
+echo "========================="
+echo "Check GitHub Actions Auth"
+echo "========================="
+echo "Input parameters"
+echo "  APP_NAME=$APP_NAME"
+echo "  ENVIRONMENT=$ENVIRONMENT"
+echo
+
+
+echo "Run check-infra-auth workflow with app_name=$APP_NAME and environment=$ENVIRONMENT"
+gh workflow run check-infra-auth.yml --field app_name=$APP_NAME --field environment=$ENVIRONMENT
 
 #########################
 ## Get workflow run id ##
