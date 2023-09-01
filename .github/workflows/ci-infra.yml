@@ -15,6 +15,7 @@ on:
 jobs:
   lint-github-actions:
     # Lint github actions files using https://github.com/rhysd/actionlint
+    # This job configuration is largely copied from https://github.com/rhysd/actionlint/blob/main/docs/usage.md#use-actionlint-on-github-actions
     name: Lint GitHub Actions workflows
     runs-on: ubuntu-latest
     steps:
