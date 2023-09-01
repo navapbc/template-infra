@@ -39,12 +39,12 @@ echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
 
-cp $MODULE_DIR/example.tfvars $TF_VARS_FILE
-sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" $TF_VARS_FILE
-sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
-rm $TF_VARS_FILE.bak
+cp "$MODULE_DIR/example.tfvars" "$TF_VARS_FILE"
+sed -i.bak "s/<ENVIRONMENT>/$ENVIRONMENT/g" "$TF_VARS_FILE"
+sed -i.bak "s/<REGION>/$REGION/g" "$TF_VARS_FILE"
+rm "$TF_VARS_FILE.bak"
 
 echo "Created file: $TF_VARS_FILE"
 echo "------------------ file contents ------------------"
-cat $TF_VARS_FILE
+cat "$TF_VARS_FILE"
 echo "----------------------- end -----------------------"
