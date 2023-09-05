@@ -11,7 +11,7 @@ output "code_repository_url" {
 }
 
 locals {
-  code_repository_regex_matches = regexall("([-_\\w]+/[-_\\w]+)(\\.git)?$", local.code_repository_url)[0]
+  code_repository_regex_matches = regexall("([-_\\w]+/[-_\\w]+)(\\.git)?$", local.code_repository_url)
 }
 
 output "code_repository" {
