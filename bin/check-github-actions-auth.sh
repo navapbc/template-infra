@@ -29,7 +29,7 @@ echo
 
 
 echo "Run check-infra-auth workflow with app_name=$APP_NAME and environment=$ENVIRONMENT"
-gh workflow run check-infra-auth.yml --field app_name=$APP_NAME --field environment=$ENVIRONMENT
+gh workflow run check-infra-auth.yml --field app_name="$APP_NAME" --field environment="$ENVIRONMENT"
 
 #########################
 ## Get workflow run id ##
@@ -70,4 +70,4 @@ echo "    $WORKFLOW_RUN_URL"
 
 echo "Watch workflow run until it exits"
 # --exit-status causes command to exit with non-zero status if run fails
-gh run watch $WORKFLOW_RUN_ID --exit-status
+gh run watch "$WORKFLOW_RUN_ID" --exit-status
