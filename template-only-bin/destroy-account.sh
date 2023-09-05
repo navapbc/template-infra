@@ -3,7 +3,7 @@
 # the platform bootstrap process.
 set -euxo pipefail
 
-CONFIG_NAME="$(./bin/current-account-config-name.sh)"
+CONFIG_NAME=$(./bin/current-account-config-name.sh)
 BACKEND_CONFIG_FILE="$CONFIG_NAME.s3.tfbackend"
 
 cd infra/accounts
@@ -18,7 +18,7 @@ sed -i.bak 's/resource "aws_s3_bucket" "tf_state" {/&\n  force_destroy = true/' 
 sed -i.bak 's/resource "aws_s3_bucket" "tf_log" {/&\n  force_destroy = true/' ../modules/terraform-backend-s3/main.tf
 sed -i.bak 's/prevent_destroy = true/prevent_destroy = false/g' ../modules/terraform-backend-s3/main.tf
 
-terraform init -reconfigure -backend-config=$BACKEND_CONFIG_FILE
+terraform init -reconfigure -backend-config="$BACKEND_CONFIG_FILE"
 
 # Apply the S3 bucket changes from the previous step
 terraform apply -auto-approve

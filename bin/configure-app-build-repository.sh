@@ -20,7 +20,7 @@ APP_NAME=$1
 MODULE_DIR="infra/$APP_NAME/build-repository"
 BACKEND_CONFIG_NAME="shared"
 
-./bin/create-tfbackend.sh $MODULE_DIR $BACKEND_CONFIG_NAME
+./bin/create-tfbackend.sh "$MODULE_DIR" "$BACKEND_CONFIG_NAME"
 
 #--------------------
 # Create tfvars file
@@ -37,15 +37,15 @@ echo "  APP_NAME=$APP_NAME"
 echo
 
 # Create output file from example file
-cp $MODULE_DIR/example.tfvars $TF_VARS_FILE
+cp "$MODULE_DIR/example.tfvars" "$TF_VARS_FILE"
 
 # Replace the placeholder values
-sed -i.bak "s/<REGION>/$REGION/g" $TF_VARS_FILE
+sed -i.bak "s/<REGION>/$REGION/g" "$TF_VARS_FILE"
 
 # Remove the backup file created by sed
-rm $TF_VARS_FILE.bak
+rm "$TF_VARS_FILE.bak"
 
 echo "Created file: $TF_VARS_FILE"
 echo "------------------ file contents ------------------"
-cat $TF_VARS_FILE
+cat "$TF_VARS_FILE"
 echo "----------------------- end -----------------------"

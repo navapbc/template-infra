@@ -39,6 +39,9 @@ __check_defined = \
 	infra-configure-network \
 	infra-format \
 	infra-lint \
+	infra-lint-scripts \
+	infra-lint-terraform \
+	infra-lint-workflows \
 	infra-set-up-account \
 	infra-test-service \
 	infra-update-app-build-repository \
@@ -111,7 +114,6 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/service $(ENVIRONMENT)
 
-
 # The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
 infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) ## Run terraform validate on reusable child modules
@@ -134,8 +136,16 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: ## Lint infra code
+infra-lint: infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+
+infra-lint-scripts: ## Lint shell scripts
+	shellcheck bin/**
+
+infra-lint-terraform: ## Lint Terraform code
 	terraform fmt -recursive -check infra
+
+infra-lint-workflows: ## Lint GitHub actions
+	actionlint
 
 infra-format: ## Format infra code
 	terraform fmt -recursive infra
