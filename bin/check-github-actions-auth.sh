@@ -29,7 +29,7 @@ echo
 
 
 echo "Run check-infra-auth workflow with app_name=$APP_NAME and environment=$ENVIRONMENT"
-gh workflow run check-infra-auth.yml --field app_name="$APP_NAME" --field environment="$ENVIRONMENT"
+gh workflow run check-infra-auth.yml --field app_name="$APP_NAME" --field environment="$ENVIRONMENT" --ref lorenyu/checkauth
 
 #########################
 ## Get workflow run id ##
