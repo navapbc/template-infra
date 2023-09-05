@@ -10,8 +10,12 @@ output "code_repository_url" {
   value = local.code_repository_url
 }
 
+locals {
+  code_repository_regex_matches = regexall("([-_\\w]+/[-_\\w]+)(\\.git)?$", local.code_repository_url)[0]
+}
+
 output "code_repository" {
-  value       = regex("([-_\\w]+/[-_\\w]+)(\\.git)?$", local.code_repository_url)[0]
+  value       = length(local.code_repository_regex_matches) > 0 ? local.code_repository_regex_matches[0][0] : ""
   description = "The 'org/repo' string of the repo (e.g. 'navapbc/template-infra'). This is extracted from the repo URL (e.g. 'git@github.com:navapbc/template-infra.git' or 'https://github.com/navapbc/template-infra.git')"
 }
 
