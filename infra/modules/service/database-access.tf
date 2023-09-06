@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "app_service_db_access" {
 resource "aws_iam_role_policy_attachment" "migrator_db_access" {
   count = var.db_vars != null ? 1 : 0
 
-  role       = aws_iam_role.migrator_task.name
+  role       = aws_iam_role.migrator_task[0].name
   policy_arn = var.db_vars.migrator_access_policy_arn
 }
 
