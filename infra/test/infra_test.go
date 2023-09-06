@@ -32,19 +32,26 @@ func TestService(t *testing.T) {
 		},
 	})
 
+	fmt.Println("::group::Initialize service module")
 	TerraformInit(t, terraformOptions, "dev.s3.tfbackend")
+	fmt.Println("::endgroup::")
 
 	defer terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
+	fmt.Println("::group::Select new terraform workspace")
 	terraform.WorkspaceSelectOrNew(t, terraformOptions, workspaceName)
+	fmt.Println("::endgroup::")
 
 	defer DestroyService(t, terraformOptions)
+	fmt.Println("::group::Create service layer")
 	terraform.Apply(t, terraformOptions)
+	fmt.Println("::endgroup::")
 
 	WaitForServiceToBeStable(t, workspaceName)
 	RunEndToEndTests(t, terraformOptions)
 }
 
 func BuildAndPublish(t *testing.T) {
+	fmt.Println("::group::Initialize build-repository module")
 	// terratest currently does not support passing a file as the -backend-config option
 	// so we need to manually call terraform rather than using terraform.Init
 	// see https://github.com/gruntwork-io/terratest/issues/517
@@ -54,18 +61,23 @@ func BuildAndPublish(t *testing.T) {
 	TerraformInit(t, &terraform.Options{
 		TerraformDir: "../app/build-repository/",
 	}, "shared.s3.tfbackend")
+	fmt.Println("::endgroup::")
 
+	fmt.Println("::group::Build release")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"release-build", "APP_NAME=app"},
 		WorkingDir: "../../",
 	})
+	fmt.Println("::endgroup::")
 
+	fmt.Println("::group::Publish release")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"release-publish", "APP_NAME=app"},
 		WorkingDir: "../../",
 	})
+	fmt.Println("::endgroup::")
 }
 
 func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
@@ -91,7 +103,7 @@ func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
 }
 
 func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
-	fmt.Println("::group::Setting force_destroy = true and prevent_destroy = false for s3 buckets")
+	fmt.Println("::group::Set force_destroy = true and prevent_destroy = false for s3 buckets in service layer")
 	shell.RunCommand(t, shell.Command{
 		Command: "sed",
 		Args: []string{
@@ -111,9 +123,12 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		WorkingDir: "../../",
 	})
 	terraform.Apply(t, terraformOptions)
+	fmt.Println("::endgroup::")
 }
 
 func DestroyService(t *testing.T, terraformOptions *terraform.Options) {
 	EnableDestroyService(t, terraformOptions)
+	fmt.Println("::group::Destroy service layer")
 	terraform.Destroy(t, terraformOptions)
+	fmt.Println("::endgroup::")
 }
