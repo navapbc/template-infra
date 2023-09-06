@@ -22,5 +22,5 @@ output "application_log_stream_prefix" {
 
 output "migrator_role_arn" {
   description = "ARN for role to use for migration"
-  value       = aws_iam_role.migrator_task.arn
+  value       = length(aws_iam_role.migrator_task) > 0 ? aws_iam_role.migrator_task[0].arn : null
 }
