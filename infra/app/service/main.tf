@@ -71,6 +71,16 @@ data "aws_iam_policy" "db_access_policy" {
   name  = local.database_config.access_policy_name
 }
 
+data "aws_iam_policy" "app_db_access_policy" {
+  count = module.app_config.has_database ? 1 : 0
+  name  = local.database_config.app_access_policy_name
+}
+
+data "aws_iam_policy" "migrator_db_access_policy" {
+  count = module.app_config.has_database ? 1 : 0
+  name  = local.database_config.migrator_access_policy_name
+}
+
 # Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
 
 data "aws_ssm_parameter" "incident_management_service_integration_url" {
@@ -89,8 +99,8 @@ module "service" {
   db_vars = module.app_config.has_database ? {
     security_group_ids         = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
     access_policy_arn          = data.aws_iam_policy.db_access_policy[0].arn
-    app_access_policy_arn      = data.aws_iam_policy.db_access_policy[0].arn #data.aws_iam_policy.db_app_access_policy[0].arn
-    migrator_access_policy_arn = data.aws_iam_policy.db_access_policy[0].arn #data.aws_iam_policy.db_migrator_access_policy[0].arn
+    app_access_policy_arn      = data.aws_iam_policy.app_db_access_policy[0].arn
+    migrator_access_policy_arn = data.aws_iam_policy.migrator_db_access_policy[0].arn
     connection_info = {
       host        = data.aws_rds_cluster.db_cluster[0].endpoint
       port        = data.aws_rds_cluster.db_cluster[0].port
