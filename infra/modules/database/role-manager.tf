@@ -85,7 +85,8 @@ resource "aws_iam_role" "role_manager" {
     # Grant the role manager access to the DB as app and migrator users
     # so that it can performance database checks. This is needed by
     # the infra database tests
-    aws_iam_policy.db_access.arn
+    aws_iam_policy.app_db_access.arn,
+    aws_iam_policy.migrator_db_access.arn
   ]
 }
 
