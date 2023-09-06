@@ -107,7 +107,7 @@ while true; do
   if [ "$IS_LOG_STREAM_CREATED" == "1" ]; then
     break
   fi
-  sleep 1
+  sleep 5
   echo -n "."
 done
 echo
