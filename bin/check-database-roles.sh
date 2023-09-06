@@ -1,9 +1,7 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------
-# Script that invokes the database role-manager AWS Lambda function to create
-# or update the Postgres user roles for a particular environment.
-# The Lambda function is created by the infra/app/database root module and is
-# defined in the infra/app/database child module.
+# Script that invokes the database role-manager AWS Lambda function to check
+# that the Postgres users were configured properly.
 #
 # Positional parameters:
 #   APP_NAME (required) – the name of subdirectory of /infra that holds the
@@ -19,18 +17,20 @@ ENVIRONMENT=$2
 ./bin/terraform-init.sh "infra/$APP_NAME/database" "$ENVIRONMENT"
 DB_ROLE_MANAGER_FUNCTION_NAME=$(terraform -chdir="infra/$APP_NAME/database" output -raw role_manager_function_name)
 
-echo "================================"
-echo "Creating/updating database users"
-echo "================================"
+echo "======================="
+echo "Checking database roles"
+echo "======================="
 echo "Input parameters"
 echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
 echo "Invoking Lambda function: $DB_ROLE_MANAGER_FUNCTION_NAME"
+echo
 CLI_RESPONSE=$(aws lambda invoke \
   --function-name "$DB_ROLE_MANAGER_FUNCTION_NAME" \
   --no-cli-pager \
   --log-type Tail \
+  --payload "$(echo -n '"check"' | base64)" \
   --output json \
   response.json)
 

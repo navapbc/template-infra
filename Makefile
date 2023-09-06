@@ -28,6 +28,7 @@ __check_defined = \
 
 .PHONY : \
 	help \
+	infra-check-app-database-roles \
 	infra-check-compliance-checkov \
 	infra-check-compliance-tfsec \
 	infra-check-compliance \
@@ -121,6 +122,11 @@ infra-validate-module-%:
 	@echo "Validate library module: $*"
 	terraform -chdir=infra/modules/$* init -backend=false
 	terraform -chdir=infra/modules/$* validate
+
+infra-check-app-database-roles: ## Check that app database roles have been configured properly
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec ## Run compliance checks
 
