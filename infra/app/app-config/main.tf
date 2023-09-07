@@ -7,6 +7,10 @@ locals {
   has_incident_management_service = false
   environment_configs             = { for environment in local.environments : environment => module.env_config[environment] }
 
+  build_repository_config = {
+    region = module.project_config.default_region
+  }
+
   # Map from environment name to the account name for the AWS account that
   # contains the resources for that environment. Resources that are shared
   # across environments use the key "shared".

@@ -69,7 +69,7 @@ infra-configure-network: ## Configure default network
 
 infra-configure-app-build-repository: ## Configure infra/$APP_NAME/build-repository tfbackend and tfvars files
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/configure-app-build-repository.sh $(APP_NAME)
+	./bin/create-tfbackend.sh "infra/$(APP_NAME)/build-repository" shared
 
 infra-configure-app-database: ## Configure infra/$APP_NAME/database module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
