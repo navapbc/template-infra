@@ -1,8 +1,8 @@
 # Consolidate infra configuration from .tfvars files into config module
 
-* Status: proposed
-* Deciders: @lorenyu @kyeah @acouch
-* Date: 2023-09-05
+* Status: accepted
+* Deciders: @lorenyu @rocketnova @kyeah @acouch
+* Date: 2023-09-07
 
 Technical Story: [Replace configure scripts with project/app config variables #312](https://github.com/navapbc/template-infra/issues/312)
 
