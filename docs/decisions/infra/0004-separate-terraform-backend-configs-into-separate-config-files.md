@@ -30,3 +30,7 @@ Another alternative is to go back to the old way of bootstrapping an account i.e
 
 * **Extra layer of abstraction** – The modules themselves aren't as simple to understand since the configuration is spread out across multiple files, the `main.tf` file and the corresponding `.tfvars` and `.tfbackend` file, rather than all in one `main.tf` file.
 * **Requires additional parameters when running terraform** – Due to configuration being separated into `.tfvars` and `.tfbackend` files, terraform commands now require a `-var-file` and `-backend-config` command line options. The added complexity may require a wrapper script, introducing yet another layer of abstraction.
+
+## Links
+
+* Refined by [ADR-0008](./0008-consolidate-infra-config-from-tfvars-files-into-config-module.md)
