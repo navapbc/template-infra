@@ -85,7 +85,7 @@ infra-configure-monitoring-secrets: ## Set $APP_NAME's incident management servi
 infra-configure-app-service: ## Configure infra/$APP_NAME/service module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/configure-app-service.sh $(APP_NAME) $(ENVIRONMENT)
+	./bin/create-tfbackend.sh "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
 
 infra-update-current-account: ## Update infra resources for current AWS profile
 	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
