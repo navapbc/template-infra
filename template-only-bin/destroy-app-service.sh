@@ -11,6 +11,6 @@ cd infra/app/service
 
 terraform init -reconfigure -backend-config=$BACKEND_CONFIG_FILE
 
-terraform apply -auto-approve
+terraform apply -auto-approve -var="environment_name=dev"
 
-terraform destroy -auto-approve
+terraform destroy -auto-approve -var="environment_name=dev"
