@@ -90,11 +90,3 @@ parent -- depends on --> config_value
 data.parent -- depends on --> config_value
 child -- depends on --> data.parent
 ```
-
-## When it is not feasible to create resources using static configuration values, use root module outputs and configuration scripts to manage dependencies between root modules
-
-In rare cases, it is not feasible to use configuration values to create a resource. In this situation, if a resource in root module S depends on a resource in root module R, create an output in R with the information that is needed by module S. Then create a configuration script for S that reads from R's output and saves the relevant information in a `.tfvars` file that S can use to specify input variables.
-
-One example of this is the terraform bucket name that is used by the `data.terraform_remote_state.current_image_tag` data source in the `service` module. The bucket name is generated dynamically using the current AWS user's account ID, and is therefore is not specified statically via configuration.
-
-This method should be used minimally as it is the least explicit and most brittle of all the methods. The dependency between modules remains implicit, and there is additional logic in shell scripts to maintain.
