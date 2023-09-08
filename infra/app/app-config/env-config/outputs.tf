@@ -1,5 +1,6 @@
 output "database_config" {
   value = var.has_database ? {
+    region                      = var.default_region
     cluster_name                = "${var.app_name}-${var.environment}"
     access_policy_name          = "${var.app_name}-${var.environment}-db-access"
     app_username                = "app"
@@ -8,6 +9,12 @@ output "database_config" {
     app_access_policy_name      = "${var.app_name}-${var.environment}-app-access"
     migrator_access_policy_name = "${var.app_name}-${var.environment}-migrator-access"
   } : null
+}
+
+output "service_config" {
+  value = {
+    region = var.default_region
+  }
 }
 
 output "incident_management_service_integration" {
