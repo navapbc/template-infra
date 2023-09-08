@@ -44,9 +44,7 @@ DB_MIGRATOR_USER=$(terraform -chdir="infra/$APP_NAME/app-config" output -json en
 echo
 echo "::group::Step 1. Update task definition without updating service"
 
-MODULE_DIR="infra/$APP_NAME/service"
-CONFIG_NAME="$ENVIRONMENT"
-TF_CLI_ARGS_apply="-input=false -auto-approve -target=module.service.aws_ecs_task_definition.app -var=image_tag=$IMAGE_TAG" ./bin/terraform-init-and-apply.sh "$MODULE_DIR" "$CONFIG_NAME"
+TF_CLI_ARGS_apply="-input=false -auto-approve -target=module.service.aws_ecs_task_definition.app -var=image_tag=$IMAGE_TAG" make infra-update-app-service APP_NAME="$APP_NAME" ENVIRONMENT="$ENVIRONMENT"
 
 echo "::endgroup::"
 echo
