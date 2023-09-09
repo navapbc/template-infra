@@ -59,4 +59,8 @@ Pros:
 Cons:
 
 * Application resources for a single environment are split across multiple root modules
-* Dependencies between root modules cannot be expressed directly in terraform to use terraform's built-in dependency graph. Instead, dependencies between root modules need to be configured from one module's outputs to another module's variable definitions file.
+* Dependencies between root modules cannot be expressed directly in terraform to use terraform's built-in dependency graph. ~~Instead, dependencies between root modules need to be configured from one module's outputs to another module's variable definitions file~~ (Update: 2023-07-07) Instead, dependencies between root modules need to leverage terraform data sources to reference resources across root modules and need to use a shared config module to reference the parameters that can uniquely identify the resource. See [module dependencies](/docs/infra/module-dependencies.md)
+
+## Links
+
+* Refined by [ADR-0009](./0009-separate-app-infrastructure-into-layers.md)
