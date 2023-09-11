@@ -1,10 +1,10 @@
 # Separate app infrastructure into layeres
 
-* Status: [proposed | rejected | accepted | deprecated | … | superseded by [ADR-0005](0005-example.md)] <!-- optional -->
-* Deciders: [list everyone involved in the decision] <!-- optional -->
-* Date: [YYYY-MM-DD when the decision was last updated] <!-- optional -->
+* Status: accepted
+* Deciders: @lorenyu @rocketnova @jamesbursa
+* Date: 2023-09-11
 
-Technical Story: [description | ticket/issue URL] <!-- optional -->
+Technical Story: [Document rationale for splitting up infra layers across multiple root modules](https://github.com/navapbc/template-infra/issues/431)
 
 ## Context and Problem Statement
 
