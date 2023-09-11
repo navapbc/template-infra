@@ -13,6 +13,7 @@ This log lists the architectural decisions for [project name].
 * [ADR-0006](infra/0006-provision-database-users-with-serverless-function.md) - Provision database users with serverless function
 * [ADR-0007](infra/0007-database-migration-architecture.md) - Database Migration Infrastructure and Deployment
 * [ADR-0008](infra/0008-consolidate-infra-config-from-tfvars-files-into-config-module.md) - Consolidate infra configuration from .tfvars files into config module
+* [ADR-0009](infra/0009-separate-app-infrastructure-into-layers.md) - Separate app infrastructure into layeres
 
 <!-- adrlogstop -->
 
