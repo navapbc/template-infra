@@ -41,6 +41,9 @@ fi
 
 DB_MIGRATOR_USER=$(terraform -chdir="infra/$APP_NAME/app-config" output -json environment_configs | jq -r ".$ENVIRONMENT.database_config.migrator_username")
 
+./bin/terraform-init.sh "infra/$APP_NAME/service" "$ENVIRONMENT"
+MIGRATOR_ROLE_ARN=$(terraform -chdir="infra/$APP_NAME/service" output -raw migrator_role_arn)
+
 echo
 echo "::group::Step 1. Update task definition without updating service"
 
@@ -58,4 +61,4 @@ ENVIRONMENT_VARIABLES=$(cat << EOF
 EOF
 )
 
-./bin/run-command.sh --environment-variables "$ENVIRONMENT_VARIABLES" "$APP_NAME" "$ENVIRONMENT" "$COMMAND"
+./bin/run-command.sh --task-role-arn "$MIGRATOR_ROLE_ARN" --environment-variables "$ENVIRONMENT_VARIABLES" "$APP_NAME" "$ENVIRONMENT" "$COMMAND"
