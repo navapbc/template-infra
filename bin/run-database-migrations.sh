@@ -58,4 +58,4 @@ ENVIRONMENT_VARIABLES=$(cat << EOF
 EOF
 )
 
-./bin/run-command.sh "$APP_NAME" "$ENVIRONMENT" "$COMMAND" "$ENVIRONMENT_VARIABLES"
+./bin/run-command.sh --environment-variables "$ENVIRONMENT_VARIABLES" "$APP_NAME" "$ENVIRONMENT" "$COMMAND"
