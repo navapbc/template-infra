@@ -24,9 +24,6 @@
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
-# TODO: Add ability to change task IAM Role. Part 3 of multipart update https://github.com/navapbc/template-infra/issues/354#issuecomment-1693973424
-# TODO: Change to keyword arguments. Part 3 of multipart update https://github.com/navapbc/template-infra/issues/354#issuecomment-1693973424
-
 # Parse optional parameters
 ENVIRONMENT_VARIABLES=""
 TASK_ROLE_ARN=""
@@ -136,6 +133,8 @@ LOG_STREAM="$LOG_STREAM_PREFIX/$CONTAINER_NAME/$ECS_TASK_ID"
 # task that completes quickly can go from PENDING to STOPPED, causing the wait
 # command to error out.
 echo "Waiting for log stream to be created"
+echo "  TASK_ARN=$TASK_ARN"
+echo "  TASK_ID=$ECS_TASK_ID"
 echo "  LOG_STREAM=$LOG_STREAM"
 
 NUM_RETRIES_WAITIN_FOR_LOGS=0
