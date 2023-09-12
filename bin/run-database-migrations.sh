@@ -13,8 +13,6 @@
 #     staging, prod)
 # -----------------------------------------------------------------------------
 
-# TODO: Use migrator role instead of general role. Part 3 of multipart update https://github.com/navapbc/template-infra/issues/354#issuecomment-1693973424
-
 set -euo pipefail
 
 APP_NAME="$1"
