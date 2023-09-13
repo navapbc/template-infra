@@ -21,7 +21,8 @@ This ADR proposes the following:
 Benefits:
 
 * All configuration can now be managed in the [app-config](/infra/app/app-config/) module.
-* Custom configuration scripts now longer need to be maintained
+* All dependencies between root modules can be managed explicitly via the [app-config](/infra/app/app-config/) module.
+* Custom configuration scripts no longer need to be maintained
 * Eliminates the need to specify -var-file option when running terraform apply, which reduces the need for terraform wrapper scripts
 
 ## Links

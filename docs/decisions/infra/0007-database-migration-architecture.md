@@ -86,7 +86,7 @@ Cons
 
 * The main downside is that this requires maintaining self-hosted GitHub Action runners, which is too costly to implement and maintain for projects that don't already have it set up.
 
-## Related ADRS:
+## Related ADRS
 
-* [Database module design](./0005-database-module-design.md)
+* [Separate the database infrastructure into a separate layer](./0005-separate-database-infrastructure-into-separate-layer.md)
 * [Provision database users with serverless function](./0006-provision-database-users-with-serverless-function.md)
