@@ -48,7 +48,7 @@ After you make requested changes in response to code review feedback, please re-
 - find shared code
 - share knowledge
 
-#### Challenges
+## Challenges of code reviews
 - it can take long
 - who to ask
 - how do you know when is "enough" review
