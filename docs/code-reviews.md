@@ -41,7 +41,7 @@ and state what you are looking for in the description.
 
 After you make requested changes in response to code review feedback, please re-request reviews from the reviewers to notify them that the work is ready to be reviewed again.
 
-#### Advantages of code review
+## Advantages of code review
 
 - catch and prevent bugs
 - consistent code
