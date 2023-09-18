@@ -49,10 +49,14 @@ resource "aws_lambda_function" "role_manager" {
 }
 
 # Installs python packages needed by the role manager lambda function before
-# creating the zip archive. Reinstalls whenever requirements.txt changes
+# creating the zip archive. 
+# Runs pip install on every apply so that the role manager archive file that
+# is generated locally is guaranteed to have the required dependencies even
+# when terraform is run by a developer that did not originally create the
+# environment.
+# Timestamp is used to always trigger replacement.
 resource "terraform_data" "role_manager_python_vendor_packages" {
-  triggers_replace = file("${path.module}/role_manager/requirements.txt")
-
+  triggers_replace = timestamp()
   provisioner "local-exec" {
     command = "pip3 install -r ${path.module}/role_manager/requirements.txt -t ${path.module}/role_manager/vendor"
   }
