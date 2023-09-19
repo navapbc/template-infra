@@ -12,9 +12,6 @@ COPY requirements.txt ./
 
 RUN pip3 install --no-cache-dir -r requirements.txt
 
-# https://github.com/certifi/python-certifi/security/advisories/GHSA-xqr8-7jwr-rhp7
-RUN pip3 install --upgrade "certifi>=2023.7.22"
-
 COPY db-migrate /usr/bin/
 COPY migrations.sql /app/
 COPY app.py /app/
