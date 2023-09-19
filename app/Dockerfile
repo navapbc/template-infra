@@ -4,15 +4,13 @@ RUN adduser --system --disabled-password --no-create-home app
 
 WORKDIR /app
 
-COPY requirements.txt ./
-
-RUN pip3 install --no-cache-dir -r requirements.txt
-
 RUN apk --no-cache add \
   aws-cli~=2 \
   postgresql14-client~=14
 
-RUN pip3 install --upgrade "certifi>=2023.7.22"
+COPY requirements.txt ./
+
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY db-migrate /usr/bin/
 COPY migrations.sql /app/
