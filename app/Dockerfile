@@ -1,4 +1,4 @@
-FROM python:3-alpine as release
+FROM python:3.11-alpine as release
 
 RUN adduser --system --disabled-password --no-create-home app
 
@@ -11,9 +11,6 @@ RUN apk --no-cache add \
 COPY requirements.txt ./
 
 RUN pip3 install --no-cache-dir -r requirements.txt
-
-# https://github.com/certifi/python-certifi/security/advisories/GHSA-xqr8-7jwr-rhp7
-RUN pip3 install --upgrade "certifi>=2023.7.22"
 
 COPY db-migrate /usr/bin/
 COPY migrations.sql /app/
