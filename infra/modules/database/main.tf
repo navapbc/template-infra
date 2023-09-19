@@ -1,6 +1,11 @@
 data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
+data "aws_rds_engine_version" "db_version" {
+  engine       = "aurora-postgresql"
+  default_only = true
+}
+
 locals {
   master_username       = "postgres"
   primary_instance_name = "${var.name}-primary"
@@ -23,7 +28,7 @@ resource "aws_rds_cluster" "db" {
   # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.CreateInstance.html
   cluster_identifier = var.name
 
-  engine            = "aurora-postgresql"
+  engine            = data.aws_rds_engine_version.db_version.engine
   engine_mode       = "provisioned"
   database_name     = var.database_name
   port              = var.port
@@ -48,6 +53,8 @@ resource "aws_rds_cluster" "db" {
   vpc_security_group_ids = [aws_security_group.db.id]
 
   enabled_cloudwatch_logs_exports = ["postgresql"]
+
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.rds_query_logging.name
 }
 
 resource "aws_rds_cluster_instance" "primary" {
@@ -83,7 +90,7 @@ resource "aws_kms_key" "db" {
 
 resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
   name        = var.name
-  family      = "aurora-postgresql13"
+  family      = data.aws_rds_engine_version.db_version.parameter_group_family
   description = "Default cluster parameter group"
 
   parameter {
