@@ -11,7 +11,7 @@ locals {
   log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
   image_url               = "${data.aws_ecr_repository.app.repository_url}:${var.image_tag}"
-  healthcheck_path            = trimprefix(var.healthcheck_path, "/")
+  healthcheck_path        = trimprefix(var.healthcheck_path, "/")
 
   base_environment_variables = [
     { name : "PORT", value : tostring(var.container_port) },
