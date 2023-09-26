@@ -80,14 +80,17 @@ resource "aws_lb_target_group" "app_tg" {
   target_type          = "ip"
   deregistration_delay = "30"
 
-  health_check {
-    path                = "/health"
-    port                = var.container_port
-    healthy_threshold   = 2
-    unhealthy_threshold = 10
-    interval            = 30
-    timeout             = 29
-    matcher             = "200-299"
+  dynamic "health_check" {
+    for_each = var.enable_healthcheck ? [0] : []
+    content {
+      path                = "/${local.healthcheck_path}"
+      port                = var.container_port
+      healthy_threshold   = 2
+      unhealthy_threshold = 10
+      interval            = 30
+      timeout             = 29
+      matcher             = "200-299"
+    }
   }
 
   lifecycle {

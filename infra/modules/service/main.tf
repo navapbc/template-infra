@@ -11,6 +11,7 @@ locals {
   log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
   image_url               = "${data.aws_ecr_repository.app.repository_url}:${var.image_tag}"
+  healthcheck_path            = trimprefix(var.healthcheck_path, "/")
 
   base_environment_variables = [
     { name : "PORT", value : tostring(var.container_port) },
@@ -76,14 +77,16 @@ resource "aws_ecs_task_definition" "app" {
       # Need to define all parameters in the healthCheck block even if we want
       # to use AWS's defaults, otherwise the terraform plan will show a diff
       # that will force a replacement of the task definition
-      healthCheck = {
-        interval = 30,
-        retries  = 3,
-        timeout  = 5,
-        command = ["CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/health || exit 1"
-        ]
-      },
+      healthCheck = var.enable_healthcheck ? {
+        interval    = 30,
+        retries     = 3,
+        timeout     = 5,
+        startPeriod = var.healthcheck_start_period,
+        command = [
+          "CMD-SHELL",
+          var.healthcheck_type == "curl" ? "curl --fail http://localhost:${var.container_port}/${local.healthcheck_path} || exit 1" : "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/${local.healthcheck_path} || exit 1",
+        ],
+      } : null,
       environment = local.environment_variables,
       portMappings = [
         {

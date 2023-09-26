@@ -67,3 +67,35 @@ variable "db_vars" {
   })
   default = null
 }
+
+#-------------------
+# Healthcheck
+#-------------------
+
+variable "enable_healthcheck" {
+  type        = bool
+  description = "Enable container healthcheck"
+  default     = true
+}
+
+variable "healthcheck_path" {
+  type        = string
+  description = "The path to the application healthcheck"
+  default     = "/health"
+}
+
+variable "healthcheck_type" {
+  type        = string
+  description = "Whether to configure a curl or wget healthcheck. use wget for alpine-based images"
+  default     = "wget"
+  validation {
+    condition     = contains(["curl", "wget"], var.healthcheck_type)
+    error_message = "choose either: curl or wget"
+  }
+}
+
+variable "healthcheck_start_period" {
+  type        = number
+  description = "The optional grace period to provide containers time to bootstrap in before failed health checks count towards the maximum number of retries"
+  default     = 0
+}
