@@ -29,7 +29,7 @@ resource "aws_lambda_function" "role_manager" {
       DB_PORT                = aws_rds_cluster.db.port
       DB_USER                = local.master_username
       DB_NAME                = aws_rds_cluster.db.database_name
-      DB_PASSWORD_PARAM_NAME = aws_ssm_parameter.random_db_password.name
+      DB_PASSWORD_PARAM_NAME = "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_pass.name}"
       DB_SCHEMA              = var.schema_name
       APP_USER               = var.app_username
       MIGRATOR_USER          = var.migrator_username
@@ -94,6 +94,10 @@ resource "aws_iam_role" "role_manager" {
   ]
 }
 
+data "aws_secretsmanager_secret" "db_pass" {
+  arn = aws_rds_cluster.db.master_user_secret[0].secret_arn
+}
+
 resource "aws_iam_role_policy" "ssm_access" {
   name = "${var.name}-role-manager-ssm-access"
   role = aws_iam_role.role_manager.id
@@ -102,9 +106,17 @@ resource "aws_iam_role_policy" "ssm_access" {
     Version = "2012-10-17"
     Statement = [
       {
+        Effect = "Allow"
+        Action = ["ssm:GetParameter*"]
+        Resource = [
+          aws_ssm_parameter.random_db_password.arn,
+          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:parameter/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_pass.name}"
+        ]
+      },
+      {
         Effect   = "Allow"
-        Action   = ["ssm:GetParameter*"]
-        Resource = "${aws_ssm_parameter.random_db_password.arn}"
+        Action   = ["secretsmanager:GetSecretValue"]
+        Resource = [data.aws_secretsmanager_secret.db_pass.arn]
       },
       {
         Effect   = "Allow"
