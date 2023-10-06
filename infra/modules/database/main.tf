@@ -61,18 +61,6 @@ resource "aws_rds_cluster_instance" "primary" {
   monitoring_interval        = 30
 }
 
-resource "random_password" "random_db_password" {
-  length = 48
-  # Remove '@' sign from allowed characters since only printable ASCII characters besides '/', '@', '"', ' ' may be used.
-  override_special = "!#$%&*()-_=+[]{}<>:?"
-}
-
-resource "aws_ssm_parameter" "random_db_password" {
-  name  = "/db/${var.name}/master-password"
-  type  = "SecureString"
-  value = random_password.random_db_password.result
-}
-
 resource "aws_kms_key" "db" {
   description         = "Key for RDS cluster ${var.name}"
   enable_key_rotation = true
