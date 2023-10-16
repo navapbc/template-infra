@@ -54,3 +54,32 @@ Finally, if the wrapper scripts don't meet your needs, you can always run terraf
 infra/app/service$ terraform init -backend-config=dev.s3.tfbackend
 infra/app/service$ terraform apply -var-file=dev.tfvars
 ```
+
+## Notes
+
+- The change to using Secret Manager for RDS management can cause an issue in automatic updates. This can be circumvented by commenting out associated references before deploying and then deploying again as usual.
+    1. Comment out the below lines:
+      - `infra/modules/database/role-manager.tf`:
+
+        ```terraform
+        DB_PASSWORD_PARAM_NAME = "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_pass.name}"
+        ```
+
+        ```terraform
+        data "aws_secretsmanager_secret" "db_pass" {
+            arn = aws_rds_cluster.db.master_user_secret[0].secret_arn
+        }
+        ```
+
+        ```terraform
+        {
+            Effect   = "Allow"
+            Action   = ["secretsmanager:GetSecretValue"]
+            Resource = [data.aws_secretsmanager_secret.db_pass.arn]
+        },
+        ```
+
+    2. Run `make infra-update-app-database`
+
+    3. Revert changes to `infra/modules/database/role-manager.tf`  
+      - `git checkout -- infra/modules/database/role-manager.tf`
