@@ -188,6 +188,7 @@ resource "aws_wafv2_web_acl" "waf" {
 
 resource "aws_kms_key" "waf" {
   deletion_window_in_days = 10
+  enable_key_rotation     = true
 }
 
 resource "aws_cloudwatch_log_group" "WafWebAclLoggroup" {
