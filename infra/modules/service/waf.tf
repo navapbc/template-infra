@@ -186,9 +186,14 @@ resource "aws_wafv2_web_acl" "waf" {
 
 }
 
+resource "aws_kms_key" "waf" {
+  deletion_window_in_days = 10
+}
+
 resource "aws_cloudwatch_log_group" "WafWebAclLoggroup" {
   name              = "aws-waf-logs-wafv2-web-acl"
   retention_in_days = 30
+  kms_key_id        = aws_kms_key.waf.key_id
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "WafWebAclLogging" {
