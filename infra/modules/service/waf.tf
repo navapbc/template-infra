@@ -193,18 +193,18 @@ resource "aws_cloudwatch_log_group" "WafWebAclLoggroup" {
 
 resource "aws_wafv2_web_acl_logging_configuration" "WafWebAclLogging" {
   log_destination_configs = [aws_cloudwatch_log_group.WafWebAclLoggroup.arn]
-  resource_arn            = aws_wafv2_web_acl.WafWebAcl.arn
+  resource_arn            = aws_wafv2_web_acl.waf.arn
   depends_on = [
-    aws_wafv2_web_acl.WafWebAcl,
+    aws_wafv2_web_acl.waf,
     aws_cloudwatch_log_group.WafWebAclLoggroup
   ]
 }
 
 resource "aws_wafv2_web_acl_association" "WafWebAclAssociation" {
   resource_arn = aws_lb.alb.arn
-  web_acl_arn  = aws_wafv2_web_acl.WafWebAcl.arn
+  web_acl_arn  = aws_wafv2_web_acl.waf.arn
   depends_on = [
-    aws_wafv2_web_acl.WafWebAcl,
+    aws_wafv2_web_acl.waf,
     aws_cloudwatch_log_group.WafWebAclLoggroup
   ]
 }
