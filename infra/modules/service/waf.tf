@@ -1,10 +1,9 @@
 resource "aws_wafv2_web_acl" "waf" {
-  name  = "wafv2-web-acl"
+  name  = "${var.service_name}-wafv2-web-acl"
   scope = "REGIONAL"
 
   default_action {
-    allow {
-    }
+    allow {}
   }
 
   visibility_config {
@@ -17,8 +16,7 @@ resource "aws_wafv2_web_acl" "waf" {
     name     = "AWS-AWSManagedRulesCommonRuleSet"
     priority = 0
     override_action {
-      none {
-      }
+      none {}
     }
     statement {
       managed_rule_group_statement {
@@ -192,8 +190,8 @@ resource "aws_kms_key" "waf" {
 }
 
 resource "aws_cloudwatch_log_group" "WafWebAclLoggroup" {
-  name              = "aws-waf-logs-wafv2-web-acl"
-  retention_in_days = 30
+  name              = "${var.service_name}-aws-waf-logs-wafv2-web-acl"
+  retention_in_days = 1830 # 5 years
   kms_key_id        = aws_kms_key.waf.key_id
 }
 
