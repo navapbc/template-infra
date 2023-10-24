@@ -193,6 +193,9 @@ resource "aws_cloudwatch_log_group" "WafWebAclLoggroup" {
   name              = "${var.service_name}-aws-waf-logs-wafv2-web-acl"
   retention_in_days = 1827 # 5 years
   kms_key_id        = aws_kms_key.waf.key_id
+  depends_on = [
+    aws_kms_key.waf
+  ]
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "WafWebAclLogging" {
