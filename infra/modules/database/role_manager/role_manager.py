@@ -131,15 +131,6 @@ def get_password() -> str:
     )["Parameter"]["Value"])
     return result["password"]
 
-    # secretsmanager = boto3.client("secretsmanager",region_name=os.environ["AWS_REGION"])
-    # secret_arn = os.environ["DB_PASSWORD_SECRET_ARN"]
-    # logger.info("Fetching password from Secrets Manager:\n%s"%secret_arn)
-
-    # result = secretsmanager.get_secret_value(SecretId=secret_arn)
-    # secret_data = json.loads(result["SecretString"])
-
-    # return secret_data["password"]
-
 
 def get_roles(conn: Connection) -> list[str]:
     return [row[0] for row in conn.run("SELECT rolname "
