@@ -119,8 +119,6 @@ def connect_using_iam(user: str) -> Connection:
     logger.info("Connecting to database: user=%s host=%s port=%s database=%s", user, host, port, database)
     return Connection(user=user, host=host, port=port, database=database, password=token, ssl_context=True)
 
-import requests
-
 def get_password() -> str:
     ssm = boto3.client("ssm",region_name=os.environ["AWS_REGION"])
     param_name = os.environ["DB_PASSWORD_PARAM_NAME"]
