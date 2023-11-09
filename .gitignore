@@ -15,3 +15,6 @@
 # Ignore local environment variables which can contain environment secrets
 .env
 .envrc
+
+# Python testing stuff
+*__pycache__*
