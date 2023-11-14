@@ -86,6 +86,12 @@ variable "container_secrets" {
   default     = []
 }
 
+variable "aws_services_security_group_id" {
+  type        = string
+  description = "Security group ID for VPC endpoints that access AWS Services"
+}
+
+
 variable "container_read_only" {
   type        = bool
   description = "Whether the container root filesystem should be read-only"
