@@ -14,8 +14,8 @@ data "aws_subnets" "default" {
 
 locals {
   # The prefix key/value pair is used for Terraform Workspaces, which is useful for projects with multiple infrastructure developers.
-  # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”, 
-  # if you choose not to use workspaces set this value to "dev" 
+  # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”,
+  # if you choose not to use workspaces set this value to "dev"
   prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
 
   # Add environment specific tags
@@ -62,6 +62,19 @@ module "app_config" {
   source = "../app-config"
 }
 
+# Uncomment the following resource if you want to grant the service access to SSM parameters:
+#data "aws_security_groups" "aws_services" {
+#  filter {
+#    name   = "group-name"
+#    values = ["${module.project_config.aws_services_security_group_name_prefix}*"]
+#  }
+#
+#  filter {
+#    name   = "vpc-id"
+#    values = [data.aws_vpc.default.id]
+#  }
+#}
+
 data "aws_rds_cluster" "db_cluster" {
   count              = module.app_config.has_database ? 1 : 0
   cluster_identifier = local.database_config.cluster_name
@@ -104,6 +117,18 @@ module "service" {
       schema_name = local.database_config.schema_name
     }
   } : null
+
+  # Add custom container environment variables like so:
+  # container_env_vars = [
+  #   { name : "CUSTOM_ENV_VAR", value : "100" },
+  # ]
+
+  # Uncomment the following if you want to grant the service access to SSM parameters:
+  # The security group is added in order for the ECS task to be able to access the VPC endpoint
+  # container_secrets = [
+  #   { name : "CUSTOM_SECRET", valueFrom : data.aws_ssm_parameter.custom_secret.arn },
+  # ]
+  # aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 }
 
 module "monitoring" {
