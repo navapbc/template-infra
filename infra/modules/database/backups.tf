@@ -30,7 +30,7 @@ data "aws_kms_key" "backup_vault_key" {
 # See https://docs.aws.amazon.com/aws-backup/latest/devguide/assigning-resources.html
 # and https://docs.aws.amazon.com/aws-backup/latest/devguide/API_BackupSelection.html
 resource "aws_backup_selection" "db_backup" {
-  name         = "${local.name}-db-backup"
+  name         = "${var.name}-db-backup"
   plan_id      = aws_backup_plan.backup_plan.id
   iam_role_arn = aws_iam_role.db_backup_role.arn
 
@@ -41,7 +41,7 @@ resource "aws_backup_selection" "db_backup" {
 
 # Role that AWS Backup uses to authenticate when backing up the target resource
 resource "aws_iam_role" "db_backup_role" {
-  name_prefix        = "${local.name}-db-backup-role-"
+  name_prefix        = "${var.name}-db-backup-"
   assume_role_policy = data.aws_iam_policy_document.db_backup_policy.json
 }
 
