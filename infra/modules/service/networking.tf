@@ -66,3 +66,13 @@ resource "aws_security_group" "app" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_app" {
+  security_group_id = var.aws_services_security_group_id
+  description       = "Allow inbound requests to VPC endpoints from application ${var.service_name}"
+
+  from_port                    = 443
+  to_port                      = 443
+  ip_protocol                  = "tcp"
+  referenced_security_group_id = aws_security_group.app.id
+}

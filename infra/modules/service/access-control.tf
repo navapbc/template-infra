@@ -53,14 +53,31 @@ data "aws_iam_policy_document" "task_executor" {
   }
 
   # Allow ECS to download images.
-  statement {
-    sid = "ECRPullAccess"
-    actions = [
-      "ecr:BatchCheckLayerAvailability",
-      "ecr:BatchGetImage",
-      "ecr:GetDownloadUrlForLayer",
-    ]
-    resources = [data.aws_ecr_repository.app.arn]
+  dynamic "statement" {
+    for_each = var.external_image_url == "" ? [true] : []
+    content {
+      sid = "ECRPullAccess"
+      actions = [
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:BatchGetImage",
+        "ecr:GetDownloadUrlForLayer",
+      ]
+      resources = [data.aws_ecr_repository.app[0].arn]
+    }
+  }
+
+  # Allow ECS to access Parameter Store for specific resources
+  # But only include the statement if var.container_secrets is not empty
+  # Strip any non-alphanumeric values from the secret name
+  dynamic "statement" {
+    for_each = var.container_secrets
+    content {
+      sid = "SSMAccess${replace(statement.value.name, "/[^0-9A-Za-z]/", "")}"
+      actions = [
+        "ssm:GetParameters",
+      ]
+      resources = [statement.value.valueFrom]
+    }
   }
 }
 
