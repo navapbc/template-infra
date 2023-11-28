@@ -1,6 +1,6 @@
 # Feature flags system design
 
-* Deciders: 
+* Deciders: @aligg @Nava-JoshLong @lorenyu
 * Date: 2023-11-28
 
 ## Context
