@@ -82,4 +82,4 @@ experiments = [
 
 ## Decision Outcome
 
-Chosen option: "Option 3: Manage features in AWS Console outside of terraform". The ability to empower business and product roles to control launches and experiiments without depending on engineering team maximizes autonomy and allows for the fastest delivery.
+Chosen option: "Option 3: Manage features in AWS Console outside of terraform". The ability to empower business and product roles to control launches and experiments without depending on engineering team maximizes autonomy and allows for the fastest delivery.
