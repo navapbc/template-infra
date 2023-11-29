@@ -32,18 +32,14 @@ The configuration in the app-config module might look something like the followi
 
 ```terraform
 features = {
-  some_disabled_feature = {}
+  some_disabled_feature = {} // defaults to enabled = false
 
   some_enabled_feature = {
-    enabled_variation = 1
+    enabled = true
   }
 
-  simple_ab_test = {
-    throttle_percentages = [0.5]
-  }
-
-  test_with_multiple_variations = {
-    throttle_percentages = [0.33, 0.33, 0.33]
+  partially_rolled_out_feature = {
+    throttle_percentage = 0.2
   }
 }
 ```
@@ -66,17 +62,6 @@ A reduced configuration in the app-config module that just defines the features 
 ```terraform
 feature_flags = [
   "some_new_feature_1", "some_new_feature_2"
-]
-
-experiments = [
-  {
-    name = "ab_test"
-    treatments = ["red-button"]
-  },
-  {
-    name = "test_with_multiple_variations"
-    treatments = ["red-button", "green-button", "blue-button"] 
-  }
 ]
 ```
 
