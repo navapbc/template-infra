@@ -68,3 +68,57 @@ feature_flags = [
 ## Decision Outcome
 
 Chosen option: "Option 3: Manage features in AWS Console outside of terraform". The ability to empower business and product roles to control launches and experiments without depending on engineering team maximizes autonomy and allows for the fastest delivery.
+
+## Notes on application layer design
+
+The scope of this tech spec is focused on the infrastructure layer, but we'll include some notes on the elements of feature flag management that will need to be handled at the application layer.
+
+
+### Application layer requirements
+
+1. Client interface with feature flag service — Applications need a client module that captures the feature flag service abstraction. The application code will interface with this module rather than directly with the underlying feature flag service.
+2. Local development — Project team developers need a way to create and manage feature flags while developing locally, ideally without dependencies on an external service.
+
+### Application layer design
+
+#### Feature flag module interface
+
+At it's core, the feature flag module needs a function `isFeatureEnabled` that determines whether a feature has been enabled. It needs to accept a feature name, and for gradual rollouts it will also need a user identifier. This is so that the system can remember which variation was assigned to a given user, so that any individual user will have a consistent experience.
+
+```ts
+interface FeatureFlagService {
+  isFeatureEnabled(featureName: string, userId?: string): boolean
+}
+```
+
+#### Adapter pattern
+
+The feature flag module should use the adapter pattern to provide different mechanisms for managing feature flags depending on the environment. Deployed cloud environments should use the Amazon CloudWatch Evidently service. Local development environments could use a mechanism available locally, such as environment variables, config files, cookies, or a combination.
+
+```ts
+import { EvidentlyClient, EvaluateFeatureCommand } from "@aws-sdk/client-evidently";
+
+class EvidentlyFeatureFlagService implements FeatureFlagService {
+  client: EvidentlyClient
+
+  isFeatureEnabled(feature: string, userId?: string): boolean {
+    const command = new EvaluateFeatureCommand({
+      ...
+      feature,
+      entityId: userId,
+      ...
+    });
+    const response = await this.client.send(command)
+    ...
+  }
+}
+```
+
+```ts
+class LocalFeatureFlagService implements FeatureFlagService {
+
+  isFeatureEnabled(feature: string, userId?: string): boolean {
+    // check config files, environment variables, and/or cookies
+  }
+}
+```
