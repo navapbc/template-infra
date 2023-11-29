@@ -5,7 +5,7 @@
 
 ## Context
 
-All projects should have some sort of feature flag mechanism for controlling the release and activation of features. This accelerates product development by unblocking developers from being able to deploy continuously while still providing business owners with control over when features are visible to end users. More advanced feature flag systems can also provide the ability to do gradual rollouts to increasing percentages of end users and to do split tests (also known as A/B tests) to evaluate the impact of different feature variations on user behavior and outcomes, which provide greater flexibility on how to reduce the risk of launching features.
+All projects should have some sort of feature flag mechanism for controlling the release and activation of features. This accelerates product development by unblocking developers from being able to deploy continuously while still providing business owners with control over when features are visible to end users. More advanced feature flag systems can also provide the ability to do gradual rollouts to increasing percentages of end users and to do split tests (also known as A/B tests) to evaluate the impact of different feature variations on user behavior and outcomes, which provide greater flexibility on how to reduce the risk of launching features. As an example, when working on a project to migrate off of legacy systems, having the ability to slowly throttle traffic to the new system while monitoring for issues in production is critical to managing risk.
 
 ## Requirements
 
