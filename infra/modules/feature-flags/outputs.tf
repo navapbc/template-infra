@@ -1,5 +1,5 @@
 output "evidently_project_name" {
-  description = "Name of feature flag manager"
+  description = "Name of AWS Evidently feature flags project"
   value       = local.evidently_project_name
 }
 
