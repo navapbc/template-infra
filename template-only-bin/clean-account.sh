@@ -1,7 +1,4 @@
 #!/bin/bash
-#
-# This script updates template-infra in your project. Run
-# This script from your project's root directory.
 set -euo pipefail
 
 set +e
@@ -64,7 +61,6 @@ while IFS= read -r EVIDENTLY_PROJECT; do
 
   aws evidently delete-project --project "$EVIDENTLY_PROJECT"
 done <<< "$EVIDENTLY_PROJECTS"
-
 
 set +e
 
