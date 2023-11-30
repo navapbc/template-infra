@@ -51,7 +51,22 @@ while IFS= read -r ALARM; do
     aws cloudwatch delete-alarms --alarm-names "$ALARM"
 done <<< "$ALARMS"
 
-# iam roles
+# Delete feature flags
+EVIDENTLY_PROJECTS=$(aws evidently list-projects --no-cli-pager --query 'projects[*].[name]' --output text)
+while IFS= read -r EVIDENTLY_PROJECT; do
+  echo "Deleting Evidently project $EVIDENTLY_PROJECT"
+
+  FEATURES=$(aws evidently list-features --project "$EVIDENTLY_PROJECT" --no-cli-pager --query 'features[*].[name]' --output text)
+  while IFS= read -r FEATURE; do
+    echo "Deleting feature $FEATURE for project $EVIDENTLY_PROJECT"
+    aws evidently delete-feature --feature "$FEATURE" --project "$EVIDENTLY_PROJECT"
+  done <<< "$FEATURES"
+
+  aws evidently delete-project --project "$EVIDENTLY_PROJECT"
+done <<< "$EVIDENTLY_PROJECTS"
+
+
+set +e
 
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
 BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].[Name]' --output text)
@@ -73,3 +88,5 @@ while IFS= read -r BUCKET; do
   # Delete bucket
   aws s3api delete-bucket --no-cli-pager --bucket "$BUCKET"
 done <<< "$BUCKETS"
+
+set -e
