@@ -106,10 +106,10 @@ module "service" {
   } : null
 
   extra_environment_variables = {
-    FEATURE_FLAGS_PROJECT = module.feature_flagging.evidently_project_name
+    FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
   }
   extra_policies = {
-    "feature_flags_access" = module.feature_flagging.access_policy_arn
+    "feature_flags_access" = module.feature_flags.access_policy_arn
   }
 }
 
