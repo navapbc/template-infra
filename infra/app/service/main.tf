@@ -104,6 +104,13 @@ module "service" {
       schema_name = local.database_config.schema_name
     }
   } : null
+
+  extra_environment_variables = {
+    FEATURE_FLAGS_PROJECT = module.feature_flagging.evidently_project_name
+  }
+  extra_policies = {
+    "feature_flags_access" = module.feature_flagging.access_policy_arn
+  }
 }
 
 module "monitoring" {
@@ -115,4 +122,10 @@ module "monitoring" {
   service_name                                = local.service_name
   load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
   incident_management_service_integration_url = module.app_config.has_incident_management_service ? data.aws_ssm_parameter.incident_management_service_integration_url[0].value : null
+}
+
+module "feature_flagging" {
+  source        = "../../modules/feature-flagging"
+  service_name  = local.service_name
+  feature_flags = module.app_config.feature_flags
 }
