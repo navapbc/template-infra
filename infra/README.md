@@ -23,7 +23,7 @@ Each application directory contains the following:
   service/            [Root module] Configuration for containers, such as load balancer, application service (different config for different environments)
 ```
 
-Details about terraform root modules and child modules are documented in [module-architecture](../docs/infra/module-architecture.md).
+Details about terraform root modules and child modules are documented in [module-architecture](/docs/infra/module-architecture.md).
 
 ## 🏗️ Project architecture
 
@@ -49,9 +49,9 @@ The environments share the same root modules but will have different configurati
 
 ### 🔀 Project workflow
 
-This project relies on Make targets in the [root Makefile](../Makefile), which in turn call shell scripts in [./bin](../bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](../.github/workflows).
+This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally you should use the Make targets or the underlying bin scripts. For other ways of making changes, including directly using the `terraform` cli, see [Making infra changes](../docs/infra/making-infra-changes.md).
+Generally you should use the Make targets or the underlying bin scripts. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
 
 ## 💻 Development
 
@@ -59,22 +59,22 @@ Generally you should use the Make targets or the underlying bin scripts. For oth
 
 To set up this project for the first time (aka it has never been deployed to the target AWS account):
 
-1. [Configure the project](../../infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
-2. [Set up infrastructure developer tools](./set-up-infrastructure-tools.md)
-3. [Set up AWS account](./set-up-aws-account.md)
-4. [Set up the network](../docs/infra/set-up-network.md)
+1. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
+2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
+3. [Set up AWS account](/docs/infra/set-up-aws-account.md)
+4. [Set up the network](/docs/infra/set-up-network.md)
 5. For each application:
-    1. [Set up application build repository](./set-up-app-build-repository.md)
-    2. [Set up application environment](./set-up-app-env.md)
+    1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
+    2. [Set up application environment](/docs/infra/set-up-app-env.md)
 
 ### 🆕 New developer
 
 To get set up as a new developer to a project that has already been deployed to the target AWS account:
 
-1. [Set up infrastructure developer tools](../docs/infra/set-up-infrastructure-tools.md)
-2. [Review how to make changes to infrastructure](../docs/infra/making-infra-changes.md)
-3. (Optional) Set up a [terraform workspace](../docs/infra/intro-to-terraform-workspaces.md)
+1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
+2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
+3. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
 
 ## 📇 Additional reading
 
-Additional documentation can be found in the [documentation directory](../docs/infra).
+Additional documentation can be found in the [documentation directory](/docs/infra).

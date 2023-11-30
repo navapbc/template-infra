@@ -1,6 +1,6 @@
 # Terraform module architecture
 
-This doc describes how the Terraform modules are structured.
+This doc describes how the Terraform modules are structured. Directory structure and layers are documented in the [infrastructure README](/infra/README.md).
 
 ## Approach
 
