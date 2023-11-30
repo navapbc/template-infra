@@ -23,7 +23,7 @@ Each application directory contains the following:
   service/            [Root module] Configuration for containers, such as load balancer, application service (different config for different environments)
 ```
 
-Details about terraform root modules and child modules are documented in [module-architecture](../docs/infra/module-architecture.md)
+Details about terraform root modules and child modules are documented in [module-architecture](../docs/infra/module-architecture.md).
 
 ## 🏗️ Project architecture
 
@@ -51,7 +51,7 @@ The environments share the same root modules but will have different configurati
 
 This project relies on Make targets in the [root Makefile](../Makefile), which in turn call shell scripts in [./bin](../bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](../.github/workflows).
 
-Generally you should use the Make targets or the underlying bin scripts. For other ways of making changes, including directly using the `terraform` cli, see [Making infra changes](../docs/infra/making-infra-changes.md)
+Generally you should use the Make targets or the underlying bin scripts. For other ways of making changes, including directly using the `terraform` cli, see [Making infra changes](../docs/infra/making-infra-changes.md).
 
 ## 💻 Development
 
@@ -64,8 +64,8 @@ To set up this project for the first time (aka it has never been deployed to the
 3. [Set up AWS account](./set-up-aws-account.md)
 4. [Set up the network](../docs/infra/set-up-network.md)
 5. For each application:
-  1. [Set up application build repository](./set-up-app-build-repository.md)
-  2. [Set up application environment](./set-up-app-env.md)
+    1. [Set up application build repository](./set-up-app-build-repository.md)
+    2. [Set up application environment](./set-up-app-env.md)
 
 ### 🆕 New developer
 
