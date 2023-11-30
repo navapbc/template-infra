@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "logs" {
-  name = local.evidently_project_name
+  name = "feature-flags/${local.evidently_project_name}"
 
   # checkov:skip=CKV_AWS_158:Feature flag evaluation logs are not sensitive
 
