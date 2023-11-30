@@ -6,7 +6,6 @@ locals {
   primary_instance_name = "${var.name}-primary"
   role_manager_name     = "${var.name}-role-manager"
   role_manager_package  = "${path.root}/role_manager.zip"
-  name                  = substr(var.name, 0, 12)
   # The ARN that represents the users accessing the database are of the format: "arn:aws:rds-db:<region>:<account-id>:dbuser:<resource-id>/<database-user-name>""
   # See https://aws.amazon.com/blogs/database/using-iam-authentication-to-connect-with-pgadmin-amazon-aurora-postgresql-or-amazon-rds-for-postgresql/
   db_user_arn_prefix = "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${aws_rds_cluster.db.cluster_resource_id}"
@@ -31,6 +30,8 @@ resource "aws_rds_cluster" "db" {
   manage_master_user_password = true
   storage_encrypted           = true
   kms_key_id                  = aws_kms_key.db.arn
+
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.rds_query_logging.name
 
   # checkov:skip=CKV_AWS_128:Auth decision needs to be ironed out
   # checkov:skip=CKV_AWS_162:Auth decision needs to be ironed out

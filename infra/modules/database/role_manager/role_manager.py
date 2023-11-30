@@ -6,19 +6,12 @@ import json
 import logging
 from pg8000.native import Connection, identifier
 
-logging.basicConfig()
-logging.getLogger('botocore').setLevel(logging.DEBUG)
-logging.getLogger('boto3').setLevel(logging.DEBUG)
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 def lambda_handler(event, context):
     if event == "check":
         return check()
-    elif event == "password_ts":
-        connect_as_master_user()
-        return "Succeeded"
     else:
         return manage()
 
