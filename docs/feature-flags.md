@@ -20,9 +20,9 @@ The system is designed to allow the managing of feature releases and partial rol
 
 ### To enable or disable a feature
 
-1. Navigate to the Evidently service in AWS Console, select the appropriate Evidently feature flags project for the relevant application environment, and select the feature you want to manage
-2. In the actions menu, select "Edit feature"
-3. Under "Feature variations", select either "FeatureOn" (to enable a feature) or "FeatureOff" (to disable a feature) to be the default variation, then submit
+1. Navigate to the Evidently service in AWS Console, select the appropriate Evidently feature flags project for the relevant application environment, and select the feature you want to manage.
+2. In the actions menu, select "Edit feature".
+3. Under "Feature variations", select either "FeatureOn" (to enable a feature) or "FeatureOff" (to disable a feature) to be the "Default" variation, then submit. **Warning: Do not modify the variation values. "FeatureOn" should always have a value of "True" and "FeatureOff" should always have a value of "False".**
 
 ### To manage a partial rollout
 
