@@ -16,7 +16,7 @@ To determine whether a particular feature should be enabled or disabled for a gi
 
 ## Managing feature releases and partial rollouts via AWS Console
 
-The system is designed to allow the managing of feature releases and partial rollouts outside of terraform, which empowers business owners and product managers to control
+The system is designed to allow the managing of feature releases and partial rollouts outside of terraform, which empowers business owners and product managers to control enable and disable feature flags and adjust feature launch traffic percentages without needing to depend on the development team.
 
 ### To enable or disable a feature
 
