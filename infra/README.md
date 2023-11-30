@@ -51,7 +51,7 @@ The environments share the same root modules but will have different configurati
 
 This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally you should use the Make targets or the underlying bin scripts. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
+Generally you should use the Make targets or the underlying bin scripts, but you can call the underlying terraform commands if needed. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
 
 ## 💻 Development
 
