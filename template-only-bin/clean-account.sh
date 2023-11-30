@@ -19,6 +19,41 @@ for LOAD_BALANCER in $LOAD_BALANCERS; do
 done
 
 
+# Delete log groups
+LOG_GROUPS=$(aws logs describe-log-groups --no-cli-pager --query 'logGroups[*].[logGroupName]' --output text)
+for LOG_GROUP in $LOG_GROUPS; do
+  echo "Deleting log group $LOG_GROUP"
+  aws logs delete-log-group --log-group-name "$LOG_GROUP"
+done
+
+aws iam delete-role --role-name app-dev
+aws iam delete-role --role-name app-dev-task-executor
+
+set -e
+
+# sns topic
+SNS_TOPICS=$(aws sns list-topics --no-cli-pager --query 'Topics[*].[TopicArn]' --output text)
+for SNS_TOPIC in $SNS_TOPICS; do
+  echo "Deleting SNS topic $SNS_TOPIC"
+  aws sns delete-topic --topic-arn "$SNS_TOPIC"
+done
+
+# security groups
+SECURITY_GROUPS=$(aws ec2 describe-security-groups --no-cli-pager --query 'SecurityGroups[*].[GroupId]' --output text)
+while IFS= read -r SECURITY_GROUP; do
+    echo "Deleting security group $SECURITY_GROUP"
+    aws ec2 delete-security-group --group-id "$SECURITY_GROUP"
+done <<< "$SECURITY_GROUPS"
+
+# alarms
+ALARMS=$(aws cloudwatch describe-alarms --no-cli-pager --query 'MetricAlarms[*].[AlarmName]' --output text)
+while IFS= read -r ALARM; do
+    echo "Deleting CloudWatch alarm $ALARM"
+    aws cloudwatch delete-alarms --alarm-names "$ALARM"
+done <<< "$ALARMS"
+
+# iam roles
+
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
 BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].[Name]' --output text)
 for BUCKET in $BUCKETS; do
@@ -33,21 +68,3 @@ for BUCKET in $BUCKETS; do
   # Delete bucket
   aws s3api delete-bucket --no-cli-pager --bucket $BUCKET
 done
-
-# Delete log groups
-LOG_GROUPS=$(aws logs describe-log-groups --no-cli-pager --query 'logGroups[*].[logGroupName]' --output text)
-for LOG_GROUP in $LOG_GROUPS; do
-  echo "Deleting log group $LOG_GROUP"
-  aws logs delete-log-group --log-group-name "$LOG_GROUP"
-done
-
-aws iam delete-role --role-name app-dev
-aws iam delete-role --role-name app-dev-task-executor
-
-set -e
-
-
-# security groups
-# sns topic
-# alerts
-# iam roles
