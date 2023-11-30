@@ -10,10 +10,11 @@ Before setting up the application's environments you'll need to have:
 
 1. [A compatible application in the app folder](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md)
 2. [Configure the app](/infra/app/app-config/main.tf). Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
-3. (If the application has a database) [Set up the network with VPC endpoints required for the database](./set-up-network.md)
-4. (If the application has a database) [Set up the database for the application](./set-up-database.md)
-5. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
-6. [Set up the application build repository](./set-up-app-build-repository.md)
+3. [Set up the network with VPC endpoints](./set-up-network.md)
+4. [Set up the database for the application](./set-up-database.md)
+    5. If the application DOES NOT have a database: change `has_database` to `false` in [`/infra/app/app-config/main.tf`](/infra/app/app-config/main.tf)
+6. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
+7. [Set up the application build repository](./set-up-app-build-repository.md)
 
 ## 1. Configure backend
 
