@@ -105,9 +105,9 @@ module "service" {
     }
   } : null
 
-  extra_environment_variables = {
-    FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
-  }
+  extra_environment_variables = [
+    { name : "FEATURE_FLAGS_PROJECT", value : module.feature_flags.evidently_project_name }
+  ]
   extra_policies = {
     "feature_flags_access" = module.feature_flags.access_policy_arn
   }

@@ -1,5 +1,5 @@
 locals {
-  evidently_project_name = "${var.service_name}-feature-flags"
+  evidently_project_name = "${var.service_name}-flags"
 }
 
 resource "aws_evidently_project" "feature_flags" {

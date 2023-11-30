@@ -27,7 +27,7 @@ locals {
   environment_variables = concat(
     local.base_environment_variables,
     local.db_environment_variables,
-    [for name, value in var.extra_environment_variables : { name : name, value : value }]
+    var.extra_environment_variables,
   )
 }
 

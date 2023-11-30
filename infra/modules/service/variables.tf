@@ -52,9 +52,9 @@ variable "subnet_ids" {
 }
 
 variable "extra_environment_variables" {
-  type        = map(string)
+  type        = list(object({ name = string, value = string }))
   description = "Additional environment variables to pass to the service container"
-  default     = {}
+  default     = []
 }
 
 variable "db_vars" {
