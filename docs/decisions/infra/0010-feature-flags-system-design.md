@@ -54,7 +54,7 @@ Define features in [app-config](/infra/app/app-config/main.tf). Create the featu
 
 Define features in [app-config](/infra/app/app-config/main.tf) and create them in the [service layer](/infra/app/service), but set things like throttle percentages (for gradual rollouts) outside of terraform (e.g. via AWS Console). Use `lifecycle { ignore_changes = [entity_overrides] }` in the terraform configuration for the `aws_evidently_feature` resources to ignore settings that are managed via AWS Console.
 
-* Empowers non-technical roles like business owners and product managers to set enable and disable feature flags and adjust feature launch throttle percentages without needing to depend on the development team.
+* Empowers non-technical roles like business owners and product managers to enable and disable feature flags and adjust feature launch throttle percentages without needing to depend on the development team.
 * A no-code approach using the AWS Console GUI means that it's possible to leverage the full set of functionality offered by AWS CloudWatch Evidently, including things like scheduled launches, with minimal training and without needing to learn how to do it in code.
 
 A reduced configuration in the app-config module that just defines the features might look something like the following:
