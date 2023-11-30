@@ -3,7 +3,7 @@ locals {
   environments                    = ["dev", "staging", "prod"]
   project_name                    = module.project_config.project_name
   image_repository_name           = "${local.project_name}-${local.app_name}"
-  has_database                    = false
+  has_database                    = true
   has_incident_management_service = false
 
   environment_configs = {
@@ -26,7 +26,7 @@ locals {
   # Projects/applications that use the same AWS account for all environments
   # will refer to the same account for all environments. For example, if the
   # project has a single account named "myaccount", then infra/accounts will
-  # have one tfbackend file myaccount.XXXXX.s3.tfbackend, and the 
+  # have one tfbackend file myaccount.XXXXX.s3.tfbackend, and the
   # account_names_by_environment map will look like:
   #
   #   account_names_by_environment = {
