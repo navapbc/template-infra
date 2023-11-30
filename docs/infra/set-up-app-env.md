@@ -30,7 +30,7 @@ Depending on the value of `has_database` in the [app-config module](/infra/app/a
 
 ## 2. Build and publish the application to the application build repository
 
-Before creating the application resources, you'll need to first build and publish at least one image to the application build repository. 
+Before creating the application resources, you'll need to first build and publish at least one image to the application build repository.
 
 There are two ways to do this:
 
@@ -38,8 +38,8 @@ There are two ways to do this:
 1. Alternatively, run the following from the root directory. This option can take much longer than the GitHub workflow, depending on your machine's architecture.
 
     ```bash
-    make release-build
-    make release-publish
+    make release-build APP_NAME=app
+    make release-publish APP_NAME=app
     ```
 
 Copy the image tag name that was published. You'll need this in the next step.
@@ -54,6 +54,6 @@ TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP
 
 ## 4. Configure monitoring alerts
 
-Configure email alerts, external incident management service integration and additional Cloudwatch Alerts. 
+Configure email alerts, external incident management service integration and additional Cloudwatch Alerts.
 [Configure monitoring module](./set-up-monitoring-alerts.md)
 
