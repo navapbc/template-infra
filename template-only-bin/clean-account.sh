@@ -55,10 +55,6 @@ while IFS= read -r SECURITY_GROUP; do
     aws ec2 delete-security-group --group-id "$SECURITY_GROUP"
 done <<< "$SECURITY_GROUPS"
 
-# Delete IAM roles
-aws iam delete-role --role-name app-dev
-aws iam delete-role --role-name app-dev-task-executor
-
 # Delete IAM policies
 # --scope Local = customer managed policies
 POLICIES=$(aws iam list-policies --no-cli-pager --scope Local --query 'Policies[*].[Arn]' --output text)
@@ -66,6 +62,11 @@ while IFS= read -r POLICY; do
     echo "Deleting IAM policy $POLICY"
     aws iam delete-policy --policy-arn "$POLICY"
 done <<< "$POLICIES"
+
+# Delete IAM roles
+# must delete policies first
+aws iam delete-role --role-name app-dev
+aws iam delete-role --role-name app-dev-task-executor
 
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
 BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].[Name]' --output text)
