@@ -14,6 +14,7 @@ while IFS= read -r LOAD_BALANCER; do
 done <<< "$LOAD_BALANCERS"
 
 # Delete log groups
+# Delete ECS cluster first to prevent new log groups from being created
 LOG_GROUPS=$(aws logs describe-log-groups --no-cli-pager --query 'logGroups[*].[logGroupName]' --output text)
 while IFS= read -r LOG_GROUP; do
     echo "Deleting log group $LOG_GROUP"
@@ -72,7 +73,7 @@ while IFS= read -r POLICY; do
 done <<< "$POLICIES"
 
 # Delete IAM roles
-# must delete policies first
+# Must delete policies first
 aws iam delete-role --role-name app-dev
 aws iam delete-role --role-name app-dev-task-executor
 
