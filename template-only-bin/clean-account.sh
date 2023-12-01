@@ -7,13 +7,6 @@ set +e
 aws ecs delete-service --no-cli-pager --cluster app-dev --service app-dev --force
 aws ecs delete-cluster --no-cli-pager --cluster app-dev
 
-# Delete security groups
-SECURITY_GROUPS=$(aws ec2 describe-security-groups --no-cli-pager --query 'SecurityGroups[*].[GroupId]' --output text)
-while IFS= read -r SECURITY_GROUP; do
-    echo "Deleting security group $SECURITY_GROUP"
-    aws ec2 delete-security-group --group-id "$SECURITY_GROUP"
-done <<< "$SECURITY_GROUPS"
-
 set -e
 
 # Delete load balancers
@@ -59,6 +52,13 @@ while IFS= read -r EVIDENTLY_PROJECT; do
 done <<< "$EVIDENTLY_PROJECTS"
 
 set +e
+
+# Delete security groups
+SECURITY_GROUPS=$(aws ec2 describe-security-groups --no-cli-pager --query 'SecurityGroups[*].[GroupId]' --output text)
+while IFS= read -r SECURITY_GROUP; do
+    echo "Deleting security group $SECURITY_GROUP"
+    aws ec2 delete-security-group --group-id "$SECURITY_GROUP"
+done <<< "$SECURITY_GROUPS"
 
 # Delete IAM roles
 aws iam delete-role --role-name app-dev
