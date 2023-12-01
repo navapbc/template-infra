@@ -7,10 +7,6 @@ set +e
 aws ecs delete-service --no-cli-pager --cluster app-dev --service app-dev --force
 aws ecs delete-cluster --no-cli-pager --cluster app-dev
 
-# Delete IAM roles
-aws iam delete-role --role-name app-dev
-aws iam delete-role --role-name app-dev-task-executor
-
 # Delete security groups
 SECURITY_GROUPS=$(aws ec2 describe-security-groups --no-cli-pager --query 'SecurityGroups[*].[GroupId]' --output text)
 while IFS= read -r SECURITY_GROUP; do
@@ -63,6 +59,18 @@ while IFS= read -r EVIDENTLY_PROJECT; do
 done <<< "$EVIDENTLY_PROJECTS"
 
 set +e
+
+# Delete IAM roles
+aws iam delete-role --role-name app-dev
+aws iam delete-role --role-name app-dev-task-executor
+
+# Delete IAM policies
+# --scope Local = customer managed policies
+POLICIES=$(aws iam list-policies --no-cli-pager --scope Local --query 'Policies[*].[Arn]' --output text)
+while IFS= read -r POLICY; do
+    echo "Deleting IAM policy $POLICY"
+    aws iam delete-policy --policy-arn "$POLICY"
+done <<< "$POLICIES"
 
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
 BUCKETS=$(aws s3api list-buckets --no-cli-pager --query 'Buckets[*].[Name]' --output text)
