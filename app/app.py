@@ -42,14 +42,12 @@ def migrations():
         return f"Last migration on {last_migration_date}"
 
 def get_db_token(host, port, user):
-    region = os.environ.get("AWS_REGION")
-
     # gets the credentials from .aws/credentials
-    logger.info("Getting RDS client for region %s", region)
-    client = boto3.client("rds", region_name=region)
+    logger.info("Getting RDS client")
+    client = boto3.client("rds")
 
     logger.info("Generating auth token for user %s", user)
-    token = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=user, Region=region)
+    token = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=user)
     return token
 
 
@@ -68,6 +66,28 @@ def get_db_connection():
 
     conn = psycopg.connect(conninfo)
     return conn
+
+
+@app.route("/feature-flags")
+def feature_flags():
+    foo_status = "enabled" if is_feature_enabled("foo") else "disabled"
+    bar_status = "enabled" if is_feature_enabled("bar") else "disabled"
+
+    return f"<p>Feature foo is {foo_status}</p><p>Feature bar is {bar_status}</p>"
+
+
+def is_feature_enabled(feature_name: str) -> bool:
+    feature_flags_project_name = os.environ.get("FEATURE_FLAGS_PROJECT")
+
+    logger.info("Getting Evidently client")
+    client = boto3.client("evidently")
+
+    response = client.evaluate_feature(
+        entityId="anonymous",
+        feature=feature_name,
+        project=feature_flags_project_name,
+    )
+    return response["value"]["boolValue"]
 
 
 if __name__ == "__main__":
