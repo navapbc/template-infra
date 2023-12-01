@@ -74,7 +74,11 @@ done <<< "$POLICIES"
 
 # Delete IAM roles
 # Must delete policies first
+echo "Deleting role app-dev-app"
 aws iam delete-role --role-name app-dev-app
+echo "Deleting role app-dev-task-executor"
+# Must delete inline policies first
+aws iam delete-role-policy --role-name app-dev-task-executor --policy-name app-dev-task-executor-role-policy
 aws iam delete-role --role-name app-dev-task-executor
 
 # Follow process in https://www.learnaws.org/2022/07/04/delete-versioning-bucket-s3/
