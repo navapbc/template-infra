@@ -11,6 +11,6 @@ cd infra/app/service
 
 terraform init -reconfigure -backend-config=$BACKEND_CONFIG_FILE
 
-terraform apply -auto-approve -var="environment_name=dev"
+terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -var="environment_name=dev"
 
 terraform destroy -auto-approve -var="environment_name=dev"
