@@ -51,6 +51,12 @@ variable "subnet_ids" {
   description = "Private subnet id from vpc module"
 }
 
+variable "extra_environment_variables" {
+  type        = list(object({ name = string, value = string }))
+  description = "Additional environment variables to pass to the service container"
+  default     = []
+}
+
 variable "db_vars" {
   description = "Variables for integrating the app service with a database"
   type = object({
@@ -66,4 +72,10 @@ variable "db_vars" {
     })
   })
   default = null
+}
+
+variable "extra_policies" {
+  description = "Map of extra IAM policies to attach to the service's task role. The map's keys define the resource name in terraform."
+  type        = map(string)
+  default     = {}
 }
