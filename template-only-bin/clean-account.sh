@@ -60,6 +60,14 @@ done <<< "$SECURITY_GROUPS"
 POLICIES=$(aws iam list-policies --no-cli-pager --scope Local --query 'Policies[*].[Arn]' --output text)
 while IFS= read -r POLICY; do
     echo "Deleting IAM policy $POLICY"
+
+    # Detach policy from entities first
+    ROLES=$(aws iam list-entities-for-policy --policy-arn "$POLICY" --no-cli-pager --query 'PolicyRoles[*].[RoleName]' --output text)
+    while IFS= read -r ROLE; do
+        echo "Detaching policy $POLICY from role $ROLE"
+        aws iam detach-role-policy --policy-arn "$POLICY" --role-name "$ROLE"
+    done <<< "$ROLES"
+
     aws iam delete-policy --policy-arn "$POLICY"
 done <<< "$POLICIES"
 
