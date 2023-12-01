@@ -1,13 +1,10 @@
 #!/bin/bash
-set -euo pipefail
-
+set -uo pipefail
 set +e
 
 # Delete ECS cluster
 aws ecs delete-service --no-cli-pager --cluster app-dev --service app-dev --force
 aws ecs delete-cluster --no-cli-pager --cluster app-dev
-
-set -e
 
 # Delete load balancers
 LOAD_BALANCERS=$(aws elbv2 describe-load-balancers --no-cli-pager --query 'LoadBalancers[*].[LoadBalancerArn]' --output text)
@@ -51,8 +48,6 @@ while IFS= read -r EVIDENTLY_PROJECT; do
   aws evidently delete-project --project "$EVIDENTLY_PROJECT"
 done <<< "$EVIDENTLY_PROJECTS"
 
-set +e
-
 # Delete security groups
 SECURITY_GROUPS=$(aws ec2 describe-security-groups --no-cli-pager --query 'SecurityGroups[*].[GroupId]' --output text)
 while IFS= read -r SECURITY_GROUP; do
@@ -92,5 +87,3 @@ while IFS= read -r BUCKET; do
   # Delete bucket
   aws s3api delete-bucket --no-cli-pager --bucket "$BUCKET"
 done <<< "$BUCKETS"
-
-set -e
