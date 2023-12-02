@@ -48,49 +48,64 @@ data "aws_vpc" "network" {
 }
 ```
 
-### Example: Project with a multi-account setup
+### Examples
 
-```terraform
-# project-config
-network_configs = {
-  dev = {
-    account_name = "dev"
-  }
-  staging = {
-    account_name = "staging"
-  }
-  prod = {
-    account_name = "prod"
-  }
-}
+Example project with a multi-account setup
 
-# app-config
-networks_by_environment = {
-  dev = "dev"
-  staging = "staging"
-  prod = "prod"
-}
+```mermaid
+graph RL;
+  subgraph accounts
+    dev_account[dev]
+    staging_account[staging]
+    prod_account[prod]
+  end
+
+  subgraph networks
+    dev_network[dev]
+    staging_network[staging]
+    prod_network[prod]
+  end
+
+  subgraph environments
+    dev_environment[dev]
+    staging_environment[staging]
+    prod_environment[prod]
+  end
+
+  dev_network --> dev_account
+  staging_network --> staging_account
+  prod_network --> prod_account
+
+  dev_environment --> dev_network
+  staging_environment --> staging_network
+  prod_environment --> prod_network
 ```
 
-### Example: Project with a single account, and a shared VPC "lowers" for lower environments
+Example project with a single account and a shared VPC "lowers" for lower environments
 
-```terraform
-# project-config
-network_configs = {
-  lowers = {
-    account_name = "shared"
-  }
-  prod = {
-    account_name = "shared"
-  }
-}
+```mermaid
+graph RL;
+  subgraph accounts
+    shared_account[shared]
+  end
 
-# app-config
-networks_by_environment = {
-  dev = "lowers"
-  staging = "lowers"
-  prod = "prod"
-}
+  subgraph networks
+    lowers_network[lowers]
+    prod_network[prod]
+  end
+
+  subgraph environments
+    dev_environment[dev]
+    staging_environment[staging]
+    prod_environment[prod]
+  end
+
+  lowers_network --> shared_account
+  prod_network --> shared_account
+
+  dev_environment --> lowers_network
+  staging_environment --> lowers_network
+  prod_environment --> prod_network
 ```
 
 Each network will have three subnets:
