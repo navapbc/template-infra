@@ -38,16 +38,15 @@ Add a "network_name" name tag to the VPC. The value of the tag is the key in `ne
 
 ## Service layer changes
 
-Currently [the service layer](/infra/app/service/main.tf) references the default VPC in the AWS account. In order to determine which VPC to use, we will add a `networks_by_environment` property to [app-config](/infra/app/app-config/) that maps application environments to networks, similar to how the `accounts_names_by_environment` property maps application environments to AWS accounts.
-
-We can then update the `aws_vpc` data source to reference the appropriate network as such:
+In order to determine which VPC to use for each application environment, define a `network_name` property to each [environment config](/infra/app/app-config/env-config/) that will be configured for each environment. The network name will be used in [the service layer](/infra/app/service/main.tf) by the `aws_vpc` data source:
 
 ```terraform
 data "aws_vpc" "network" {
-  id = local.environment_config
+  tags = {
+    network_name = local.environment_config.network_name
+  }
 }
 ```
-
 
 ### Example: Project with a multi-account setup
 
