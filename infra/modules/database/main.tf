@@ -24,6 +24,7 @@ resource "aws_rds_cluster" "db" {
 
   engine                      = "aurora-postgresql"
   engine_mode                 = "provisioned"
+  engine_version              = "15.5"
   database_name               = var.database_name
   port                        = var.port
   master_username             = local.master_username
@@ -72,7 +73,7 @@ resource "aws_kms_key" "db" {
 
 resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
   name        = var.name
-  family      = "aurora-postgresql14"
+  family      = "aurora-postgresql15"
   description = "Default cluster parameter group"
 
   parameter {
