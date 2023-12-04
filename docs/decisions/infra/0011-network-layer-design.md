@@ -17,28 +17,49 @@ We aim to achieve these requirements without adding complexity to the other laye
 
 ## Approach
 
-Define and configure networks in [project-config module](/infra/project-config/main.tf).
+### Network configuration
+
+Define the configuration for networks in a new property `network_configs` in the [project-config module](/infra/project-config/main.tf). `network_configs` is a map from the network name to the network configuration. The network name is a name the project team choose to serve as a human-readable identifier to reference the network. To keep network configuration DRY and reuse common configurations between networks, create a sub-module `network-config` under the project-config module, analogous to the [env-config module](/infra/app/app-config/env-config/) under the [app-config module](/infra/app/app-config/). The `project-config` module might look something like this:
 
 ```terraform
+# project-config/main.tf
+
 network_configs = {
-  network_1 = { ... }
-  network_2 = { ... }
+  dev = module.dev_network_config
+  ...
+  [NETWORK_NAME] = module.[NETWORK_NAME]_network_config
+}
+
+# project-config/dev-network.tf
+
+module "dev_network_config" {
+  source "./network-config"
+  ...
+}
+
+...
+
+# project-config/[NETWORK_NAME]-network.tf
+
+module "[NETWORK_NAME]_network_config" {
+  source "./network-config"
   ...
 }
 ```
 
 Each network config will have the following properties:
 
-* **account_name** — Name of AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD 
-* ... TODO work with @shawnvanderjagt on this section
+* **account_name** — Name of AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD
+* **... TODO work with @shawnvanderjagt on this section**
+* Each network will have three subnets, (1) a public subnet, (2) a private subnet for the application layer, and (3) private subnet for the data layer
 
 ### Add network_name tag to VPC
 
-Add a "network_name" name tag to the VPC. The value of the tag is the key in `network_configs`. The VPC tag will be used by the service layer to identify the VPC in an [aws_vpc data source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc). Tags are used because at this time AWS VPCs do not have any user-provided identifiers such as a VPC name. Generated identifiers like `vpc_id` cannot be used because `vpc_id` is not known statically at configuration time, and we are following the pattern of [using configuration and data sources to manage dependencies between different infrastructure layers](/docs/infra/module-dependencies.md#use-config-modules-and-data-resources-to-manage-dependencies-between-root-modules).
+Add a "network_name" name tag to the VPC with the name of the network. The VPC tag will be used by the service layer to identify the VPC in an [aws_vpc data source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc). Tags are used because at this time AWS VPCs do not have any user-provided identifiers such as a VPC name. Generated identifiers like `vpc_id` cannot be used because `vpc_id` is not known statically at configuration time, and we are following the pattern of [using configuration and data sources to manage dependencies between different infrastructure layers](/docs/infra/module-dependencies.md#use-config-modules-and-data-resources-to-manage-dependencies-between-root-modules).
 
 ## Service layer changes
 
-In order to determine which VPC to use for each application environment, define a `network_name` property to each [environment config](/infra/app/app-config/env-config/) that will be configured for each environment. The network name will be used in [the service layer](/infra/app/service/main.tf) by the `aws_vpc` data source:
+In order to determine which VPC to use for each application environment, add a `network_name` property to the [environment config](/infra/app/app-config/env-config/). The network name will be used in [the service layer](/infra/app/service/main.tf) by the `aws_vpc` data source:
 
 ```terraform
 data "aws_vpc" "network" {
@@ -48,7 +69,7 @@ data "aws_vpc" "network" {
 }
 ```
 
-### Examples
+### Example configurations
 
 Example project with a multi-account setup
 
@@ -107,12 +128,6 @@ graph RL;
   staging_environment --> lowers_network
   prod_environment --> prod_network
 ```
-
-Each network will have three subnets:
-
-* public subnet
-* private subnet for the application layer
-* private subnet for the data layer
 
 ## Decision Outcome
 
