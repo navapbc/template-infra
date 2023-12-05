@@ -9,6 +9,9 @@ locals {
   # The ARN that represents the users accessing the database are of the format: "arn:aws:rds-db:<region>:<account-id>:dbuser:<resource-id>/<database-user-name>""
   # See https://aws.amazon.com/blogs/database/using-iam-authentication-to-connect-with-pgadmin-amazon-aurora-postgresql-or-amazon-rds-for-postgresql/
   db_user_arn_prefix = "arn:aws:rds-db:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:dbuser:${aws_rds_cluster.db.cluster_resource_id}"
+
+  engine_version       = "14.6"
+  engine_major_version = regex("^\\d+", local.engine_version)
 }
 
 # Database Configuration
@@ -24,6 +27,7 @@ resource "aws_rds_cluster" "db" {
 
   engine                      = "aurora-postgresql"
   engine_mode                 = "provisioned"
+  engine_version              = local.engine_version
   database_name               = var.database_name
   port                        = var.port
   master_username             = local.master_username
@@ -72,7 +76,7 @@ resource "aws_kms_key" "db" {
 
 resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
   name        = var.name
-  family      = "aurora-postgresql14"
+  family      = "aurora-postgresql${local.engine_major_version}"
   description = "Default cluster parameter group"
 
   parameter {
