@@ -1,6 +1,6 @@
 # System Architecture
 
-This diagram shows the system architecture.
+This diagram shows the system architecture. [🔒 Make a copy of this Lucid template for your own application](https://lucid.app/lucidchart/8851888e-1292-4228-8fef-60a61c6b57e7/edit).
 
 ![System architecture](https://lucid.app/publicSegments/view/e5a36152-200d-4d95-888e-4cdbdab80d1b/image.png)
 
@@ -19,53 +19,3 @@ This diagram shows the system architecture.
 * **Terraform Locks DynamoDB Table** — Amazon DynamoDB table used to manage concurrent access to terraform state files.
 * **VPC Endpoints** — VPC endpoints are used by the Database Role Manager to access Amazon Services without traffic leaving the VPC.
 * **VPC Network** — Amazon VPC network.
-
-## Application environments
-
-```mermaid
-graph RL;
-  subgraph accounts
-    dev_account[dev]
-    staging_account[staging]
-    prod_account[prod]
-  end
-  subgraph networks
-    dev_network[dev]
-    staging_network[staging]
-    prod_network[prod]
-  end
-  subgraph environments
-    dev_environment[dev]
-    staging_environment[staging]
-    prod_environment[prod]
-  end
-  dev_network --> dev_account
-  staging_network --> staging_account
-  prod_network --> prod_account
-  dev_environment --> dev_network
-  staging_environment --> staging_network
-  prod_environment --> prod_network
-```
-
-Example project with a single account and a shared VPC "lowers" for lower environments
-
-```mermaid
-graph RL;
-  subgraph accounts
-    shared_account[shared]
-  end
-  subgraph networks
-    lowers_network[lowers]
-    prod_network[prod]
-  end
-  subgraph environments
-    dev_environment[dev]
-    staging_environment[staging]
-    prod_environment[prod]
-  end
-  lowers_network --> shared_account
-  prod_network --> shared_account
-  dev_environment --> lowers_network
-  staging_environment --> lowers_network
-  prod_environment --> prod_network
-```
