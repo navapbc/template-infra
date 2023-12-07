@@ -5,7 +5,7 @@ set -euxo pipefail
 
 BACKEND_CONFIG_FILE="dev.s3.tfbackend"
 
-cd infra/app/build-repository
+cd infra/networks
 
 terraform init -reconfigure -backend-config=$BACKEND_CONFIG_FILE
 
