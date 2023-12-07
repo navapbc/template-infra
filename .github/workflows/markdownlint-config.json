@@ -1,8 +1,13 @@
 {
-  "replacementPatterns": [
-    {
-      "pattern": "^/",
-      "replacement": "{{BASEURL}}/"
-    }
+    "ignorePatterns" : [
+        {
+            "pattern": "0005-example.md"
+        }
+    ],
+    "replacementPatterns": [
+        {
+            "pattern": "^/",
+            "replacement": "{{BASEURL}}/"
+        }
   ]
 }
