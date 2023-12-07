@@ -78,7 +78,7 @@ func SetUpAccount(t *testing.T) {
 }
 
 func SetUpNetwork(t *testing.T) {
-	fmt.Println("::group::Setting up network")
+	fmt.Println("::group::Creating network resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-configure-network", "NETWORK_NAME=dev"},
