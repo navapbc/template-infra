@@ -39,6 +39,7 @@ __check_defined = \
 	infra-configure-network \
 	infra-format \
 	infra-lint \
+	infra-lint-markdown \
 	infra-lint-scripts \
 	infra-lint-terraform \
 	infra-lint-workflows \
@@ -136,7 +137,10 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+infra-lint: infra-lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+
+infra-lint-markdown: ## Lint Markdown docs for broken links
+	BASEURL=`pwd`; find . -name \*.md -print0 | xargs -0 -n1 markdown-link-check --config .github/workflows/markdownlint-config.json
 
 infra-lint-scripts: ## Lint shell scripts
 	shellcheck bin/**

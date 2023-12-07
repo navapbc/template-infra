@@ -44,11 +44,17 @@ brew install gh
 
 ### Install linters
 
-[Shellcheck](https://github.com/koalaman/shellcheck) and [actionlint](https://github.com/rhysd/actionlint) are optional utilites for running infrastructure linters locally.
+We have several optional utilities for running infrastructure linters locally. These are run as part of the CI pipeline, therefore, it is often simpler to test them locally first.
+
+* [Shellcheck](https://github.com/koalaman/shellcheck)
+* [actionlint](https://github.com/rhysd/actionlint)
+* [markdown-link-check](https://github.com/tcort/markdown-link-check)
 
 ```bash
+
 brew install shellcheck
 brew install actionlint
+npm install -g markdown-link-check
 ```
 
 ## AWS Authentication
