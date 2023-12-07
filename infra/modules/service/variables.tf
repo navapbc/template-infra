@@ -46,9 +46,19 @@ variable "vpc_id" {
   description = "Uniquely identifies the VPC."
 }
 
-variable "subnet_ids" {
+variable "public_subnet_ids" {
   type        = list(any)
-  description = "Private subnet id from vpc module"
+  description = "Public subnet ids in VPC"
+}
+
+variable "private_subnet_ids" {
+  type        = list(any)
+  description = "Private subnet ids in VPC"
+}
+
+variable "aws_services_security_group_id" {
+  type        = string
+  description = "Security group ID for VPC endpoints that access AWS Services"
 }
 
 variable "extra_environment_variables" {

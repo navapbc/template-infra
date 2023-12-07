@@ -6,7 +6,8 @@ data "aws_region" "current" {}
 
 locals {
   tags = merge(module.project_config.default_tags, {
-    description = "VPC resources"
+    network_name = var.network_name
+    description  = "VPC resources"
   })
   region = module.project_config.default_region
 
@@ -17,9 +18,15 @@ locals {
   # see https://docs.aws.amazon.com/vpc/latest/privatelink/aws-services-privatelink-support.html
   #
   # The database module requires VPC access from private networks to SSM, KMS, and RDS
-  aws_service_integrations = toset(
-    module.app_config.has_database ? ["ssm", "kms", "secretsmanager"] : []
+  aws_service_integrations = setunion(
+    # AWS services used by ECS Fargate: ECR to fetch images, S3 for image layers, and CloudWatch for logs
+    ["ecr.api", "ecr.dkr", "s3", "logs"],
+
+    # AWS services used by the database's role manager
+    module.app_config.has_database ? ["ssm", "kms", "secretsmanager"] : [],
   )
+
+  network_config = module.project_config.network_configs[var.network_name]
 }
 
 terraform {
@@ -52,15 +59,11 @@ module "app_config" {
   source = "../app/app-config"
 }
 
-data "aws_vpc" "default" {
-  default = true
-}
-
-data "aws_subnets" "default" {
-  filter {
-    name   = "default-for-az"
-    values = [true]
-  }
+module "network" {
+  source                     = "../modules/network"
+  name                       = var.network_name
+  database_subnet_group_name = local.network_config.database_subnet_group_name
+  nat_gateway_config         = "shared"
 }
 
 # VPC Endpoints for accessing AWS Services
@@ -80,16 +83,16 @@ resource "aws_security_group" "aws_services" {
 
   name_prefix = module.project_config.aws_services_security_group_name_prefix
   description = "VPC endpoints to access AWS services from the VPCs private subnets"
-  vpc_id      = data.aws_vpc.default.id
+  vpc_id      = module.network.vpc_id
 }
 
 resource "aws_vpc_endpoint" "aws_service" {
   for_each = local.aws_service_integrations
 
-  vpc_id              = data.aws_vpc.default.id
+  vpc_id              = module.network.vpc_id
   service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
-  vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.aws_services[0].id]
-  subnet_ids          = data.aws_subnets.default.ids
-  private_dns_enabled = true
+  vpc_endpoint_type   = each.key == "s3" ? "Gateway" : "Interface"
+  security_group_ids  = each.key == "s3" ? null : [aws_security_group.aws_services[0].id]
+  subnet_ids          = each.key == "s3" ? null : module.network.private_subnet_ids
+  private_dns_enabled = each.key == "s3" ? null : true
 }
