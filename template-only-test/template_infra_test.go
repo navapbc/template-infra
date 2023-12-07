@@ -87,6 +87,7 @@ func SetUpNetwork(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-update-network", "NETWORK_NAME=dev"},
+		Env:        map[string]string{"TF_CLI_ARGS_apply": "-input=false -auto-approve"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
