@@ -8,6 +8,10 @@ The database setup process will:
 4. Create an [AWS Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html), the "role manager", for provisioning the [PostgreSQL database users](https://www.postgresql.org/docs/8.0/user-manag.html) that will be used by the application service and by the migrations task.
 5. Invoke the role manager function to create the `app` and `migrator` Postgres users.
 
+## Important note
+
+This is an optional step that can be skipped if the application does not have a database.
+
 ## Requirements
 
 Before setting up the database you'll need to have:
