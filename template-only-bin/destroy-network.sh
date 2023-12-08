@@ -9,4 +9,4 @@ cd infra/networks
 
 terraform init -reconfigure -backend-config=$BACKEND_CONFIG_FILE
 
-terraform destroy -auto-approve
+terraform destroy -auto-approve -var="network_name=dev"
