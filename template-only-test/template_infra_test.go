@@ -24,7 +24,7 @@ func TestSetUpAccount(t *testing.T) {
 	SetUpAccount(t)
 
 	t.Run("ValidateAccount", ValidateAccount)
-	t.Run("TestBuildRepository", SubtestBuildRepository)
+	t.Run("TestNetwork", SubtestNetwork)
 }
 
 func ValidateAccount(t *testing.T) {
@@ -33,6 +33,13 @@ func ValidateAccount(t *testing.T) {
 	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
+}
+
+func SubtestNetwork(t *testing.T) {
+	defer TeardownNetwork(t)
+	SetUpNetwork(t)
+
+	t.Run("TestBuildRepository", SubtestBuildRepository)
 }
 
 func SubtestBuildRepository(t *testing.T) {
@@ -65,6 +72,22 @@ func SetUpAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-set-up-account", "ACCOUNT_NAME=prod"},
+		WorkingDir: "../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func SetUpNetwork(t *testing.T) {
+	fmt.Println("::group::Creating network resources")
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-configure-network", "NETWORK_NAME=dev"},
+		WorkingDir: "../",
+	})
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-update-network", "NETWORK_NAME=dev"},
+		Env:        map[string]string{"TF_CLI_ARGS_apply": "-input=false -auto-approve"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
@@ -182,6 +205,16 @@ func TeardownAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
+		WorkingDir: "../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func TeardownNetwork(t *testing.T) {
+	fmt.Println("::group::Destroying network resources")
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-network"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")

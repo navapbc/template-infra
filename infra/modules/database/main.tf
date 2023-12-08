@@ -50,6 +50,7 @@ resource "aws_rds_cluster" "db" {
     min_capacity = 0.5
   }
 
+  db_subnet_group_name   = var.database_subnet_group_name
   vpc_security_group_ids = [aws_security_group.db.id]
 
   enabled_cloudwatch_logs_exports = ["postgresql"]

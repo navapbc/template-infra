@@ -1,16 +1,25 @@
-# TODO(https://github.com/navapbc/template-infra/issues/152) use non-default VPC
-data "aws_vpc" "default" {
-  default = true
-}
-
-# TODO(https://github.com/navapbc/template-infra/issues/152) use private subnets
-data "aws_subnets" "default" {
-  filter {
-    name   = "default-for-az"
-    values = [true]
+data "aws_vpc" "network" {
+  tags = {
+    project      = module.project_config.project_name
+    network_name = local.environment_config.network_name
   }
 }
 
+data "aws_subnets" "public" {
+  tags = {
+    project      = module.project_config.project_name
+    network_name = local.environment_config.network_name
+    subnet_type  = "public"
+  }
+}
+
+data "aws_subnets" "private" {
+  tags = {
+    project      = module.project_config.project_name
+    network_name = local.environment_config.network_name
+    subnet_type  = "private"
+  }
+}
 
 locals {
   # The prefix key/value pair is used for Terraform Workspaces, which is useful for projects with multiple infrastructure developers.
@@ -84,13 +93,28 @@ data "aws_ssm_parameter" "incident_management_service_integration_url" {
   name  = local.incident_management_service_integration_config.integration_url_param_name
 }
 
+data "aws_security_groups" "aws_services" {
+  filter {
+    name   = "group-name"
+    values = ["${module.project_config.aws_services_security_group_name_prefix}*"]
+  }
+
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.network.id]
+  }
+}
+
 module "service" {
   source                = "../../modules/service"
   service_name          = local.service_name
   image_repository_name = module.app_config.image_repository_name
   image_tag             = local.image_tag
-  vpc_id                = data.aws_vpc.default.id
-  subnet_ids            = data.aws_subnets.default.ids
+  vpc_id                = data.aws_vpc.network.id
+  public_subnet_ids     = data.aws_subnets.public.ids
+  private_subnet_ids    = data.aws_subnets.private.ids
+
+  aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 
   db_vars = module.app_config.has_database ? {
     security_group_ids         = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
