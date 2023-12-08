@@ -22,7 +22,7 @@ If your application needs a database, it must also:
 
 ## Example Application
 
-The infra template includes an example "hello, world" application that works with the template. This application is fully deployed and can be viewed at the endpoint <http://app-dev-459811935.us-east-1.elb.amazonaws.com/>. The source code for this test application is at <https://github.com/navapbc/platform-test>.
+The infra template includes an example "hello, world" application that works with the template. The source code for this test application is at <https://github.com/navapbc/platform-test>. This application is fully deployed. Please check the source repo for the current URL.
 
 ## Template Applications
 
