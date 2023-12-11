@@ -56,6 +56,11 @@ variable "vpc_id" {
   description = "Uniquely identifies the VPC."
 }
 
+variable "database_subnet_group_name" {
+  type        = string
+  description = "Name of database subnet group"
+}
+
 variable "private_subnet_ids" {
   type        = list(any)
   description = "list of private subnet IDs to put the role provisioner and role checker lambda functions in"

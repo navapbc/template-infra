@@ -31,7 +31,7 @@ This template assumes that you have an application to deploy. See [application r
 
 After downloading and installing the template into your project:
 
-1. Follow the steps in [`docs/infra/README.md`](./docs/infra/README.md) to setup the infrastructure for your application.
+1. Follow the steps in [infra/README.md](/infra/README.md) to setup the infrastructure for your application.
 1. After setting up AWS resources, you can [set up GitHub Actions workflows](./template-only-docs/set-up-ci.md).
 1. After configuring GitHub Actions, you can [set up continuous deployment](./template-only-docs/set-up-cd.md).
 1. At any point, [set up your team workflow](./template-only-docs/set-up-team-workflow.md).

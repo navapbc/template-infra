@@ -50,7 +50,7 @@ locals {
   account_names_by_environment = {
     shared  = "dev"
     dev     = "dev"
-    staging = "staging"
+    staging = "dev"
     prod    = "prod"
   }
 }
