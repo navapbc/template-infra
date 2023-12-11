@@ -1,6 +1,6 @@
 # Design of network layer
 
-* Deciders: TBD
+* Deciders: @lorenyu @shawnvanderjagt
 * Date: 2023-12-01
 
 ## Context and Problem Statement
