@@ -22,7 +22,7 @@ Then install the version of Terraform you need.
 tfenv install 1.4.6
 ```
 
-If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./introduction-to-terraform.md).
+If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./intro-to-terraform.md).
 
 ### Install AWS CLI
 
@@ -44,11 +44,17 @@ brew install gh
 
 ### Install linters
 
-[Shellcheck](https://github.com/koalaman/shellcheck) and [actionlint](https://github.com/rhysd/actionlint) are optional utilites for running infrastructure linters locally.
+We have several optional utilities for running infrastructure linters locally. These are run as part of the CI pipeline, therefore, it is often simpler to test them locally first.
+
+* [Shellcheck](https://github.com/koalaman/shellcheck)
+* [actionlint](https://github.com/rhysd/actionlint)
+* [markdown-link-check](https://github.com/tcort/markdown-link-check)
 
 ```bash
+
 brew install shellcheck
 brew install actionlint
+npm install -g markdown-link-check
 ```
 
 ## AWS Authentication

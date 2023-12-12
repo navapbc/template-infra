@@ -11,6 +11,10 @@ output "database_config" {
   } : null
 }
 
+output "network_name" {
+  value = var.network_name
+}
+
 output "service_config" {
   value = {
     region = var.default_region

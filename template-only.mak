@@ -39,5 +39,8 @@ destroy-app-service:
 destroy-app-build-repository:
 	./template-only-bin/destroy-app-build-repository.sh
 
+destroy-network:
+	./template-only-bin/destroy-network.sh
+
 destroy-account:
 	./template-only-bin/destroy-account.sh
