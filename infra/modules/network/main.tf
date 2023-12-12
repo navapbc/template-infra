@@ -22,9 +22,10 @@ module "aws_vpc" {
   database_subnet_tags       = { subnet_type = "database" }
   database_subnet_group_name = var.database_subnet_group_name
 
-  enable_nat_gateway     = var.nat_gateway_config != "none" ? true : false
-  single_nat_gateway     = var.nat_gateway_config == "shared" ? true : false
-  one_nat_gateway_per_az = var.nat_gateway_config == "per_az" ? true : false
+  # If application needs external services, then create one NAT gateway per availability zone
+  enable_nat_gateway     = var.has_external_non_aws_service
+  single_nat_gateway     = false
+  one_nat_gateway_per_az = var.has_external_non_aws_service
 
   enable_dns_hostnames = true
   enable_dns_support   = true
