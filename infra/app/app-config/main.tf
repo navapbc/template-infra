@@ -17,11 +17,7 @@ locals {
   # If enabled, the networks associated with this application's environments
   # will have NAT gateways, which allows the service in the private subnet to
   # make calls to the internet.
-  #
-  # Bug: At the time of writing, AWS Evidently does not support creating an
-  # Interface VPC Endpoint in the us-east-1a availability zone, so if your
-  # project needs feature flags, set this to true to allow access to Evidently
-  has_external_non_aws_service = true
+  has_external_non_aws_service = false
 
   has_incident_management_service = false
 
