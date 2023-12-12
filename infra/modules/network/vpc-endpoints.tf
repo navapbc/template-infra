@@ -21,11 +21,6 @@ locals {
 
 data "aws_region" "current" {}
 
-data "aws_route_table" "private" {
-  count     = length(module.aws_vpc.private_subnets)
-  subnet_id = module.aws_vpc.private_subnets[count.index]
-}
-
 # VPC Endpoints for accessing AWS Services
 # ----------------------------------------
 #
@@ -63,5 +58,5 @@ resource "aws_vpc_endpoint" "gateway" {
   vpc_id            = module.aws_vpc.vpc_id
   service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
   vpc_endpoint_type = "Gateway"
-  route_table_ids   = data.aws_route_table.private[*].id
+  route_table_ids   = module.aws_vpc.private_route_table_ids
 }
