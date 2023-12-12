@@ -114,6 +114,10 @@ module "service" {
   public_subnet_ids     = data.aws_subnets.public.ids
   private_subnet_ids    = data.aws_subnets.private.ids
 
+  cpu                    = local.service_config.cpu
+  memory                 = local.service_config.memory
+  desired_instance_count = local.service_config.desired_instance_count
+
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 
   db_vars = module.app_config.has_database ? {

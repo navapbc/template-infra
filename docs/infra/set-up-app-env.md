@@ -10,6 +10,7 @@ Before setting up the application's environments you'll need to have:
 
 1. [A compatible application in the app folder](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md)
 2. [Configure the app](/infra/app/app-config/main.tf). Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
+   1. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
 3. [Create a nondefault VPC to be used by the application](./set-up-network.md)
 4. (If the application has a database) [Set up the database for the application](./set-up-database.md)
 5. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)

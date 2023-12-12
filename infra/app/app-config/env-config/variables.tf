@@ -24,3 +24,18 @@ variable "has_database" {
 variable "has_incident_management_service" {
   type = bool
 }
+
+variable "service_cpu" {
+  type    = number
+  default = 256
+}
+
+variable "service_memory" {
+  type    = number
+  default = 512
+}
+
+variable "service_desired_instance_count" {
+  type    = number
+  default = 1
+}
