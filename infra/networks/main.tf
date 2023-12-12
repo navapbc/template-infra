@@ -63,7 +63,12 @@ module "network" {
   source                     = "../modules/network"
   name                       = var.network_name
   database_subnet_group_name = local.network_config.database_subnet_group_name
-  nat_gateway_config         = "shared"
+  nat_gateway_config         = "none"
+}
+
+data "aws_route_table" "private" {
+  count     = length(module.network.private_subnet_ids)
+  subnet_id = module.network.private_subnet_ids[count.index]
 }
 
 # VPC Endpoints for accessing AWS Services
@@ -95,4 +100,5 @@ resource "aws_vpc_endpoint" "aws_service" {
   security_group_ids  = each.key == "s3" ? null : [aws_security_group.aws_services[0].id]
   subnet_ids          = each.key == "s3" ? null : module.network.private_subnet_ids
   private_dns_enabled = each.key == "s3" ? null : true
+  route_table_ids     = each.key == "s3" ? data.aws_route_table.private[*].id : null
 }
