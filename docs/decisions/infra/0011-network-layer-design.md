@@ -50,16 +50,16 @@ module "[NETWORK_NAME]_network_config" {
 Each network config will have the following properties:
 
 * **account_name** — Name of AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD
-* **... TODO work with @shawnvanderjagt on this section**
 * Each network will have three subnets, (1) a public subnet, (2) a private subnet for the application layer, and (3) private subnet for the data layer
+* The network will also have different properties depending on the applications that are using the network (see [Application-specific network configuration](#application-specific-network-configuration))
 
 ### Add network_name tag to VPC
 
 Add a "network_name" name tag to the VPC with the name of the network. The VPC tag will be used by the service layer to identify the VPC in an [aws_vpc data source](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/vpc). Tags are used because at this time AWS VPCs do not have any user-provided identifiers such as a VPC name. Generated identifiers like `vpc_id` cannot be used because `vpc_id` is not known statically at configuration time, and we are following the pattern of [using configuration and data sources to manage dependencies between different infrastructure layers](/docs/infra/module-dependencies.md#use-config-modules-and-data-resources-to-manage-dependencies-between-root-modules).
 
-## Service layer changes
+## Application-specific network configuration
 
-In order to determine which VPC to use for each application environment, add a `network_name` property to the [environment config](/infra/app/app-config/env-config/). The network name will be used in [the service layer](/infra/app/service/main.tf) by the `aws_vpc` data source:
+In order to determine which VPC to use for each application environment, add a `network_name` property to the [environment config](/infra/app/app-config/env-config/). The network name will be used in database and service layers by the `aws_vpc` data source:
 
 ```terraform
 data "aws_vpc" "network" {
@@ -68,6 +68,11 @@ data "aws_vpc" "network" {
   }
 }
 ```
+
+Networks associated with applications using the `network_name` property will have the following properties based on the application configuration.
+
+1. The `has_database` setting determines whether or not to create VPC endpoints needed by the database layer.
+2. The `has_external_non_aws_service` setting determines whether or not to create NAT gateways, which allows the service in the private subnet to make requests to the internet.
 
 ### Example configurations
 
