@@ -10,6 +10,10 @@ locals {
     # AWS services used by ECS Fargate: ECR to fetch images, S3 for image layers, and CloudWatch for logs
     ["ecr.api", "ecr.dkr", "s3", "logs"],
 
+    # AWS services used for feature flags
+    # Bug: AWS CloudWatch Evidently currently does not support us-east-1a
+    # ["evidently"],
+
     # AWS services used by the database's role manager
     var.has_database ? ["ssm", "kms", "secretsmanager"] : [],
   )
