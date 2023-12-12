@@ -10,6 +10,10 @@ locals {
     # AWS services used by ECS Fargate: ECR to fetch images, S3 for image layers, and CloudWatch for logs
     ["ecr.api", "ecr.dkr", "s3", "logs"],
 
+    # Workaround: Feature flags use AWS Evidently, but we are going to create that VPC endpoint separately
+    # rather than as part of this list in order to get around the limitation that AWS Evidently
+    # is not available in some availability zones (at the time of writing)
+
     # AWS services used by the database's role manager
     var.has_database ? ["ssm", "kms", "secretsmanager"] : [],
   )
@@ -34,8 +38,6 @@ data "aws_region" "current" {}
 # See https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html#create-interface-endpoint
 
 resource "aws_security_group" "aws_services" {
-  count = length(local.aws_service_integrations) > 0 ? 1 : 0
-
   name_prefix = var.aws_services_security_group_name_prefix
   description = "VPC endpoints to access AWS services from the VPCs private subnets"
   vpc_id      = module.aws_vpc.vpc_id
@@ -47,7 +49,7 @@ resource "aws_vpc_endpoint" "interface" {
   vpc_id              = module.aws_vpc.vpc_id
   service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
   vpc_endpoint_type   = "Interface"
-  security_group_ids  = [aws_security_group.aws_services[0].id]
+  security_group_ids  = [aws_security_group.aws_services.id]
   subnet_ids          = module.aws_vpc.private_subnets
   private_dns_enabled = true
 }
@@ -59,4 +61,75 @@ resource "aws_vpc_endpoint" "gateway" {
   service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = module.aws_vpc.private_route_table_ids
+}
+
+# Interface VPC Endpoint for AWS CloudWatch Evidently (Workaround)
+# ----------------------------------------------------------------
+#
+# Add Interface VPC Endpoint for AWS CloudWatch Evidently separately from other VPC Endpoints,
+# because at the time of writing, Evidently isn't supported in certain availability zones.
+# So we filter down the list of private subnets by the ones in the availability zones that are
+# supported by Evidently before creating the VPC endpoint.
+
+data "aws_subnet" "private" {
+  count = length(module.aws_vpc.private_subnets)
+  id    = module.aws_vpc.private_subnets[count.index]
+}
+
+locals {
+  # At the time of writing, these are the only availability zones supported by AWS CloudWatch Evidently
+  # This list was obtained by using the AWS Console, going through each US region, attempting to add
+  # a VPC endpoint for Evidently in the default VPC, and seeing which availability zones show up as
+  # options.
+  evidently_az_ids = [
+    "use1-az2",
+    "use1-az4",
+    "use1-az6",
+    "use2-az1",
+    "use2-az2",
+    "use2-az3",
+    "usw2-az1",
+    "usw2-az2",
+    "usw2-az3",
+  ]
+
+  evidently_dataplane_az_ids = [
+    "use1-az1",
+    "use1-az4",
+    "use1-az6",
+    "use2-az1",
+    "use2-az2",
+    "use2-az3",
+    "usw2-az1",
+    "usw2-az2",
+    "usw2-az3",
+  ]
+
+  aws_evidently_subnet_ids = [
+    for subnet in data.aws_subnet.private[*] : subnet.id
+    if contains(local.evidently_az_ids, subnet.availability_zone_id)
+  ]
+
+  aws_evidently_dataplane_subnet_ids = [
+    for subnet in data.aws_subnet.private[*] : subnet.id
+    if contains(local.evidently_dataplane_az_ids, subnet.availability_zone_id)
+  ]
+}
+
+resource "aws_vpc_endpoint" "evidently" {
+  vpc_id              = module.aws_vpc.vpc_id
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.evidently"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [aws_security_group.aws_services.id]
+  subnet_ids          = local.aws_evidently_subnet_ids
+  private_dns_enabled = true
+}
+
+resource "aws_vpc_endpoint" "evidently_dataplane" {
+  vpc_id              = module.aws_vpc.vpc_id
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.evidently-dataplane"
+  vpc_endpoint_type   = "Interface"
+  security_group_ids  = [aws_security_group.aws_services.id]
+  subnet_ids          = local.aws_evidently_dataplane_subnet_ids
+  private_dns_enabled = true
 }
