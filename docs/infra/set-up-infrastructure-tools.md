@@ -51,10 +51,9 @@ We have several optional utilities for running infrastructure linters locally. T
 * [markdown-link-check](https://github.com/tcort/markdown-link-check)
 
 ```bash
-
 brew install shellcheck
 brew install actionlint
-npm install -g markdown-link-check
+make infra-lint
 ```
 
 ## AWS Authentication
