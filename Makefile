@@ -39,7 +39,6 @@ __check_defined = \
 	infra-configure-network \
 	infra-format \
 	infra-lint \
-	infra-lint-markdown \
 	infra-lint-scripts \
 	infra-lint-terraform \
 	infra-lint-workflows \
@@ -52,6 +51,7 @@ __check_defined = \
 	infra-update-current-account \
 	infra-update-network \
 	infra-validate-modules \
+	lint-markdown \
 	release-build \
 	release-deploy \
 	release-image-name \
@@ -140,9 +140,9 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: infra-lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
 
-infra-lint-markdown: ## Lint Markdown docs for broken links
+lint-markdown: ## Lint Markdown docs for broken links
 	./bin/lint-markdown.sh
 
 infra-lint-scripts: ## Lint shell scripts
