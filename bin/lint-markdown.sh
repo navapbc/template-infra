@@ -15,4 +15,4 @@ LINK_CHECK_CONFIG=".github/workflows/markdownlint-config.json"
 
 # Recursively find all markdown files (*.md) in this directory. Pass them in as args to the lint
 # command using the handy `xargs` command.
-find . -name \*.md -print0 | xargs -0 -n1 markdown-link-check --config $LINK_CHECK_CONFIG
+find . -name \*.md -print0 | xargs -0 -n1 npx markdown-link-check --config $LINK_CHECK_CONFIG
