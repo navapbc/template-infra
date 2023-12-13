@@ -142,9 +142,6 @@ infra-check-compliance-tfsec: ## Run tfsec compliance checks
 
 infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
 
-lint-markdown: ## Lint Markdown docs for broken links
-	./bin/lint-markdown.sh
-
 infra-lint-scripts: ## Lint shell scripts
 	shellcheck bin/**
 
@@ -159,6 +156,9 @@ infra-format: ## Format infra code
 
 infra-test-service: ## Run service layer infra test suite
 	cd infra/test && go test -run TestService -v -timeout 30m
+
+lint-markdown: ## Lint Markdown docs for broken links
+	./bin/lint-markdown.sh
 
 ########################
 ## Release Management ##
