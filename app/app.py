@@ -1,16 +1,19 @@
 import logging
 import os
+from datetime import datetime
 
-import boto3
 from flask import Flask
-import psycopg
-import psycopg.conninfo
+
+from db import get_db_connection
+from feature_flags import is_feature_enabled
+from storage import create_upload_url
 
 logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
+
 
 def main():
     host = os.environ.get("HOST")
@@ -30,6 +33,7 @@ def health():
     conn.execute("SELECT 1")
     return "OK"
 
+
 @app.route("/migrations")
 def migrations():
     conn = get_db_connection()
@@ -41,32 +45,6 @@ def migrations():
         last_migration_date = cur.fetchone()[0]
         return f"Last migration on {last_migration_date}"
 
-def get_db_token(host, port, user):
-    # gets the credentials from .aws/credentials
-    logger.info("Getting RDS client")
-    client = boto3.client("rds")
-
-    logger.info("Generating auth token for user %s", user)
-    token = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=user)
-    return token
-
-
-def get_db_connection():
-    host = os.environ.get("DB_HOST")
-    port = os.environ.get("DB_PORT")
-    user = os.environ.get("DB_USER")
-
-    # Tokens last for 15 minutes, so normally you wouldn't need to generate
-    # an auth token every time you create a new connection, but we do that
-    # here to keep the example app simple.
-    password = get_db_token(host, port, user)
-    dbname = os.environ.get("DB_NAME")
-
-    conninfo = psycopg.conninfo.make_conninfo(host=host, port=port, user=user, password=password, dbname=dbname)
-
-    conn = psycopg.connect(conninfo)
-    return conn
-
 
 @app.route("/feature-flags")
 def feature_flags():
@@ -76,18 +54,18 @@ def feature_flags():
     return f"<p>Feature foo is {foo_status}</p><p>Feature bar is {bar_status}</p>"
 
 
-def is_feature_enabled(feature_name: str) -> bool:
-    feature_flags_project_name = os.environ.get("FEATURE_FLAGS_PROJECT")
-
-    logger.info("Getting Evidently client")
-    client = boto3.client("evidently")
-
-    response = client.evaluate_feature(
-        entityId="anonymous",
-        feature=feature_name,
-        project=feature_flags_project_name,
+@app.route("/document-upload")
+def document_upload():
+    path = f"uploads/{datetime.now().date()}/${{filename}}"
+    upload_url, fields = create_upload_url(path)
+    additional_fields = "".join(
+        [
+            f'<input type="hidden" name="{name}" value="{value}">'
+            for name, value in fields.items()
+        ]
     )
-    return response["value"]["boolValue"]
+    # Note: Additional fields should come first before the file and submit button
+    return f'<form method="post" action="{upload_url}" enctype="multipart/form-data">{additional_fields}<input type="file" name="file"><input type="submit"></form>'
 
 
 if __name__ == "__main__":
