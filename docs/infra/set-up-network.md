@@ -8,10 +8,10 @@ The network setup process will configure and deploy network resources needed by 
 
 ## Requirements
 
-Before setting up the database you'll need to have:
+Before setting up the network you'll need to have:
 
 1. [Set up the AWS account](./set-up-aws-account.md)
-2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/main.tf). By default there is configuration for three networks, one for each application environment. By default, there is one network for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
+2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/main.tf). By default there are three networks defined, one for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
 3. [Configure the app](/infra/app/app-config/main.tf).
    1. Update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with. This setting determines whether or not to create VPC endpoints needed by the database layer.
    2. Update `has_external_non_aws_service` to `true` or `false` depending on whether or not your application makes calls to an external non-AWS service. This setting determines whether or not to create NAT gateways, which allows the service in the private subnet to make requests to the internet.
