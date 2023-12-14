@@ -8,7 +8,7 @@ The network setup process will configure and deploy network resources needed by 
 
 ## Requirements
 
-Before setting up the database you'll need to have:
+Before setting up the network you'll need to have:
 
 1. [Set up the AWS account](./set-up-aws-account.md)
 2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/main.tf). By default there is configuration for three networks, one for each application environment. By default, there is one network for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
