@@ -17,7 +17,10 @@ output "network_name" {
 
 output "service_config" {
   value = {
-    region = var.default_region
+    region                 = var.default_region
+    cpu                    = var.service_cpu
+    memory                 = var.service_memory
+    desired_instance_count = var.service_desired_instance_count
   }
 }
 
