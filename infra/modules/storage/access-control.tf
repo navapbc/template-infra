@@ -23,6 +23,11 @@ resource "aws_iam_policy" "storage_access" {
         ],
         Effect   = "Allow",
         Resource = ["arn:aws:s3:::${var.name}/*"]
+      },
+      {
+        Action   = "kms:GenerateDataKey"
+        Effect   = "Allow"
+        Resource = aws_kms_key.storage.arn
       }
     ]
   })
