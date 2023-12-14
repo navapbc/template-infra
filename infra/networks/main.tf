@@ -1,7 +1,3 @@
-# TODO: This file is is a temporary implementation of the network layer
-# that currently just adds resources to the default VPC
-# The full network implementation is part of https://github.com/navapbc/template-infra/issues/152
-
 locals {
   tags = merge(module.project_config.default_tags, {
     network_name = var.network_name
