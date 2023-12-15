@@ -64,7 +64,7 @@ locals {
   #   }
   account_names_by_environment = {
     shared  = "dev"
-    dev     = "dev"
+    dev     = "oidc-test"
     staging = "dev"
     prod    = "prod"
   }

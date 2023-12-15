@@ -42,6 +42,14 @@ The [GitHub CLI](https://cli.github.com/) is useful for automating certain opera
 brew install gh
 ```
 
+### Install jq
+
+TODO
+
+```bash
+brew install jq
+```
+
 ### Install linters
 
 We have several optional utilities for running infrastructure linters locally. These are run as part of the CI pipeline, therefore, it is often simpler to test them locally first.

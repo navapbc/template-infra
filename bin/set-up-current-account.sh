@@ -65,6 +65,19 @@ echo
 
 cd infra/accounts
 
+set -x
+# If this account is used for multiple apps, there may already be a github open ID connect
+# provider. Look it up and use the existing one if it exists.
+github_arn=$(aws iam list-open-id-connect-providers | jq -r ".[] | .[] | .Arn" | grep github || echo "")
+
+if [[ -z ${github_arn} ]]; then
+    aws iam create-open-id-connect-provider \
+        --url "https://token.actions.githubusercontent.com" \
+        --client-id-list "sts.amazonaws.com" \
+        --thumbprint-list "0000000000000000000000000000000000000000"
+fi
+
+
 # Create the infrastructure for the terraform backend such as the S3 bucket
 # for storing tfstate files and the DynamoDB table for tfstate locks.
 # -reconfigure is used in case this isn't the first account being set up
