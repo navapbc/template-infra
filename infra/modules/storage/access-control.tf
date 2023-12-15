@@ -19,6 +19,7 @@ resource "aws_iam_policy" "storage_access" {
         Action = [
           "s3:DeleteObject",
           "s3:GetObject",
+          "s3:HeadObject",
           "s3:PutObject",
         ],
         Effect   = "Allow",
