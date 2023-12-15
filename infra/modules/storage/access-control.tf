@@ -8,6 +8,30 @@ resource "aws_s3_bucket_public_access_block" "storage" {
   restrict_public_buckets = true
 }
 
+# Bucket policy that requires HTTPS
+resource "aws_s3_bucket_policy" "storage" {
+  bucket = aws_s3_bucket.storage.id
+  policy = data.aws_iam_policy_document.storage.json
+}
+
+data "aws_iam_policy_document" "storage" {
+  statement {
+    sid       = "RestrictToTLSRequestsOnly"
+    effect    = "Deny"
+    actions   = ["s3:*"]
+    resources = [aws_s3_bucket.storage.arn]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
+
 # Create policy for read/write access
 # Attach this policy to roles that need access to the bucket
 resource "aws_iam_policy" "storage_access" {
