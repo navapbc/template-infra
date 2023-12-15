@@ -35,7 +35,8 @@ locals {
 
   service_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
 
-  bucket_name = "${local.prefix}${module.project_config.project_name}-${local.service_name}-storage"
+  # Include project name in bucket name since buckets need to be globally unique across AWS
+  bucket_name = "${local.prefix}${module.project_config.project_name}-${module.app_config.app_name}-${var.environment_name}"
 
   environment_config                             = module.app_config.environment_configs[var.environment_name]
   service_config                                 = local.environment_config.service_config
