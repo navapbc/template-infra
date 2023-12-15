@@ -35,25 +35,24 @@ data "aws_iam_policy_document" "storage" {
 # Create policy for read/write access
 # Attach this policy to roles that need access to the bucket
 resource "aws_iam_policy" "storage_access" {
-  name = "${var.name}-access"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = [
-          "s3:DeleteObject",
-          "s3:GetObject",
-          "s3:HeadObject",
-          "s3:PutObject",
-        ],
-        Effect   = "Allow",
-        Resource = ["arn:aws:s3:::${var.name}/*"]
-      },
-      {
-        Action   = "kms:GenerateDataKey"
-        Effect   = "Allow"
-        Resource = aws_kms_key.storage.arn
-      }
+  name   = "${var.name}-access"
+  policy = data.aws_iam_policy_document.storage_access.json
+}
+
+data "aws_iam_policy_document" "storage_access" {
+  statement {
+    actions = [
+      "s3:DeleteObject",
+      "s3:GetObject",
+      "s3:GetObjectAttributes",
+      "s3:PutObject",
     ]
-  })
+    effect    = "Allow"
+    resources = ["arn:aws:s3:::${var.name}/*"]
+  }
+  statement {
+    actions   = ["kms:GenerateDataKey"]
+    effect    = "Allow"
+    resources = [aws_kms_key.storage.arn]
+  }
 }
