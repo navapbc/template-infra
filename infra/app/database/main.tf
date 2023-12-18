@@ -76,7 +76,6 @@ module "database" {
   source = "../../modules/database"
 
   name                        = "${local.prefix}${local.database_config.cluster_name}"
-  access_policy_name          = "${local.prefix}${local.database_config.access_policy_name}"
   app_access_policy_name      = "${local.prefix}${local.database_config.app_access_policy_name}"
   migrator_access_policy_name = "${local.prefix}${local.database_config.migrator_access_policy_name}"
 
