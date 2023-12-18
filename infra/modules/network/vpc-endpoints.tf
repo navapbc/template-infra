@@ -90,11 +90,3 @@ resource "aws_vpc_endpoint" "gateway" {
   vpc_endpoint_type = "Gateway"
   route_table_ids   = module.aws_vpc.private_route_table_ids
 }
-
-# Interface VPC Endpoint for AWS CloudWatch Evidently (Workaround)
-# ----------------------------------------------------------------
-#
-# Add Interface VPC Endpoint for AWS CloudWatch Evidently separately from other VPC Endpoints,
-# because at the time of writing, Evidently isn't supported in certain availability zones.
-# So we filter down the list of private subnets by the ones in the availability zones that are
-# supported by Evidently before creating the VPC endpoint.
