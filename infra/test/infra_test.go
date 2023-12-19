@@ -10,6 +10,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/stretchr/testify/require"
 )
 
 var uniqueId = strings.ToLower(random.UniqueId())
@@ -136,6 +137,14 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		},
 		WorkingDir: "../../",
 	})
+
+	// Clone the options and set targets to only apply to the buckets
+	terraformOptions, err := terraformOptions.Clone()
+	require.NoError(t, err)
+	terraformOptions.Targets = []string{
+		"module.service.aws_s3_bucket.access_logs",
+		"module.storage.aws_s3_bucket.storage",
+	}
 	terraform.Apply(t, terraformOptions)
 	fmt.Println("::endgroup::")
 }
