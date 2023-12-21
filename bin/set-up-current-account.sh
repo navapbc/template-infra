@@ -47,7 +47,7 @@ echo
 echo "------------------------------------------------------------------------------"
 echo "Bootstrapping the account by creating an S3 backend with minimal configuration"
 echo "------------------------------------------------------------------------------"
-echo 
+echo
 echo "Creating bucket: $TF_STATE_BUCKET_NAME"
 # For creating buckets outside of us-east-1, a LocationConstraint needs to be set
 # For creating buckets in us-east-1, LocationConstraint cannot be set
@@ -61,9 +61,24 @@ echo
 echo "----------------------------------"
 echo "Creating rest of account resources"
 echo "----------------------------------"
-echo 
+echo
 
 cd infra/accounts
+
+# Create the OpenID Connect provider for GitHub Actions to allow GitHub Actions
+# to authenticate with AWS and manage AWS resources. We create the OIDC provider
+# via AWS CLI rather than via Terraform because we need to first check if there
+# is already an existing OpenID Connect provider for GitHub Actions. This check
+# is needed since there can only be one OpenID Connect provider per URL per AWS
+# account.
+github_arn=$(aws iam list-open-id-connect-providers | jq -r ".[] | .[] | .Arn" | grep github || echo "")
+
+if [[ -z ${github_arn} ]]; then
+  aws iam create-open-id-connect-provider \
+    --url "https://token.actions.githubusercontent.com" \
+    --client-id-list "sts.amazonaws.com" \
+    --thumbprint-list "0000000000000000000000000000000000000000"
+fi
 
 # Create the infrastructure for the terraform backend such as the S3 bucket
 # for storing tfstate files and the DynamoDB table for tfstate locks.
