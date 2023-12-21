@@ -18,12 +18,12 @@ import (
 var uniqueId = strings.ToLower(random.UniqueId())
 var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
 
-func TestSetUpAccount(t *testing.T) {
+func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
 	SetUpProject(t, projectName)
 	t.Run("SetUpAccount", SetUpAccount)
 	t.Run("ValidateAccount", ValidateAccount)
-	t.Run("TestNetwork", SubtestNetwork)
+	t.Run("Network", SubtestNetwork)
 }
 
 func ValidateAccount(t *testing.T) {
@@ -37,14 +37,14 @@ func ValidateAccount(t *testing.T) {
 func SubtestNetwork(t *testing.T) {
 	defer TeardownNetwork(t)
 	t.Run("SetUpNetwork", SetUpNetwork)
-	t.Run("TestBuildRepository", SubtestBuildRepository)
+	t.Run("BuildRepository", SubtestBuildRepository)
 }
 
 func SubtestBuildRepository(t *testing.T) {
 	defer TeardownBuildRepository(t)
 	t.Run("SetUpBuildRepository", SetUpBuildRepository)
 	t.Run("ValidateBuildRepository", ValidateBuildRepository)
-	t.Run("TestDevEnvironment", SubtestDevEnvironment)
+	t.Run("Service", SubtestDevEnvironment)
 }
 
 func SubtestDevEnvironment(t *testing.T) {
