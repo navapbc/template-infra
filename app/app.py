@@ -2,11 +2,12 @@ import logging
 import os
 from datetime import datetime
 
+import click
 from flask import Flask
 
+import storage
 from db import get_db_connection
 from feature_flags import is_feature_enabled
-from storage import create_upload_url
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -57,7 +58,7 @@ def feature_flags():
 @app.route("/document-upload")
 def document_upload():
     path = f"uploads/{datetime.now().date()}/${{filename}}"
-    upload_url, fields = create_upload_url(path)
+    upload_url, fields = storage.create_upload_url(path)
     additional_fields = "".join(
         [
             f'<input type="hidden" name="{name}" value="{value}">'
@@ -66,6 +67,16 @@ def document_upload():
     )
     # Note: Additional fields should come first before the file and submit button
     return f'<form method="post" action="{upload_url}" enctype="multipart/form-data">{additional_fields}<input type="file" name="file"><input type="submit"></form>'
+
+
+@app.cli.command("etl", help="Run ETL job")
+@click.argument("input")
+def etl(input):
+    # input should be something like "etl/input/somefile.ext"
+    assert input.startswith("etl/input/")
+    output = input.replace("/input/", "/output/")
+    data = storage.download_file(input)
+    storage.upload_file(output, data)
 
 
 if __name__ == "__main__":

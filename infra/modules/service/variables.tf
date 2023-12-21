@@ -89,3 +89,32 @@ variable "extra_policies" {
   type        = map(string)
   default     = {}
 }
+
+variable "file_upload_jobs" {
+  type = map(object({
+    source_bucket = string
+    path_prefix   = string
+    task_command  = list(string)
+  }))
+
+  description = <<EOT
+    Configurations for jobs that trigger on a file upload event.
+    Each configuration is a map from the job name to an object defining the
+    event's source bucket (the bucket the file was uploaded to), a
+    path prefix filter (only files that match the path prefix will trigger
+    the job), and the task command to run (this overrides the CMD entrypoint
+    in the container).
+
+    To reference the file path and bucket that triggered the event, the task
+    command can optionally include the placeholder values `<object_key>`
+    and `<bucket_name>`. For example if task_command is:
+
+      ["python", "etl.py", "<object_key>"]
+
+    Then if an object was uploaded to s3://somebucket/path/to/file.txt, the
+    task will execute the command:
+
+      python etl.py path/to/file.txt
+  EOT
+  default     = {}
+}

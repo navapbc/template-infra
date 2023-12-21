@@ -16,10 +16,24 @@ output "network_name" {
 
 output "service_config" {
   value = {
+    service_name           = "${local.prefix}${var.app_name}-${var.environment}"
     region                 = var.default_region
     cpu                    = var.service_cpu
     memory                 = var.service_memory
     desired_instance_count = var.service_desired_instance_count
+
+    file_upload_jobs = {
+      for job_name, job_config in local.file_upload_jobs :
+      # For job configs that don't define a source_bucket, add the source_bucket config property
+      job_name => merge({ source_bucket = local.bucket_name }, job_config)
+    }
+  }
+}
+
+output "storage_config" {
+  value = {
+    # Include project name in bucket name since buckets need to be globally unique across AWS
+    bucket_name = local.bucket_name
   }
 }
 
