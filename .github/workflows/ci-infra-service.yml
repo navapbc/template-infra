@@ -7,11 +7,13 @@ on:
   #     - main
   #   paths:
   #     - infra/*/service/**
+  #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
   # pull_request:
   #   paths:
   #     - infra/*/service/**
+  #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
   workflow_dispatch:
