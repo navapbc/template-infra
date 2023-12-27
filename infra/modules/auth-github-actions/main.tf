@@ -11,14 +11,56 @@ resource "aws_iam_role" "github_actions" {
 }
 
 # Attach access policies to GitHub Actions role
-resource "aws_iam_role_policy_attachment" "custom" {
-  count = length(var.iam_role_policy_arns)
-
-  # TODO(https://github.com/navapbc/template-infra/issues/194) Set permissions for GitHub Actions role
-  # checkov:skip=CKV_AWS_274:Replace default policy of AdministratorAccess with finer grained permissions
-
+resource "aws_iam_role_policy_attachment" "github_actions" {
   role       = aws_iam_role.github_actions.name
-  policy_arn = var.iam_role_policy_arns[count.index]
+  policy_arn = aws_iam_policy.github_actions.arn
+}
+
+resource "aws_iam_policy" "github_actions" {
+  name        = "${var.github_actions_role_name}-manage-infra"
+  description = "Allow ${var.github_actions_role_name} too manage AWS infrastructure resources"
+  policy      = data.aws_iam_policy_document.github_actions.json
+}
+
+data "aws_iam_policy_document" "github_actions" {
+  statement {
+    sid    = "ManageInfra"
+    effect = "Allow"
+    actions = [
+      "acm:*",
+      "apigateway:*",
+      "application-autoscaling:*",
+      "autoscaling:*",
+      "cloudwatch:*",
+      "cognito-idp:*",
+      "dynamodb:*",
+      "ec2:*",
+      "ecr:*",
+      "ecs:*",
+      "elasticbeanstalk:*",
+      "elasticloadbalancing:*",
+      "events:*",
+      "evidently:*",
+      "iam:*",
+      "kms:*",
+      "lambda:*",
+      "logs:*",
+      "pipes:*",
+      "rds:*",
+      "route53:*",
+      "route53domains:*",
+      "s3:*",
+      "scheduler:*",
+      "schemas:*",
+      "secretsmanager:*",
+      "servicediscovery:*",
+      "sns:*",
+      "ssm:*",
+      "waf-regional:*",
+      "wafv2:*",
+    ]
+    resources = ["*"]
+  }
 }
 
 # Set up assume role policy for GitHub Actions to allow GitHub actions
