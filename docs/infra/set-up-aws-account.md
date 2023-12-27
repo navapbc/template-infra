@@ -3,16 +3,13 @@
 The AWS account setup process will:
 
 1. Create the [Terraform backend](https://www.terraform.io/language/settings/backends/configuration) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
-2. Create the [OpenID connect provider in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) to allow GitHub actions to access AWS account resources.
+2. Create the [OpenID connect provider in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) to allow GitHub Actions to access AWS account resources.
+3. Create the IAM role and policy that GitHub Actions will use to manage infrastructure resources.
 
 ## Prerequisites
 
 * You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication.
 * You'll also need to make sure the [project is configured](/infra/project-config/main.tf).
-
-## Overview of Terraform backend management
-
-The approach to backend management allows Terraform to both create the resources needed for a remote backend as well as allow terraform to store that configuration state in that newly created backend. This also allows us to seperate infrastructure required to support terraform from infrastructure required to support the application. Because each backend, bootstrap or environment, stores their own terraform.tfstate in these buckets, ensure that any backends that are shared use a unique key. When using a non-default workspace, the state path will be `/workspace_key_prefix/workspace_name/key`, `workspace_key_prefix` default is `env:`
 
 ## Instructions
 
