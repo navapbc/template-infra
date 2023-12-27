@@ -24,41 +24,9 @@ resource "aws_iam_policy" "github_actions" {
 
 data "aws_iam_policy_document" "github_actions" {
   statement {
-    sid    = "ManageInfra"
-    effect = "Allow"
-    actions = [
-      "acm:*",
-      "apigateway:*",
-      "application-autoscaling:*",
-      "autoscaling:*",
-      "cloudwatch:*",
-      "cognito-idp:*",
-      "dynamodb:*",
-      "ec2:*",
-      "ecr:*",
-      "ecs:*",
-      "elasticbeanstalk:*",
-      "elasticloadbalancing:*",
-      "events:*",
-      "evidently:*",
-      "iam:*",
-      "kms:*",
-      "lambda:*",
-      "logs:*",
-      "pipes:*",
-      "rds:*",
-      "route53:*",
-      "route53domains:*",
-      "s3:*",
-      "scheduler:*",
-      "schemas:*",
-      "secretsmanager:*",
-      "servicediscovery:*",
-      "sns:*",
-      "ssm:*",
-      "waf-regional:*",
-      "wafv2:*",
-    ]
+    sid       = "ManageInfra"
+    effect    = "Allow"
+    actions   = var.allowed_actions
     resources = ["*"]
   }
 }
