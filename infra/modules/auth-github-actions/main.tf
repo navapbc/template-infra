@@ -18,7 +18,7 @@ resource "aws_iam_role_policy_attachment" "github_actions" {
 
 resource "aws_iam_policy" "github_actions" {
   name        = "${var.github_actions_role_name}-manage-infra"
-  description = "Allow ${var.github_actions_role_name} too manage AWS infrastructure resources"
+  description = "Allow ${var.github_actions_role_name} to manage AWS infrastructure resources"
   policy      = data.aws_iam_policy_document.github_actions.json
 }
 
