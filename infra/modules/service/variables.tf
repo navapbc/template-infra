@@ -90,7 +90,7 @@ variable "extra_policies" {
   default     = {}
 }
 
-variable "isTemporary" {
+variable "is_temporary" {
   description = "Boolean value to determine if this resource should disable deletion protection. Needed for automated test cleanup"
   type        = bool
 }

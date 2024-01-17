@@ -12,7 +12,7 @@ resource "aws_lb" "alb" {
   subnets         = var.public_subnet_ids
 
   # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
-  enable_deletion_protection = !var.isTemporary
+  enable_deletion_protection = !var.is_temporary
 
 
   # !startswith(terraform.workspace, "t-") && !startswith()

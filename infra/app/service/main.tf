@@ -35,7 +35,7 @@ locals {
 
   service_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
 
-  isTemporary = startswith(terraform.workspace, "t-") || startswith(module.project_config.project_name, "plt-tst-act-")
+  is_temporary = startswith(terraform.workspace, "t-") || startswith(module.project_config.project_name, "plt-tst-act-")
 
   # Include project name in bucket name since buckets need to be globally unique across AWS
   bucket_name = "${local.prefix}${module.project_config.project_name}-${module.app_config.app_name}-${var.environment_name}"
@@ -125,7 +125,7 @@ module "service" {
 
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 
-  isTemporary = local.isTemporary
+  is_temporary = local.is_temporary
 
   db_vars = module.app_config.has_database ? {
     security_group_ids         = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids

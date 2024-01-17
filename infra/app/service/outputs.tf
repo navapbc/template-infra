@@ -23,6 +23,6 @@ output "migrator_role_arn" {
   value = module.service.migrator_role_arn
 }
 
-output "isTemporary" {
-  value = local.isTemporary
+output "is_temporary" {
+  value = local.is_temporary
 }
