@@ -89,3 +89,8 @@ variable "extra_policies" {
   type        = map(string)
   default     = {}
 }
+
+variable "isTemporary" {
+  description = "Boolean value to determine if this resource should disable deletion protection. Needed for automated test cleanup"
+  type        = bool
+}

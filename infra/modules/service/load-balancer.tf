@@ -12,7 +12,10 @@ resource "aws_lb" "alb" {
   subnets         = var.public_subnet_ids
 
   # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
-  enable_deletion_protection = !startswith(terraform.workspace, "t-")
+  enable_deletion_protection = !var.isTemporary
+
+
+  # !startswith(terraform.workspace, "t-") && !startswith()
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
   # checkov:skip=CKV2_AWS_20:Redirect HTTP to HTTPS as part of implementing HTTPS support
