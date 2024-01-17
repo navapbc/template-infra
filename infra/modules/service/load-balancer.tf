@@ -11,7 +11,7 @@ resource "aws_lb" "alb" {
   security_groups = [aws_security_group.alb.id]
   subnets         = var.public_subnet_ids
 
-  enable_deletion_protection = terraform.workspace == "default"
+  enable_deletion_protection = !startswith(terraform.workspace, "t-")
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
   # checkov:skip=CKV2_AWS_20:Redirect HTTP to HTTPS as part of implementing HTTPS support
