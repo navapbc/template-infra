@@ -11,6 +11,7 @@ resource "aws_lb" "alb" {
   security_groups = [aws_security_group.alb.id]
   subnets         = var.public_subnet_ids
 
+  # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
   enable_deletion_protection = !startswith(terraform.workspace, "t-")
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
