@@ -14,9 +14,6 @@ resource "aws_lb" "alb" {
   # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
   enable_deletion_protection = !var.is_temporary
 
-
-  # !startswith(terraform.workspace, "t-") && !startswith()
-
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
   # checkov:skip=CKV2_AWS_20:Redirect HTTP to HTTPS as part of implementing HTTPS support
 
