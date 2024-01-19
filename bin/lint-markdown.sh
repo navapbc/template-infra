@@ -13,6 +13,6 @@ cd "${SCRIPT_DIR}/.." >/dev/null || exit 1
 
 LINK_CHECK_CONFIG=".github/workflows/markdownlint-config.json"
 
-# Recursively find all markdown files (*.md) in this directory. Pass them in as args to the lint
-# command using the handy `xargs` command.
-find . -name \*.md -print0 | xargs -0 -n1 npx markdown-link-check --config $LINK_CHECK_CONFIG
+# Recursively find all markdown files (*.md) in the current directory, excluding node_modules subfolders.
+# Pass them in as args to the lint command using the handy `xargs` command.
+find . -name \*.md -not -path "*/node_modules/*" -print0 | xargs -0 -n1 npx markdown-link-check --config $LINK_CHECK_CONFIG
