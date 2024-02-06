@@ -62,6 +62,12 @@ data "aws_iam_policy_document" "task_executor" {
     ]
     resources = [data.aws_ecr_repository.app.arn]
   }
+
+  statement {
+    sid       = "SecretsAccess"
+    actions   = ["ssm:GetParameters"]
+    resources = local.secrets[*].valueFrom
+  }
 }
 
 resource "aws_iam_role_policy" "task_executor" {

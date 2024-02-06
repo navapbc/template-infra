@@ -62,8 +62,17 @@ variable "aws_services_security_group_id" {
 }
 
 variable "extra_environment_variables" {
-  type        = list(object({ name = string, value = string }))
-  description = "Additional environment variables to pass to the service container"
+  type        = map(string)
+  description = "Additional environment variables to pass to the service container. Map from environment variable name to the value."
+  default     = {}
+}
+
+variable "secrets" {
+  type = set(object({
+    name           = string
+    ssm_param_name = string
+  }))
+  description = "List of configurations for defining environment variables that pull from SSM parameter store"
   default     = []
 }
 

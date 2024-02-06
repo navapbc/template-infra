@@ -69,6 +69,12 @@ def document_upload():
     return f'<form method="post" action="{upload_url}" enctype="multipart/form-data">{additional_fields}<input type="file" name="file"><input type="submit"></form>'
 
 
+@app.route("/secrets")
+def secrets():
+    secret_sauce = os.environ["SECRET_SAUCE"]
+    return f'The secret sauce is "{secret_sauce}"'
+
+
 @app.cli.command("etl", help="Run ETL job")
 @click.argument("input")
 def etl(input):

@@ -28,7 +28,10 @@ locals {
   environment_variables = concat(
     local.base_environment_variables,
     local.db_environment_variables,
-    var.extra_environment_variables,
+    [
+      for name, value in var.extra_environment_variables :
+      { name : name, value : value }
+    ],
   )
 }
 
@@ -89,6 +92,7 @@ resource "aws_ecs_task_definition" "app" {
         ]
       },
       environment = local.environment_variables,
+      secrets     = local.secrets,
       portMappings = [
         {
           containerPort = var.container_port,
