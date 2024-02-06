@@ -28,6 +28,8 @@ locals {
     description = "Application resources created in ${var.environment_name} environment"
   })
 
+  is_temporary = startswith(terraform.workspace, "t-")
+
   environment_config                             = module.app_config.environment_configs[var.environment_name]
   service_config                                 = local.environment_config.service_config
   database_config                                = local.environment_config.database_config
@@ -137,6 +139,8 @@ module "service" {
     feature_flags_access = module.feature_flags.access_policy_arn,
     storage_access       = module.storage.access_policy_arn
   }
+
+  is_temporary = local.is_temporary
 }
 
 module "monitoring" {
