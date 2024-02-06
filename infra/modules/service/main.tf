@@ -7,6 +7,7 @@ data "aws_ecr_repository" "app" {
 locals {
   alb_name                = var.service_name
   cluster_name            = var.service_name
+  container_name          = var.service_name
   log_group_name          = "service/${var.service_name}"
   log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
@@ -68,7 +69,7 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name                   = var.service_name,
+      name                   = local.container_name,
       image                  = local.image_url,
       memory                 = var.memory,
       cpu                    = var.cpu,

@@ -22,27 +22,18 @@ data "aws_subnets" "private" {
 }
 
 locals {
-  # The prefix key/value pair is used for Terraform Workspaces, which is useful for projects with multiple infrastructure developers.
-  # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”, 
-  # if you choose not to use workspaces set this value to "dev" 
-  prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
-
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = var.environment_name
     description = "Application resources created in ${var.environment_name} environment"
   })
 
-  service_name = "${local.prefix}${module.app_config.app_name}-${var.environment_name}"
-
   is_temporary = startswith(terraform.workspace, "t-")
-
-  # Include project name in bucket name since buckets need to be globally unique across AWS
-  bucket_name = "${local.prefix}${module.project_config.project_name}-${module.app_config.app_name}-${var.environment_name}"
 
   environment_config                             = module.app_config.environment_configs[var.environment_name]
   service_config                                 = local.environment_config.service_config
   database_config                                = local.environment_config.database_config
+  storage_config                                 = local.environment_config.storage_config
   incident_management_service_integration_config = local.environment_config.incident_management_service_integration
 }
 
@@ -112,7 +103,7 @@ data "aws_security_groups" "aws_services" {
 
 module "service" {
   source                = "../../modules/service"
-  service_name          = local.service_name
+  service_name          = local.service_config.service_name
   image_repository_name = module.app_config.image_repository_name
   image_tag             = local.image_tag
   vpc_id                = data.aws_vpc.network.id
@@ -125,7 +116,7 @@ module "service" {
 
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 
-  is_temporary = local.is_temporary
+  file_upload_jobs = local.service_config.file_upload_jobs
 
   db_vars = module.app_config.has_database ? {
     security_group_ids         = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
@@ -142,12 +133,14 @@ module "service" {
 
   extra_environment_variables = [
     { name : "FEATURE_FLAGS_PROJECT", value : module.feature_flags.evidently_project_name },
-    { name : "BUCKET_NAME", value : local.bucket_name }
+    { name : "BUCKET_NAME", value : local.storage_config.bucket_name }
   ]
   extra_policies = {
     feature_flags_access = module.feature_flags.access_policy_arn,
     storage_access       = module.storage.access_policy_arn
   }
+
+  is_temporary = local.is_temporary
 }
 
 module "monitoring" {
@@ -156,18 +149,18 @@ module "monitoring" {
   #email_alerts_subscription_list = ["email1@email.com", "email2@email.com"]
 
   # Module takes service and ALB names to link all alerts with corresponding targets
-  service_name                                = local.service_name
+  service_name                                = local.service_config.service_name
   load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
   incident_management_service_integration_url = module.app_config.has_incident_management_service ? data.aws_ssm_parameter.incident_management_service_integration_url[0].value : null
 }
 
 module "feature_flags" {
   source        = "../../modules/feature-flags"
-  service_name  = local.service_name
+  service_name  = local.service_config.service_name
   feature_flags = module.app_config.feature_flags
 }
 
 module "storage" {
   source = "../../modules/storage"
-  name   = local.bucket_name
+  name   = local.storage_config.bucket_name
 }

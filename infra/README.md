@@ -67,6 +67,7 @@ To set up this project for the first time (aka it has never been deployed to the
     1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     2. [Set up application database](/docs/infra/set-up-database.md)
     3. [Set up application environment](/docs/infra/set-up-app-env.md)
+    4. [Set up background jobs](/docs/infra/background-jobs.md)
 
 ### 🆕 New developer
 
