@@ -60,14 +60,40 @@ resource "aws_cloudwatch_event_target" "document_upload_jobs" {
       object_key  = "$.detail.object.key",
     }
 
-    # Shape the input event to match the match the Amazon ECS RunTask TaskOverride structure
-    # see https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html#targets-specifics-ecs-task
-    # and https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskOverride.html
+    # When triggering the ECS task, override the command to run in the container to the
+    # command specified by the file_upload_job config. To do this define an input_template
+    # that transforms the input S3 event:
+    #   {
+    #     detail: {
+    #       bucket: { name: "mybucket" },
+    #       object: { key: "uploaded/file/path" }
+    #     }
+    #   }
+    # to match the Amazon ECS RunTask TaskOverride structure:
+    #   {
+    #     containerOverrides: [{
+    #       name: "container_name",
+    #       command: ["command", "to", "run"]
+    #     }]
+    #   }
+    # (see https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-targets.html#targets-specifics-ecs-task
+    # and https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskOverride.html)
     #
-    # We need to replace the unicode characters U+003C and U+003E with < and >, respectively since
-    # jsonencode has encodes those special characters, which are needed for EventBridge input variables
-    # see https://developer.hashicorp.com/terraform/language/functions/jsonencode and
-    # https://github.com/hashicorp/terraform/pull/18871
+    # The task command can optionally use the bucket name or the object key in the command
+    # by including the placeholder values "<bucket_name>" or "<object_key>", e.g.
+    #   {
+    #     containerOverrides: [{
+    #       name: "container_name",
+    #       command: ["process_file.sh", "--bucket", "<bucket_name>", "--object", "<object_key>"]
+    #     }]
+    #   }
+    #
+    # Since jsonencode will cause the string "<bucket_name>" to turn into
+    # "U+003Cbucket_nameU+003E" and "<object_key>" to turn into "U+003Cobject_keyU+003E",
+    # we need to replace the unicode characters U+003C and U+003E with < and > to reverse
+    # the encoding.
+    # (see https://developer.hashicorp.com/terraform/language/functions/jsonencode and
+    # https://github.com/hashicorp/terraform/pull/18871)
     input_template = replace(replace(jsonencode({
       containerOverrides = [
         {
