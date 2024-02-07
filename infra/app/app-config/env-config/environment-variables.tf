@@ -15,6 +15,6 @@ locals {
     # {
     #   name           = "SECRET_SAUCE"
     #   ssm_param_name = "/${var.app_name}-${var.environment}/secret-sauce"
-    # ]
+    # }
   ]
 }
