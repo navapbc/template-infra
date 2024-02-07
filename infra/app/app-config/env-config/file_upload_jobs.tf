@@ -5,9 +5,10 @@ locals {
   # One difference is that `source_bucket` is optional here. If `source_bucket` is not
   # specified, then the source bucket will be set to the storage bucket's name
   file_upload_jobs = {
-    etl = {
-      path_prefix  = "etl/input",
-      task_command = ["python", "-m", "flask", "--app", "app.py", "etl", "<object_key>"]
-    }
+    # Example job that triggers on a file upload to the `etl/input` prefix in the storage bucket
+    # etl = {
+    #   path_prefix  = "etl/input",
+    #   task_command = ["python", "-m", "flask", "--app", "app.py", "etl", "<object_key>"]
+    # }
   }
 }
