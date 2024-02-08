@@ -3,7 +3,10 @@ locals {
   # This is a map rather than a list so that variables can be easily
   # overridden per environment using terraform's `merge` function
   default_extra_environment_variables = {
-
+    # Example environment variables
+    # WORKER_THREADS_COUNT    = 4
+    # LOG_LEVEL               = "info"
+    # DB_CONNECTION_POOL_SIZE = 5
   }
 
   # Configuration for secrets
