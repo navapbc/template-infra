@@ -131,10 +131,13 @@ module "service" {
     }
   } : null
 
-  extra_environment_variables = [
-    { name : "FEATURE_FLAGS_PROJECT", value : module.feature_flags.evidently_project_name },
-    { name : "BUCKET_NAME", value : local.storage_config.bucket_name }
-  ]
+  extra_environment_variables = merge({
+    FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
+    BUCKET_NAME           = local.storage_config.bucket_name
+  }, local.service_config.extra_environment_variables)
+
+  secrets = local.service_config.secrets
+
   extra_policies = {
     feature_flags_access = module.feature_flags.access_policy_arn,
     storage_access       = module.storage.access_policy_arn
