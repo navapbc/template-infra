@@ -26,10 +26,10 @@ flowchart TB
 
   subgraph infra
     account:::root-module
+    app/network[network]:::root-module
 
     subgraph app
       app/build-repository[build-repository]:::root-module
-      app/network[network]:::root-module
       app/database[database]:::root-module
       app/service[service]:::root-module
     end
@@ -45,8 +45,8 @@ flowchart TB
 
     account --> terraform-backend-s3
     account --> auth-github-actions
-    app/build-repository --> container-image-repository
     app/network --> network
+    app/build-repository --> container-image-repository
     app/database --> database
     app/service --> web-app
 
