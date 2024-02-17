@@ -17,6 +17,7 @@ locals {
     { name : "PORT", value : tostring(var.container_port) },
     { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
     { name : "AWS_REGION", value : data.aws_region.current.name },
+    { name : "IMAGE_TAG", value : var.image_tag },
   ]
   db_environment_variables = var.db_vars == null ? [] : [
     { name : "DB_HOST", value : var.db_vars.connection_info.host },
