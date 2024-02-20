@@ -22,6 +22,10 @@ cp -r \
   .hadolint.yaml \
   .trivyignore \
   "$CUR_DIR"
+
+# Store template version in a file
+git rev-parse HEAD > "$CUR_DIR/.template-version"
+
 cd -
 
 echo "Remove files relevant only to template development"
