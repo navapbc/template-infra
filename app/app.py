@@ -32,7 +32,10 @@ def hello_world():
 def health():
     conn = get_db_connection()
     conn.execute("SELECT 1")
-    return "OK"
+    return {
+        "status": "healthy",
+        "version": os.environ.get("IMAGE_TAG"),
+    }
 
 
 @app.route("/migrations")
