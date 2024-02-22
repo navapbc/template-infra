@@ -21,6 +21,24 @@ variable "default_region" {
   type        = string
 }
 
+variable "domain_name" {
+  type        = string
+  description = "The fully qualified domain name for the application"
+  default     = null
+}
+
+variable "enable_https" {
+  type        = bool
+  description = "Whether to enable HTTPS for the application"
+  default     = false
+}
+
+variable "certificate_arn" {
+  type        = string
+  description = "The ARN of the certificate to use for the application"
+  default     = null
+}
+
 variable "has_database" {
   type = bool
 }
