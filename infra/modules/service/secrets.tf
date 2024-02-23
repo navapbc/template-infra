@@ -6,4 +6,9 @@ locals {
       valueFrom = secret.ssm_param_name
     }
   ]
+
+  secret_arn_patterns = [
+    for secret in var.secrets :
+    "arn:aws:ssm:*:*:parameter/${replace(secret.ssm_param_name, "/^//", "")}"
+  ]
 }

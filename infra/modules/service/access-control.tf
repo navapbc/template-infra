@@ -68,10 +68,7 @@ data "aws_iam_policy_document" "task_executor" {
     content {
       sid     = "SecretsAccess"
       actions = ["ssm:GetParameters"]
-      resources = [
-        for secret in var.secrets :
-        "arn:aws:ssm:*:*:parameter/${replace(secret.ssm_param_name, "/^//", "")}"
-      ]
+      resources = resources = local.secret_arn_patterns
     }
   }
 }
