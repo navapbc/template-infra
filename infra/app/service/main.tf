@@ -35,6 +35,8 @@ locals {
   database_config                                = local.environment_config.database_config
   storage_config                                 = local.environment_config.storage_config
   incident_management_service_integration_config = local.environment_config.incident_management_service_integration
+
+  network_config = module.project_config.network_configs[local.environment_config.network_name]
 }
 
 terraform {
@@ -101,14 +103,30 @@ data "aws_security_groups" "aws_services" {
   }
 }
 
+data "aws_acm_certificate" "certificate" {
+  count  = local.service_config.enable_https ? 1 : 0
+  domain = local.service_config.domain_name
+}
+
+data "aws_route53_zone" "zone" {
+  count = local.service_config.domain_name != null ? 1 : 0
+  name  = local.network_config.domain_config.hosted_zone
+}
+
 module "service" {
-  source                = "../../modules/service"
-  service_name          = local.service_config.service_name
+  source       = "../../modules/service"
+  service_name = local.service_config.service_name
+
   image_repository_name = module.app_config.image_repository_name
   image_tag             = local.image_tag
-  vpc_id                = data.aws_vpc.network.id
-  public_subnet_ids     = data.aws_subnets.public.ids
-  private_subnet_ids    = data.aws_subnets.private.ids
+
+  vpc_id             = data.aws_vpc.network.id
+  public_subnet_ids  = data.aws_subnets.public.ids
+  private_subnet_ids = data.aws_subnets.private.ids
+
+  domain_name     = local.service_config.domain_name
+  hosted_zone_id  = local.service_config.domain_name != null ? data.aws_route53_zone.zone[0].zone_id : null
+  certificate_arn = local.service_config.enable_https ? data.aws_acm_certificate.certificate[0].arn : null
 
   cpu                    = local.service_config.cpu
   memory                 = local.service_config.memory

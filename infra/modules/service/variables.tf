@@ -6,6 +6,24 @@ variable "service_name" {
   }
 }
 
+variable "domain_name" {
+  type        = string
+  description = "The fully qualified domain name for the application"
+  default     = null
+}
+
+variable "certificate_arn" {
+  type        = string
+  description = "The ARN of the certificate to use for the application"
+  default     = null
+}
+
+variable "hosted_zone_id" {
+  type        = string
+  description = "The Route53 hosted zone id for the domain"
+  default     = null
+}
+
 variable "image_tag" {
   type        = string
   description = "The tag of the image to deploy"
