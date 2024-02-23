@@ -70,7 +70,7 @@ data "aws_iam_policy_document" "task_executor" {
       actions = ["ssm:GetParameters"]
       resources = [
         for secret in var.secrets :
-        "arn:aws:ssm:*:*:parameter/${secret.ssm_param_name}"
+        "arn:aws:ssm:*:*:parameter/${replace(secret.ssm_param_name, "/^//", "")}"
       ]
     }
   }
