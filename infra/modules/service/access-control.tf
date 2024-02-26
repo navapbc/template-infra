@@ -64,11 +64,11 @@ data "aws_iam_policy_document" "task_executor" {
   }
 
   dynamic "statement" {
-    for_each = length(local.secrets) > 0 ? [1] : []
+    for_each = length(var.secrets) > 0 ? [1] : []
     content {
       sid       = "SecretsAccess"
       actions   = ["ssm:GetParameters"]
-      resources = local.secrets[*].valueFrom
+      resources = local.secret_arn_patterns
     }
   }
 }
