@@ -47,11 +47,15 @@ data "aws_iam_policy_document" "storage_access" {
       "s3:GetObject",
       "s3:GetObjectAttributes",
       "s3:GetObjectTagging",
+      "s3:ListBucket",
       "s3:PutObject",
       "s3:PutObjectTagging",
     ]
-    effect    = "Allow"
-    resources = ["arn:aws:s3:::${var.name}/*"]
+    effect = "Allow"
+    resources = [
+      "arn:aws:s3:::${var.name}",
+      "arn:aws:s3:::${var.name}/*"
+    ]
   }
   statement {
     actions   = ["kms:GenerateDataKey", "kms:Decrypt"]
