@@ -1,5 +1,5 @@
 locals {
-  # app_name is the name of the application which by convention should match the name of
+  # app_name is the name of the application, which by convention should match the name of
   # the folder under /infra that corresponds to the application
   app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
 
