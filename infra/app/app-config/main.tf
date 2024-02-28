@@ -1,5 +1,8 @@
 locals {
-  app_name              = "app"
+  # app_name is the name of the application, which by convention should match the name of
+  # the folder under /infra that corresponds to the application
+  app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
+
   environments          = ["dev", "staging", "prod"]
   project_name          = module.project_config.project_name
   image_repository_name = "${local.project_name}-${local.app_name}"
