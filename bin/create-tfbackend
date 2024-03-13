@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # This script creates a terraform backend config file for a terraform module.
 # It is not meant to be used directly. Instead, it is called by other scripts

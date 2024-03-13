@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Checks if an image tag has already been published to the container repository
 # Prints "true" if so, "false" otherwise
 
