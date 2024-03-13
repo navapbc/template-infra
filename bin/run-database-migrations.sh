@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # Run database migrations
 # 1. Update the application's task definition with the latest build, but

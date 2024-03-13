@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # This script sets up the terraform backend for the AWS account that you are
 # currently authenticated into and creates the terraform backend config file.
