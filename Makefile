@@ -213,4 +213,17 @@ release-image-tag: ## Prints the image tag of the release image
 ########################
 
 help: ## Prints the help documentation and info about each command
-	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -Eh '^[[:print:]]+:.*?##' $(MAKEFILE_LIST) | \
+	sort -d | \
+	awk -F':.*?## ' '{printf "\033[36m%s\033[0m\t%s\n", $$1, $$2}' | \
+	column -t -s "$$(printf '\t')"
+	@echo ""
+	@echo "APP_NAME=$(APP_NAME)"
+	@echo "ENVIRONMENT=$(ENVIRONMENT)"
+	@echo "IMAGE_NAME=$(IMAGE_NAME)"
+	@echo "IMAGE_TAG=$(IMAGE_TAG)"
+	@echo "INFO_TAG=$(INFO_TAG)"
+	@echo "GIT_REPO_AVAILABLE=$(GIT_REPO_AVAILABLE)"
+	@echo "SHELL=$(SHELL)"
+	@echo "MAKE_VERSION=$(MAKE_VERSION)"
+	@echo "MODULES=$(MODULES)"
