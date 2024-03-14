@@ -12,7 +12,7 @@ on:
         required: true
         type: string
 
-concurrency: database-migrations-${{ inputs.environment }}
+concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }}
 
 jobs:
   build-and-publish:
