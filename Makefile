@@ -120,7 +120,8 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 
 # The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
-infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) ## Run terraform validate on reusable child modules
+infra-validate-modules: ## Run terraform validate on reusable child modules
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
 
 infra-validate-module-%:
 	@echo "Validate library module: $*"
