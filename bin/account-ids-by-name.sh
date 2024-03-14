@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Prints a JSON dictionary that maps account names to account ids for the list
 # of accounts given by the terraform backend files of the form
 # <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend in the infra/accounts directory.

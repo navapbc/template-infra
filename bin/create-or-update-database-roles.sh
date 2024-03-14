@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # Script that invokes the database role-manager AWS Lambda function to create
 # or update the Postgres user roles for a particular environment.

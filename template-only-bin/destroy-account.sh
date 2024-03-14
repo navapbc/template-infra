@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Do not use this script on your project. This script is only used for testing
 # the platform bootstrap process.
 set -euxo pipefail
