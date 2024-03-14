@@ -120,7 +120,8 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 
 # The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
-infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) ## Run terraform validate on reusable child modules
+infra-validate-modules: ## Run terraform validate on reusable child modules
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
 
 infra-validate-module-%:
 	@echo "Validate library module: $*"
@@ -132,7 +133,8 @@ infra-check-app-database-roles: ## Check that app database roles have been confi
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
-infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec ## Run compliance checks
+infra-check-compliance: ## Run compliance checks
+infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
 
 infra-check-compliance-checkov: ## Run checkov compliance checks
 	checkov --directory infra
@@ -140,7 +142,8 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+infra-lint: ## Lint infra code
+infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows
 
 infra-lint-scripts: ## Lint shell scripts
 	shellcheck bin/**
