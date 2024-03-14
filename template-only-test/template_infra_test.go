@@ -18,13 +18,12 @@ import (
 var uniqueId = strings.ToLower(random.UniqueId())
 var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
 
-func TestSetUpAccount(t *testing.T) {
+func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
 	SetUpProject(t, projectName)
-	SetUpAccount(t)
-
+	t.Run("SetUpAccount", SetUpAccount)
 	t.Run("ValidateAccount", ValidateAccount)
-	t.Run("TestNetwork", SubtestNetwork)
+	t.Run("Network", SubtestNetwork)
 }
 
 func ValidateAccount(t *testing.T) {
@@ -37,24 +36,21 @@ func ValidateAccount(t *testing.T) {
 
 func SubtestNetwork(t *testing.T) {
 	defer TeardownNetwork(t)
-	SetUpNetwork(t)
-
-	t.Run("TestBuildRepository", SubtestBuildRepository)
+	t.Run("SetUpNetwork", SetUpNetwork)
+	t.Run("BuildRepository", SubtestBuildRepository)
 }
 
 func SubtestBuildRepository(t *testing.T) {
-	projectName := projectName
 	defer TeardownBuildRepository(t)
-	SetUpBuildRepository(t, projectName)
-	ValidateBuildRepository(t, projectName)
-
-	t.Run("TestDevEnvironment", SubtestDevEnvironment)
+	t.Run("SetUpBuildRepository", SetUpBuildRepository)
+	t.Run("ValidateBuildRepository", ValidateBuildRepository)
+	t.Run("Service", SubtestDevEnvironment)
 }
 
 func SubtestDevEnvironment(t *testing.T) {
 	defer TeardownDevEnvironment(t)
-	SetUpDevEnvironment(t)
-	ValidateDevEnvironment(t)
+	t.Run("SetUpDevEnvironment", SetUpDevEnvironment)
+	t.Run("ValidateDevEnvironment", ValidateDevEnvironment)
 }
 
 func SetUpProject(t *testing.T, projectName string) {
@@ -93,7 +89,7 @@ func SetUpNetwork(t *testing.T) {
 	fmt.Println("::endgroup::")
 }
 
-func SetUpBuildRepository(t *testing.T, projectName string) {
+func SetUpBuildRepository(t *testing.T) {
 	fmt.Println("::group::Creating build repository resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
@@ -156,7 +152,7 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	fmt.Println("::endgroup::")
 }
 
-func ValidateBuildRepository(t *testing.T, projectName string) {
+func ValidateBuildRepository(t *testing.T) {
 	fmt.Println("::group::Validating ability to publish build artifacts to build repository")
 
 	err := shell.RunCommandE(t, shell.Command{

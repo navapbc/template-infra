@@ -7,6 +7,7 @@ data "aws_ecr_repository" "app" {
 locals {
   alb_name                = var.service_name
   cluster_name            = var.service_name
+  container_name          = var.service_name
   log_group_name          = "service/${var.service_name}"
   log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
@@ -16,6 +17,7 @@ locals {
     { name : "PORT", value : tostring(var.container_port) },
     { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
     { name : "AWS_REGION", value : data.aws_region.current.name },
+    { name : "IMAGE_TAG", value : var.image_tag },
   ]
   db_environment_variables = var.db_vars == null ? [] : [
     { name : "DB_HOST", value : var.db_vars.connection_info.host },
@@ -27,7 +29,10 @@ locals {
   environment_variables = concat(
     local.base_environment_variables,
     local.db_environment_variables,
-    var.extra_environment_variables,
+    [
+      for name, value in var.extra_environment_variables :
+      { name : name, value : value }
+    ],
   )
 }
 
@@ -68,7 +73,7 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name                   = var.service_name,
+      name                   = local.container_name,
       image                  = local.image_url,
       memory                 = var.memory,
       cpu                    = var.cpu,
@@ -88,6 +93,7 @@ resource "aws_ecs_task_definition" "app" {
         ]
       },
       environment = local.environment_variables,
+      secrets     = local.secrets,
       portMappings = [
         {
           containerPort = var.container_port,

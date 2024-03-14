@@ -17,10 +17,4 @@ locals {
   github_actions_role_name = "${local.project_name}-github-actions"
 
   aws_services_security_group_name_prefix = "aws-service-vpc-endpoints"
-
-  network_configs = {
-    dev     = { database_subnet_group_name = "dev" }
-    staging = { database_subnet_group_name = "staging" }
-    prod    = { database_subnet_group_name = "prod" }
-  }
 }

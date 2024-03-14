@@ -6,6 +6,7 @@ locals {
   region = module.project_config.default_region
 
   network_config = module.project_config.network_configs[var.network_name]
+  domain_config  = local.network_config.domain_config
 
   # List of configuration for all applications, even ones that are not in the current network
   # If project has multiple applications, add other app configs to this list
@@ -66,4 +67,11 @@ module "network" {
   database_subnet_group_name              = local.network_config.database_subnet_group_name
   has_database                            = local.has_database
   has_external_non_aws_service            = local.has_external_non_aws_service
+}
+
+module "domain" {
+  source              = "../modules/domain"
+  name                = local.domain_config.hosted_zone
+  manage_dns          = local.domain_config.manage_dns
+  certificate_configs = local.domain_config.certificate_configs
 }
