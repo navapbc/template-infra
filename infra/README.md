@@ -61,7 +61,7 @@ Generally you should use the Make targets or the underlying bin scripts, but you
 
 To set up this project for the first time (aka it has never been deployed to the target AWS account):
 
-1. [Install this template]((/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
 2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
 3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 4. [Set up AWS account](/docs/infra/set-up-aws-account.md)
