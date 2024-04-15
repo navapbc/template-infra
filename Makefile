@@ -1,3 +1,5 @@
+include make-lib/base.mk
+
 PROJECT_ROOT ?= $(notdir $(PWD))
 
 # Use `=` instead of `:=` so that we only execute `./bin/current-account-alias.sh` when needed
@@ -9,22 +11,6 @@ CURRENT_ACCOUNT_ID = $(./bin/current-account-id.sh)
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
 MODULES := $(notdir $(wildcard infra/modules/*))
-
-# Check that given variables are set and all have non-empty values,
-# die with an error otherwise.
-#
-# Params:
-#   1. Variable name(s) to test.
-#   2. (optional) Error message to print.
-# Based off of https://stackoverflow.com/questions/10858261/how-to-abort-makefile-if-variable-not-set
-check_defined = \
-	$(strip $(foreach 1,$1, \
-        $(call __check_defined,$1,$(strip $(value 2)))))
-__check_defined = \
-	$(if $(value $1),, \
-		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
-			required by target '$@')))
-
 
 .PHONY : \
 	help \
@@ -215,18 +201,14 @@ release-image-tag: ## Prints the image tag of the release image
 ## Scripts and Helper ##
 ########################
 
+HELP_VARS := \
+  APP_NAME \
+  ENVIRONMENT \
+  IMAGE_NAME \
+  IMAGE_TAG \
+  INFO_TAG \
+  GIT_REPO_AVAILABLE \
+  MODULES
+
 help: ## Prints the help documentation and info about each command
-	@grep -Eh '^[[:print:]]+:.*?##' $(MAKEFILE_LIST) | \
-	sort -d | \
-	awk -F':.*?## ' '{printf "\033[36m%s\033[0m\t%s\n", $$1, $$2}' | \
-	column -t -s "$$(printf '\t')"
-	@echo ""
-	@echo "APP_NAME=$(APP_NAME)"
-	@echo "ENVIRONMENT=$(ENVIRONMENT)"
-	@echo "IMAGE_NAME=$(IMAGE_NAME)"
-	@echo "IMAGE_TAG=$(IMAGE_TAG)"
-	@echo "INFO_TAG=$(INFO_TAG)"
-	@echo "GIT_REPO_AVAILABLE=$(GIT_REPO_AVAILABLE)"
-	@echo "SHELL=$(SHELL)"
-	@echo "MAKE_VERSION=$(MAKE_VERSION)"
-	@echo "MODULES=$(MODULES)"
+help: help/standard
