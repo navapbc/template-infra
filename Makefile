@@ -59,6 +59,9 @@ __check_defined = \
 	release-publish \
 	release-run-database-migrations
 
+
+COMMON_ENV_VARS := APP_NAME ENVIRONMENT NETWORK_NAME
+
 APP_NAME_HELP := "the name of subdirectory of /infra that holds the application's infrastructure code"
 ENVIRONMENT_HELP := "the name of the application environment e.g. 'prod' or 'staging'"
 NETWORK_NAME_HELP := "the name of the network in /infra/networks"
@@ -226,3 +229,6 @@ help: ## Prints the help documentation and info about each command
 	@echo "SHELL=$(SHELL)"
 	@echo "MAKE_VERSION=$(MAKE_VERSION)"
 	@echo "MODULES=$(MODULES)"
+	@echo ""
+	@echo "Commonly needed environment variables help:"
+	@printf "%s\n" $(foreach env_var, $(COMMON_ENV_VARS), $(env_var)=$($(env_var)_HELP))
