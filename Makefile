@@ -25,6 +25,14 @@ __check_defined = \
 		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
 			required by target '$@')))
 
+COMMON_ENV_VARS := APP_NAME ENVIRONMENT NETWORK_NAME
+
+APP_NAME_HELP := "the name of subdirectory of /infra that holds the application's infrastructure code"
+ENVIRONMENT_HELP := "the name of the application environment e.g. 'prod' or 'staging'"
+NETWORK_NAME_HELP := "the name of the network in /infra/networks"
+
+require-%:
+	@:$(call check_defined, $*, $($*_HELP))
 
 .PHONY : \
 	help \
@@ -58,16 +66,6 @@ __check_defined = \
 	release-image-tag \
 	release-publish \
 	release-run-database-migrations
-
-
-COMMON_ENV_VARS := APP_NAME ENVIRONMENT NETWORK_NAME
-
-APP_NAME_HELP := "the name of subdirectory of /infra that holds the application's infrastructure code"
-ENVIRONMENT_HELP := "the name of the application environment e.g. 'prod' or 'staging'"
-NETWORK_NAME_HELP := "the name of the network in /infra/networks"
-
-require-%:
-	@:$(call check_defined, $*, $($*_HELP))
 
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
