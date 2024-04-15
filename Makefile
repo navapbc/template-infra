@@ -59,62 +59,61 @@ __check_defined = \
 	release-publish \
 	release-run-database-migrations
 
+APP_NAME_HELP := "the name of subdirectory of /infra that holds the application's infrastructure code"
+ENVIRONMENT_HELP := "the name of the application environment e.g. 'prod' or 'staging'"
+NETWORK_NAME_HELP := "the name of the network in /infra/networks"
 
+require-%:
+	@:$(call check_defined, $*, $($*_HELP))
 
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
 	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
 
 infra-configure-network: ## Configure network $NETWORK_NAME
-	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
+infra-configure-network: require-NETWORK_NAME
 	./bin/create-tfbackend.sh infra/networks $(NETWORK_NAME)
 
 infra-configure-app-build-repository: ## Configure infra/$APP_NAME/build-repository tfbackend and tfvars files
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+infra-configure-app-build-repository: require-APP_NAME
 	./bin/create-tfbackend.sh "infra/$(APP_NAME)/build-repository" shared
 
 infra-configure-app-database: ## Configure infra/$APP_NAME/database module's tfbackend and tfvars files for $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-configure-app-database: require-APP_NAME require-ENVIRONMENT
 	./bin/create-tfbackend.sh "infra/$(APP_NAME)/database" "$(ENVIRONMENT)"
 
 infra-configure-monitoring-secrets: ## Set $APP_NAME's incident management service integration URL for $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-configure-monitoring-secrets: require_APP_NAME require_ENVIRONMENT
 	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
 	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
 
 infra-configure-app-service: ## Configure infra/$APP_NAME/service module's tfbackend and tfvars files for $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-configure-app-service: require_APP_NAME require_ENVIRONMENT
 	./bin/create-tfbackend.sh "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
 
 infra-update-current-account: ## Update infra resources for current AWS profile
 	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
 
 infra-update-network: ## Update network
-	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
+infra-update-network: require-NETWORK_NAME
 	terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$(NETWORK_NAME).s3.tfbackend"
 	terraform -chdir="infra/networks" apply -var="network_name=$(NETWORK_NAME)"
 
 infra-update-app-build-repository: ## Create or update $APP_NAME's build repository
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+infra-update-app-build-repository: require-APP_NAME
 	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
 
 infra-update-app-database: ## Create or update $APP_NAME's database module for $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-update-app-database: require-APP_NAME require-ENVIRONMENT
 	terraform -chdir="infra/$(APP_NAME)/database" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
 	terraform -chdir="infra/$(APP_NAME)/database" apply -var="environment_name=$(ENVIRONMENT)"
 
 infra-update-app-database-roles: ## Create or update database roles and schemas for $APP_NAME's database in $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-update-app-database-roles: require-APP_NAME require-ENVIRONMENT
 	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-app-service: ## Create or update $APP_NAME's web service module
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-update-app-service: require-APP_NAME require-ENVIRONMENT
 	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
 	terraform -chdir="infra/$(APP_NAME)/service" apply -var="environment_name=$(ENVIRONMENT)"
 
@@ -129,8 +128,7 @@ infra-validate-module-%:
 	terraform -chdir=infra/modules/$* validate
 
 infra-check-app-database-roles: ## Check that app database roles have been configured properly
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+infra-check-app-database-roles: require-APP_NAME require-ENVIRONMENT
 	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
 infra-check-compliance: ## Run compliance checks
@@ -186,26 +184,24 @@ DATE := $(shell date -u '+%Y%m%d.%H%M%S')
 INFO_TAG := $(DATE).$(USER)
 
 release-build: ## Build release for $APP_NAME and tag it with current git hash
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+release-build: require-APP_NAME
 	cd $(APP_NAME) && $(MAKE) release-build \
 		OPTS="--tag $(IMAGE_NAME):latest --tag $(IMAGE_NAME):$(IMAGE_TAG)"
 
 release-publish: ## Publish release to $APP_NAME's build repository
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+release-publish: require-APP_NAME
 	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
+release-run-database-migrations: require-APP_NAME require-ENVIRONMENT
 	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-deploy: ## Deploy release to $APP_NAME's web service in $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
+release-deploy: require-APP_NAME require-ENVIRONMENT
 	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-image-name: ## Prints the image name of the release image
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+release-image-name: require-APP_NAME
 	@echo $(IMAGE_NAME)
 
 release-image-tag: ## Prints the image tag of the release image
