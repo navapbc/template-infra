@@ -42,7 +42,3 @@ By default, this is set to `false`.
 ## 6. Configure the environments
 
 Set the `account_names_by_environment` hash to map environments to AWS accounts. See [set up AWS accounts](./set-up-aws-accounts.md) for more information.
-
-## Set up application build repository
-
-Once you set up the application config, you can proceed to [set up application build repository](./set-up-app-build-repository.md)
