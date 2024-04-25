@@ -63,6 +63,8 @@ To set up this project for the first time, if it has never been deployed to the 
 2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags)
 3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 4. [Set up AWS account(s)](/docs/infra/set-up-aws-accounts.md)
+5. For each application:
+    1. [Configure the application](/docs/infra/set-up-app-config.md)
 5. For each AWS account:
     1. [Set up virtual private network (VPC)](/docs/infra/set-up-network.md)
 6. For each application:

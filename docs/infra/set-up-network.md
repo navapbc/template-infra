@@ -6,12 +6,14 @@ The network setup process will configure and deploy network resources needed by 
 2. Create public subnets for publicly accessible resources such as the application load balancer, private subnets for the application service, and private subnets for the database.
 3. Create VPC endpoints for the AWS services needed by ECS Fargate to fetch the container image and log to AWS CloudWatch. If your application has a database, it will also create VPC endpoints for the AWS services needed by the database layer and a security group to contain those VPC endpoints.
 
+This setup process applies to each AWS account in the project.
+
 ## Requirements
 
 Before setting up the network you'll need to have:
 
-1. [Set up the AWS account](./set-up-aws-account.md)
-2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
+1. [Set up the AWS account](./set-up-aws-account.md). If you have multiple AWS accounts in your project, see [set-up-aws-accounts](./set-up-aws-accounts.md).
+2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
    1. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
    2. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 3. [Configure the app](/infra/app/app-config/main.tf).
