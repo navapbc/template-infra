@@ -1,4 +1,4 @@
-# Set up network
+# Set up networks
 
 The network setup process will configure and deploy network resources needed by other modules. In particular, for each AWS account, it will:
 

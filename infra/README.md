@@ -71,7 +71,7 @@ To set up this project for the first time, if it has never been deployed to the 
 4. For each application:
     1. [Configure the application](/docs/infra/set-up-app-config.md)
 5. For each AWS account:
-    1. [Set up the networks](/docs/infra/set-up-networks.md)
+    1. [Set up the network(s)](/docs/infra/set-up-networks.md)
     2. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
     3. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 6. For each application:

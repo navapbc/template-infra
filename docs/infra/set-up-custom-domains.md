@@ -18,9 +18,9 @@ Production systems will want to set up custom domains to route internet traffic 
 
 The custom domain configuration is defined as a `domain_config` object in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains.
 
-Modify the `hosted_zone` [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) value for each network to match the custom domain (or a subdomain of the custom domain) that you registered. Each `hosted_zone` value must be different.
-
 For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
+
+For each network, modify the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered. Each `hosted_zone` value must be different.
 
 ### 2. Enable custom domains
 

@@ -13,7 +13,7 @@ This template includes setup for:
 * **CD / Deployments** - infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
 * **Documentation** - technical documentation for the decisions that went into all the defaults that come with the template.
 
-The system architecture will look like this (see [system architecture documentation](/docs/system-architecture.md) for more information):
+By default, the system architecture will look like this (see [system architecture documentation](/docs/system-architecture.md) for more information):
 ![System architecture](https://lucid.app/publicSegments/view/e5a36152-200d-4d95-888e-4cdbdab80d1b/image.png)
 
 ## Application Requirements
