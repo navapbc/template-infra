@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a template repository to set up foundational infrastructure for your application in AWS. This template includes setup for:
+This is a template repository to set up foundational infrastructure for your application in AWS. It is part of a [collection of interoperable Platform templates](https://github.com/navapbc/platform). This template includes setup for:
 
 * **Team workflows** - templates for pull requests (PRs), architecture decision records (ADRs), and Makefiles.
 * **Account level foundational infrastructure** - infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
@@ -11,14 +11,12 @@ This is a template repository to set up foundational infrastructure for your app
 * **CD / Deployments** - infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
 * **Documentation** - technical documentation for the decisions that went into all the defaults that come with the template.
 
-The template infra is intended to work with [these Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates).
-
 The system architecture looks like this (see [system architecture documentation](/docs/system-architecture.md) for more information):
 ![System architecture](https://lucid.app/publicSegments/view/e5a36152-200d-4d95-888e-4cdbdab80d1b/image.png)
 
 ## Application Requirements
 
-This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template. If you're using one of the Platform application templates, these requirements are already met.
+This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template. If you're using one of the [Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates), these requirements are already met.
 
 ## Installation
 
