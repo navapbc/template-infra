@@ -1,8 +1,8 @@
 # Set up AWS accounts
 
-The infrastructure supports managing resources across different [AWS accounts](https://docs.aws.amazon.com/accounts/latest/reference/accounts-welcome.html) by mapping different environments (e.g. `dev`, `staging`, `prod`) to specific AWS accounts. Shared resources, such as the build repository, can also be deployed into a specified AWS account.
+The infrastructure supports managing resources across different [AWS accounts](https://docs.aws.amazon.com/accounts/latest/reference/accounts-welcome.html) by mapping different environments (e.g. `dev`, `staging`, `prod`) to specified AWS accounts. Resources that are shared across environments, such as build repositories, are also deployed into a specified AWS account.
 
-The environment to AWS account mapping is specified for each application deployed by this infrastructure. This means that multiple applications can share AWS accounts or be deployed into different AWS accounts.
+The environment-to-AWS-account mapping is specified for each application deployed by this infrastructure. This means that multiple applications can share AWS accounts or be deployed into different AWS accounts.
 
 ## Prerequisites
 
@@ -50,4 +50,4 @@ For **each** AWS account you wish to use, ensure it has been created in AWS and 
 
 ### 3. Set up AWS account
 
-For **each** AWS account you wish to use, follow the instructions in (set-up-aws-account)[./set-up-aws-account.md].
+For **each** AWS account you wish to use, follow the instructions in [set-up-aws-account](./set-up-aws-account.md).
