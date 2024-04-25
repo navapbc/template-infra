@@ -6,8 +6,8 @@ This setup process applies to each application in the project.
 
 ## Prerequisites
 
-1. You'll need to have [configured the project](/infra/project-config/main.tf)
-2. You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
+* You'll need to have [configured the project](/infra/project-config/main.tf)
+* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
 
 ## Instructions
 

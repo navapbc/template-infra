@@ -59,7 +59,7 @@ Generally you should use the Make targets or the underlying bin scripts, but you
 
 #### Prerequisites
 
-1. You'll need to have [installed this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+* You'll need to have [installed this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
 
 #### Instructions
 
