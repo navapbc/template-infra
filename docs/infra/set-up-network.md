@@ -8,20 +8,31 @@ The network setup process will configure and deploy network resources needed by 
 
 This setup process applies to each AWS account in the project.
 
-## Requirements
+## Prerequisites
 
-Before setting up the network you'll need to have:
-
-1. [Set up the AWS account](./set-up-aws-account.md). If you have multiple AWS accounts in your project, see [set-up-aws-accounts](./set-up-aws-accounts.md).
-2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
+* You'll need to have [set up the AWS account](./set-up-aws-account.md). If you have multiple AWS accounts in your project, you'll need to have [set up all of the AWS accounts](./set-up-aws-accounts.md).
+* Optionally, you'll need to have adjusted the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
    1. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
    2. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
-3. [Configure the app](/infra/app/app-config/main.tf).
-   1. Update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with. This setting determines whether or not to create VPC endpoints needed by the database layer.
-   2. Update `has_external_non_aws_service` to `true` or `false` depending on whether or not your application makes calls to an external non-AWS service. This setting determines whether or not to create NAT gateways, which allows the service in the private subnet to make requests to the internet.
-   3. Update `network_name` for your application environments. This mapping ensures that each network is configured appropriately based on the application(s) in that network (see `local.apps_in_network` in [/infra/networks/main.tf](/infra/networks/main.tf)) Failure to set the network name properly means that the network layer may not receive the correct application configurations for `has_database` and `has_external_non_aws_service`.
+* You'll need to have configured [all applications](./set-up-app-config.md)
 
-## 1. Configure backend
+## Instructions
+
+### 1. Make sure you're authenticated into the AWS account you want to configure
+
+The network is set up for whatever account you're authenticated into. To see which account that is, run
+
+```bash
+aws sts get-caller-identity
+```
+
+To see a more human readable account alias instead of the account, run
+
+```bash
+aws iam list-account-aliases
+```
+
+### 2. Configure backend
 
 To create the tfbackend file for the new network, run
 
@@ -29,7 +40,7 @@ To create the tfbackend file for the new network, run
 make infra-configure-network NETWORK_NAME=<NETWORK_NAME>
 ```
 
-## 2. Create network resources
+### 3. Create network resources
 
 Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes.
 
