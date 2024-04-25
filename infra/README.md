@@ -57,11 +57,9 @@ Generally you should use the Make targets or the underlying bin scripts, but you
 
 ### 1️⃣ First time initialization
 
-#### Requirements
+#### Prerequisites
 
-Before setting up the infrastructure, you'll need to:
-
-1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+1. You'll need to have [installed this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
 
 #### Instructions
 
