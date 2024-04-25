@@ -6,8 +6,9 @@ The environment-to-AWS-account mapping is specified for each application deploye
 
 The AWS account setup process will:
 
-1. Determine AWS account strategy
-2. Configure all AWS accounts
+1. Help you decide on your environments
+2. Help you decide on your AWS account strategy
+3. Configure all AWS accounts
 
 ## Prerequisites
 
@@ -15,7 +16,17 @@ The AWS account setup process will:
 
 ## Instructions
 
-### 1. Decide on AWS account strategy
+### 1. Decide on environments
+
+Even though environment-to-AWS-account mapping is specified per-application. The names of the environments must be consistent across applications. Decide now what you would like the environments in your project to be. By default, the environments are:
+
+* dev
+* staging
+* prod
+
+You can always add new environments or delete existing environments later.
+
+### 2. Decide on AWS account strategy
 
 A simple project might have only one AWS account and all environments should be deployed to this environment. This mapping might look like this:
 
@@ -49,10 +60,10 @@ flowchart TD
 
 Decide on the strategy that is appropriate for your project.
 
-### 2. Ensure AWS account(s) have been created
+### 3. Ensure AWS account(s) have been created
 
 For **each** AWS account you wish to use, ensure it has been created in AWS and you are able to authenticate to it.
 
-### 3. Set up AWS account
+### 4. Set up AWS account
 
 For **each** AWS account you wish to use, [set up the AWS account](./set-up-aws-account.md).

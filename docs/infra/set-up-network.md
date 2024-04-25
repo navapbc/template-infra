@@ -12,8 +12,6 @@ This setup process applies to each AWS account in the project.
 
 * You'll need to have [set up the AWS account](./set-up-aws-account.md). If you have multiple AWS accounts in your project, you'll need to have [set up all of the AWS accounts](./set-up-aws-accounts.md).
 * Optionally, you'll need to have adjusted the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
-   1. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
-   2. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 * You'll need to have configured [all applications](./set-up-app-config.md)
 
 ## Instructions
