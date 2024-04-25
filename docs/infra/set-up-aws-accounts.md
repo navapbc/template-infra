@@ -4,6 +4,11 @@ The infrastructure supports managing resources across different [AWS accounts](h
 
 The environment-to-AWS-account mapping is specified for each application deployed by this infrastructure. This means that multiple applications can share AWS accounts or be deployed into different AWS accounts.
 
+The AWS account setup process will:
+
+1. Determine AWS account strategy
+2. Configure all AWS accounts
+
 ## Prerequisites
 
 * You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication.
