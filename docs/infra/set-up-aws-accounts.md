@@ -50,4 +50,4 @@ For **each** AWS account you wish to use, ensure it has been created in AWS and 
 
 ### 3. Set up AWS account
 
-For **each** AWS account you wish to use, follow the instructions in [set-up-aws-account](./set-up-aws-account.md).
+For **each** AWS account you wish to use, [set up the AWS account](./set-up-aws-account.md).
