@@ -9,7 +9,7 @@ The structure for the infrastructure code looks like this:
 ```text
 infra/                  Infrastructure code
   accounts/             [Root module] IaC and IAM resources
-  [app_name]/           Application directory: infrastructure for the main application
+  [APP_NAME]/           Application directory: infrastructure for the [APP_NAME] application
   modules/              Reusable child modules
   networks/             [Root module] Account level network config (shared across all apps, environments, and terraform workspaces)
 ```
@@ -45,7 +45,7 @@ This project has the following AWS environments:
 - `staging`
 - `prod`
 
-The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `[app_name]/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
+The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `[APP_NAME]/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
 
 ### 🔀 Project workflow
 
@@ -57,15 +57,14 @@ Generally you should use the Make targets or the underlying bin scripts, but you
 
 ### 1️⃣ First time initialization
 
-
-
-To set up this project for the first time (aka it has never been deployed to the target AWS account):
+To set up this project for the first time, if it has never been deployed to the target AWS account(s):
 
 1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
-2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
+2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags)
 3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-4. [Set up AWS account](/docs/infra/set-up-aws-account.md)
-5. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
+4. [Set up AWS account(s)](/docs/infra/set-up-aws-accounts.md)
+5. For each AWS account:
+    1. [Set up virtual private network (VPC)](/docs/infra/set-up-network.md)
 6. For each application:
     1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     2. [Set up application database](/docs/infra/set-up-database.md)
@@ -75,9 +74,9 @@ To set up this project for the first time (aka it has never been deployed to the
 
 ### 🆕 New developer
 
-To get set up as a new developer to a project that has already been deployed to the target AWS account:
+To get set up as a new developer to the project, if it has already been deployed to the target AWS account(s):
 
-1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
+1. [Set up your infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
 3. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
 
