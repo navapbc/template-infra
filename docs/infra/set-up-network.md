@@ -10,9 +10,8 @@ This setup process applies to each AWS account in the project.
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account](./set-up-aws-account.md). If you have multiple AWS accounts in your project, you'll need to have [set up all of the AWS accounts](./set-up-aws-accounts.md).
-* Optionally, you'll need to have adjusted the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
-* You'll need to have configured [all applications](./set-up-app-config.md)
+* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You'll need to have configured [all applications](./set-up-app-config.md).
 
 ## Instructions
 
@@ -30,7 +29,17 @@ To see a more human readable account alias instead of the account, run
 aws iam list-account-aliases
 ```
 
-### 2. Configure backend
+### 2. Configure the project's network
+
+Modify the [project-config module](/infra/project-config/networks.tf) to ensure the environments match what you decided in the [set up AWS accounts](./set-up-aws-accounts.md) step.
+
+By default there are three networks defined, one for each application environment. You can add additional additional networks as desired.
+
+If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
+
+Skip the `domain_config` config for now. This is addressed in [setting up custom domains](./set-up-custom-domains.md).
+
+### 3. Configure backend
 
 To create the tfbackend file for the new network, run
 
@@ -38,7 +47,7 @@ To create the tfbackend file for the new network, run
 make infra-configure-network NETWORK_NAME=<NETWORK_NAME>
 ```
 
-### 3. Create network resources
+### 4. Create network resources
 
 Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes.
 

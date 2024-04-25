@@ -18,7 +18,7 @@ The AWS account setup process will:
 
 ### 1. Decide on environments
 
-Even though environment-to-AWS-account mapping is specified per-application. The names of the environments must be consistent across applications. Decide now what you would like the environments in your project to be. By default, the environments are:
+Even though environment-to-AWS-account mapping is specified per-application, the names of the environments must be consistent across applications. Decide now what you would like the environments in your project to be. By default, the environments are:
 
 * dev
 * staging

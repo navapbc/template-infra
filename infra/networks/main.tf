@@ -69,9 +69,10 @@ module "network" {
   has_external_non_aws_service            = local.has_external_non_aws_service
 }
 
-module "domain" {
-  source              = "../modules/domain"
-  name                = local.domain_config.hosted_zone
-  manage_dns          = local.domain_config.manage_dns
-  certificate_configs = local.domain_config.certificate_configs
-}
+# Uncomment the following section to enable custom domain management.
+# module "domain" {
+#   source              = "../modules/domain"
+#   name                = local.domain_config.hosted_zone
+#   manage_dns          = local.domain_config.manage_dns
+#   certificate_configs = local.domain_config.certificate_configs
+# }
