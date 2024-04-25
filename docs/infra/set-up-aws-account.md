@@ -10,6 +10,7 @@ The AWS account setup process will:
 
 * You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication.
 * You'll also need to make sure the [project is configured](/infra/project-config/main.tf).
+* You'll need to have [decided on your environments and AWS account strategy](./set-up-aws-accounts.md)
 
 ## Instructions
 

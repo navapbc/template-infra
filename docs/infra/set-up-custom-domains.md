@@ -3,19 +3,32 @@
 Production systems will want to set up custom domains to route internet traffic to their application services rather than using AWS-generated hostnames for the load balancers or the CDN. This document describes how to configure custom domains. The custom domain setup process will:
 
 1. Create an [Amazon Route 53 hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) to manage DNS records for a domain and subdomains
-2. Create a DNS A (address) records to route traffic from a custom domain to the application's load balancer
+2. Create a DNS A (address) records to route traffic from a custom domain to an application's load balancer
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account](./set-up-aws-account.md). If you have multiple AWS accounts in your project, you'll need to have [set up all of the AWS accounts](./set-up-aws-accounts.md).
+* You'll need to have registered custom domain(s) with a domain registrar (e.g. Namecheap, GoDaddy, Google Domains, etc.).
+* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You'll need to have [configured all applications](./set-up-app-config.md).
+* You'll need to have [set up the networks](./set-up-network.md) that you want to add the custom domain to.
 
 ## Instructions
 
 ### 1. Set hosted zone in domain configuration
 
-Update the value for the `hosted_zone` in the domain configuration. The custom domain configuration is defined as a `domain_config` object in the [network section of the project config module](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains. For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
+The custom domain configuration is defined as a `domain_config` object in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains.
 
-### 2. Update the network layer to create the hosted zone
+Modify the `hosted_zone` [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) value for each network to match the custom domain (or a subdomain of the custom domain) that you registered. Each `hosted_zone` value must be different.
+
+For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
+
+### 2. Enable custom domains
+
+In the [network module](/infra/networks/main.tf), enable custom domains by uncommenting the `module "domain"` section.
+
+----
+
+### 3. Update the network layer to create the hosted zones
 
 Run the following command to create the hosted zone specified in the domain configuration.
 
@@ -58,7 +71,9 @@ nslookup -type=NS <HOSTED_ZONE>
 
 Define the `domain_name` for each of the application environments in the `app-config` module. The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
 
-### 5. Create A (address) records to route traffice from the custom domain to your application's load balancer
+### 5. Create DNS A (address) records to route traffic from the custom domain to your application's load balancer
+
+If created after....
 
 Run the following command to create the A record that routes traffic from the custom domain to the application's load balancer.
 
