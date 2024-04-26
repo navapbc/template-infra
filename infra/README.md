@@ -45,7 +45,7 @@ This project has the following AWS environments:
 - `staging`
 - `prod`
 
-The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `[APP_NAME]/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
+The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `<APP_NAME>/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
 
 ### 🔀 Project workflow
 
@@ -72,13 +72,15 @@ To set up this project for the first time, if it has never been deployed to the 
     1. [Configure the application](/docs/infra/set-up-app-config.md)
 5. [Set up the network(s)](/docs/infra/set-up-networks.md)
 6. For each application:
-    1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
-    2. [Set up application database](/docs/infra/set-up-database.md)
-    3. [Set up application environment](/docs/infra/set-up-app-env.md)
-    4. [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
-    5. [Set up background jobs](/docs/infra/background-jobs.md)
-    6. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
-    7. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
+    1. Optionally, [configure environment variables and secrets](/docs/infra/set-up-environment-variables-and-secrets.md)
+    2. Optionally, [set up application build repository](/docs/infra/set-up-app-build-repository.md)
+    3. For each environment:
+      1. Optionally, [set up application database](/docs/infra/set-up-database.md)
+      2. [Set up application service](/docs/infra/set-up-app-service.md)
+      3. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
+      4. [Set up background jobs](/docs/infra/background-jobs.md)
+    4. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
+    5. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 
 ### 🆕 New developer
 

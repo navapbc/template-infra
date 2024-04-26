@@ -7,8 +7,8 @@ The networks setup process will:
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md).
-* You'll need to have [configured all applications](./set-up-app-config.md).
+* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
+* You'll need to have [configured all applications](./set-up-app-config.md)
 
 ## Instructions
 

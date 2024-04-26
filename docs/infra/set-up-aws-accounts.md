@@ -12,7 +12,7 @@ The AWS accounts setup process will:
 
 ## Prerequisites
 
-* You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication.
+* You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication
 
 ## Instructions
 

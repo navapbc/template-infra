@@ -1,6 +1,6 @@
 # Set up application build repository
 
-Follow these instructions for **each application** in your project (you can have one or more in your project).
+Follow these instructions for **each application** in your project (you can have one or more in your project). Skip this step if the application does not need a build repository (such as if the project uses pre-built images hosted in an external container repository).
 
 The application build repository setup process will create infrastructure resources needed to store built release candidate artifacts used to deploy the application to an environment.
 
@@ -8,12 +8,15 @@ The application build repository setup process will create infrastructure resour
 
 Before setting up the application's build repository you'll need to have:
 
-1. You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md).
-2. You'll need to have [configured the application](/infra/app/app-config/main.tf).
+* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
+* You'll need to have [configured the application](/infra/app/app-config/main.tf)
+* You'll need to have [set up the network(s)](./set-up-networks.md)
+
+## Instructions
 
 ### 1. Make sure you're authenticated into the AWS account where you want to deploy resources shared across environments
 
-The account set up sets up whatever account you're authenticated into. To see which account that is, run
+This set up takes effect in whatever account you're authenticated into. To see which account that is, run
 
 ```bash
 aws sts get-caller-identity
@@ -35,7 +38,7 @@ make infra-configure-app-build-repository APP_NAME=<APP_NAME>
 
 Pass in the name of the app folder within `infra`. By default this is `app`.
 
-### 2. Create build repository resources
+### 3. Create build repository resources
 
 Now run the following commands to create the resources, making sure to verify the plan before confirming the apply.
 

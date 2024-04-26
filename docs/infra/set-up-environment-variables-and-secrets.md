@@ -1,5 +1,7 @@
 # Environment variables and secrets
 
+Follow these instructions for **each application** in your project (you can have one or more in your project).
+
 Applications follow [12-factor app](https://12factor.net/) principles to [store configuration as environment variables](https://12factor.net/config). The infrastructure provides some of these environment variables automatically, such as environment variables to authenticate as the ECS task role, environment variables for database access, and environment variables for accessing document storage. However, many applications require extra custom environment variables for application configuration and for access to secrets. This document describes how to configure application-specific environment variables and secrets. It also describes how to override those environment variables for a specific environment.
 
 ## Application-specific extra environment variables
