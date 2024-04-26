@@ -1,6 +1,6 @@
 # Set up networks
 
-The network setup process will configure and deploy network resources needed by other modules. In particular, for each AWS account, it will:
+The network setup process will configure and deploy network resources needed by other modules. In particular, for each network, it will:
 
 1. Create a nondefault VPC
 2. Create public subnets for publicly accessible resources such as the application load balancer, private subnets for the application service, and private subnets for the database.
@@ -21,7 +21,7 @@ By default there are three networks defined, one for each application environmen
 
 If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
 
-Skip the `domain_config` config for now. This is optionally configured later when [setting up custom domains](./set-up-custom-domains.md).
+Skip the `domain_config` config for now. These settings are optionally configured later when [setting up custom domains](./set-up-custom-domains.md) and when [setting up HTTPS](./https-support.md).
 
 ### 2. Set up each network
 
