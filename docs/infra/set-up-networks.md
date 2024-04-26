@@ -21,8 +21,8 @@ By default there are three networks defined, one for each application environmen
 
 If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
 
-Skip the `domain_config` config for now. This is addressed later in [setting up custom domains](./set-up-custom-domains.md).
+Skip the `domain_config` config for now. This is optionally configured later when [setting up custom domains](./set-up-custom-domains.md).
 
 ### 2. Set up each network
 
-For **each network** listed in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf), [set up the network](./set-up-network.md).
+For **each network** listed in `/infra/project-config/networks.tf`, [set up the network](./set-up-network.md).

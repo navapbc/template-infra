@@ -70,16 +70,15 @@ To set up this project for the first time, if it has never been deployed to the 
 3. [Set up AWS account(s)](/docs/infra/set-up-aws-accounts.md)
 4. For each application:
     1. [Configure the application](/docs/infra/set-up-app-config.md)
-5. For each AWS account:
-    1. [Set up the network(s)](/docs/infra/set-up-networks.md)
-    2. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
-    3. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
+5. [Set up the network(s)](/docs/infra/set-up-networks.md)
 6. For each application:
     1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     2. [Set up application database](/docs/infra/set-up-database.md)
     3. [Set up application environment](/docs/infra/set-up-app-env.md)
     4. [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
     5. [Set up background jobs](/docs/infra/background-jobs.md)
+    6. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
+    7. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 
 ### 🆕 New developer
 

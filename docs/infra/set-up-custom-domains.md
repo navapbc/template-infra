@@ -1,6 +1,8 @@
 # Custom domains
 
-Production systems will want to set up custom domains to route internet traffic to their application services rather than using AWS-generated hostnames for the load balancers or the CDN. This document describes how to configure custom domains. The custom domain setup process will:
+Production systems will want to set up custom domains to route internet traffic to their application services rather than using AWS-generated hostnames for the load balancers or the CDN. This document describes how to configure custom domains.
+
+**For each network**, the custom domain setup process will:
 
 1. Create an [Amazon Route 53 hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) to manage DNS records for a domain and subdomains
 2. Create a DNS A (address) records to route traffic from a custom domain to an application's load balancer
@@ -14,23 +16,23 @@ Production systems will want to set up custom domains to route internet traffic 
 
 ## Instructions
 
+Follow these instructions for **each network** you want to setup custom domains for.
+
 ### 1. Set hosted zone in domain configuration
 
 The custom domain configuration is defined as a `domain_config` object in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains.
 
 For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
 
-For each network, modify the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered. Each `hosted_zone` value must be different.
+**For each network** you want to use a custom domain, modify the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered. Each `hosted_zone` value must be different.
 
 ### 2. Enable custom domains
 
 In the [network module](/infra/networks/main.tf), enable custom domains by uncommenting the `module "domain"` section.
 
-----
-
 ### 3. Update the network layer to create the hosted zones
 
-Run the following command to create the hosted zone specified in the domain configuration.
+**For each network** you that you added a custom domain to in Step 1, run the following command to create the hosted zone specified in the domain configuration:
 
 ```bash
 make infra-update-network NETWORK_NAME=<NETWORK_NAME>
