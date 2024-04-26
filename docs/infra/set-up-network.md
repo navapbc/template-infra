@@ -1,5 +1,7 @@
 # Set up network
 
+Follow these instructions for **each network** in your project (you can have one or more in your project).
+
 The network setup process will configure and deploy network resources needed by other modules for one network. In particular, it will:
 
 1. Create a nondefault VPC
@@ -13,8 +15,6 @@ The network setup process will configure and deploy network resources needed by 
 * You'll need to have [configured the project's networks](./set-up-networks.md).
 
 ## Instructions
-
-Follow these instructions for **each network** in your project (this can be one or more).
 
 ### 1. Make sure you're authenticated into the AWS account you want to configure
 

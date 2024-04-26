@@ -1,8 +1,8 @@
 # Set up application config
 
-The application config setup process will configure the application. These values will be used in subsequent infra setup steps to determine which resources to deploy and how they will be configured.
+Follow these instructions for **each application** in your project (you can have one or more in your project).
 
-This setup process applies to each application in the project.
+The application config setup process will configure one application. These values will be used in subsequent infra setup steps to determine which resources to deploy and how they will be configured.
 
 ## Prerequisites
 
@@ -10,8 +10,6 @@ This setup process applies to each application in the project.
 * You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
 
 ## Instructions
-
-Follow these instructions for **each application** in your project (this can be one or more).
 
 ### 1. Configure the app-config
 

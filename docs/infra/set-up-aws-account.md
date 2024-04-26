@@ -1,5 +1,7 @@
 # Set up AWS account
 
+Follow these instructions for **each AWS account** you want to configure (you can have one or more in your project).
+
 The AWS account setup process will:
 
 1. Create the [Terraform backend](https://www.terraform.io/language/settings/backends/configuration) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
@@ -13,8 +15,6 @@ The AWS account setup process will:
 * You'll need to have [decided on your environments and AWS account strategy](./set-up-aws-accounts.md)
 
 ## Instructions
-
-Follow these instructions for **each AWS account** you want to configure (this can be one or more).
 
 ### 1. Make sure you're authenticated into the AWS account you want to configure
 
