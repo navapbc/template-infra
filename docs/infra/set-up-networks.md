@@ -25,4 +25,4 @@ Skip the `domain_config` config for now. These settings are optionally configure
 
 ### 2. Set up each network
 
-For **each network** listed in `/infra/project-config/networks.tf`, [set up the network](./set-up-network.md).
+For **each network** in `/infra/project-config/networks.tf`, [set up the network](./set-up-network.md).

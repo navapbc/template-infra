@@ -11,6 +11,8 @@ This setup process applies to each application in the project.
 
 ## Instructions
 
+Follow these instructions for **each application** in your project (this can be one or more).
+
 ### 1. Configure the app-config
 
 Modify the following values in the application's `app-config` (e.g. in `/infra/app/app-config/main.tf`):

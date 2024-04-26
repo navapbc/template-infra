@@ -14,6 +14,8 @@ The AWS account setup process will:
 
 ## Instructions
 
+Follow these instructions for **each AWS account** you want to configure (this can be one or more).
+
 ### 1. Make sure you're authenticated into the AWS account you want to configure
 
 The account set up sets up whatever account you're authenticated into. To see which account that is, run

@@ -62,8 +62,8 @@ Decide on the strategy that is appropriate for your project.
 
 ### 3. Ensure AWS account(s) have been created
 
-For **each** AWS account you wish to use, ensure it has been created in AWS and you are able to authenticate to it.
+For **each AWS account** you wish to use, ensure it has been created in AWS and you are able to authenticate to it.
 
 ### 4. Set up AWS account
 
-For **each** AWS account you wish to use, [set up the AWS account](./set-up-aws-account.md).
+For **each AWS account** you wish to use, [set up the AWS account](./set-up-aws-account.md).

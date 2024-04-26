@@ -1,6 +1,6 @@
 # Set up network
 
-The network setup process will configure and deploy network resources needed by other modules for **one network**. In particular, it will:
+The network setup process will configure and deploy network resources needed by other modules for one network. In particular, it will:
 
 1. Create a nondefault VPC
 2. Create public subnets for publicly accessible resources such as the application load balancer, private subnets for the application service, and private subnets for the database.
@@ -13,6 +13,8 @@ The network setup process will configure and deploy network resources needed by 
 * You'll need to have [configured the project's networks](./set-up-networks.md).
 
 ## Instructions
+
+Follow these instructions for **each network** in your project (this can be one or more).
 
 ### 1. Make sure you're authenticated into the AWS account you want to configure
 
