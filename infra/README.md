@@ -79,8 +79,8 @@ To set up this project for the first time, if it has never been deployed to the 
         2. [Set up application service](/docs/infra/set-up-app-service.md)
         3. Optionally, [set up application monitoring alerts](/docs/infra/set-up-app-monitoring-alerts.md)
         4. Optionally, [set up application background jobs](/docs/infra/background-jobs.md)
-    4. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
-    5. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
+        5. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md)
+        6. Optionally, [configure HTTPS support](/docs/infra/https-support.md)
 
 ### 🆕 New developer
 
@@ -88,7 +88,7 @@ To get set up as a new developer to the project, if it has already been deployed
 
 1. [Set up your infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
-3. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
+3. Optionally, set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
 
 ## 📇 Additional reading
 
