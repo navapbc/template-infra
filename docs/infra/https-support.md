@@ -1,4 +1,6 @@
-# HTTPS support
+# Set up HTTPS
+
+--- @TODO docs refactor
 
 Production systems will want to use HTTPS rather than HTTP to prevent man-in-the-middle attacks. This document describes how HTTPS is configured. This process will:
 

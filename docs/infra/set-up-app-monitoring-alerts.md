@@ -36,7 +36,7 @@ module "monitoring" {
 To apply the changes, run the following command for each environment:
 
 ```bash
-make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>`
+make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
@@ -62,5 +62,5 @@ make infra-configure-monitoring-secrets APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRON
 To apply the changes, run the following command for each environment:
 
 ```bash
-make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>`
+make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```

@@ -1,6 +1,6 @@
 # Set up database
 
-Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project. Skip this step if the application does not need a database.
+Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project.
 
 The database setup process will:
 

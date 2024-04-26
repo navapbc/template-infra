@@ -1,22 +1,23 @@
 # Custom domains
 
+Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project. Skip this step if the application does not need custom domains.
+
 Production systems will want to set up custom domains to route internet traffic to their application services rather than using AWS-generated hostnames for the load balancers or the CDN. This document describes how to configure custom domains.
 
-**For each network**, the custom domain setup process will:
+The custom domain setup process will:
 
 1. Create an [Amazon Route 53 hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) to manage DNS records for a domain and subdomains
 2. Create a DNS A (address) records to route traffic from a custom domain to an application's load balancer
 
 ## Prerequisites
 
-* You'll need to have registered custom domain(s) with a domain registrar (e.g. Namecheap, GoDaddy, Google Domains, etc.).
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md).
-* You'll need to have [configured all applications](./set-up-app-config.md).
-* You'll need to have [set up the networks](./set-up-network.md) that you want to add the custom domain to.
+* You'll need to have registered custom domain(s) with a domain registrar (e.g. Namecheap, GoDaddy, Google Domains, etc.)
+* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
+* You'll need to have [configured all applications](./set-up-app-config.md)
+* You'll need to have [set up the networks](./set-up-network.md) that you want to add the custom domain to
+* You'll need to have [set up the application service](./set-up-app-service.md)
 
 ## Instructions
-
-Follow these instructions for **each network** you want to setup custom domains for.
 
 ### 1. Set hosted zone in domain configuration
 
@@ -24,13 +25,9 @@ The custom domain configuration is defined as a `domain_config` object in [`/inf
 
 For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
 
-**For each network** you want to use a custom domain, modify the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered. Each `hosted_zone` value must be different.
+**For each network** you want to use a custom domain, set the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered.
 
-### 2. Enable custom domains
-
-In the [network module](/infra/networks/main.tf), enable custom domains by uncommenting the `module "domain"` section.
-
-### 3. Update the network layer to create the hosted zones
+### 2. Update the network layer to create the hosted zones
 
 **For each network** you that you added a custom domain to in Step 1, run the following command to create the hosted zone specified in the domain configuration:
 
@@ -69,24 +66,28 @@ Run the following command to verify that DNS requests are being served by the ho
 nslookup -type=NS <HOSTED_ZONE>
 ```
 
-### 4. Configure custom domain for your application
+### 4. Create DNS A (address) records to route traffic from the custom domain to the application's load balancer
 
-Define the `domain_name` for each of the application environments in the `app-config` module. The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
+Within the `app-config` directory (e.g. `infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
-### 5. Create DNS A (address) records to route traffic from the custom domain to your application's load balancer
+In each environment config file, define the `domain_name`.
 
-If created after....
+The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
 
-Run the following command to create the A record that routes traffic from the custom domain to the application's load balancer.
+### 5. Update the application service
+
+To apply the changes, run the following command for each environment:
 
 ```bash
 make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-### 6. Repeat for each application
+`APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
 
-If you have multiple applications in the same network, repeat steps 4 and 5 for each application.
+`ENVIRONMENT` needs to be the name of the environment.
 
 ## Externally managed DNS
 
-If you plan to manage DNS records outside of the project, then set `network_configs[*].domain_config.manage_dns = false` in [the networks section of the project-config module](/infra/project-config/networks.tf).
+--- @TODO create ticket to make this a local that is derived from hosted_zone
+
+If DNS records are managed externally outside of the project, set `network_configs[*].domain_config.manage_dns = false` in [the networks section of the project-config module](/infra/project-config/networks.tf).

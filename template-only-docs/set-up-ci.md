@@ -1,6 +1,6 @@
 # Set up CI
 
---- @TODO
+--- @TODO needs doc refactoring
 
 ## Static analysis checks
 
