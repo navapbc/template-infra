@@ -16,7 +16,7 @@ The application service setup process will:
 * You'll need to have [configured the application](/infra/app/app-config/main.tf)
 * You'll need to have [set up the network(s)](./set-up-networks.md)
 * Optionally, if you need a container build repository, you'll need to have [set up the build repository](./set-up-app-build-repository.md)
-* Optionally, if you need a database for the application, you'll need to have [set up the database](./set-up-database.md)
+* Optionally, if you need a database for the application, you'll need to have [set up the database](./set-up-app-database.md)
 
 ## Instructions
 
@@ -43,6 +43,7 @@ make infra-configure-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
+
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
 ### 3. Build and publish the application to the application build repository

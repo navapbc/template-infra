@@ -42,6 +42,7 @@ make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
+
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
 ### 3. Create database resources
@@ -100,3 +101,7 @@ Why is this needed? The reason is because the `migrator` role will be used by th
 ```bash
 make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
+
+## If the application does not need a database
+
+If the application does not need a database (such as if the project uses an alternative for data persistence), delete the application's database module (e.g. `/infra/<APP_NAME>/database`).

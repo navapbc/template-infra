@@ -73,12 +73,12 @@ To set up this project for the first time, if it has never been deployed to the 
 5. [Set up the network(s)](/docs/infra/set-up-networks.md)
 6. For each application:
     1. Optionally, [configure environment variables and secrets](/docs/infra/set-up-environment-variables-and-secrets.md)
-    2. Optionally, [set up application build repository](/docs/infra/set-up-app-build-repository.md)
+    2. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     3. For each environment:
-      1. Optionally, [set up application database](/docs/infra/set-up-database.md)
-      2. [Set up application service](/docs/infra/set-up-app-service.md)
-      3. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
-      4. [Set up background jobs](/docs/infra/background-jobs.md)
+        1. [Set up application database](/docs/infra/set-up-app-database.md)
+        2. [Set up application service](/docs/infra/set-up-app-service.md)
+        3. Optionally, [set up monitoring alerts](/docs/infra/set-up-app-monitoring-alerts.md)
+        4. Optionally, [set up background jobs](/docs/infra/background-jobs.md)
     4. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
     5. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 

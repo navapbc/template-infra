@@ -1,6 +1,6 @@
 # Set up application build repository
 
-Follow these instructions for **each application** in your project (you can have one or more in your project). Skip this step if the application does not need a build repository (such as if the project uses pre-built images hosted in an external container repository).
+Follow these instructions for **each application** in your project (you can have one or more in your project).
 
 The application build repository setup process will create infrastructure resources needed to store built release candidate artifacts used to deploy the application to an environment.
 
@@ -36,7 +36,7 @@ To create the tfbackend file for the build repository using the backend configur
 make infra-configure-app-build-repository APP_NAME=<APP_NAME>
 ```
 
-Pass in the name of the app folder within `infra`. By default this is `app`.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
 
 ### 3. Create build repository resources
 
@@ -45,3 +45,7 @@ Now run the following commands to create the resources, making sure to verify th
 ```bash
 make infra-update-app-build-repository APP_NAME=<APP_NAME>
 ```
+
+## If the application does not need a build repository
+
+If the application does not need a build repository (such as if the project uses pre-built images hosted in an external container repository), delete the application's build repository module (e.g. `/infra/<APP_NAME>/build-repository`).
