@@ -46,8 +46,8 @@ locals {
       database_subnet_group_name = "staging"
 
       domain_config = {
-        manage_dns  = false
-        hosted_zone = ""
+        manage_dns          = false
+        hosted_zone         = ""
         certificate_configs = {}
       }
     }
@@ -56,8 +56,8 @@ locals {
       database_subnet_group_name = "prod"
 
       domain_config = {
-        manage_dns  = false
-        hosted_zone = ""
+        manage_dns          = false
+        hosted_zone         = ""
         certificate_configs = {}
       }
     }

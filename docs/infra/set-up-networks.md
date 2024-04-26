@@ -2,7 +2,7 @@
 
 The networks setup process will:
 
-1. Configure project networks to match the project's environment mapping
+1. Configure project networks, including to be compatible with the project's environment mapping
 3. Configure all networks
 
 ## Prerequisites

@@ -11,7 +11,19 @@ The application config setup process will configure one application. These value
 
 ## Instructions
 
-### 1. Configure the app-config
+### 1. Optionally, rename the application
+
+By default, the application module is named `app` in [`/infra/app`](/infra/app). You may want to rename the application to something project-specific.
+
+### 2. Optionally, create a terraform module for each additional application
+
+If you have multiple applications in your project, create a terraform module for each additional application by running
+
+```bash
+curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/download-app-module.sh | bash -s
+```
+
+### 3. Configure the app-config
 
 Modify the following values in the application's `app-config` (e.g. in `/infra/app/app-config/main.tf`):
 
@@ -21,7 +33,7 @@ Modify the following values in the application's `app-config` (e.g. in `/infra/a
 * Set `has_incident_management_service` to `true` or `false` to indicate whether the application should integrate with an incident management service. By default, this is set to `false`.
 * Set the `account_names_by_environment` hash to map environments to AWS accounts. See [set up AWS accounts](./set-up-aws-accounts.md) for more information.
 
-### 2. Configure each environment
+### 4. Configure each environment
 
 Within the `app-config` directory (e.g. `infra/app/app-config`), each environment configured in the `environments` array in the previous step should have its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
