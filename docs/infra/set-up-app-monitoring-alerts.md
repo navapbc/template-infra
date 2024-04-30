@@ -19,8 +19,6 @@ When any of the alerts described by the module are triggered, a notification wil
 
 #### 1. Update the application's service layer
 
---- @TODO move to app-config
-
 In the application's service module (e.g. `/infra/<APP_NAME>/service/main.tf`), uncomment the `email_alerts_subscription_list` key and add the emails that should be notified.
 
 For example:
