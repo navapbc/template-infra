@@ -5,12 +5,12 @@
 
 ## Context
 
-All projects should have some sort of feature flag mechanism for controlling the release and activation of features. This accelerates product development by unblocking developers from being able to deploy continuously while still providing business owners with control over when features are visible to end users. More advanced feature flag systems can also provide the ability to do gradual rollouts to increasing percentages of end users and to do split tests (also known as A/B tests) to evaluate the impact of different feature variations on user behavior and outcomes, which provide greater flexibility on how to reduce the risk of launching features. As an example, when working on a project to migrate off of legacy systems, having the ability to slowly throttle traffic to the new system while monitoring for issues in production is critical to managing risk.
+All projects should have some sort of feature flag mechanism for controlling the release and activation of features. This accelerates product development by unblocking developers from being able to deploy continuously while still providing business owners with control over when features are visible to end users. More advanced feature flag systems can also provide the ability to do gradual rollouts to increasing percentages of end-users and to do split tests (also known as A/B tests) to evaluate the impact of different feature variations on user behavior and outcomes, which provide greater flexibility on how to reduce the risk of launching features. As an example, when working on a project to migrate off of legacy systems, having the ability to slowly throttle traffic to the new system while monitoring for issues in production is critical to managing risk.
 
 ## Requirements
 
 1. The project team can define feature flags, or feature toggles, that enable/disable a set of functionality in an environment, depending on whether the flag is enabled or disabled.
-2. The feature flagging system should support gradual rollouts, the ability to roll out a feature incrementally to a percentage of users.
+2. The feature flagging system should support gradual rollouts, and the ability to roll out a feature incrementally to a percentage of users.
 3. Separate feature flag configuration from implementation of the feature flags, so that feature flags can be changed frequently through configuration without touching the underlying feature flag infrastructure code.
 
 ## Approach
@@ -26,7 +26,7 @@ One key design question is how features should be managed once defined. How shou
 Define features in [app-config](/infra/app/app-config/), and use that configuration in the [service layer](/infra/app/service/) to create and configure the features in AWS Evidently.
 
 * Everything is defined in code and in one place.
-* Feature and feature configurations are updated automatically as part of service deploys or can be done manually via a terraform apply.
+* Feature and feature configurations are updated automatically as part of service deploys or can be done manually via a `terraform apply`.
 
 The configuration in the app-config module might look something like the following:
 
@@ -50,9 +50,9 @@ Define features in [app-config](/infra/app/app-config/main.tf). Create the featu
 
 * Allows for separation of permissions. For example, individuals can have permission to update feature launch throttle percentages without having permission to create, edit, or delete the features themselves.
 
-### Option 3. Manage features in AWS Console outside of terraform
+### Option 3. Manage features in AWS Console outside of Terraform
 
-Define features in [app-config](/infra/app/app-config/main.tf) and create them in the [service layer](/infra/app/service), but set things like throttle percentages (for gradual rollouts) outside of terraform (e.g. via AWS Console). Use `lifecycle { ignore_changes = [entity_overrides] }` in the terraform configuration for the `aws_evidently_feature` resources to ignore settings that are managed via AWS Console.
+Define features in [app-config](/infra/app/app-config/main.tf) and create them in the [service layer](/infra/app/service), but set things like throttle percentages (for gradual rollouts) outside of Terraform (e.g. via AWS Console). Use `lifecycle { ignore_changes = [entity_overrides] }` in the terraform configuration for the `aws_evidently_feature` resources to ignore settings that are managed via the AWS Console.
 
 * Empowers non-technical roles like business owners and product managers to enable and disable feature flags and adjust feature launch throttle percentages without needing to depend on the development team.
 * A no-code approach using the AWS Console GUI means that it's possible to leverage the full set of functionality offered by AWS CloudWatch Evidently, including things like scheduled launches, with minimal training and without needing to learn how to do it in code.
@@ -67,7 +67,7 @@ feature_flags = [
 
 ## Decision Outcome
 
-Chosen option: "Option 3: Manage features in AWS Console outside of terraform". The ability to empower business and product roles to control launches and experiments without depending on engineering team maximizes autonomy and allows for the fastest delivery.
+Chosen option: "Option 3: Manage features in AWS Console outside of terraform". The ability to empower business and product roles to control launches and experiments without depending on the engineering team maximizes autonomy and allows for the fastest delivery.
 
 ## Notes on application layer design
 
@@ -83,7 +83,7 @@ The scope of this tech spec is focused on the infrastructure layer, but we'll in
 
 #### Feature flag module interface
 
-At it's core, the feature flag module needs a function `isFeatureEnabled` that determines whether a feature has been enabled. It needs to accept a feature name, and for gradual rollouts it will also need a user identifier. This is so that the system can remember which variation was assigned to a given user, so that any individual user will have a consistent experience.
+At its core, the feature flag module needs a function `isFeatureEnabled` that determines whether a feature has been enabled. It needs to accept a feature name, and for gradual rollouts, it will also need a user identifier. This is so that the system can remember which variation was assigned to a given user so that any individual user will have a consistent experience.
 
 ```ts
 interface FeatureFlagService {

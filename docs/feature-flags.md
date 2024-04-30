@@ -8,7 +8,7 @@ This project leverages [Amazon CloudWatch Evidently](https://docs.aws.amazon.com
 
 ## Creating feature flags
 
-The list of feature flags for an application is defined in the `feature_flags` property in its app-config module (in `/infra/[app_name]/app-config/feature-flags.tf`). To create a new feature flag, add a new string to that list. To remove a feature flag, remove the feature flag from the list. The set of feature flags will be updated on the next terraform apply of the service layer, or during the next deploy of the application.
+The list of feature flags for an application is defined in the `feature_flags` property in its app-config module (in `/infra/[app_name]/app-config/feature-flags.tf`). To create a new feature flag, add a new string to that list. To remove a feature flag, remove the feature flag from the list. The set of feature flags will be updated on the next `terraform apply` of the service layer, or during the next deploy of the application.
 
 ## Querying feature flags in the application
 
@@ -16,7 +16,7 @@ To determine whether a particular feature should be enabled or disabled for a gi
 
 ## Managing feature releases and partial rollouts via AWS Console
 
-The system is designed to allow the managing of feature releases and partial rollouts outside of terraform, which empowers business owners and product managers to control enable and disable feature flags and adjust feature launch traffic percentages without needing to depend on the development team.
+The system is designed to allow the managing of feature releases and partial rollouts outside of Terraform, which empowers business owners and product managers to control enable and disable feature flags and adjust feature launch traffic percentages without needing to depend on the development team.
 
 ### To enable or disable a feature
 
