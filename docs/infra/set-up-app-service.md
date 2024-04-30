@@ -36,19 +36,19 @@ aws iam list-account-aliases
 
 ### 2. Configure backend
 
-To create the tfbackend and tfvars files for the new application environment, run
+To create the tfbackend and tfvars files for the new application service, run
 
 ```bash
 make infra-configure-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder.
 
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
 ### 3. Build and publish the application to the application build repository
 
-Before creating the application resources, you'll need to first build and publish at least one image to the application build repository.
+Before creating the application resources, you'll need to first build and publish at least one image to the application build repository. This step does not need to be run per-environment.
 
 There are two ways to do this:
 
