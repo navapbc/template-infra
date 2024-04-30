@@ -1,4 +1,4 @@
-# Custom domains
+# Set up custom domains
 
 Follow these instructions for **each network** (you can have one or more in your project) in your project. If the network or an application does not need custom domains, skip to the bottom of this document.
 
