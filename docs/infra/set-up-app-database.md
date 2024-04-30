@@ -1,6 +1,6 @@
 # Set up database
 
-Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project.
+Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project. If the application does not need a database, skip to the bottom of this document.
 
 The database setup process will:
 
@@ -41,7 +41,7 @@ To create the tfbackend file for the new application environment, run
 make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder.
 
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
@@ -104,4 +104,4 @@ make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT
 
 ## If the application does not need a database
 
-If the application does not need a database (such as if the project uses an alternative for data persistence), delete the application's database module (e.g. `/infra/<APP_NAME>/database`).
+If the application does not need a database (such as if the project uses an alternative for data persistence), delete the application's database module (e.g. `/infra/<APP_NAME>/database`) and ensure that the application's `app-config` sets `has_database` to `false` (see [set up app config](./set-up-app-config.md)).
