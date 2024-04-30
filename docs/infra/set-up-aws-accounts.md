@@ -28,6 +28,8 @@ You can always add new environments or delete existing environments later.
 
 ### 2. Decide on AWS account strategy
 
+Some resources, such as a build repository, are shared across environments. These resources can be deployed to the same AWS account as any of the other environments or they can be deployed to a separate environment. In the following diagrams, these are represented by the box labeled `shared`.
+
 A simple project might have only one AWS account and all environments should be deployed to this environment. This mapping might look like this:
 
 ```mermaid
