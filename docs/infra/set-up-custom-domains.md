@@ -102,17 +102,11 @@ make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 `ENVIRONMENT` needs to be the name of the environment.
 
-## Externally managed DNS
-
---- @TODO create ticket to make this a local that is derived from hosted_zone
-
-If DNS records are managed externally outside of the project, set `network_configs[*].domain_config.manage_dns = false` in [the networks section of the project-config module](/infra/project-config/networks.tf).
-
 ## If a network does not need custom domains
 
 For each network that does not need custom domains, ensure the network's `domain_config` setting in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). looks like this:
 
-```json
+```hcl
 domain_config = {
   manage_dns  = false
   hosted_zone = ""
