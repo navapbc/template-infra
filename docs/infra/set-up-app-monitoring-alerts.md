@@ -69,7 +69,7 @@ make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 ## If the application does not need monitoring notifications
 
-If the application does not need a monitoring, ensure that:
+If the application does not need monitoring notifications, ensure that:
 
 * the application's service module (e.g. `/infra/<APP_NAME>/service/main.tf`) has the `email_alerts_subscription_list` commented out
 * the application's `app-config` (e.g. in `/infra/<APP_NAME>/app-config/main.tf`) has `has_incident_management_service` set to `false`
