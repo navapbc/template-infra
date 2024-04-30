@@ -79,8 +79,8 @@ To set up this project for the first time, if it has never been deployed to the 
         2. [Set up application service](/docs/infra/set-up-app-service.md)
         3. Optionally, [set up application monitoring alerts](/docs/infra/set-up-app-monitoring-alerts.md)
         4. Optionally, [set up application background jobs](/docs/infra/background-jobs.md)
-        5. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md)
-        6. Optionally, [configure HTTPS support](/docs/infra/https-support.md)
+7. Optionally, [set up custom domains](/docs/infra/set-up-network-custom-domains.md)
+8. Optionally, [set up HTTPS support](/docs/infra/set-up-network-https.md)
 
 ### 🆕 New developer
 

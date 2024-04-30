@@ -20,7 +20,7 @@ By default there are three networks defined, one for each application environmen
 
 If you have multiple applications and want your applications in separate networks within the same AWS account, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
 
-Skip the `domain_config` config for now. These settings are optionally configured later when [setting up custom domains](./set-up-custom-domains.md) and when [setting up HTTPS](./https-support.md).
+Skip the `domain_config` config for now. These settings are optionally configured later when [setting up custom domains](./set-up-network-custom-domains.md) and when [setting up HTTPS](./set-up-network-https.md).
 
 ### 2. Set up each network
 
