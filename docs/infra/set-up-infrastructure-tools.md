@@ -1,6 +1,6 @@
 # Set up infrastructure developer tools
 
-If you are contributing to infrastructure, you will need to complete these setup steps.
+If you are working on the infrastructure, you will need to complete these setup steps.
 
 ## Prerequisites
 
@@ -8,7 +8,7 @@ If you are contributing to infrastructure, you will need to complete these setup
 
 [Terraform](https://www.terraform.io/) is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features.
 
-You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager](https://github.com/tfutils/tfenv).
+You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager (tfenv)](https://github.com/tfutils/tfenv).
 
 To install via [Homebrew](https://brew.sh/)
 
