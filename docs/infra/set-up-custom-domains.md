@@ -1,13 +1,13 @@
 # Custom domains
 
-Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project. Skip this step if the application does not need custom domains.
+Follow these instructions for **each network** (you can have one or more in your project) in your project. If the network or an application does not need custom domains, skip to the bottom of this document.
 
 Production systems will want to set up custom domains to route internet traffic to their application services rather than using AWS-generated hostnames for the load balancers or the CDN. This document describes how to configure custom domains.
 
 The custom domain setup process will:
 
 1. Create an [Amazon Route 53 hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) to manage DNS records for a domain and subdomains
-2. Create a DNS A (address) records to route traffic from a custom domain to an application's load balancer
+2. Create DNS A (address) records to route traffic from a custom domain to an application's load balancer
 
 ## Prerequisites
 
@@ -19,7 +19,21 @@ The custom domain setup process will:
 
 ## Instructions
 
-### 1. Set hosted zone in domain configuration
+### 1. Make sure you're authenticated into the AWS account you want to configure
+
+This set up takes effect in whatever account you're authenticated into. To see which account that is, run
+
+```bash
+aws sts get-caller-identity
+```
+
+To see a more human readable account alias instead of the account, run
+
+```bash
+aws iam list-account-aliases
+```
+
+### 2. Set hosted zone in domain configuration
 
 The custom domain configuration is defined as a `domain_config` object in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains.
 
@@ -27,15 +41,15 @@ For example, a hosted zone of `platform-test.navateam.com` includes `platform-te
 
 **For each network** you want to use a custom domain, set the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered.
 
-### 2. Update the network layer to create the hosted zones
+### 3. Update the network layer to create the hosted zones
 
-**For each network** you that you added a custom domain to in Step 1, run the following command to create the hosted zone specified in the domain configuration:
+**For each network** you that you added a custom domain to in the previous step, run the following command to create the hosted zone specified in the domain configuration:
 
 ```bash
 make infra-update-network NETWORK_NAME=<NETWORK_NAME>
 ```
 
-### 3. Delegate DNS requests to the newly created hosted zone
+### 4. Delegate DNS requests to the newly created hosted zone
 
 You most likely registered your domain outside of this project. Using whichever service you used to register the domain name (e.g. Namecheap, GoDaddy, Google Domains, etc.), add a DNS NS (nameserver) record. Set the "name" equal to the `hosted_zone` and set the value equal to the list of hosted zone name servers that was created in the previous step. You can see the list of servers by running
 
@@ -66,7 +80,9 @@ Run the following command to verify that DNS requests are being served by the ho
 nslookup -type=NS <HOSTED_ZONE>
 ```
 
-### 4. Create DNS A (address) records to route traffic from the custom domain to the application's load balancer
+### 5. Create DNS A (address) records to route traffic from the custom domain to the application's load balancer
+
+**For each application** in the network that should use the custom domain, perform the following.
 
 Within the `app-config` directory (e.g. `infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
@@ -74,15 +90,15 @@ In each environment config file, define the `domain_name`.
 
 The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
 
-### 5. Update the application service
+### 6. Update the application service
 
-To apply the changes, run the following command for each environment:
+**For each application and each environment** in the network that should use the custom domain, apply the changes with the following command
 
 ```bash
 make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder.
 
 `ENVIRONMENT` needs to be the name of the environment.
 
@@ -91,3 +107,19 @@ make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 --- @TODO create ticket to make this a local that is derived from hosted_zone
 
 If DNS records are managed externally outside of the project, set `network_configs[*].domain_config.manage_dns = false` in [the networks section of the project-config module](/infra/project-config/networks.tf).
+
+## If a network does not need custom domains
+
+For each network that does not need custom domains, ensure the network's `domain_config` setting in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). looks like this:
+
+```json
+domain_config = {
+  manage_dns  = false
+  hosted_zone = ""
+  certificate_configs = {}
+}
+```
+
+## If an application does not need custom domains
+
+For each application that does not need custom domains, ensure that the application's `app-config/<ENVIRONMENT>.tf` file (e.g. in `/infra/<APP_NAME>/app-config/<ENVIRONMENT>.tf`) has `domain_name` set to `""` (empty string).
