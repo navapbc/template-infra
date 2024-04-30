@@ -1,6 +1,6 @@
 # Set up networks
 
-The networks setup process will:
+The networks set up process will:
 
 1. Configure project networks, including to be compatible with the project's environment mapping
 3. Configure all networks
