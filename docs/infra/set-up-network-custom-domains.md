@@ -100,11 +100,11 @@ make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder.
 
-`ENVIRONMENT` needs to be the name of the environment.
+`ENVIRONMENT` needs to be the name of the environment to update.
 
 ## If a network does not need custom domains
 
-For each network that does not need custom domains, ensure the network's `domain_config` setting in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). looks like this:
+For each network that does not need custom domains, ensure the network's `domain_config` setting in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) looks like this:
 
 ```hcl
 domain_config = {
