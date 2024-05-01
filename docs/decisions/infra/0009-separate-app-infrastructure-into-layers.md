@@ -12,7 +12,7 @@ This document builds on the database module design [ADR: Separate the database i
 
 ## Overview
 
-Based on the factors in the section below, the infrastructure has been groups into the following separate layers:
+Based on the factors in the section below, the infrastructure has been grouped into the following separate layers:
 
 * Account layer
 * Network layer
@@ -28,7 +28,7 @@ Based on the factors in the section below, the infrastructure has been groups in
 
 * **Policy constraints on what resources project team is authorized to manage:** Some projects have restrictions on who can create or modify certain categories of resources. For example, on some projects, VPCs have to be created by a central cloud operations team upon request and provided to the project team. Separating the infrastructure into modular layers allows project teams to manage downstream layers like the database and service even if upstream layers are managed externally. In our example, if the VPC layer is provided by another department, the project team can skip using the network layer, or modify the network layer to build upon the externally provided VPC, and the project team need not refactor the rest of the infrastructure.
 
-* **Out of band dependencies:** Some infrastructure resources depend on steps that take place outside of AWS and terraform in order to complete the creation for those layers, which makes it infeasible to rely on terraform's built-in resource dependency graphy to manage the creation of downstream resources. For example, creating an SSL/TLS certificate relies on an external step to verify ownership of the domain before it can be used by a downstream load balancer. As another example, after creating a database cluster, the database schemas, roles, and privileges need to be configured before they can be used by a downstream service. Separating infrastructure layers allows upstream dependencies to be fully created before attempting to create downstream dependent resources.
+* **Out of band dependencies:** Some infrastructure resources depend on steps that take place outside of AWS and Terraform in order to complete the creation for those layers, which makes it infeasible to rely on Terraform's built-in resource dependency graph to manage the creation of downstream resources. For example, creating an SSL/TLS certificate relies on an external step to verify ownership of the domain before it can be used by a downstream load balancer. As another example, after creating a database cluster, the database schemas, roles, and privileges need to be configured before they can be used by a downstream service. Separating infrastructure layers allows upstream dependencies to be fully created before attempting to create downstream dependent resources.
 
 * **Mitigate risk of accidental changes:** Some layers, such as the network and database layers, aren't expected to change frequently, whereas the service layer is expected to change on every deploy in order to update the image tag in the task definition. Separating the layers reduces the risk of accidentally making changes to one layer when applying changes to another layer.
 

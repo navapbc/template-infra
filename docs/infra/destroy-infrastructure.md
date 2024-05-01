@@ -4,14 +4,14 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
 
 ## Instructions
 
-1. First destroy all your environments. Within `/infra/app/service` run the following, replacing `dev` with the environment you're destroying.
+1. First, destroy all your environments. Within `/infra/app/service` run the following, replacing `dev` with the environment you're destroying.
 
    ```bash
    $ terraform init --backend-config=dev.s3.tfbackend
    $ terraform destroy -var-file=dev.tfvars
    ```
 
-2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply` from within the `infra/accounts` directory. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in depth explanation.
+2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply` from within the `infra/accounts` directory. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in-depth explanation.
 
    ```terraform
    # infra/modules/modules/terraform-backend-s3/main.tf
@@ -46,7 +46,7 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
    }2
    ```
 
-4. Then run the following from within the `infra/accounts` directory to copy the tfstate back to a local tfstate file:
+4. Then run the following from within the `infra/accounts` directory to copy the `tfstate` back to a local `tfstate` file:
 
    ```bash
    terraform init -force-copy

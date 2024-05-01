@@ -11,7 +11,7 @@ The network setup process will configure and deploy network resources needed by 
 Before setting up the network you'll need to have:
 
 1. [Set up the AWS account](./set-up-aws-account.md)
-2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default there are three networks defined, one for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
+2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default, there are three networks defined, one for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
    1. Optionally, [configure custom domains](/docs/infra/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
    2. Optionally, [configure HTTPS support](/docs/infra/https-support.md). You can also come back to setting up HTTPS support at a later time.
 3. [Configure the app](/infra/app/app-config/main.tf).
@@ -21,7 +21,7 @@ Before setting up the network you'll need to have:
 
 ## 1. Configure backend
 
-To create the tfbackend file for the new network, run
+To create the `tfbackend` file for the new network, run
 
 ```bash
 make infra-configure-network NETWORK_NAME=<NETWORK_NAME>
@@ -37,4 +37,4 @@ make infra-update-network NETWORK_NAME=<NETWORK_NAME>
 
 ## Updating the network
 
-If you make changes to your application's configuration that impacts the network (such as `has_database` and `has_external_non_aws_service`), make sure to update the network before you update or deploy subsequent infrastructure layers.
+If you make changes to your application's configuration that impact the network (such as `has_database` and `has_external_non_aws_service`), make sure to update the network before you update or deploy subsequent infrastructure layers.

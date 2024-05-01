@@ -49,9 +49,9 @@ The environments share the same root modules but will have different configurati
 
 ### 🔀 Project workflow
 
-This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
+This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call `terraform` commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally you should use the Make targets or the underlying bin scripts, but you can call the underlying terraform commands if needed. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
+Generally, you should use the Make targets or the underlying bin scripts, but you can call the underlying terraform commands if needed. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
 
 ## 💻 Development
 
@@ -59,7 +59,7 @@ Generally you should use the Make targets or the underlying bin scripts, but you
 
 
 
-To set up this project for the first time (aka it has never been deployed to the target AWS account):
+To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
 1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
 2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
@@ -75,7 +75,7 @@ To set up this project for the first time (aka it has never been deployed to the
 
 ### 🆕 New developer
 
-To get set up as a new developer to a project that has already been deployed to the target AWS account:
+To get set up as a new developer on a project that has already been deployed to the target AWS account:
 
 1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)

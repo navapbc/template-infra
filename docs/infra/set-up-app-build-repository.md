@@ -1,6 +1,6 @@
 # Set up application build repository
 
-The application build repository setup process will create infrastructure resources needed to store built release candidate artifacts used to deploy the application to an environment.
+The application build repository setup process will create infrastructure resources needed to store built release-candidate artifacts used to deploy the application to an environment.
 
 ## Requirements
 
@@ -11,7 +11,7 @@ Before setting up the application's build repository you'll need to have:
 
 ## 1. Configure backend
 
-To create the tfbackend file for the build repository using the backend configuration values from your current AWS account, run
+To create the `tfbackend` file for the build repository using the backend configuration values from your current AWS account, run
 
 ```bash
 make infra-configure-app-build-repository APP_NAME=app
