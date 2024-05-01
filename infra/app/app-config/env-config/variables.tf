@@ -70,3 +70,9 @@ variable "service_override_extra_environment_variables" {
     EOT
   default     = {}
 }
+
+variable "enable_service_execution" {
+  type = bool
+  description = "Whether to enable ECS Exec for the application"
+  default = false
+}
