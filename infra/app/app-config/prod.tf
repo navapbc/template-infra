@@ -16,4 +16,10 @@ module "prod_config" {
   service_cpu                    = 1024
   service_memory                 = 4096
   service_desired_instance_count = 3
+
+  # Enables ECS Exec access for debugging or jump access.
+  # ⚠️ Warning! It is not recommended to enable this in a production environment.
+  # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
+  enable_service_execution = false
+
 }
