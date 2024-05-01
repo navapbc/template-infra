@@ -29,14 +29,13 @@ locals {
   # Whether any of the applications in the network have dependencies on an external non-AWS service
   has_external_non_aws_service = anytrue([for app in local.apps_in_network : app.has_external_non_aws_service])
 
-  # Whether any of the applications in the network needs container execution access
-  enable_service_execution = [
+  # Whether any of the applications in the network has an environment that needs container execution access
+  enable_service_execution = anytrue([
     for app in local.apps_in_network :
-    app
-    if anytrue([
-      for environment_config in app.environment_configs : true if environment_config.service_config.enable_service_execution
+    anytrue([
+      for environment_config in app.environment_configs : true if environment_config.service_config.enable_service_execution == true && environment_config.network_name == var.network_name
     ])
-  ]
+  ])
 }
 
 terraform {
