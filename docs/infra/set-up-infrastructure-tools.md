@@ -26,7 +26,7 @@ If you are unfamiliar with Terraform, check out this [basic introduction to Terr
 
 ### Install AWS CLI
 
-The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS commmand line tool by following the instructions found here:
+The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS command line tool by following the instructions found here:
 
 - [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
@@ -58,9 +58,9 @@ make infra-lint
 
 ## AWS Authentication
 
-In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
+In order for Terraform to authenticate with your accounts you will need to configure your AWS credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
 
-There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file, and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
+There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
 **Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
 ### Examples
@@ -73,7 +73,7 @@ Default region name [None]: us-east-2
 Default output format [None]: json
 ```
 
-**Using the above command will create a [default] profile.**  
+**Using the above command will create a [default] profile.**
 
 ```bash
 $ aws configure --profile dev
@@ -83,7 +83,7 @@ Default region name [None]: us-east-2
 Default output format [None]: json
 ```
 
-**Using the above command will create a [dev] profile.**  
+**Using the above command will create a [dev] profile.**
 
 Once you're done, verify access by running the following command to print out information about the AWS IAM user you authenticated as.
 

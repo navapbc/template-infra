@@ -1,6 +1,6 @@
 # Workspaces
 
-Terraform workspaces are created by default, the default workspace is named "default." Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop new features in parallel using a single environment without destroying each others infrastructure. Separate resources will be created for each engineer when using the prefix variable.
+Terraform workspaces are created by default, the default workspace is named "default." Workspaces are used to allow multiple engineers to deploy their own stacks for development and testing. This allows multiple engineers to develop new features in parallel using a single environment without destroying each other's infrastructure. Separate resources will be created for each engineer when using the prefix variable.
 
 ## Terraform workspace commands
 
@@ -14,7 +14,7 @@ Terraform workspaces are created by default, the default workspace is named "def
 
 `terraform workspace delete [Name]` - This command will delete the specified workspace. (does not delete infrastructure, that step will done first)
 
-## Workspaces and prefix - A How To
+## Workspaces and prefix - A How-To
 
  Workspaces are used to allow multiple developers to deploy their own stacks for development and testing. By default "prefix~ is set to `terraform.workspace` in the envs/dev environment, it is `staging` and `prod` in those respective environments.
 
@@ -44,7 +44,7 @@ variable "prefix" {
 
 ```
 
-### modules/example/main.tf - Use var.prefix to uniquely name resources for parallel development
+### modules/example/main.tf - Use `var.prefix` to uniquely name resources for parallel development
 
 ``` tf
 

@@ -57,7 +57,7 @@ FROM scratch AS release
 
 ### CI interface
 
-Each application will have their own CI workflow that gets copied into the project's workflows folder as part of installation. `template-application-nextjs` and `template-application-flask` will have `.github/workflows/ci-app.yml`, and `template-infra` will have `.github/workflows/ci-infra.yml`.
+Each application will have its own CI workflow that gets copied into the project's workflows folder as part of installation. `template-application-nextjs` and `template-application-flask` will have `.github/workflows/ci-app.yml`, and `template-infra` will have `.github/workflows/ci-infra.yml`.
 
 Installation would look something like:
 
@@ -100,7 +100,7 @@ jobs:
       - run: poetry run pytest
 ```
 
-For now we are assuming there's only one deployable application service per repo, but we could evolve this architecture to have the project rename `app` as part of the installation process to something specific like `api` or `web`, and rename `ci-app.yml` appropriately to `ci-api.yml` or `ci-web.yml`, which would allow for multiple application folders to co-exist.
+For now, we are assuming there's only one deployable application service per repo, but we could evolve this architecture to have the project rename `app` as part of the installation process to something specific like `api` or `web`, and rename `ci-app.yml` appropriately to `ci-api.yml` or `ci-web.yml`, which would allow for multiple application folders to co-exist.
 
 ## Alternative options considered for CD interface
 
@@ -108,6 +108,6 @@ For now we are assuming there's only one deployable application service per repo
 
     * Cons: build command in two places, and while 99% of the build logic is within Dockerfile and code, there's still a small chance that difference in build command line arguments could produce a different build in CI than what is used for release
 
-2. We can run release-build as part of template-infra's ci-infra.yml, so we still get CI test coverage of build process
+2. We can run release-build as part of template-infra's ci-infra.yml, so we still get CI test coverage of the build process
 
     * Cons: things like tests and linting in ci-app.yml can't use the docker image to run the tests, which potentially means CI and production are using slightly different environments
