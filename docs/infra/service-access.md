@@ -2,6 +2,8 @@
 
 The infrastructure supports developer access to a running application's service container using [ECS Exec](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html). You can run commands in or get a shell to an actively running container, allowing you to quickly debug issues or to use the container to access an attached database. Once you create an interactive shell, you will be operating with the same permissions as the container (e.g. you may access any database the container has access to, but you cannot access databases within the same account that the container does not have access to).
 
+⚠️ **Warning: It is not recommended to enable service access in a production environment!**
+
 ## Prerequisites
 
 * You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication
