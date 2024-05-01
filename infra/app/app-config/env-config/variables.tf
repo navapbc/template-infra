@@ -72,7 +72,7 @@ variable "service_override_extra_environment_variables" {
 }
 
 variable "enable_service_execution" {
-  type = bool
+  type        = bool
   description = "Whether to enable ECS Exec for the application"
-  default = false
+  default     = false
 }

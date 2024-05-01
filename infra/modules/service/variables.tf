@@ -53,8 +53,8 @@ variable "memory" {
 }
 
 variable "enable_service_execution" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "Whether the service should enable ECS Exec, such as for debugging"
 }
 

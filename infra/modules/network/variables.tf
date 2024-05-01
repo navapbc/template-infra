@@ -26,7 +26,7 @@ variable "has_external_non_aws_service" {
 }
 
 variable "enable_service_execution" {
-  type = bool
+  type        = bool
   description = "Whether the application(s) in this network need ECS Exec access. Determines whether to create VPC endpoints needed by ECS Exec."
-  default = false
+  default     = false
 }
