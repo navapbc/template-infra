@@ -27,7 +27,7 @@ git clone https://github.com/navapbc/template-infra.git
 
 echo "Switching to this project's current version of the template..."
 cd template-infra
-git checkout "$CURRENT_VERSION"
+git checkout "$CURRENT_VERSION" >& /dev/null
 cd - >& /dev/null
 
 echo "Creating a terraform module for a new application..."
