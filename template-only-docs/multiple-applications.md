@@ -1,6 +1,6 @@
 # Multiple Applications
 
-This infrastructure supports multiple deployment and CI/CD for projects with multiple applications. By default, the infrastructure assumes the project only has one application, named `app`. However, it's straightforward to include additional applications.
+This infrastructure supports deployment and CI/CD for projects with multiple applications. By default, the infrastructure assumes the project only has one application, named `app`. However, it's straightforward to include additional applications.
 
 ## Prerequisites
 

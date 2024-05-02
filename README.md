@@ -18,7 +18,11 @@ By default, the system architecture will look like this (see [system architectur
 
 ## Application Requirements
 
-This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template. If you're using one of the [Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates), these requirements are already met.
+This template assumes that you have an application to deploy. See [application requirements](https://github.com/navapbc/template-infra/tree/main/template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template. If you're using one of the [Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates), these requirements are already met.
+
+### Multiple Applications
+
+This infrastructure supports deployment and CI/CD for projects with multiple applications. By default, the infrastructure assumes the project only has one application, named `app`. However, it's straightforward to include additional applications. See [how to add multiple applications](https://github.com/navapbc/template-infra/tree/main/template-only-docs/multiple-applications.md).
 
 ## Installation
 
