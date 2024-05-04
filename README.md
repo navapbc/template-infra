@@ -45,24 +45,36 @@ After downloading and installing the template into your project:
 
 ## Updates
 
-There are multiple ways to receive template updates on your project. For most updates, you can simply run the [update-template.sh](/template-only-bin/update-template.sh) script
+To apply template updates to your project, run
 
 ```bash
-curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s
+curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- <APP_NAMES>
 ```
 
-If the update fails the simplest option may be to re-run the installation script above and manually review the changes.
+<APP_NAMES> is a required argument. It must be a comma-separated list (no spaces) of the apps in `/infra`. App names are expected to be hyphen-separated (i.e. kebab-case).
+  Examples: `app`, `app,app2`, `my-app,your-app`
+
+By default, the update script will update to the latest commit on the `main` branch in the template repo. If you want to update to a different branch, a specific commit, or a specific tag (e.g. a release tag), run this instead
+
+```bash
+curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- <APP_NAMES> <TARGET_VERSION> <TARGET_VERSION_TYPE>
+```
+<TARGET_VERSION> should be the version of the template to install. This can be a branch, commit hash, or tag.
+<TARGET_VERSION_TYPE> should be the type of <TARGET_VERSION> provided. Defaults to `branch`. This can be: `branch`, `commit`, or `tag`.
+
+Examples:
+- To update a project with one application named `app` to `main` in the template repo:
+    ```bash
+    curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- app
+    ```
+- To update a project with two applications to a specific commit:
+    ```bash
+    curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- app,app2 d42963d007e55cc37ef666019428b1d06a25cf71 commit
+    ```
+
+- To update a project with three applications to a tag:
+    ```bash
+    curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- alpha,beta,gamma-three v0.8.0 tag
+    ```
 
 **Remember:** Make sure to read the release notes in case there are breaking changes you need to address.
-
-### Renamed applications
-
-If you renamed your application from `infra/app` to something else like `infra/foo`, then first rename your app back to `infra/app` before applying the updates e.g.
-
-```bash
-mv foo app
-mv infra/foo infra/app
-curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s
-mv infra/app infra/foo
-mv app foo
-```

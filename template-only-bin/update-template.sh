@@ -3,33 +3,35 @@
 # This script updates template-infra in your project.
 # Run this script in your project's root directory.
 #
-# This script uses git to create a patch files between the current HEAD and the
-# TARGET_VERSION argument. For the main template, it sets the upstream github repo as a
-# remote, creates a patch file and applies it. The git-apply excludes template-only
-# files. Because applications often do not retain the default `app` name, a different
-# approach is needed. To create the patch for applications, the upstream repo is cloned
-# into a sub-directory and `git diff --no-index` is used to compare differently-named
-# directories.
+# This script uses git to create patch files between the current HEAD and the
+# TARGET_VERSION argument. For the main portion of the template, it sets the upstream
+# github repo as a remote, creates a patch file, and applies it. The git-apply excludes
+# template-only files. For applications, because they often do not retain the default
+# `app` name, a different approach is needed. To create the patch for applications, the
+# upstream repo is cloned into a sub-directory and `git diff --no-index` is used to
+# compare differently-named directories.
 #
 # Usage:
 #   ./template-only-bin/update-template.sh <APP_NAMES> <TARGET_VERSION> <TARGET_VERSION_TYPE>
 #
 # Positional parameters:
-#   APP_NAMES (required) – a comma-separated list of the apps in `/infra` with no spaces.
-#     Defaults to `app`
+#   APP_NAMES (required) – a comma-separated list (no spaces) of the apps in `/infra`. App
+#     names are expected to be hyphen-separated (i.e. kebab-case).
 #     Examples: `app`, `app,app2`, `my-app,your-app`
 #
-#   TARGET_VERSION (optional) – the version of the template application to install.
+#   TARGET_VERSION (optional) – the version of the template to install
 #     Defaults to main. Can be a branch, commit hash, or tag.
 #
-#   TARGET_VERSION_TYPE (optional) – the version of the template application to install.
-#     Defaults to branch. Can be: branch, commit, tag.
+#   TARGET_VERSION_TYPE (optional) – the type of TARGET_VERSION provided
+#     Defaults to branch. Can be: branch, commit, or tag.
 #
 # Examples:
-# - To update a project with one application named `app` to the latest upstream `main`:
+# - To update a project with one application named `app` to `main` in the template repo:
 #   ./template-only-bin/update-template.sh app
+#
 # - To update a project with two applications to a specific commit:
 #   ./template-only-bin/update-template.sh app,app2 d42963d007e55cc37ef666019428b1d06a25cf71 commit
+#
 # - To update a project with three applications to a tag:
 #   ./template-only-bin/update-template.sh alpha,beta,gamma-three v0.8.0 tag
 # -----------------------------------------------------------------------------
@@ -47,8 +49,15 @@ echo "====================================================================="
 echo "APP_NAMES=$APP_NAMES"
 echo "TARGET_VERSION=$TARGET_VERSION"
 echo "TARGET_VERSION_TYPE=$TARGET_VERSION_TYPE"
+echo
 
-# Check: that $APP_NAMES is not empty string
+# Check: that the git repo is clean
+if [ -n "$(git status --porcelain)" ]; then
+  echo "Error: Commit or stash all changes before proceeding. Exiting."
+  exit 1
+fi
+
+# Check: that $APP_NAMES is not an empty string
 if [ -z "$APP_NAMES" ]; then
   echo "Error: APP_NAMES cannot be empty."
   echo "  Please supply a comma-separated list of applications in /infra."
@@ -58,7 +67,7 @@ if [ -z "$APP_NAMES" ]; then
   exit 1
 fi
 
-# Check: that all the apps passed in exist
+# Check: that all the apps exist
 # Loop through the comma-separated list of apps
 for APP_NAME in ${APP_NAMES//,/ }
 do
@@ -74,11 +83,10 @@ case $TARGET_VERSION_TYPE in
     # Acceptable options, do nothing
     ;;
   *)
-    echo "Error: TARGET_VERSION_TYPE must be: branch, commit, or tag"
+    echo "Error: TARGET_VERSION_TYPE must be: branch, commit, or tag. Exiting."
     exit 1
 esac
 
-echo
 echo "---------------------------------------------------------------------"
 echo "1. Patching: main template"
 echo "---------------------------------------------------------------------"
@@ -88,21 +96,20 @@ git remote add upstream-template-infra https://github.com/navapbc/template-infra
 
 echo "Fetching from upstream remote..."
 echo
-git fetch upstream-template-infra
+git fetch upstream-template-infra >& /dev/null
 
 # Get target version hash
-echo
 echo "Converting $TARGET_VERSION to hash..."
 case $TARGET_VERSION_TYPE in
   "branch")
-    TARGET_VERSION_HASH=$(git rev-parse upstream-template-infra/$TARGET_VERSION)
+    TARGET_VERSION_HASH="$(git rev-parse upstream-template-infra/$TARGET_VERSION)"
     ;;
   "commit")
     echo "No conversion needed."
     TARGET_VERSION_HASH=$TARGET_VERSION
     ;;
   "tag")
-    TARGET_VERSION_HASH=$(git ls-remote --tags upstream-template-infra $TARGET_VERSION | cut -d$'\t' -f1)
+    TARGET_VERSION_HASH="$(git ls-remote --tags upstream-template-infra $TARGET_VERSION | cut -d$'\t' -f1)"
     ;;
 esac
 echo "TARGET_VERSION_HASH=$TARGET_VERSION_HASH"
@@ -120,13 +127,12 @@ INCLUDE_PATHS="
   .hadolint.yaml
   .trivyignore"
 
-# Note: Exclude template-only files, terraform deployment files, and all files related to
-#   application(s) as those are handled separately below.
+# Note: Exclude terraform deployment files, and CI/CD workflows as those are handled
+# separately below.
 EXCLUDE_PATHS="
-  ':!.github/workflows/template-only-*'
   ':!*.terraform*'
   ':!*.tfbackend'
-  ':!.github/workflows/*app*.yml'"
+  ':!.github/workflows/'"
 
 # Exclude all applications
 for APP_NAME in ${APP_NAMES//,/ }
@@ -162,32 +168,42 @@ do
   echo "---------------------------------------------------------------------"
   echo "$STEP_COUNT. Patching application: $APP_NAME"
   echo "---------------------------------------------------------------------"
-  # This creates a git patch comparing a project app with the upstream `/infra/app` directory
-  # --no-index allows us to compare differently named directories
-  # --dst-prefix="" removes the destination prefix, essentially having the effect of removing the additional `template-infra/`
-  #   path prefix, making the patch easily appliable
-  # || true is necessary because this bash script includes `set -e`, which will immediately exit for any non-zero exit codes
-  #   That's generally correct, but `git diff --no-index` will return 1 to indicate differences between the files. That's correct
-  #   and expected behavior.
-  git diff --no-index --dst-prefix="" "infra/$APP_NAME" template-infra/infra/app > "template-infra/$APP_NAME.patch" || true
+  # If the APP_NAME is not named `app`, then install a new app in template-infra to diff against
+  if [ "$APP_NAME" != "app" ]; then
+    curl "https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-app.sh" | bash -s -- $APP_NAME "template-infra/"
+    echo
+  fi
 
-  # This is the second part that allows comparing between directories with different names
-  # -p3 strips the first 3 path fragments from filenames
-  #   Ex: if the filename is `a/infra/app/app-config/dev.tf`, then -p3 causes it to become: `app-config/dev.tf`
-  # --directory="infra/$APP_NAME" prepends path parts to the filename
-  #   Ex: if the filename is `a/infra/app/app-config/dev.tf`, then --directory causes it to become: `/infra/$APP_NAME/app-config/dev.tf`
-  # This is the stat version of the command to output the changes
-  STAT_COMMAND="git --no-pager apply --stat -p3 --directory=infra/$APP_NAME --allow-empty template-infra/$APP_NAME.patch --exclude='*.tfbackend' --exclude='*.terraform*'"
+  # To create a git patch comparing a project's application:
+  # --no-index allows us comparison between differently-named or -nested directories
+  # --dst-prefix="" removes the destination prefix, essentially having the effect of
+  #   removing the additional `template-infra/` path prefix, making the patch appliable
+  # || true is necessary because this bash script includes `set -e` option, which will
+  #   immediately exit for any non-zero exit codes. That's generally correct, but
+  #   `git diff --no-index` will return 1 to indicate differences between the files.
+  git diff --no-index --dst-prefix="" "infra/$APP_NAME" "template-infra/infra/$APP_NAME" > "template-infra/$APP_NAME.patch" || true
+
+  # The stat version of the `git-apply` command`, used to output the changes to STDOUT
+  STAT_COMMAND="git --no-pager apply --stat --allow-empty template-infra/$APP_NAME.patch --exclude='*.tfbackend' --exclude='*.terraform*'"
   eval "$STAT_COMMAND"
 
-  # Actually running the command `git apply`
-  git apply -p3 --directory="infra/$APP_NAME" --allow-empty "template-infra/$APP_NAME.patch" --exclude="*.tfbackend" --exclude="*.terraform*"
+  # Actually run the `git apply` command
+  git apply --allow-empty "template-infra/$APP_NAME.patch" --exclude="*.tfbackend" --exclude="*.terraform*"
 
   # Increment step counter
   STEP_COUNT=$((STEP_COUNT+1))
-
-  # @TODO patch for CI/CD
 done
+
+echo
+echo "---------------------------------------------------------------------"
+echo "$STEP_COUNT. Patching CI/CD"
+echo "---------------------------------------------------------------------"
+# This follows the same pattern as above
+git diff --no-index --dst-prefix="" .github/workflows template-infra/.github/workflows > "template-infra/ci-$APP_NAME.patch"  || true
+STAT_COMMAND="git --no-pager apply --stat --allow-empty template-infra/ci-$APP_NAME.patch --exclude='.github/workflows/template-only*'"
+eval "$STAT_COMMAND"
+git apply --allow-empty "template-infra/ci-$APP_NAME.patch" --exclude=".github/workflows/template-only*"
+STEP_COUNT=$((STEP_COUNT+1))
 
 echo
 echo "---------------------------------------------------------------------"
@@ -202,10 +218,11 @@ rm main-template.patch
 echo "Removing git remote..."
 git remote rm upstream-template-infra
 
-# echo "Cleaning up template-infra folder..."
-# rm -rf template-infra
+echo "Cleaning up template-infra folder..."
+rm -rf template-infra
 
 echo
 echo "====================================================================="
 echo "Done."
 echo "====================================================================="
+echo "Review all changes carefully using 'git diff' before committing"
