@@ -9,26 +9,29 @@
 #     Examples: `app`, `app,app2`, `my-app,your-app`
 #
 #   TARGET_VERSION (optional) – the version of the template application to install.
-#     Defaults to main. Can be any target that can be checked out, including a branch,
-#     version tag, or commit hash.
+#     Defaults to main. Can be a branch, commit hash, or tag.
+#
+#   TARGET_VERSION_TYPE (optional) – the version of the template application to install.
+#     Defaults to branch. Can be: branch, commit, tag.
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
 APP_NAMES=$1
 TARGET_VERSION=${2:-"main"}
+TARGET_VERSION_TYPE=${3:-"branch"}
 CURRENT_VERSION=$(cat .template-version)
+TARGET_VERSION_HASH=""
 
 echo "====================================================================="
 echo "Updating template-infra"
 echo "====================================================================="
 echo "APP_NAMES=$APP_NAMES"
-echo "CURRENT_VERSION=$CURRENT_VERSION"
 echo "TARGET_VERSION=$TARGET_VERSION"
-echo
+echo "TARGET_VERSION_TYPE=$TARGET_VERSION_TYPE"
 
 # Check: that $APP_NAMES is not empty string
 if [ -z "$APP_NAMES" ]; then
-  echo "Error: The first argument (APP_NAMES) cannot be empty."
+  echo "Error: APP_NAMES cannot be empty."
   echo "  Please supply a comma-separated list of applications in /infra."
   echo "  Example: app"
   echo "  Example: app,app2"
@@ -46,20 +49,58 @@ do
   fi
 done
 
+# Check: that TARGET_VERSION_TYPE is valid
+case $TARGET_VERSION_TYPE in
+  "branch"|"commit"|"tag")
+    # Acceptable options, do nothing
+    ;;
+  *)
+    echo "Error: TARGET_VERSION_TYPE must be: branch, commit, or tag"
+    exit 1
+esac
+
+echo
 echo "---------------------------------------------------------------------"
 echo "1. Patching: main template"
 echo "---------------------------------------------------------------------"
-echo "Temporarily setting template as a remote 'upstream-template-infra'..."
+echo "Temporarily creating remote 'upstream-template-infra'..."
 echo
 git remote add upstream-template-infra https://github.com/navapbc/template-infra.git
 
-git fetch upstream-template-infra "$TARGET_VERSION"
+echo "Fetching from upstream remote..."
+echo
+git fetch upstream-template-infra
 
-# Get version hash to update .template-version after patch is successful
-TARGET_VERSION_HASH=$(git rev-parse "upstream-template-infra/$TARGET_VERSION")
+# Get target version hash
+echo
+echo "Converting $TARGET_VERSION to hash..."
+case $TARGET_VERSION_TYPE in
+  "branch")
+    TARGET_VERSION_HASH=$(git rev-parse upstream-template-infra/$TARGET_VERSION)
+    ;;
+  "commit")
+    echo "No conversion needed."
+    TARGET_VERSION_HASH=$TARGET_VERSION
+    ;;
+  "tag")
+    TARGET_VERSION_HASH=$(git ls-remote --tags upstream-template-infra $TARGET_VERSION | cut -d$'\t' -f1)
+    ;;
+esac
+echo "TARGET_VERSION_HASH=$TARGET_VERSION_HASH"
+echo
 
 # Note: Keep this list in sync with the files copied in install-template.sh
-INCLUDE_PATHS=".github bin docs infra Makefile .dockleconfig .grype.yml .hadolint.yaml .trivyignore"
+INCLUDE_PATHS="
+  .github
+  bin
+  docs
+  infra
+  Makefile
+  .dockleconfig
+  .grype.yml
+  .hadolint.yaml
+  .trivyignore"
+
 # Note: Exclude template-only files, terraform deployment files, and all files related to
 #   application(s) as those are handled separately below.
 EXCLUDE_PATHS="
@@ -68,19 +109,21 @@ EXCLUDE_PATHS="
   ':!*.tfbackend'
   ':!.github/workflows/*app*.yml'"
 
-# Ignore all applications to be updated
+# Exclude all applications
 for APP_NAME in ${APP_NAMES//,/ }
 do
   EXCLUDE_PATHS="${EXCLUDE_PATHS} ':!infra/$APP_NAME'"
 done
 
-STAT_COMMAND="git --no-pager diff -R --stat upstream-template-infra/rocket/remove-tf-lock -- $(echo $INCLUDE_PATHS) $(echo $EXCLUDE_PATHS)"
+# Show the changes to be made
+STAT_COMMAND="git --no-pager diff -R --stat $TARGET_VERSION_HASH -- $(echo $INCLUDE_PATHS) $(echo $EXCLUDE_PATHS)"
 eval "$STAT_COMMAND"
 
-DIFF_COMMAND="git diff -R upstream-template-infra/rocket/remove-tf-lock -- $(echo $INCLUDE_PATHS) $(echo $EXCLUDE_PATHS)"
+# Make the patch file
+DIFF_COMMAND="git diff -R $TARGET_VERSION_HASH -- $(echo $INCLUDE_PATHS) $(echo $EXCLUDE_PATHS)"
 eval "$DIFF_COMMAND > main-template.patch"
 
-# Actually apply the patch
+# Apply the patch file
 git apply --allow-empty main-template.patch
 
 echo
@@ -89,7 +132,7 @@ echo "2. Preparing to patch application(s)"
 echo "---------------------------------------------------------------------"
 git clone https://github.com/navapbc/template-infra.git
 cd template-infra
-git checkout "$TARGET_VERSION"
+git checkout "$TARGET_VERSION_HASH"
 cd - >& /dev/null
 
 # Patch each application
