@@ -5,6 +5,7 @@ RUN adduser --system --disabled-password --no-create-home app
 WORKDIR /app
 
 RUN apk --no-cache add \
+  py3-cryptography~=42.0.4 \
   aws-cli~=2 \
   postgresql14-client~=14
 
