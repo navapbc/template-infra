@@ -3,6 +3,17 @@
 # This script updates template-infra in your project.
 # Run this script in your project's root directory.
 #
+# This script uses git to create a patch files between the current HEAD and the
+# TARGET_VERSION argument. For the main template, it sets the upstream github repo as a
+# remote, creates a patch file and applies it. The git-apply excludes template-only
+# files. Because applications often do not retain the default `app` name, a different
+# approach is needed. To create the patch for applications, the upstream repo is cloned
+# into a sub-directory and `git diff --no-index` is used to compare differently-named
+# directories.
+#
+# Usage:
+#   ./template-only-bin/update-template.sh <APP_NAMES> <TARGET_VERSION> <TARGET_VERSION_TYPE>
+#
 # Positional parameters:
 #   APP_NAMES (required) – a comma-separated list of the apps in `/infra` with no spaces.
 #     Defaults to `app`
@@ -13,6 +24,14 @@
 #
 #   TARGET_VERSION_TYPE (optional) – the version of the template application to install.
 #     Defaults to branch. Can be: branch, commit, tag.
+#
+# Examples:
+# - To update a project with one application named `app` to the latest upstream `main`:
+#   ./template-only-bin/update-template.sh app
+# - To update a project with two applications to a specific commit:
+#   ./template-only-bin/update-template.sh app,app2 d42963d007e55cc37ef666019428b1d06a25cf71 commit
+# - To update a project with three applications to a tag:
+#   ./template-only-bin/update-template.sh alpha,beta,gamma-three v0.8.0 tag
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
