@@ -63,7 +63,7 @@ Generally, you should use the Make targets or the underlying scripts, but, if ne
 
 #### Prerequisites
 
-* You'll need to have [installed](/README.md#installation) this template into an application that meets the [Application Requirements](/README.md#application-requirements).
+* You have [installed](/README.md#installation) this template into an application that meets the [Application Requirements](/README.md#application-requirements).
 
 #### Instructions
 
