@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
-# This script downloads and installs infrastructure for an application.
-# Run this script in your project's root directory.
+# This script installs infrastructure for an application.
+# It is called by other scripts.
 #
 # Positional parameters:
 #   APP_NAME (required) - the name for the application, use kebab-case
+#   DST_PREFIX (optional) - the directory that the application should be installed in
+#     Defaults to "" (the current directory). If directory is supplied, must contain a
+#     trailing slash.
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
