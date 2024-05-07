@@ -39,7 +39,10 @@ The custom domain configuration is defined as a `domain_config` object in [`/inf
 
 For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
 
-**For each network** you want to use a custom domain, set the `hosted_zone` value in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to match the custom domain (or a subdomain of the custom domain) that you registered.
+**For each network** you want to use a custom domain, in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf):
+
+* set the `hosted_zone` to match the custom domain (or a subdomain of the custom domain) that you registered
+* set `manage_dns` to `true`
 
 ### 3. Update the network layer to create the hosted zones
 
