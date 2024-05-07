@@ -2,13 +2,13 @@
 
 Follow these instructions for **each application** (you can have one or more in your project) and **each environment** in your project. If the application does not need a database, skip to the bottom of this document.
 
-The database setup process will:
+The database set up process will:
 
 * Configure and deploy an application database cluster using [Amazon Aurora Serverless V2](https://aws.amazon.com/rds/aurora/serverless/)
-* Create a [PostgreSQL schema](https://www.postgresql.org/docs/current/ddl-schemas.html) `app` to contain tables used by the application
+* Create a [PostgreSQL schema](https://www.postgresql.org/docs/current/ddl-schemas.html) called `app` to contain tables used by the application
 * Create an IAM policy that allows IAM roles with that policy attached to [connect to the database using IAM authentication](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html)
-* Create an [AWS Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html), the "role manager", for provisioning the [PostgreSQL database users](https://www.postgresql.org/docs/8.0/user-manag.html) that will be used by the application service and by the migrations task
-* Invoke the role manager function to create the `app` and `migrator` Postgres users
+* Create an [AWS Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html) called "role manager" to provision the [PostgreSQL database users](https://www.postgresql.org/docs/8.0/user-manag.html) used by the application service and the migrations task
+* Invoke the role manager function to create Postgres users called `app` and `migrator`
 
 ## Prerequisites
 
@@ -21,13 +21,13 @@ The database setup process will:
 
 ### 1. Make sure you're authenticated into the AWS account where you want to deploy this environment
 
-This set up takes effect in whatever account you're authenticated into. To see which account that is, run
+This setup applies to the account you're authenticated into. To see which account that is, run:
 
 ```bash
 aws sts get-caller-identity
 ```
 
-To see a more human readable account alias instead of the account, run
+To see a more human readable account alias instead of the account, run:
 
 ```bash
 aws iam list-account-aliases
@@ -35,19 +35,19 @@ aws iam list-account-aliases
 
 ### 2. Configure backend
 
-To create the tfbackend file for the new application environment, run
+To create the `.tfbackend` file for the new application environment, run:
 
 ```bash
 make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder.
+`APP_NAME` should be the name of the application folder within the `infra` folder.
 
-`ENVIRONMENT` needs to be the name of the environment to update. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/database` module directory.
+`ENVIRONMENT` should be the name of the environment to update. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in `infra/<APP_NAME>/database`.
 
 ### 3. Create database resources
 
-Now run the following commands to create the resources. Review the Terraform before confirming "yes" to apply the changes. This can take over 5 minutes.
+To create the resources, run the following command. Review the Terraform output carefully before typing "yes" to apply the changes. This can take over 5 minutes.
 
 ```bash
 make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
@@ -55,7 +55,7 @@ make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 ### 4. Create Postgres users
 
-Trigger the role manager Lambda function that was created in the previous step in order to create the application and migrator Postgres users.
+To trigger the role manager Lambda function that was created in the previous step to create the application and migrator Postgres users, run:
 
 ```bash
 make infra-update-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
@@ -98,10 +98,12 @@ Why is this needed? The reason is because the `migrator` role will be used by th
 
 ### 5. Check that database roles have been configured properly
 
+Verify the that the database roles have been configured properly by running:
+
 ```bash
 make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## If the application does not need a database
 
-If the application does not need a database (such as if the project uses an alternative for data persistence), delete the application's database module (e.g. `/infra/<APP_NAME>/database`) and ensure that the application's `app-config` sets `has_database` to `false` (see [set up app config](./set-up-app-config.md)).
+If the application does not need a database, such as if the project uses an alternative for data persistence, delete the application's database module (e.g. `/infra/<APP_NAME>/database`) and set the application's `app-config` setting `has_database` to `false` (see [set up app config](./set-up-app-config.md)).

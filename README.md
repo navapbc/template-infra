@@ -64,7 +64,9 @@ By default, the update script will apply changes from the `main` branch of this 
 ```bash
 curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- <APP_NAMES> <TARGET_VERSION> <TARGET_VERSION_TYPE>
 ```
+
 `<TARGET_VERSION>` should be the version of the template to install. This can be a branch, commit hash, or tag.
+
 `<TARGET_VERSION_TYPE>` should be the type of `<TARGET_VERSION>` provided. Defaults to `branch`. This can be: `branch`, `commit`, or `tag`.
 
 Examples:
