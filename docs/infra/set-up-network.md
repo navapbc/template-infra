@@ -40,7 +40,7 @@ make infra-configure-network NETWORK_NAME=<NETWORK_NAME>
 
 ### 3. Create network resources
 
-To create the resources, run the following commend. Review the Terraform output carefully before typing "yes" to apply the changes.
+To create the resources, run the following command. Review the Terraform output carefully before typing "yes" to apply the changes.
 
 ```bash
 make infra-update-network NETWORK_NAME=<NETWORK_NAME>
