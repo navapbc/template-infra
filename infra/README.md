@@ -1,10 +1,10 @@
 # Overview
 
-This project practices infrastructure-as-code and uses the [Terraform framework](https://www.terraform.io). This directory contains the infrastructure code for this project, including infrastructure for all application resources. This terraform project uses the [AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs). It is based on the [Nava platform infrastructure template](https://github.com/navapbc/template-infra).
+This project practices infrastructure-as-code and uses the [Terraform framework](https://www.terraform.io). This directory contains the infrastructure code for this project, including infrastructure for all application resources. This terraform project uses the [AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
 
 ## 📂 Directory structure
 
-The structure for the infrastructure code looks like this:
+The directory structure looks like this:
 
 ```text
 infra/                  Infrastructure code
@@ -29,7 +29,7 @@ Details about terraform root modules and child modules are documented in [module
 
 ### 🧅 Infrastructure layers
 
-The infrastructure template is designed to operate on different layers:
+The infrastructure operates on different layers:
 
 - Account layer
 - Network layer
@@ -45,13 +45,13 @@ This project has the following AWS environments:
 - `staging`
 - `prod`
 
-The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `<APP_NAME>/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
+The environments share the same root modules but have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `<APP_NAME>/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for modules that are shared across environments (e.g. `<APP_NAME>/build-repository`), use `shared.s3.tfbackend`. Resources that are shared across an entire AWS account (e.g. `/infra/accounts`) use `<account name>.<account id>.s3.tfbackend`.
 
 ### 🔀 Project workflow
 
 This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally you should use the Make targets or the underlying bin scripts, but you can call the underlying terraform commands if needed. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
+Generally, you should use the Make targets or the underlying bin scripts, but, if needed, you can call the underlying terraform commands. For more details, see [making-infra-changes](/docs/infra/making-infra-changes.md).
 
 ## 💻 Development
 
@@ -59,37 +59,37 @@ Generally you should use the Make targets or the underlying bin scripts, but you
 
 #### Prerequisites
 
-* You'll need to have [installed this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+* You'll need to have [installed this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements).
 
 #### Instructions
 
-To set up this project for the first time, if it has never been deployed to the target AWS account(s):
+If this project has never been deployed to the target AWS account(s), complete the following steps:
 
-1. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags)
-2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-3. [Set up AWS account(s)](/docs/infra/set-up-aws-accounts.md)
+1. [Configure the project](/infra/project-config/main.tf).
+2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md).
+3. [Set up AWS account(s)](/docs/infra/set-up-aws-accounts.md).
 4. For each application:
-    1. [Configure the application](/docs/infra/set-up-app-config.md)
-5. [Set up the network(s)](/docs/infra/set-up-networks.md)
+    1. [Configure the application](/docs/infra/set-up-app-config.md).
+5. [Set up network(s)](/docs/infra/set-up-networks.md).
 6. For each application:
-    1. Optionally, [configure environment variables and secrets](/docs/infra/set-up-environment-variables-and-secrets.md)
-    2. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
+    1. [Configure environment variables and secrets](/docs/infra/set-up-environment-variables-and-secrets.md).
+    2. [Set up application build repository](/docs/infra/set-up-app-build-repository.md).
     3. For each environment:
-        1. [Set up application database](/docs/infra/set-up-app-database.md)
-        2. [Set up application service](/docs/infra/set-up-app-service.md)
-        3. Optionally, [set up application monitoring alerts](/docs/infra/set-up-app-monitoring-alerts.md)
-        4. Optionally, [set up application background jobs](/docs/infra/background-jobs.md)
-7. Optionally, [set up custom domains](/docs/infra/set-up-network-custom-domains.md)
-8. Optionally, [set up HTTPS support](/docs/infra/set-up-network-https.md)
+        1. [Set up application database](/docs/infra/set-up-app-database.md).
+        2. [Set up application service](/docs/infra/set-up-app-service.md).
+        3. (Optional) [Set up application monitoring alerts](/docs/infra/set-up-app-monitoring-alerts.md).
+        4. (Optional) [Set up application background jobs](/docs/infra/background-jobs.md).
+7. (Optional) [Set up custom domains](/docs/infra/set-up-network-custom-domains.md).
+8. (Optional) [Set up HTTPS support](/docs/infra/set-up-network-https.md).
 
 ### 🆕 New developer
 
-To get set up as a new developer to the project, if it has already been deployed to the target AWS account(s):
+If you are a new developer on this project and this project has already been deployed to the target AWS account(s), complete the following steps to set up your local development environment:
 
-1. [Set up your infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
-3. Optionally, set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
+1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md).
+2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md).
+3. (Optional) [Set up a terraform workspace](/docs/infra/intro-to-terraform-workspaces.md).
 
 ## 📇 Additional reading
 
-Additional documentation can be found in the [documentation directory](/docs/infra).
+Additional documentation is located in [documentation directory](/docs/infra).
