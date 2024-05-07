@@ -4,15 +4,15 @@ Follow these instructions for **each network** in your project (you can have one
 
 The network setup process will configure and deploy network resources needed by other modules for one network. In particular, it will:
 
-1. Create a nondefault VPC
-2. Create public subnets for publicly accessible resources such as the application load balancer, private subnets for the application service, and private subnets for the database.
-3. Create VPC endpoints for the AWS services needed by ECS Fargate to fetch the container image and log to AWS CloudWatch. If your application has a database, it will also create VPC endpoints for the AWS services needed by the database layer and a security group to contain those VPC endpoints.
+* Create a nondefault VPC
+* Create public subnets for publicly accessible resources such as the application load balancer, private subnets for the application service, and private subnets for the database.
+* Create VPC endpoints for the AWS services needed by ECS Fargate to fetch the container image and log to AWS CloudWatch. If your application has a database, it will also create VPC endpoints for the AWS services needed by the database layer and a security group to contain those VPC endpoints.
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
-* You'll need to have [configured all applications](./set-up-app-config.md)
-* You'll need to have [configured the project's networks](./set-up-networks.md)
+* You have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You have [configured all applications](./set-up-app-config.md).
+* You have [configured the project's networks](./set-up-networks.md).
 
 ## Instructions
 

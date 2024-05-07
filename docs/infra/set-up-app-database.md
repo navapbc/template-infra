@@ -4,18 +4,18 @@ Follow these instructions for **each application** (you can have one or more in 
 
 The database setup process will:
 
-1. Configure and deploy an application database cluster using [Amazon Aurora Serverless V2](https://aws.amazon.com/rds/aurora/serverless/)
-2. Create a [PostgreSQL schema](https://www.postgresql.org/docs/current/ddl-schemas.html) `app` to contain tables used by the application
-3. Create an IAM policy that allows IAM roles with that policy attached to [connect to the database using IAM authentication](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html)
-4. Create an [AWS Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html), the "role manager", for provisioning the [PostgreSQL database users](https://www.postgresql.org/docs/8.0/user-manag.html) that will be used by the application service and by the migrations task
-5. Invoke the role manager function to create the `app` and `migrator` Postgres users
+* Configure and deploy an application database cluster using [Amazon Aurora Serverless V2](https://aws.amazon.com/rds/aurora/serverless/)
+* Create a [PostgreSQL schema](https://www.postgresql.org/docs/current/ddl-schemas.html) `app` to contain tables used by the application
+* Create an IAM policy that allows IAM roles with that policy attached to [connect to the database using IAM authentication](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.Connecting.html)
+* Create an [AWS Lambda function](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html), the "role manager", for provisioning the [PostgreSQL database users](https://www.postgresql.org/docs/8.0/user-manag.html) that will be used by the application service and by the migrations task
+* Invoke the role manager function to create the `app` and `migrator` Postgres users
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
-* You'll need to have [configured the application](/infra/app/app-config/main.tf)
-* You'll need to have [set up the network(s)](./set-up-networks.md)
-* You'll need to have [pip](https://pypi.org/project/pip/) installed (pip is needed to download dependencies for the role manager Lambda function)
+* You have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You have [configured the application](/infra/app/app-config/main.tf).
+* You have [set up the network(s)](./set-up-networks.md).
+* You have [pip](https://pypi.org/project/pip/) installed (pip is needed to download dependencies for the role manager Lambda function).
 
 ## Instructions
 

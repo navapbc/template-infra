@@ -4,12 +4,12 @@ Follow these instructions for **each network** (you can have one or more in your
 
 Production systems will want to use HTTPS rather than HTTP to prevent man-in-the-middle attacks. This document describes how HTTPS is configured. This process will:
 
-1. Issue an SSL/TLS certificate using Amazon Certificate Manager (ACM) for each domain that we want to support HTTPS
-2. Associate the certificate with the application's load balancer so that the load balancer can serve HTTPS requests intended for that domain
+* Issue an SSL/TLS certificate using Amazon Certificate Manager (ACM) for each domain that we want to support HTTPS
+* Associate the certificate with the application's load balancer so that the load balancer can serve HTTPS requests intended for that domain
 
 ## Prerequisites
 
-* You'll need to have [set up custom domains](./set-up-network-custom-domains.md) and met all of those prerequisites
+* You have [set up custom domains](./set-up-network-custom-domains.md) and met all of those prerequisites.
 
 This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
 

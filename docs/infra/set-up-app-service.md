@@ -12,11 +12,11 @@ The application service setup process will:
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
-* You'll need to have [configured the application](/infra/app/app-config/main.tf)
-* You'll need to have [set up the network(s)](./set-up-networks.md)
-* Optionally, if you need a container build repository, you'll need to have [set up the build repository](./set-up-app-build-repository.md)
-* Optionally, if you need a database for the application, you'll need to have [set up the database](./set-up-app-database.md)
+* You have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You have [configured the application](/infra/app/app-config/main.tf).
+* You have [set up the network(s)](./set-up-networks.md).
+* Optionally, if you need a container build repository, you have [set up the build repository](./set-up-app-build-repository.md).
+* Optionally, if you need a database for the application, you have [set up the database](./set-up-app-database.md).
 
 ## Instructions
 

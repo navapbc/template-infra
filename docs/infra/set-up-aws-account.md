@@ -4,15 +4,15 @@ Follow these instructions for **each AWS account** you want to configure (you ca
 
 The AWS account setup process will:
 
-1. Create the [Terraform backend](https://www.terraform.io/language/settings/backends/configuration) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
-2. Create the [OpenID connect provider in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) to allow GitHub Actions to access AWS account resources.
-3. Create the IAM role and policy that GitHub Actions will use to manage infrastructure resources.
+* Create the [Terraform backend](https://www.terraform.io/language/settings/backends/configuration) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
+* Create the [OpenID connect provider in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) to allow GitHub Actions to access AWS account resources.
+* Create the IAM role and policy that GitHub Actions will use to manage infrastructure resources.
 
 ## Prerequisites
 
-* You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication
-* You'll also need to make sure the [project is configured](/infra/project-config/main.tf)
-* You'll need to have [decided on your environments and AWS account strategy](./set-up-aws-accounts.md)
+* You have [set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md).
+* You have [configured the project](/infra/project-config/main.tf).
+* You have [decided on your environments and AWS account strategy](./set-up-aws-accounts.md).
 
 ## Instructions
 

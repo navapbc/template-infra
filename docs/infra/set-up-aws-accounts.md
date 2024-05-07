@@ -2,9 +2,9 @@
 
 The AWS accounts setup process will:
 
-1. Help you decide on your environments
-2. Help you decide on your AWS account strategy
-3. Configure all of your AWS accounts
+* Help you decide on your environments
+* Help you decide on your AWS account strategy
+* Configure all of your AWS accounts
 
 ## Prerequisites
 

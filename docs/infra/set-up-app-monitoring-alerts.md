@@ -6,10 +6,10 @@ The monitoring module defines metric-based alerting policies that provides aware
 
 ## Prerequisites
 
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
-* You'll need to have [configured the application](/infra/app/app-config/main.tf)
-* You'll need to have [set up the network(s)](./set-up-networks.md)
-* If the application needs custom-built container images, you'll need to have [set up the build repository](./set-up-app-build-repository.md)
+* You have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You have [configured the application](/infra/app/app-config/main.tf).
+* You have [set up the network(s)](./set-up-networks.md).
+* If the application needs custom-built container images, you have [set up the build repository](./set-up-app-build-repository.md).
 
 ## Instructions
 

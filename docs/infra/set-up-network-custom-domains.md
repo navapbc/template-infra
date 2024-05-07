@@ -6,16 +6,16 @@ Production systems will want to set up custom domains to route internet traffic 
 
 The custom domain setup process will:
 
-1. Create an [Amazon Route 53 hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) to manage DNS records for a domain and subdomains
-2. Create DNS A (address) records to route traffic from a custom domain to an application's load balancer
+* Create an [Amazon Route 53 hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) to manage DNS records for a domain and subdomains
+* Create DNS A (address) records to route traffic from a custom domain to an application's load balancer
 
 ## Prerequisites
 
-* You'll need to have registered custom domain(s) with a domain registrar (e.g. Namecheap, GoDaddy, Google Domains, etc.)
-* You'll need to have [set up the AWS account(s)](./set-up-aws-accounts.md)
-* You'll need to have [configured all applications](./set-up-app-config.md)
-* You'll need to have [set up the networks](./set-up-network.md) that you want to add the custom domain to
-* You'll need to have [set up the application service](./set-up-app-service.md)
+* You have registered custom domain(s) with a domain registrar (e.g. Namecheap, GoDaddy, Google Domains, etc.).
+* You have [set up the AWS account(s)](./set-up-aws-accounts.md).
+* You have [configured all applications](./set-up-app-config.md).
+* You have [set up the networks](./set-up-network.md) that you want to add the custom domain to.
+* You have [set up the application service](./set-up-app-service.md).
 
 ## Instructions
 
