@@ -7,7 +7,7 @@ This template sets up foundational infrastructure for applications hosted on Ama
 This template includes:
 
 * **Team workflows** - templates for pull requests (PRs), architecture decision records (ADRs), and Makefiles
-* **Account level foundational infrastructure** - infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files
+* **Account level foundational infrastructure** - infrastructure for Terraform backends, including an S3 bucket and DynamoDB table for storing and managing Terraform state files
 * **Application infrastructure** - the infrastructure you need to set up a basic web app, including container image repository, load balancer, web service, and database
 * **Continuous integration (CI) for infrastructure** - GitHub action that performs infra code checks, including linting, validation, and security compliance checks
 * **Continous deployment (CD)** - infrastructure for continuous deployment, including AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch

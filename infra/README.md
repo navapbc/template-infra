@@ -1,6 +1,6 @@
 # Overview
 
-This project practices infrastructure-as-code (IaC) and uses the [Terraform framework](https://www.terraform.io). This directory contains the infrastructure code for this project, including infrastructure for all application resources. This terraform project uses the [AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
+This project practices infrastructure-as-code (IaC) and uses the [Terraform framework](https://www.terraform.io). This directory contains the infrastructure code for this project, including infrastructure for all application resources. This Terraform project uses the [AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
 
 ## 📂 Directory structure
 
@@ -11,19 +11,19 @@ infra/                  Infrastructure code
   accounts/             [Root module] IaC and Identity Access Management (IAM) resources
   [APP_NAME]/           Application directory: infrastructure for the [APP_NAME] application
   modules/              Reusable child modules
-  networks/             [Root module] Account level network config (shared across all apps, environments, and terraform workspaces)
+  networks/             [Root module] Account level network config (shared across all apps, environments, and Terraform workspaces)
 ```
 
 Each application directory contains the following:
 
 ```text
   app-config/         Application-level configuration for the application resources (different config for different environments)
-  build-repository/   [Root module] Container image repository for the application (shared across environments and terraform workspaces)
+  build-repository/   [Root module] Container image repository for the application (shared across environments and Terraform workspaces)
   database/           [Root module] Configuration for database (different config for different environments)
   service/            [Root module] Configuration for containers, such as load balancer, application service (different config for different environments)
 ```
 
-Details about terraform root modules and child modules are documented in [module-architecture](/docs/infra/module-architecture.md).
+Details about Terraform root modules and child modules are documented in [module-architecture](/docs/infra/module-architecture.md).
 
 ## 🏗️ Project architecture
 
@@ -53,9 +53,9 @@ The environments share the same root modules but have different configurations. 
 
 ### 🔀 Project workflow
 
-This project relies on Make targets in the [root Makefile](/Makefile), which in turn call scripts in [/bin](/bin). The scripts call terraform commands. Many of the scripts are also called by the [Github Actions CI/CD](/.github/workflows).
+This project relies on Make targets in the [root Makefile](/Makefile), which in turn call scripts in [/bin](/bin). The scripts call Terraform commands. Many of the scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally, you should use the Make targets or the underlying scripts, but, if needed, you can call the underlying terraform commands. For more details, see [making infrastructure changes](/docs/infra/making-infra-changes.md).
+Generally, you should use the Make targets or the underlying scripts, but, if needed, you can call the underlying Terraform commands. For more details, see [making infrastructure changes](/docs/infra/making-infra-changes.md).
 
 ## 💻 Development
 
@@ -92,7 +92,7 @@ If you are a new developer on this project and this project has already been dep
 
 1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md).
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md).
-3. (Optional) [Set up a terraform workspace](/docs/infra/intro-to-terraform-workspaces.md).
+3. (Optional) [Set up a Terraform workspace](/docs/infra/intro-to-terraform-workspaces.md).
 
 ## 📇 Additional reading
 

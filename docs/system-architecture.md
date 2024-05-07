@@ -15,7 +15,7 @@ This diagram shows the system architecture. [🔒 Make a copy of this Lucid temp
 * **GitHub** — Source code repository. Also responsible for Continuous Integration (CI) and Continuous Delivery (CD) workflows. GitHub Actions builds and deploys releases to an Amazon ECR registry that stores Docker container images for the application service.
 * **Incident Management Service** — Incident management service (e.g. PagerDuty or Splunk On-Call) for managing on-call schedules and paging engineers for urgent production issues.
 * **Service** — Amazon ECS service running the application.
-* **Terraform Backend Bucket** — Amazon S3 bucket used to store terraform state files.
+* **Terraform Backend Bucket** — Amazon S3 bucket used to store Terraform state files.
 * **Terraform Locks DynamoDB Table** — Amazon DynamoDB table used to manage concurrent access to terraform state files.
 * **VPC Endpoints** — VPC endpoints are used by the Database Role Manager to access Amazon Services without traffic leaving the VPC.
 * **VPC Network** — Amazon VPC network.

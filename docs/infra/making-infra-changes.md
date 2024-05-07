@@ -2,7 +2,7 @@
 
 ## Requirements
 
-First read [Module Architecture](./module-architecture.md) to understand how the terraform modules are structured.
+First read [Module Architecture](./module-architecture.md) to understand how the Terraform modules are structured.
 
 ## Using make targets (recommended)
 
@@ -34,9 +34,9 @@ TF_CLI_ARGS_apply='-input=false -auto-approve' make infra-update-app-service APP
 TF_CLI_ARGS_apply='-var=image_tag=abcdef1' make infra-update-app-service APP_NAME=app ENVIRONMENT=dev
 ```
 
-## Using terraform CLI wrapper scripts
+## Using Terraform CLI wrapper scripts
 
-An alternative to using the Makefile is to directly use the terraform wrapper scripts that the Makefile uses:
+An alternative to using the Makefile is to directly use the Terraform wrapper scripts that the Makefile uses:
 
 ```bash
 project-root$ ./bin/terraform-init.sh app/service dev
@@ -46,9 +46,9 @@ project-root$ ./bin/terraform-init-and-apply.sh app/service dev  # calls init an
 
 Look in the script files for more details on usage.
 
-## Using terraform CLI directly
+## Using Terraform CLI directly
 
-Finally, if the wrapper scripts don't meet your needs, you can always run terraform directly from the root module directory. You may need to do this if you are running terraform commands other than `terraform plan` and `terraform apply`, such as `terraform import`, `terraform taint`, etc. To do this, you'll need to pass in the appropriate `tfvars` and `tfbackend` files to `terraform init` and `terraform apply`. For example, to make changes to the application's service resources in the dev environment, cd to the `infra/app/service` directory and run:
+Finally, if the wrapper scripts don't meet your needs, you can always run Terraform directly from the root module directory. You may need to do this if you are running terraform commands other than `terraform plan` and `terraform apply`, such as `terraform import`, `terraform taint`, etc. To do this, you'll need to pass in the appropriate `tfvars` and `tfbackend` files to `terraform init` and `terraform apply`. For example, to make changes to the application's service resources in the dev environment, cd to the `infra/app/service` directory and run:
 
 ```bash
 infra/app/service$ terraform init -backend-config=dev.s3.tfbackend

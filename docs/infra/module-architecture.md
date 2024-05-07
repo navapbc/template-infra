@@ -85,7 +85,7 @@ When deciding which layer to put an infrastructure resource in, follow the follo
 
 * **Consider policy constraints on what resources the project team is authorized to manage:** Different categories of resources may have different requirements on who is allowed to create and manage those resources. Resources that the project team are not allowed to manage directly should not be mixed with resources that the project team needs to manage directly.
 
-* **Consider out of band dependencies:** Put infrastructure resources that require steps outside of terraform to be completed configured in layers that are upstream to resources that depend on those completed resources. For example, after creating a database cluster, the database schemas, roles, and privileges need to be configured before they can be used by a downstream service. Therefore database resources should be separate from the service layer so that the database can be configured fully before attempting to create the service layer resources.
+* **Consider out of band dependencies:** Put infrastructure resources that require steps outside of Terraform to be completed configured in layers that are upstream to resources that depend on those completed resources. For example, after creating a database cluster, the database schemas, roles, and privileges need to be configured before they can be used by a downstream service. Therefore database resources should be separate from the service layer so that the database can be configured fully before attempting to create the service layer resources.
 
 ## Making changes to infrastructure
 

@@ -16,7 +16,7 @@ The `terraform destroy` command is a convenient way to destroy all remote object
 
 ⚠️ WARNING! ⚠️ This is a destructive command! As a best practice, it's recommended that you comment out resources in non-development environments rather than running this command. `terraform destroy` should only be used as a way to cleanup a development environment. e.g. a developers workspace after they are done with it.
 
-For more information about terraform commands follow the link below:
+For more information about Terraform commands follow the link below:
 
 - [Basic CLI Features](https://www.terraform.io/cli/commands)
 

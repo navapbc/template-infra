@@ -19,7 +19,7 @@ You may need to install different versions of terraform on your machine because 
     tfenv install 1.4.6
     ```
 
-If you are unfamiliar with terraform, check out this [basic introduction](./intro-to-terraform.md).
+If you are unfamiliar with Terraform, check out this [basic introduction](./intro-to-terraform.md).
 
 ### Install AWS CLI
 
@@ -65,7 +65,7 @@ make infra-lint
 
 ### Authenticate with AWS
 
-To use terraform with your AWS accounts, you must configure your AWS credentials. There are multiple ways to authenticate with AWS, but we recommend the following process:
+To use Terraform with your AWS accounts, you must configure your AWS credentials. There are multiple ways to authenticate with AWS, but we recommend the following process:
 
 1. Use the AWS CLI command `aws configure --profile <PROFILE_NAME>` to create a separate profile for each AWS account. `aws configure` will store your credentials in `~/.aws/credentials` (Linux & Mac) or `%USERPROFILE%\.aws\credentials` (Windows). For example, to create a profile named `my-aws-account`, run:
     ```bash
