@@ -22,7 +22,7 @@ Applications must meet [these requirements](/template-only-docs/application-requ
 
 ### Multiple Applications
 
-You can use this template with multiple applications. By default, this template assumes your project has one application named `app`. However, it's straightforward to [add additional applications](https://github.com/navapbc/template-infra/tree/main/template-only-docs/multiple-applications.md).
+You can use this template with multiple applications. By default, this template assumes your project has one application named `app`. However, it's straightforward to [add additional applications](/template-only-docs/multiple-applications.md).
 
 ## Installation
 
@@ -34,7 +34,7 @@ To install this template to your project, run the following command in your proj
 curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/download-and-install-template.sh | bash -s
 ```
 
-The [download and install script](https://github.com/navapbc/template-infra/tree/main/template-only-bin/download-and-install-template.sh) clones this template repository, copies the template files to your repository, and removes files that are only relevant to the template itself.
+The [download and install script](/template-only-bin/download-and-install-template.sh) clones this template repository, copies the template files to your repository, and removes files that are only relevant to the template itself.
 
 Now you're ready to set up the various pieces of your infrastructure.
 
