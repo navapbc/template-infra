@@ -18,7 +18,7 @@ By default, the system architecture looks like this (for more information, see [
 
 ## Application Requirements
 
-Applications must meet [these requirements](/template-only-docs/application-requirements.md) to be used with this template. If you're using one of the [Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates), these requirements are already met.
+Applications must meet [these requirements](/template-only-docs/application-requirements.md) to be used with this template. If you're using a [Platform application template](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates), these requirements are already met.
 
 ### Multiple Applications
 
@@ -28,7 +28,7 @@ You can use this template with multiple applications. By default, this template 
 
 This template assumes that you already have an application to deploy.
 
-To install this template to your project, run the following command in your project's directory:
+To install this template to your project, run the following command in your project's root directory:
 
 ```bash
 curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/download-and-install-template.sh | bash -s
@@ -51,7 +51,7 @@ After downloading and installing this template into your project, take the follo
 
 This template includes a bash script to update your project to a newer version of the template. The [update script](/template-only-bin/update-template.sh) assumes that your project is version-controlled using `git`. The script will edit your project files, but it will not run `git commit`. After running the script, use `git diff` to review all changes carefully.
 
-To update your project to a newer version of this template, run the following command:
+To update your project to a newer version of this template, run the following command in your project's root directory:
 
 ```bash
 curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- <APP_NAMES>
@@ -78,9 +78,9 @@ Examples:
     curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- app,app2 d42963d007e55cc37ef666019428b1d06a25cf71 commit
     ```
 
-* If your project has three applications named `alpha,beta,gamma-three` and you want to update to the `v.0.8.0` release tag, run:
+* If your project has three applications named `foo,bar,baz` and you want to update to the `v.0.8.0` release tag, run:
     ```bash
-    curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- alpha,beta,gamma-three v0.8.0 tag
+    curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template.sh | bash -s -- foo,bar,baz v0.8.0 tag
     ```
 
 **Remember:** Read the release notes in case there are breaking changes you need to address.
