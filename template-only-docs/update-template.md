@@ -14,7 +14,7 @@ curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only
 
 `<APP_NAMES>` is a required argument. It must be a comma-separated list (no spaces) of the apps in `/infra`. App names must be hyphen-separated (i.e. kebab-case). Examples: `app`, `app,app2`, `my-app,your-app`.
 
-**Remember:** Read the release notes in case there are breaking changes you need to address.
+⚠️ **Warning:** Read the release notes in case there are breaking changes you need to address manually.
 
 ### Specifying a branch, a commit, or a tag
 

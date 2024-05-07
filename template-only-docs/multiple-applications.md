@@ -16,7 +16,7 @@ Applications must meet [these requirements](/template-only-docs/application-requ
 
 Add the application's source code to a folder in the project's root folder (e.g. `/second-app`).
 
-⚠️ Warning: In general, it's best to use short, descriptive one-word names because some AWS resources have character limits. If you must use multiple words, use hyphens (not underscores) to separate each word.
+⚠️ **Warning:** In general, it's best to use short, descriptive one-word names because some AWS resources have character limits. If you must use multiple words, use hyphens (not underscores) to separate each word.
 
 ### 3. Add infrastructure support for the application
 
