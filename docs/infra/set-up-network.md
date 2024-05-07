@@ -11,7 +11,7 @@ The network set up process will configure and deploy network resources needed fo
 ## Prerequisites
 
 * You have [set up the AWS account(s)](./set-up-aws-accounts.md).
-* You have [configured all applications](./set-up-app-config.md).
+* You have [configured all application(s)](./set-up-app-config.md).
 * You have [configured the project's networks](./set-up-networks.md).
 
 ## Instructions
