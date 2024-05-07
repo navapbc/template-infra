@@ -4,7 +4,7 @@ You can use this template with multiple applications. By default, this template 
 
 ## Prerequisites
 
-* None
+* You have [installed](/README.md#installation) this template.
 
 ## Instructions to add an additional application
 
