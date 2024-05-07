@@ -49,7 +49,7 @@ After downloading and installing this template into your project, take the follo
 
 ## Updates
 
-This template includes a bash script to update your project to a newer version of the template. The [update script](/template-only-bin/update-template.sh) assumes that your project is version-controlled using `git`. The script will edit your project files, but it will not run `git commit`. After running the script, use `git diff` to review all changes carefully.
+This template includes a script to update your project to a newer version of the template. The [update script](/template-only-bin/update-template.sh) assumes that your project is version-controlled using `git`. The script will edit your project files, but it will not run `git commit`. After running the script, use `git diff` to review all changes carefully.
 
 To update your project to a newer version of this template, run the following command in your project's root directory:
 

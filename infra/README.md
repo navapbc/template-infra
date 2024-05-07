@@ -45,13 +45,17 @@ This project has the following AWS environments:
 - `staging`
 - `prod`
 
-The environments share the same root modules but have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. Most `.tfbackend` files are named after the environment. For example, the `<APP_NAME>/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for modules that are shared across environments (e.g. `<APP_NAME>/build-repository`), use `shared.s3.tfbackend`. Resources that are shared across an entire AWS account (e.g. `/infra/accounts`) use `<account name>.<account id>.s3.tfbackend`.
+The environments share the same root modules but have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#file) files. `.tfbackend` files are named as follows:
+
+* Most `.tfbackend` files are named after the environment. For example, resources in the `dev` environment for the `<APP_NAME>/service` module use `dev.s3.tfbackend`.
+* Resources for modules that are shared across environments (e.g. `<APP_NAME>/build-repository`) use `shared.s3.tfbackend`.
+* Resources that are shared across an entire AWS account (e.g. `/infra/accounts`) use `<account name>.<account id>.s3.tfbackend`.
 
 ### 🔀 Project workflow
 
-This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call terraform commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
+This project relies on Make targets in the [root Makefile](/Makefile), which in turn call scripts in [/bin](/bin). The scripts call terraform commands. Many of the scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally, you should use the Make targets or the underlying bin scripts, but, if needed, you can call the underlying terraform commands. For more details, see [making-infra-changes](/docs/infra/making-infra-changes.md).
+Generally, you should use the Make targets or the underlying scripts, but, if needed, you can call the underlying terraform commands. For more details, see [making infrastructure changes](/docs/infra/making-infra-changes.md).
 
 ## 💻 Development
 
@@ -59,7 +63,7 @@ Generally, you should use the Make targets or the underlying bin scripts, but, i
 
 #### Prerequisites
 
-* You'll need to have [installed this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements).
+* You'll need to have [installed](/README.md#installation) this template into an application that meets the [Application Requirements](/README.md#application-requirements).
 
 #### Instructions
 
