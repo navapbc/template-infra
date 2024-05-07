@@ -1,6 +1,6 @@
 # Set up infrastructure developer tools
 
-To work on the infrastructure, complete these steps.
+Complete these steps to work on the infrastructure.
 
 ## Instructions
 
@@ -8,9 +8,7 @@ To work on the infrastructure, complete these steps.
 
 [Terraform](https://www.terraform.io/) is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components, like compute instances, storage, and networking, as well as high-level components, like DNS entries and Software-as-a-Service (SaaS) features.
 
-You may need to install different versions of Terraform on your machine because different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager (tfenv)](https://github.com/tfutils/tfenv).
-
-Follow these steps to set up tfenv:
+You may need to install different versions of terraform on your machine because different projects may require different versions. We recommend managing terraform with [Terraform Version Manager (tfenv)](https://github.com/tfutils/tfenv).
 
 1. Use [Homebrew](https://brew.sh/) to install tfenv:
     ```bash
@@ -21,7 +19,7 @@ Follow these steps to set up tfenv:
     tfenv install 1.4.6
     ```
 
-If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./intro-to-terraform.md).
+If you are unfamiliar with terraform, check out this [basic introduction](./intro-to-terraform.md).
 
 ### Install AWS CLI
 
@@ -69,7 +67,7 @@ make infra-lint
 
 To use terraform with your AWS accounts, you must configure your AWS credentials. There are multiple ways to authenticate with AWS, but we recommend the following process:
 
-1. Use the AWS CLI command `aws configure --profile <PROFILE_NAME>` to create a separate profile for each AWS account. `aws configure` will store your credentials in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows). For example, to create a profile named `my-aws-account`, run:
+1. Use the AWS CLI command `aws configure --profile <PROFILE_NAME>` to create a separate profile for each AWS account. `aws configure` will store your credentials in `~/.aws/credentials` (Linux & Mac) or `%USERPROFILE%\.aws\credentials` (Windows). For example, to create a profile named `my-aws-account`, run:
     ```bash
     $ aws configure --profile my-aws-account
     AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
@@ -81,7 +79,7 @@ To use terraform with your AWS accounts, you must configure your AWS credentials
    ```bash
    export AWS_PROFILE=my-aws-account
    ```
-3. (Optional) Use the [direnv](https://direnv.net/) to manage local environment variables. Instead of directly exporting environment variables on your machine, allow direnv to automatically set environment variables depending on the directory you are working in.
+3. (Optional) Use the [direnv](https://direnv.net/) tool to manage local environment variables. Instead of directly exporting environment variables on your machine, allow direnv to automatically set environment variables depending on the directory you are working in.
 4. Verify access by running the following command. It should print out the profile name you set in Step 1.
     ```bash
     aws sts get-caller-identity
