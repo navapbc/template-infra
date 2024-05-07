@@ -4,11 +4,11 @@ Follow these instructions for **each application** (you can have one or more in 
 
 The application service setup process will:
 
-1. Configure an ECS Fargate Service and Task to host the application
-2. Creates a load balancer for the application
-2. Create an S3 bucket for general object storage
-3. Set up CloudWatch for logging, monitoring, and alerts
-3. Optionally, configure CloudWatch Evidently to support [feature flags](/docs/feature-flags.md)
+* Configure an ECS Fargate Service and Task to host the application
+* Creates a load balancer for the application
+* Create an S3 bucket for general object storage
+* Set up CloudWatch for logging, monitoring, and alerts
+* Configure CloudWatch Evidently to support [feature flags](/docs/feature-flags.md)
 
 ## Prerequisites
 

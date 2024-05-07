@@ -25,7 +25,7 @@ Modify the following values in the application's `app-config/main.tf` (e.g. in `
 * Set `has_incident_management_service` to `true` or `false` to indicate whether the application should integrate with an incident management service. By default, this is set to `false`.
 * Set the `account_names_by_environment` hash to map environments to AWS accounts. See [set up AWS accounts](./set-up-aws-accounts.md) for more information.
 
-Optionally, to use [feature flags](/docs/feature-flags.md), modify the values in the application's `app-config/feature-flags.tf` (e.g. in `/infra/<APP_NAME>/app-config/feature-flags.tf`).
+To use [feature flags](/docs/feature-flags.md), modify the values in the application's `app-config/feature-flags.tf` (e.g. in `/infra/<APP_NAME>/app-config/feature-flags.tf`).
 
 ### 3. Configure each environment
 
