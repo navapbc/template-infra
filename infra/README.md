@@ -1,6 +1,6 @@
 # Overview
 
-This project practices infrastructure-as-code and uses the [Terraform framework](https://www.terraform.io). This directory contains the infrastructure code for this project, including infrastructure for all application resources. This terraform project uses the [AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
+This project practices infrastructure-as-code (IaC) and uses the [Terraform framework](https://www.terraform.io). This directory contains the infrastructure code for this project, including infrastructure for all application resources. This terraform project uses the [AWS provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs).
 
 ## 📂 Directory structure
 
@@ -8,7 +8,7 @@ The directory structure looks like this:
 
 ```text
 infra/                  Infrastructure code
-  accounts/             [Root module] IaC and IAM resources
+  accounts/             [Root module] IaC and Identity Access Management (IAM) resources
   [APP_NAME]/           Application directory: infrastructure for the [APP_NAME] application
   modules/              Reusable child modules
   networks/             [Root module] Account level network config (shared across all apps, environments, and terraform workspaces)
@@ -18,7 +18,7 @@ Each application directory contains the following:
 
 ```text
   app-config/         Application-level configuration for the application resources (different config for different environments)
-  build-repository/   [Root module] Docker image repository for the application (shared across environments and terraform workspaces)
+  build-repository/   [Root module] Container image repository for the application (shared across environments and terraform workspaces)
   database/           [Root module] Configuration for database (different config for different environments)
   service/            [Root module] Configuration for containers, such as load balancer, application service (different config for different environments)
 ```

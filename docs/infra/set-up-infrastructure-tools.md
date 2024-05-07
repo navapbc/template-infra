@@ -1,42 +1,49 @@
 # Set up infrastructure developer tools
 
-If you are working on the infrastructure, you will need to complete these setup steps.
+To work on the infrastructure, complete these steps.
 
-## Prerequisites
+## Instructions
 
 ### Install Terraform
 
-[Terraform](https://www.terraform.io/) is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components like compute instances, storage, and networking, as well as high-level components like DNS entries and SaaS features.
+[Terraform](https://www.terraform.io/) is an infrastructure as code (IaC) tool that allows you to build, change, and version infrastructure safely and efficiently. This includes both low-level components, like compute instances, storage, and networking, as well as high-level components, like DNS entries and Software-as-a-Service (SaaS) features.
 
-You may need different versions of Terraform since different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager (tfenv)](https://github.com/tfutils/tfenv).
+You may need to install different versions of Terraform on your machine because different projects may require different versions of Terraform. The best way to manage Terraform versions is with [Terraform Version Manager (tfenv)](https://github.com/tfutils/tfenv).
 
-To install via [Homebrew](https://brew.sh/)
+Follow these steps to set up tfenv:
 
-```bash
-brew install tfenv
-```
-
-Then install the version of Terraform you need.
-
-```bash
-tfenv install 1.4.6
-```
+1. Use [Homebrew](https://brew.sh/) to install tfenv:
+    ```bash
+    brew install tfenv
+    ```
+2. Install the version of Terraform you need:
+    ```bash
+    tfenv install 1.4.6
+    ```
 
 If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./intro-to-terraform.md).
 
 ### Install AWS CLI
 
-The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS commmand line tool by following the instructions found here:
+The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts.
 
-- [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
+Install the AWS CLI by following the [AWS installation instructions](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
 ### Install Go
 
 The [Go programming language](https://go.dev/dl/) is required to run [Terratest](https://terratest.gruntwork.io/), the unit test framework for Terraform.
 
+Use Homebrew to install go:
+
+```bash
+brew install golang
+```
+
 ### Install GitHub CLI
 
-The [GitHub CLI](https://cli.github.com/) is useful for automating certain operations for GitHub such as with GitHub actions. This is needed to run [check-github-actions-auth.sh](/bin/check-github-actions-auth.sh)
+The [GitHub CLI](https://cli.github.com/) is useful for automating certain operations on GitHub, such as GitHub actions. For example, you need the Github CLI to run [check-github-actions-auth.sh](/bin/check-github-actions-auth.sh).
+
+Use Homebrew to install the GitHub CLI:
 
 ```bash
 brew install gh
@@ -44,11 +51,13 @@ brew install gh
 
 ### Install linters
 
-We have several optional utilities for running infrastructure linters locally. These are run as part of the CI pipeline, therefore, it is often simpler to test them locally first.
+The following linters are run as part of the CI pipeline:
 
 * [Shellcheck](https://github.com/koalaman/shellcheck)
 * [actionlint](https://github.com/rhysd/actionlint)
 * [markdown-link-check](https://github.com/tcort/markdown-link-check)
+
+To install and run them locally, run:
 
 ```bash
 brew install shellcheck
@@ -56,40 +65,27 @@ brew install actionlint
 make infra-lint
 ```
 
-## AWS Authentication
+### Authenticate with AWS
 
-In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
+To use terraform with your AWS accounts, you must configure your AWS credentials. There are multiple ways to authenticate with AWS, but we recommend the following process:
 
-There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file, and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
-**Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
-
-### Examples
-
-```bash
-$ aws configure
-AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-Default region name [None]: us-east-2
-Default output format [None]: json
-```
-
-**Using the above command will create a [default] profile.**  
-
-```bash
-$ aws configure --profile dev
-AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-Default region name [None]: us-east-2
-Default output format [None]: json
-```
-
-**Using the above command will create a [dev] profile.**  
-
-Once you're done, verify access by running the following command to print out information about the AWS IAM user you authenticated as.
-
-```bash
-aws sts get-caller-identity
-```
+1. Use the AWS CLI command `aws configure --profile <PROFILE_NAME>` to create a separate profile for each AWS account. `aws configure` will store your credentials in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows). For example, to create a profile named `my-aws-account`, run:
+    ```bash
+    $ aws configure --profile my-aws-account
+    AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+    AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+    Default region name [None]: us-east-2
+    Default output format [None]: json
+    ```
+2. Set the local environment variable `AWS_PROFILE` to the profile name. For example, to set the `AWS_PROFILE` environment variable to `my-aws-account`, run:
+   ```bash
+   export AWS_PROFILE=my-aws-account
+   ```
+3. (Optional) Use the [direnv](https://direnv.net/) to manage local environment variables. Instead of directly exporting environment variables on your machine, allow direnv to automatically set environment variables depending on the directory you are working in.
+4. Verify access by running the following command. It should print out the profile name you set in Step 1.
+    ```bash
+    aws sts get-caller-identity
+    ```
 
 ### References
 
