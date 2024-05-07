@@ -2,6 +2,10 @@
 
 Complete these steps to work on the infrastructure.
 
+## Prerequisites
+
+* None
+
 ## Instructions
 
 ### Install Terraform
