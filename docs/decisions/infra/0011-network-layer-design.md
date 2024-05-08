@@ -19,7 +19,7 @@ We aim to achieve these requirements without adding complexity to the other laye
 
 ### Network configuration
 
-Define the configuration for networks in a new property `network_configs` in the [project-config module](/infra/project-config/main.tf). `network_configs` is a map from the network name to the network configuration. The network name is a name the project team choose to serve as a human-readable identifier to reference the network. To keep network configuration DRY and reuse common configurations between networks, create a sub-module `network-config` under the project-config module, analogous to the [env-config module](/infra/app/app-config/env-config/) under the [app-config module](/infra/app/app-config/). The `project-config` module might look something like this:
+Define the configuration for networks in a new property `network_configs` in the [project-config module](/infra/project-config/main.tf). `network_configs` is a map from the network name to the network configuration. The network name is a name the project team chooses to serve as a human-readable identifier to reference the network. To keep network configuration DRY and reuse common configurations between networks, create a sub-module `network-config` under the project-config module, analogous to the [env-config module](/infra/app/app-config/env-config/) under the [app-config module](/infra/app/app-config/). The `project-config` module might look something like this:
 
 ```terraform
 # project-config/main.tf
@@ -49,8 +49,8 @@ module "[NETWORK_NAME]_network_config" {
 
 Each network config will have the following properties:
 
-* **account_name** — Name of AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD
-* Each network will have three subnets, (1) a public subnet, (2) a private subnet for the application layer, and (3) private subnet for the data layer
+* **account_name** — Name of the AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD
+* Each network will have three subnets, (1) a public subnet, (2) a private subnet for the application layer, and (3) a private subnet for the data layer
 * The network will also have different properties depending on the applications that are using the network (see [Application-specific network configuration](#application-specific-network-configuration))
 
 ### Add network_name tag to VPC
@@ -59,7 +59,7 @@ Add a "network_name" name tag to the VPC with the name of the network. The VPC t
 
 ## Application-specific network configuration
 
-In order to determine which VPC to use for each application environment, add a `network_name` property to the [environment config](/infra/app/app-config/env-config/). The network name will be used in database and service layers by the `aws_vpc` data source:
+In order to determine which VPC to use for each application environment, add a `network_name` property to the [environment config](/infra/app/app-config/env-config/). The network name will be used in the database and service layers by the `aws_vpc` data source:
 
 ```terraform
 data "aws_vpc" "network" {

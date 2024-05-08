@@ -2,7 +2,7 @@
 
 Follow these instructions for **each application** in your project (you can have one or more in your project). If the application does not need a build repository, skip to the bottom of this document.
 
-The application build repository set up process will create the infrastructure resources needed to store built release candidate artifacts used to deploy the application to an environment.
+The application build repository setup process will create infrastructure resources needed to store built release-candidate artifacts used to deploy the application to an environment.
 
 ## Prerequisites
 

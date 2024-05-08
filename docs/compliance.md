@@ -4,15 +4,15 @@ We use [Checkov](https://www.checkov.io/) and [tfsec](https://aquasecurity.githu
 
 ## Setup
 
-To run these tool locally, first install them by running the following commands.
+To run these tools locally, first install them by running the following commands.
 
-* Install checkov
+* Install `checkov`
 
     ```bash
     brew install checkov
     ```
 
-* Install tfsec
+* Install `tfsec`
 
     ```bash
     brew install tfsec
@@ -26,4 +26,4 @@ make infra-check-compliance
 
 ## Pre-Commit
 
-If you use [pre-commit](https://www.checkov.io/4.Integrations/pre-commit.html), you can optionally add checkov to your own pre-commit hook by following the instructions [here](https://www.checkov.io/4.Integrations/pre-commit.html).
+If you use [pre-commit](https://www.checkov.io/4.Integrations/pre-commit.html), you can optionally add `checkov` to your own pre-commit hook by following the instructions [here](https://www.checkov.io/4.Integrations/pre-commit.html).

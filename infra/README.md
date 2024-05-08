@@ -88,7 +88,7 @@ If this project has never been deployed to the target AWS account(s), complete t
 
 ### 🆕 New developer
 
-If you are a new developer on this project and this project has already been deployed to the target AWS account(s), complete the following steps to set up your local development environment:
+To get set up as a new developer on a project that has already been deployed to the target AWS account:
 
 1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md).
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md).

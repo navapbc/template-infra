@@ -55,7 +55,7 @@ make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 ### 4. Create Postgres users
 
-To trigger the role manager Lambda function that was created in the previous step to create the application and migrator Postgres users, run:
+To trigger the role manager Lambda function that was created in the previous step to create the `app` and `migrator` Postgres users, run:
 
 ```bash
 make infra-update-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
@@ -86,7 +86,7 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 
 #### Important note on Postgres table permissions
 
-Before creating migrations that create tables, first create a migration that includes the following SQL command (or equivalent if your migrations are written in a general purpose programming language):
+Before creating migrations that create tables, first create a migration that includes the following SQL command (or equivalent if your migrations are written in a general-purpose programming language):
 
 ```sql
 ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app
@@ -94,7 +94,7 @@ ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app
 
 This will cause all future tables created by the `migrator` user to automatically be accessible by the `app` user. See the [Postgres docs on ALTER DEFAULT PRIVILEGES](https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html) for more info. As an example see the example app's migrations file [migrations.sql](https://github.com/navapbc/template-infra/blob/main/app/migrations.sql).
 
-Why is this needed? The reason is because the `migrator` role will be used by the migration task to run database migrations (creating tables, altering tables, etc.), while the `app` role will be used by the web service to access the database. Moreover, in Postgres, new tables won't automatically be accessible by roles other than the creator unless specifically granted, even if those other roles have usage access to the schema that the tables are created in. In other words if the `migrator` user created a new table `foo` in the `app` schema, the `app` user will not have automatically be able to access it by default.
+Why is this needed? The reason is that the `migrator` role will be used by the migration task to run database migrations (creating tables, altering tables, etc.), while the `app` role will be used by the web service to access the database. Moreover, in Postgres, new tables won't automatically be accessible by roles other than the creator unless specifically granted, even if those other roles have usage access to the schema that the tables are created in. In other words, if the `migrator` user created a new table `foo` in the `app` schema, the `app` user will not automatically be able to access it by default.
 
 ### 5. Check that database roles have been configured properly
 

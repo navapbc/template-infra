@@ -8,7 +8,7 @@
 
 What is the most optimal setup for database migrations infrastructure and deployment?
 This will break down the different options for how the migration is run, but not the
-tools or languages the migration will be run with, that will be dependent on the framework the application is using.
+tools or languages the migration will be run with, which will be dependent on the framework the application is using.
 
 Questions that need to be addressed:
 
@@ -38,12 +38,12 @@ Default to rolling forward instead of rolling back when issues arise (See [Pitfa
 Pros
 
 * No changes to the database network configuration are needed. The database can remain inaccessible from the public internet.
-* Database migrations are agnostic to the migration framework that the application uses as long as the application is able to provide a `db-migrate` script that is accessible from the container's PATH and is able to use IAM authentication for connecting to the database. Applications can use [alembic](https://alembic.sqlalchemy.org/), [flyway](https://flywaydb.org/), [prisma](https://www.prisma.io/), another migration framework, or custom built migrations.
+* Database migrations are agnostic to the migration framework that the application uses as long as the application is able to provide a `db-migrate` script that is accessible from the container's PATH and is able to use IAM authentication for connecting to the database. Applications can use [alembic](https://alembic.sqlalchemy.org/), [flyway](https://flywaydb.org/), [prisma](https://www.prisma.io/), another migration framework, or custom-built migrations.
 * Database migrations use the same application image and task definition as the base application.
 
 Cons
 
-* Running migrations require doing a [targeted terraform apply](https://developer.hashicorp.com/terraform/tutorials/state/resource-targeting) to update the task definition without updating the service. Terraform recommends against targeting individual resources as part of a normal workflow. However, this is done to ensure migrations are run before the service is updated.
+* Running migrations requires doing a [targeted terraform apply](https://developer.hashicorp.com/terraform/tutorials/state/resource-targeting) to update the task definition without updating the service. Terraform recommends against targeting individual resources as part of a normal workflow. However, this is done to ensure migrations are run before the service is updated.
 
 ## Other options considered
 
@@ -61,7 +61,7 @@ Cons:
 
 ### Run migrations from a Lambda function
 
-Run migrations from an AWS Lambda function that uses the application's container image. The application container image needs to [implement the lambda runtime api](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) either by using an AWS base image for Lambda or by implementing the Lambda runtime (see [Working with Lambda container images](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html)).
+Run migrations from an AWS Lambda function that uses the application's container image. The application container image needs to [implement the lambda runtime API](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/) either by using an AWS base image for Lambda or by implementing the Lambda runtime (see [Working with Lambda container images](https://docs.aws.amazon.com/lambda/latest/dg/images-create.html)).
 
 Pros:
 
@@ -71,7 +71,7 @@ Pros:
 
 Cons:
 
-* Lambda function container images need to [implement the lambda runtime api](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/). This is a complex application requirement that would significantly limit the ease of use of the infrastructure.
+* Lambda function container images need to [implement the lambda runtime API](https://aws.amazon.com/blogs/aws/new-for-aws-lambda-container-image-support/). This is a complex application requirement that would significantly limit the ease of use of the infrastructure.
 * Lambda functions have a maximum runtime of 15 minutes, which can limit certain kinds of migrations.
 
 ### Run migrations from self-hosted GitHub Actions runners
@@ -80,7 +80,7 @@ Then run the migrations directly from a [self-hosted GitHub Action runner](https
 
 Pros
 
-* If a project already uses self-hosted runners, this can be the simplest option as it provides all the benefits running migrations directly from GitHub Actions without the security impact.
+* If a project already uses self-hosted runners, this can be the simplest option as it provides all the benefits of running migrations directly from GitHub Actions without the security impact.
 
 Cons
 

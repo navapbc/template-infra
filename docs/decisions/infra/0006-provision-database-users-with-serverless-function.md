@@ -37,7 +37,7 @@ Pros
 Cons
 
 * The database needs to be publicly accessible to the machine that is running the script – either the infrastructure engineer's local machine or the continuous integration service (e.g. GitHub Actions). First, this causes the database setup process to take a minimum of three steps: (1) create the database cluster with publicly accessible configuration, (2) provision the database users, (3) make the database cluster private. Second, even if it is an acceptable risk to make the database publicly accessible when it is first created and before it has any data, it may not be an acceptable risk to do so once the system is in production. Therefore, after the system is in production, there would no longer be a way to reconfigure the database users or otherwise maintain the system using this approach.
-* Need to modify the database cluster configuration after creating it in order to make it private. Modifications requires an additional step, and may also require manual changes to the terraform configuration.
+* Need to modify the database cluster configuration after creating it in order to make it private. Modifications require an additional step, and may also require manual changes to the terraform configuration.
 
 ### Shell scripts
 
@@ -54,7 +54,7 @@ Cons
 
 Pros
 
-* Can leverage the Terraform and Shell scripts approaches
+* Can leverage the Terraform and Shell script approaches
 * Can access the database securely from within the VPC without making the database cluster publicly accessible
 
 Cons
@@ -70,7 +70,7 @@ Pros
 
 Cons
 
-* Increases complexity of terraform module architecture. There needs to be an ECR repository to store the Docker images. The ECR repository could be in a separate root module, which adds another layer to the module architecture. The ECR repository could be put in the `build-repository` root module, which would would clutter the `build-repository` since it's not related to application builds. Or it could be put in the `database` root module and be manually created using terraform's `-target` flag, but that adds complexity to the setup process.
+* Increases complexity of terraform module architecture. There needs to be an ECR repository to store the Docker images. The ECR repository could be in a separate root module, which adds another layer to the module architecture. The ECR repository could be put in the `build-repository` root module, which would clutter the `build-repository` since it's not related to application builds. Or it could be put in the `database` root module and be manually created using Terraform's `-target` flag, but that adds complexity to the setup process.
 * Increases number of steps needed to set up the database by at least two, one to create the ECR repository and one to build and publish the Docker image to the ECR repository, before creating the database cluster resources.
 
 ### Serverless function using Lambda
@@ -84,4 +84,4 @@ Pros
 Cons
 
 * Adds a new dependency to the application setup process. The setup process will now rely on the programming language used by the Lambda function (Python in this case).
-* Can't easily use custom external binaries in AWS Lambda. So will rely mostly on code rather than lower level scripts like psql.
+* Can't easily use custom external binaries in AWS Lambda. So will rely mostly on code rather than lower-level scripts like psql.

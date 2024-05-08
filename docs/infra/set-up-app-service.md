@@ -61,7 +61,7 @@ Copy the image tag name that is output. You'll need this in the next step.
 
 ### 4. Create application resources with the image tag that was published
 
-To create the resources, run the following command using the image tag from the previous step. Review the Terraform output carefully before typing "yes" to apply the changes. This can take over 5 minutes.
+To create the resources, run the following command using the image tag output by the previous step. Review the Terraform output carefully before typing "yes" to apply the changes. This can take over 5 minutes.
 
 ```bash
 TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
