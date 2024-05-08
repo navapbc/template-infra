@@ -48,7 +48,7 @@ Look in the script files for more details on usage.
 
 ## Using Terraform CLI directly
 
-Finally, if the wrapper scripts don't meet your needs, you can always run `terraform` directly from the root module directory. You may need to do this if you are running Terraform commands other than `terraform plan` and `terraform apply`, such as `terraform import`, `terraform taint`, etc. To do this, you'll need to pass in the appropriate `tfvars` and `tfbackend` files to `terraform init` and `terraform apply`. For example, to make changes to the application's service resources in the dev environment, change to the `infra/app/service` directory and run:
+Finally, if the wrapper scripts don't meet your needs, you can always run `terraform` directly from the root module directory. You may need to do this if you are running Terraform commands other than `terraform plan` and `terraform apply`, such as `terraform import`, `terraform taint`, etc. To do this, you'll need to pass in the appropriate `.tfbackend` files to `terraform init` and `terraform apply`. For example, to make changes to the application's service resources in the dev environment, change to the `/infra/app/service` directory and run:
 
 ```bash
 infra/app/service$ terraform init -backend-config=dev.s3.tfbackend

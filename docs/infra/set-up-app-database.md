@@ -41,9 +41,9 @@ To create the `.tfbackend` file for the new application environment, run:
 make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` should be the name of the application folder within the `infra` folder.
+`<APP_NAME>` must be the name of the application folder within the `/infra` folder.
 
-`ENVIRONMENT` should be the name of the environment to update. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in `infra/<APP_NAME>/database`.
+`<ENVIRONMENT>` must be the name of the environment to update. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in `/infra/<APP_NAME>/database`.
 
 ### 3. Create database resources
 

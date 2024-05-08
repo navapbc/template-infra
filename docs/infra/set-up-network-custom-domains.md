@@ -87,7 +87,7 @@ nslookup -type=NS <HOSTED_ZONE>
 
 **For each application** in the network that should use the custom domain, perform the following.
 
-Within the `app-config` directory (e.g. `infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
+Within the `app-config` directory (e.g. `/infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
 In each environment config file, define the `domain_name`.
 
@@ -101,9 +101,9 @@ The `domain_name` must be either the same as the `hosted_zone` or a subdomain of
 make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` must be the name of the application folder within the `infra` folder.
+`<APP_NAME>` must be the name of the application folder within the `/infra` folder.
 
-`ENVIRONMENT` must be the name of the environment to update.
+`<ENVIRONMENT>` must be the name of the environment to update.
 
 ## If a network does not need custom domains
 

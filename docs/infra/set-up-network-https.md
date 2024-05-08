@@ -55,7 +55,7 @@ aws acm describe-certificate --certificate-arn <CERTIFICATE_ARN> --query Certifi
 
 **For each application and environment** that should use HTTPS, perform the following.
 
-Within the `app-config` directory (e.g. `infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
+Within the `app-config` directory (e.g. `/infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
 In each environment config file, set `enable_https` to `true`. This will attach the SSL/TLS certificate to the load balancer.
 
@@ -69,9 +69,9 @@ You should have already set `domain_name` as part of [setting up custom domain n
 make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` must be the name of the application folder within the `infra` folder.
+`<APP_NAME>` must be the name of the application folder within the `/infra` folder.
 
-`ENVIRONMENT` must be the name of the environment to update.
+`<ENVIRONMENT>` must be the name of the environment to update.
 
 ## If a network does not need HTTPS
 

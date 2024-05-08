@@ -34,7 +34,7 @@ To create the `.tfbackend` file for the build repository, run:
 make infra-configure-app-build-repository APP_NAME=<APP_NAME>
 ```
 
-`APP_NAME` should be the name of the application folder within the `infra` folder.
+`<APP_NAME>` must be the name of the application folder within the `/infra` folder.
 
 ### 3. Create build repository resources
 

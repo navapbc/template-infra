@@ -37,9 +37,9 @@ To apply the changes, run the following command. Review the Terraform output car
 make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` must be the name of the application folder within the `infra` folder.
+`<APP_NAME>` must be the name of the application folder within the `/infra` folder.
 
-`ENVIRONMENT` must be the name of the environment to update.
+`<ENVIRONMENT>` must be the name of the environment to update.
 
 ## Instructions to set up external incident management service integration
 

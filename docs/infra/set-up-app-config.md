@@ -27,7 +27,7 @@ To use [feature flags](/docs/feature-flags.md), modify the values in the applica
 
 ### 3. Configure each environment
 
-Within the application's `app-config` directory (e.g. `infra/<APP_NAME>/app-config`), each environment configured in the `environments` array in the previous step needs its own config file. For example, if the application has three environments `dev`, `staging`, and `prod`, there must be corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
+Within the application's `app-config` directory (e.g. `/infra/<APP_NAME>/app-config`), each environment configured in the `environments` array in the previous step needs its own config file. For example, if the application has three environments `dev`, `staging`, and `prod`, there must be corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
 In each environment config file, modify the following values:
 
