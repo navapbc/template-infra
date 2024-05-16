@@ -11,33 +11,19 @@ The HTTPS set up process will:
 
 ## Prerequisites
 
+* You are [authenticated into the AWS account](./set-up-infrastructure-tools.md#authenticate-with-aws) you want to configure.
 * You have [set up custom domains](./set-up-network-custom-domains.md) and met all of those prerequisites.
-
-This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
+    * This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
 
 ## Instructions
 
-### 1. Make sure you're authenticated into the AWS account you want to configure
-
-This setup applies to the account you're authenticated into. To see which account that is, run:
-
-```bash
-aws sts get-caller-identity
-```
-
-To see a more human readable account alias instead of the account, run:
-
-```bash
-aws iam list-account-aliases
-```
-
-### 2. Set desired certificates in domain configuration
+### 1. Set desired certificates in domain configuration
 
 **For each network** you want to configure, modify the network in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf) to set the `certificate_configs` key.
 
 Set the `source` of the domain or subdomain to `issued`.
 
-### 3. Update the network layer to issue the certificates
+### 2. Update the network layer to issue the certificates
 
 **For each network** you configured in the previous step, apply the changes by running the following command. Review the Terraform output carefully before typing "yes" to apply the changes. This will issue SSL/TLS certificates.
 
@@ -51,7 +37,7 @@ Run the following command to check the status of a certificate (replace `<CERTIF
 aws acm describe-certificate --certificate-arn <CERTIFICATE_ARN> --query Certificate.Status
 ```
 
-### 4. Update `enable_https = true` in `app-config`
+### 3. Update `enable_https = true` in `app-config`
 
 **For each application and environment** that should use HTTPS, perform the following.
 
@@ -61,7 +47,7 @@ In each environment config file, set `enable_https` to `true`. This will attach 
 
 You should have already set `domain_name` as part of [setting up custom domain names](/docs/infra/set-up-network-custom-domains.md).
 
-### 5. Attach certificate to load balancer
+### 4. Attach certificate to load balancer
 
 **For each application and environment** that should use HTTPS, apply the changes from the previous step by running the following command. Review the Terraform output carefully before typing "yes" to apply the changes.
 

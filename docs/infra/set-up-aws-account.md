@@ -10,27 +10,14 @@ The AWS account setup process will:
 
 ## Prerequisites
 
+* You are [authenticated into the AWS account](./set-up-infrastructure-tools.md#authenticate-with-aws) you want to configure.
 * You have [set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md).
 * You have [configured the project](/infra/project-config/main.tf).
 * You have [decided on your environment and AWS account strategy](./set-up-aws-accounts.md).
 
 ## Instructions
 
-### 1. Make sure you're authenticated into the AWS account you want to configure
-
-This setup applies to the account you're authenticated into. To see which account that is, run:
-
-```bash
-aws sts get-caller-identity
-```
-
-To see a more human readable account alias instead of the account, run:
-
-```bash
-aws iam list-account-aliases
-```
-
-### 2. Create backend resources and `.tfbackend` config file
+### 1. Create backend resources and `.tfbackend` config file
 
 Run the following command, replacing `<ACCOUNT_NAME>` with a human readable name for the AWS account that you're authenticated into. The account name will be used to prefix the `.tfbackend` file. For example, if you have an account per environment, the account name can be the name of the environment (e.g. "prod" or "staging"). Or if you are setting up an account for all lower environments, the account name can be "lowers". If your AWS account has an account alias, you can also use that.
 

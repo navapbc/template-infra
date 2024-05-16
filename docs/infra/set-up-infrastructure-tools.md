@@ -88,6 +88,11 @@ To use Terraform with your AWS accounts, you must configure your AWS credentials
     ```bash
     aws sts get-caller-identity
     ```
+    To see a more human-readable account alias instead of the account, run:
+    ```bash
+    aws iam list-account-aliases
+    ```
+
 
 ### References
 

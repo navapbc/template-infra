@@ -10,27 +10,14 @@ The network set up process will configure and deploy network resources needed fo
 
 ## Prerequisites
 
+* You are [authenticated into the AWS account](./set-up-infrastructure-tools.md#authenticate-with-aws) you want to configure.
 * You have [set up the AWS account(s)](./set-up-aws-accounts.md).
 * You have [configured all application(s)](./set-up-app-config.md).
 * You have [configured the project's networks](./set-up-networks.md).
 
 ## Instructions
 
-### 1. Make sure you're authenticated into the AWS account you want to configure
-
-This setup applies to the account you're authenticated into. To see which account that is, run:
-
-```bash
-aws sts get-caller-identity
-```
-
-To see a more human readable account alias instead of the account, run:
-
-```bash
-aws iam list-account-aliases
-```
-
-### 2. Configure backend
+### 1. Configure backend
 
 To create the `.tfbackend` file for the new network, run:
 
@@ -38,7 +25,7 @@ To create the `.tfbackend` file for the new network, run:
 make infra-configure-network NETWORK_NAME=<NETWORK_NAME>
 ```
 
-### 3. Create network resources
+### 2. Create network resources
 
 To create the resources, run the following command. Review the Terraform output carefully before typing "yes" to apply the changes.
 

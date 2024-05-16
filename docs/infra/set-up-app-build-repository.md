@@ -6,27 +6,14 @@ The application build repository setup process will create infrastructure resour
 
 ## Prerequisites
 
+* You are [authenticated into the AWS account](./set-up-infrastructure-tools.md#authenticate-with-aws) you want to configure.
 * You have [set up the AWS account(s)](./set-up-aws-accounts.md).
 * You have [configured the application](/infra/app/app-config/main.tf).
 * You have [set up the network(s)](./set-up-networks.md).
 
 ## Instructions
 
-### 1. Make sure you're authenticated into the AWS account where you want to deploy resources shared across environments
-
-This setup applies to the account you're authenticated into. To see which account that is, run:
-
-```bash
-aws sts get-caller-identity
-```
-
-To see a more human readable account alias instead of the account, run:
-
-```bash
-aws iam list-account-aliases
-```
-
-### 2. Configure backend
+### 1. Configure backend
 
 To create the `.tfbackend` file for the build repository, run:
 
@@ -36,7 +23,7 @@ make infra-configure-app-build-repository APP_NAME=<APP_NAME>
 
 `<APP_NAME>` must be the name of the application folder within the `/infra` folder.
 
-### 3. Create build repository resources
+### 2. Create build repository resources
 
 To create the resources, run the following command. Review the Terraform output carefully before typing "yes" to apply the changes.
 

@@ -12,6 +12,7 @@ The application service set up process will:
 
 ## Prerequisites
 
+* You are [authenticated into the AWS account](./set-up-infrastructure-tools.md#authenticate-with-aws) you want to configure.
 * You have [set up the AWS account(s)](./set-up-aws-accounts.md).
 * You have [configured the application](/infra/app/app-config/main.tf).
 * You have [set up the network(s)](./set-up-networks.md).
@@ -20,21 +21,7 @@ The application service set up process will:
 
 ## Instructions
 
-### 1. Make sure you're authenticated into the AWS account where you want to deploy this environment
-
-This setup applies to the account you're authenticated into. To see which account that is, run:
-
-```bash
-aws sts get-caller-identity
-```
-
-To see a more human readable account alias instead of the account, run:
-
-```bash
-aws iam list-account-aliases
-```
-
-### 2. Configure backend
+### 1. Configure backend
 
 To create the `.tfbackend` files for the new application service, run:
 
@@ -46,7 +33,7 @@ make infra-configure-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 `<ENVIRONMENT>` must be the name of the environment to update. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in `/infra/<APP_NAME>/service`.
 
-### 3. Build and publish the application to the build repository
+### 2. Build and publish the application to the build repository
 
 Before creating the application resources, you need to build and publish at least one image to the build repository. This step does not need to be run per environment.
 
@@ -59,7 +46,7 @@ make release-publish APP_NAME=<APP_NAME>
 
 Copy the image tag name that is output. You'll need this in the next step.
 
-### 4. Create application resources with the image tag that was published
+### 3. Create application resources with the image tag that was published
 
 To create the resources, run the following command using the image tag output by the previous step. Review the Terraform output carefully before typing "yes" to apply the changes. This can take over 5 minutes.
 

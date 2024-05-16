@@ -12,6 +12,7 @@ The custom domain set up process will:
 ## Prerequisites
 
 * You have registered custom domain(s) with a domain registrar (e.g. Namecheap, GoDaddy, Google Domains, etc.).
+* You are [authenticated into the AWS account](./set-up-infrastructure-tools.md#authenticate-with-aws) you want to configure.
 * You have [set up the AWS account(s)](./set-up-aws-accounts.md).
 * You have [configured all application(s)](./set-up-app-config.md).
 * You have [set up the networks](./set-up-network.md) that you want to add the custom domain to.
@@ -19,21 +20,7 @@ The custom domain set up process will:
 
 ## Instructions
 
-### 1. Make sure you're authenticated into the AWS account you want to configure
-
-This setup applies to the account you're authenticated into. To see which account that is, run:
-
-```bash
-aws sts get-caller-identity
-```
-
-To see a more human readable account alias instead of the account, run:
-
-```bash
-aws iam list-account-aliases
-```
-
-### 2. Set hosted zone in domain configuration
+### 1. Set hosted zone in domain configuration
 
 The custom domain configuration is defined as a `domain_config` object in [`/infra/project-config/networks.tf`](/infra/project-config/networks.tf). A [hosted zone](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/hosted-zones-working-with.html) represents a domain and all of its subdomains. For example, a hosted zone of `platform-test.navateam.com` includes `platform-test.navateam.com`, `cdn.platform-test.navateam.com`, `notifications.platform-test.navateam.com`, `foo.bar.platform-test.navateam.com`, etc.
 
@@ -42,7 +29,7 @@ The custom domain configuration is defined as a `domain_config` object in [`/inf
 1. Set the `hosted_zone` to match the custom domain (or a subdomain of the custom domain) that you registered.
 2. Set `manage_dns` to `true`.
 
-### 3. Update the network layer to create the hosted zones
+### 2. Update the network layer to create the hosted zones
 
 **For each network** you that you added a custom domain to in the previous step, run the following command to create the hosted zone specified in the domain configuration:
 
@@ -50,7 +37,7 @@ The custom domain configuration is defined as a `domain_config` object in [`/inf
 make infra-update-network NETWORK_NAME=<NETWORK_NAME>
 ```
 
-### 4. Delegate DNS requests to the newly created hosted zone
+### 3. Delegate DNS requests to the newly created hosted zone
 
 You most likely registered your domain outside of this project. Using whichever service you used to register the domain name (e.g. Namecheap, GoDaddy, Google Domains, etc.), add a DNS NS (nameserver) record. Set the "name" equal to the `hosted_zone` and set the value equal to the list of hosted zone name servers that was created in the previous step.
 
@@ -83,7 +70,7 @@ Verify that DNS requests are being served by the hosted zone nameservers by runn
 nslookup -type=NS <HOSTED_ZONE>
 ```
 
-### 5. Create DNS A (address) records to route traffic from the custom domain to the application's load balancer
+### 4. Create DNS A (address) records to route traffic from the custom domain to the application's load balancer
 
 **For each application** in the network that should use the custom domain, perform the following.
 
@@ -93,7 +80,7 @@ In each environment config file, define the `domain_name`.
 
 The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
 
-### 6. Update the application service
+### 5. Update the application service
 
 **For each application and each environment** in the network that should use the custom domain, apply the changes by running the following command. Review the Terraform output carefully before typing "yes" to apply the changes.
 
