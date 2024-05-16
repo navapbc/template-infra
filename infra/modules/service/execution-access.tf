@@ -4,7 +4,7 @@
 #-----------------
 resource "aws_iam_policy" "ecs_exec" {
   name        = "${var.service_name}-ecs-exec"
-  description = "A policy to run ECS Exec"
+  description = "Allow access to SSM Messages to support ECS Exec"
   policy      = data.aws_iam_policy_document.ecs_exec.json
 }
 
