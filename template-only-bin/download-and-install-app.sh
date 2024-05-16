@@ -23,7 +23,7 @@ git checkout "$CURRENT_VERSION" >& /dev/null
 cd - >& /dev/null
 
 # Install the app
-curl "https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-app.sh" | bash -s -- $APP_NAME
+curl "https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-app.sh" | bash -s -- "$APP_NAME_KEBAB"
 
 echo "Cleaning up template-infra folder..."
 rm -fr template-infra
