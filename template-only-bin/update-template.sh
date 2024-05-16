@@ -47,6 +47,7 @@ echo "====================================================================="
 echo "Updating template-infra"
 echo "====================================================================="
 echo "APP_NAMES=$APP_NAMES"
+echo "CURRENT_VERSION=$CURRENT_VERSION"
 echo "TARGET_VERSION=$TARGET_VERSION"
 echo "TARGET_VERSION_TYPE=$TARGET_VERSION_TYPE"
 echo
@@ -102,50 +103,52 @@ git fetch upstream-template-infra >& /dev/null
 echo "Converting $TARGET_VERSION to hash..."
 case $TARGET_VERSION_TYPE in
   "branch")
-    TARGET_VERSION_HASH="$(git rev-parse upstream-template-infra/$TARGET_VERSION)"
+    TARGET_VERSION_HASH=$(git rev-parse "upstream-template-infra/$TARGET_VERSION")
     ;;
   "commit")
     echo "No conversion needed."
     TARGET_VERSION_HASH=$TARGET_VERSION
     ;;
   "tag")
-    TARGET_VERSION_HASH="$(git ls-remote --tags upstream-template-infra $TARGET_VERSION | cut -d$'\t' -f1)"
+    TARGET_VERSION_HASH=$(git ls-remote --tags upstream-template-infra "$TARGET_VERSION" | cut -d$'\t' -f1)
     ;;
 esac
 echo "TARGET_VERSION_HASH=$TARGET_VERSION_HASH"
 echo
 
 # Note: Keep this list in sync with the files copied in install-template.sh
-INCLUDE_PATHS="
-  .github
-  bin
-  docs
-  infra
-  Makefile
-  .dockleconfig
-  .grype.yml
-  .hadolint.yaml
-  .trivyignore"
+INCLUDE_PATHS=(
+  ".github"
+  "bin"
+  "docs"
+  "infra"
+  "Makefile"
+  ".dockleconfig"
+  ".grype.yml"
+  ".hadolint.yaml"
+  ".trivyignore"
+)
 
 # Note: Exclude terraform deployment files, and CI/CD workflows as those are handled
 # separately below.
-EXCLUDE_PATHS="
-  ':!*.terraform*'
-  ':!*.tfbackend'
-  ':!.github/workflows/'"
+EXCLUDE_PATHS=(
+  "':!*.terraform*'"
+  "':!*.tfbackend'"
+  "':!.github/workflows/'"
+)
 
 # Exclude all applications
 for APP_NAME in ${APP_NAMES//,/ }
 do
-  EXCLUDE_PATHS="${EXCLUDE_PATHS} ':!infra/$APP_NAME'"
+  EXCLUDE_PATHS+=("':!infra/$APP_NAME'")
 done
 
 # Show the changes to be made
-STAT_COMMAND="git --no-pager diff -R --stat $TARGET_VERSION_HASH -- $(echo $INCLUDE_PATHS) $(echo $EXCLUDE_PATHS)"
+STAT_COMMAND="git --no-pager diff -R --stat $TARGET_VERSION_HASH -- ${INCLUDE_PATHS[*]} ${EXCLUDE_PATHS[*]}"
 eval "$STAT_COMMAND"
 
 # Make the patch file
-DIFF_COMMAND="git diff -R $TARGET_VERSION_HASH -- $(echo $INCLUDE_PATHS) $(echo $EXCLUDE_PATHS)"
+DIFF_COMMAND="git diff -R $TARGET_VERSION_HASH -- ${INCLUDE_PATHS[*]} ${EXCLUDE_PATHS[*]}"
 eval "$DIFF_COMMAND > main-template.patch"
 
 # Apply the patch file
@@ -170,7 +173,7 @@ do
   echo "---------------------------------------------------------------------"
   # If the APP_NAME is not named `app`, then install a new app in template-infra to diff against
   if [ "$APP_NAME" != "app" ]; then
-    curl "https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-app.sh" | bash -s -- $APP_NAME "template-infra/"
+    curl "https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/install-app.sh" | bash -s -- "$APP_NAME" "template-infra/"
     echo
   fi
 
@@ -184,11 +187,11 @@ do
   git diff --no-index --dst-prefix="" "infra/$APP_NAME" "template-infra/infra/$APP_NAME" > "template-infra/$APP_NAME.patch" || true
 
   # The stat version of the `git-apply` command`, used to output the changes to STDOUT
-  STAT_COMMAND="git --no-pager apply --stat --allow-empty template-infra/$APP_NAME.patch --exclude='*.tfbackend' --exclude='*.terraform*'"
+  STAT_COMMAND="git --no-pager apply --stat --allow-empty template-infra/$APP_NAME.patch --exclude='*.tfbackend' --exclude='*.terraform*' --exclude='*.tfstate*'"
   eval "$STAT_COMMAND"
 
   # Actually run the `git apply` command
-  git apply --allow-empty "template-infra/$APP_NAME.patch" --exclude="*.tfbackend" --exclude="*.terraform*"
+  git apply --allow-empty "template-infra/$APP_NAME.patch" --exclude="*.tfbackend" --exclude="*.terraform*" --exclude="*.tfstate*"
 
   # Increment step counter
   STEP_COUNT=$((STEP_COUNT+1))

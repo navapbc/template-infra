@@ -20,7 +20,11 @@ cp -r template-infra/infra/app "${DST_PREFIX}infra/$APP_NAME"
 # Helper to get the correct sed -i behavior for both GNU sed and BSD sed (installed by default on macOS)
 # Hat tip: https://stackoverflow.com/a/38595160
 sedi () {
-  sed --version >/dev/null 2>&1 && sed -i -- "$@" || sed -i "" "$@"
+  if sed --version >/dev/null 2>&1; then
+    sed -i -- "$@"
+  else
+    sed -i "" "$@"
+  fi
 }
 # Export the function so it can be used below
 export -f sedi

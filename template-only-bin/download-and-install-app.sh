@@ -12,7 +12,7 @@ APP_NAME=$1
 CURRENT_VERSION=$(cat .template-version)
 
 # Enforce kebab-case
-APP_NAME_KEBAB=$(echo $APP_NAME | tr "_" "-")
+APP_NAME_KEBAB=$(echo "$APP_NAME" | tr "_" "-")
 
 echo "Cloning template-infra..."
 git clone https://github.com/navapbc/template-infra.git
