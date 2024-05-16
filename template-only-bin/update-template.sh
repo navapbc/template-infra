@@ -177,14 +177,20 @@ do
     echo
   fi
 
+  # Copy the latest files into the working tree
+  cp -r "template-infra/infra/$APP_NAME" infra
+
+  # Add any untracked files as intent-to-add
+  git add --intent-to-add "infra/$APP_NAME"
+
   # To create a git patch comparing a project's application:
-  # --no-index allows us comparison between differently-named or -nested directories
-  # --dst-prefix="" removes the destination prefix, essentially having the effect of
-  #   removing the additional `template-infra/` path prefix, making the patch appliable
   # || true is necessary because this bash script includes `set -e` option, which will
   #   immediately exit for any non-zero exit codes. That's generally correct, but
   #   `git diff --no-index` will return 1 to indicate differences between the files.
-  git diff --no-index --dst-prefix="" "infra/$APP_NAME" "template-infra/infra/$APP_NAME" > "template-infra/$APP_NAME.patch" || true
+  git diff "infra/$APP_NAME" > "template-infra/$APP_NAME.patch" || true
+
+  # Restore infra dir
+  git checkout "infra/$APP_NAME"
 
   # The stat version of the `git-apply` command`, used to output the changes to STDOUT
   STAT_COMMAND="git --no-pager apply --stat --allow-empty template-infra/$APP_NAME.patch --exclude='*.tfbackend' --exclude='*.terraform*' --exclude='*.tfstate*'"
