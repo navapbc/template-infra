@@ -70,3 +70,9 @@ variable "service_override_extra_environment_variables" {
     EOT
   default     = {}
 }
+
+variable "enable_command_execution" {
+  type        = bool
+  description = "Enables the ability to manually execute commands on running service containers using AWS ECS Exec"
+  default     = false
+}
