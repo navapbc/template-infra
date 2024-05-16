@@ -11,7 +11,7 @@ module "dev_config" {
   has_incident_management_service = local.has_incident_management_service
 
   # Enables ECS Exec access for debugging or jump access.
-  # Set to `true` to enable. Defaults to `false`.
   # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
-  enable_service_execution = false
+  # Defaults to `false`. Uncomment the next line to enable.
+  # enable_service_execution = true
 }

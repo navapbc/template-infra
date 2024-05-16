@@ -18,8 +18,7 @@ module "prod_config" {
   service_desired_instance_count = 3
 
   # Enables ECS Exec access for debugging or jump access.
+  # Defaults to `false`. Uncomment the next line to enable.
   # ⚠️ Warning! It is not recommended to enable this in a production environment.
-  # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
-  enable_service_execution = false
-
+  # enable_service_execution = true
 }
