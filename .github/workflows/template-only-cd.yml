@@ -34,7 +34,7 @@ jobs:
 
       - name: Update infra template
         working-directory: project-repo
-        run: ../template-infra/template-only-bin/update-template.sh
+        run: ../template-infra/template-only-bin/update-template.sh app
 
       - name: Push changes to project repo
         working-directory: project-repo
