@@ -28,6 +28,14 @@ locals {
 
   # Whether any of the applications in the network have dependencies on an external non-AWS service
   has_external_non_aws_service = anytrue([for app in local.apps_in_network : app.has_external_non_aws_service])
+
+  # Whether any of the applications in the network has an environment that needs container execution access
+  enable_command_execution = anytrue([
+    for app in local.apps_in_network :
+    anytrue([
+      for environment_config in app.environment_configs : true if environment_config.service_config.enable_command_execution == true && environment_config.network_name == var.network_name
+    ])
+  ])
 }
 
 terraform {
@@ -67,6 +75,7 @@ module "network" {
   database_subnet_group_name              = local.network_config.database_subnet_group_name
   has_database                            = local.has_database
   has_external_non_aws_service            = local.has_external_non_aws_service
+  enable_command_execution                = local.enable_command_execution
 }
 
 module "domain" {

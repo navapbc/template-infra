@@ -16,13 +16,14 @@ output "network_name" {
 
 output "service_config" {
   value = {
-    service_name           = "${local.prefix}${var.app_name}-${var.environment}"
-    domain_name            = var.domain_name
-    enable_https           = var.enable_https
-    region                 = var.default_region
-    cpu                    = var.service_cpu
-    memory                 = var.service_memory
-    desired_instance_count = var.service_desired_instance_count
+    service_name             = "${local.prefix}${var.app_name}-${var.environment}"
+    domain_name              = var.domain_name
+    enable_https             = var.enable_https
+    region                   = var.default_region
+    cpu                      = var.service_cpu
+    memory                   = var.service_memory
+    desired_instance_count   = var.service_desired_instance_count
+    enable_command_execution = var.enable_command_execution
 
     extra_environment_variables = merge(
       local.default_extra_environment_variables,
