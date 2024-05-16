@@ -37,10 +37,6 @@ __check_defined = \
 	infra-configure-app-service \
 	infra-configure-monitoring-secrets \
 	infra-configure-network \
-	infra-destroy-app-build-repository \
-	infra-destroy-app-database \
-	infra-destroy-app-service \
-	infra-destroy-network \
 	infra-format \
 	infra-lint \
 	infra-lint-scripts \
@@ -121,28 +117,6 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
 	terraform -chdir="infra/$(APP_NAME)/service" apply -var="environment_name=$(ENVIRONMENT)"
-
-infra-destroy-app-build-repository: ## Destroy $APP_NAME's build repository
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	terraform -chdir="infra/$(APP_NAME)/build-repository" init -input=false -reconfigure -backend-config="shared.s3.tfbackend"
-	terraform -chdir="infra/$(APP_NAME)/build-repository" destroy
-
-infra-destroy-app-database: ## Destroy $APP_NAME's database module for $ENVIRONMENT
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	terraform -chdir="infra/$(APP_NAME)/database" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
-	terraform -chdir="infra/$(APP_NAME)/database" destroy -var="environment_name=$(ENVIRONMENT)"
-
-infra-destroy-app-service: ## Destroy $APP_NAME's web service module
-	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
-	terraform -chdir="infra/$(APP_NAME)/service" destroy -var="environment_name=$(ENVIRONMENT)"
-
-infra-destroy-network: ## Destroy network
-	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
-	terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$(NETWORK_NAME).s3.tfbackend"
-	terraform -chdir="infra/networks" destroy -var="network_name=$(NETWORK_NAME)"
 
 # The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
