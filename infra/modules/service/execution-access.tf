@@ -8,12 +8,6 @@ resource "aws_iam_policy" "ecs_exec" {
   policy      = data.aws_iam_policy_document.ecs_exec.json
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_exec" {
-  count      = var.enable_command_execution ? 1 : 0
-  role       = aws_iam_role.app_service.name
-  policy_arn = aws_iam_policy.ecs_exec.arn
-}
-
 data "aws_iam_policy_document" "ecs_exec" {
   # Allow ECS to access SSM Messages so that ECS Exec works
   # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
@@ -28,4 +22,10 @@ data "aws_iam_policy_document" "ecs_exec" {
     ]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_exec" {
+  count      = var.enable_command_execution ? 1 : 0
+  role       = aws_iam_role.app_service.name
+  policy_arn = aws_iam_policy.ecs_exec.arn
 }
