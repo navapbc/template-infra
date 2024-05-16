@@ -52,7 +52,7 @@ variable "memory" {
   description = "Amount (in MiB) of memory used by the task. e.g. 2048"
 }
 
-variable "enable_service_execution" {
+variable "enable_command_execution" {
   type        = bool
   default     = false
   description = "Whether the service should enable ECS Exec, such as for debugging"

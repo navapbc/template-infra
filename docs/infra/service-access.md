@@ -30,7 +30,7 @@ aws iam list-account-aliases
 
 Within the `app-config` directory (e.g. `infra/<APP_NAME>/app-config`), each environment has its own config file named after the environment. For example, if the application has three environments `dev`, `staging`, and `prod`, it should have corresponding `dev.tf`, `staging.tf`, and `prod.tf` files.
 
-In the environment config file for the environment that you want to enable service access, set `enable_service_execution` to `true`.
+In the environment config file for the environment that you want to enable service access, set `enable_command_execution` to `true`.
 
 ### 3. Update the network
 

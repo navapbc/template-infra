@@ -20,5 +20,5 @@ module "prod_config" {
   # Enables ECS Exec access for debugging or jump access.
   # Defaults to `false`. Uncomment the next line to enable.
   # ⚠️ Warning! It is not recommended to enable this in a production environment.
-  # enable_service_execution = true
+  # enable_command_execution = true
 }

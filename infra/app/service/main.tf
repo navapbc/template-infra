@@ -131,7 +131,7 @@ module "service" {
   cpu                      = local.service_config.cpu
   memory                   = local.service_config.memory
   desired_instance_count   = local.service_config.desired_instance_count
-  enable_service_execution = local.service_config.enable_service_execution
+  enable_command_execution = local.service_config.enable_command_execution
 
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 

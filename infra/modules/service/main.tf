@@ -46,7 +46,7 @@ resource "aws_ecs_service" "app" {
   launch_type            = "FARGATE"
   task_definition        = aws_ecs_task_definition.app.arn
   desired_count          = var.desired_instance_count
-  enable_execute_command = var.enable_service_execution ? true : null
+  enable_execute_command = var.enable_command_execution ? true : null
 
   # Allow changes to the desired_count without differences in terraform plan.
   # This allows autoscaling to manage the desired count for us.
@@ -80,7 +80,7 @@ resource "aws_ecs_task_definition" "app" {
       cpu                    = var.cpu,
       networkMode            = "awsvpc",
       essential              = true,
-      readonlyRootFilesystem = !var.enable_service_execution,
+      readonlyRootFilesystem = !var.enable_command_execution,
 
       # Need to define all parameters in the healthCheck block even if we want
       # to use AWS's defaults, otherwise the terraform plan will show a diff

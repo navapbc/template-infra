@@ -9,7 +9,7 @@ resource "aws_iam_policy" "ecs_exec" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_exec" {
-  count      = var.enable_service_execution ? 1 : 0
+  count      = var.enable_command_execution ? 1 : 0
   role       = aws_iam_role.app_service.name
   policy_arn = aws_iam_policy.ecs_exec.arn
 }
