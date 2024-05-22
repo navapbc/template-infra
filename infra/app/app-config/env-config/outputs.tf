@@ -1,3 +1,8 @@
+output "account_name" {
+  value       = var.account_name
+  description = "Name of the AWS account that contains the resources for the application environment."
+}
+
 output "database_config" {
   value = var.has_database ? {
     region                      = var.default_region

@@ -9,12 +9,14 @@ The application environment setup process will:
 Before setting up the application's environments you'll need to have:
 
 1. [A compatible application in the app folder](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md)
-2. [Configure the app](/infra/app/app-config/main.tf). Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
+2. [Set up the AWS account that this environment is going to use](/docs/infra/set-up-aws-account.md).
+3. [Configure the app](/infra/app/app-config/main.tf). Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
    1. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
-3. [Create a nondefault VPC to be used by the application](./set-up-network.md)
-4. (If the application has a database) [Set up the database for the application](./set-up-database.md)
-5. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
-6. [Set up the application build repository](./set-up-app-build-repository.md)
+   2. Make sure your application environment is using the AWS Account you want to use by checking the `account_name` property in the environment configuration and updating it if necessary.
+4. [Create a nondefault VPC to be used by the application](./set-up-network.md)
+5. (If the application has a database) [Set up the database for the application](./set-up-database.md)
+6. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
+7. [Set up the application build repository](./set-up-app-build-repository.md)
 
 ## 1. Configure backend
 
@@ -36,7 +38,7 @@ Before creating the application resources, you'll need to first build and publis
 There are two ways to do this:
 
 1. Trigger the "Build and Publish" workflow from your repo's GitHub Actions tab. This option requires that the `role-to-assume` GitHub workflow variable has already been set up as part of the overall infra account setup process.
-1. Alternatively, run the following from the root directory. This option can take much longer than the GitHub workflow, depending on your machine's architecture.
+2. Alternatively, run the following from the root directory. This option can take much longer than the GitHub workflow, depending on your machine's architecture.
 
     ```bash
     make release-build APP_NAME=app

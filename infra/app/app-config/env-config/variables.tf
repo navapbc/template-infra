@@ -11,6 +11,16 @@ variable "environment" {
   type        = string
 }
 
+variable "account_name" {
+  description = <<EOF
+    Name of the AWS account that contains the resources for the application environment.
+    The list of configured AWS accounts can be found in /infra/account
+    by looking for the backend config files of the form:
+      <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend
+    EOF
+  type        = string
+}
+
 variable "network_name" {
   description = "Human readable identifier of the network / VPC"
   type        = string

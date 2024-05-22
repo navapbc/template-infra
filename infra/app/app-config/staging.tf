@@ -4,6 +4,7 @@ module "staging_config" {
   app_name                        = local.app_name
   default_region                  = module.project_config.default_region
   environment                     = "staging"
+  account_name                    = "staging"
   network_name                    = "staging"
   domain_name                     = null
   enable_https                    = false
