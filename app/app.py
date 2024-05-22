@@ -75,7 +75,8 @@ def document_upload():
 @app.route("/secrets")
 def secrets():
     secret_sauce = os.environ["SECRET_SAUCE"]
-    return f'The secret sauce is "{secret_sauce}"'
+    random_secret = os.environ["RANDOM_SECRET"]
+    return f'The secret sauce is "{secret_sauce}".<br> The random secret is "{random_secret}".'
 
 
 @app.cli.command("etl", help="Run ETL job")
