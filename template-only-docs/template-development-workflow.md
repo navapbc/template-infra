@@ -4,7 +4,7 @@ This is the workflow for developers making changes to the infrastructure templat
 
 ## Prerequisites
 
-For most infrastructure changes, you will need an environment to work with. Since template-infra is a template and not a live project, it doesn't have any long-lived environments. Thus, you should develop and test your infrastructure changes using the `dev` environment on one of the following test repos:
+For most infrastructure changes, you will need an environment to work with. Since this repo is a template and not a live project, it doesn't have any long-lived environments. Thus, you should develop and test your infrastructure changes using the `dev` environment on one of the following test repos:
 
 * [platform-test](https://github.com/navapbc/platform-test) – Test project that uses [template-infra](https://github.com/navapbc/template-infra) and the [example app](https://github.com/navapbc/template-infra/tree/main/app) that comes with the template. This is the default project we use for development and testing infrastructure changes.
 * [platform-test-flask](https://github.com/navapbc/platform-test-flask) - Test project that uses [template-infra](https://github.com/navapbc/template-infra) and [template-application-flask](https://github.com/navapbc/template-application-flask)
@@ -31,7 +31,7 @@ On the platform test repo, you'll do the following:
 4. Create a pull request
 5. Iterate until all CI checks pass on your PR and you’ve also done additional testing that you need to validate. *Do not merge the PR.*
 
-### 2. Create a pull request on infra template repo
+### 2. Create a pull request on the `template-infra` repo
 
 1. Once you've completed development and testing, create a pull request on the [template-infra](https://github.com/navapbc/template-infra) repo with the same changes you made on the platform test repo.
 2. In the "Testing" section of the PR description, link to the PR on the platform test repo as evidence of the testing you did to verify your changes.
@@ -39,7 +39,7 @@ On the platform test repo, you'll do the following:
 
 ### 3. Push changes to platform test repos
 
-In most cases, after you merge changes to the infra template, the changes will be automatically pushed to the various platform test repos. However, the following changes aren't automatically propagated to the platform test repos:
+In most cases, after you merge changes to the `template-infra` repo, the changes will be automatically pushed to the various platform test repos. However, the following changes aren't automatically propagated to the platform test repos:
 
 1. Changes to [this list of files in update-template.sh](https://github.com/navapbc/template-infra/blob/main/template-only-bin/update-template.sh#L17-L28)
 2. Deletions of template files

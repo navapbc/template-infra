@@ -5,7 +5,7 @@
 The master user password is managed by Amazon RDS and Secrets Manager. Managing RDS master user passwords with Secrets Manager provides the following security benefits:
 
 * RDS rotates database credentials regularly, without requiring application changes.
-* Secrets Manager secures database credentials from human access and plain text view. The master password is not even in the terraform state file.
+* Secrets Manager secures database credentials from human access and plain text view. The master password is not even in the Terraform state file.
 
 For more information about the benefits, see [Benefits of managing master user passwords with Secrets Manager](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html#rds-secrets-manager-benefits).
 
