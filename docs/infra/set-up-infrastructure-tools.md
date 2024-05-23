@@ -22,6 +22,12 @@ Then install the version of Terraform you need.
 tfenv install 1.4.6
 ```
 
+You may need to set the Terraform version.
+
+```bash
+tfenv use 1.4.6
+```
+
 If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./intro-to-terraform.md).
 
 ### Install AWS CLI
