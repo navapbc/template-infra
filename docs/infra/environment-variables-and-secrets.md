@@ -40,19 +40,23 @@ module "dev_config" {
 
 Secrets are a specific category of environment variables that need to be handled sensitively. Examples of secrets are authentication credentials such as API keys for external services. Secrets first need to be stored in AWS SSM Parameter Store as a `SecureString`. This section then describes how to make those secrets accessible to the ECS task as environment variables through the `secrets` configuration in the container definition (see AWS documentation on [retrieving Secrets Manager secrets through environment variables](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/secrets-envvar-secrets-manager.html)).
 
-Secrets are defined in the same file that non-sensitive environment variables are defined, in the `app-config` module in the [environment-variables.tf file](/infra/app/app-config/env-config/environment-variables.tf). Modify the `secrets` list to define the secrets that the application will have access to. For each secret, `name` defines the environment variable name, and `ssm_param_name` defines the SSM parameter name that stores the secret value. For example:
+Secrets are defined in the same file that non-sensitive environment variables are defined, in the `app-config` module in the [environment-variables.tf file](/infra/app/app-config/env-config/environment-variables.tf). Modify the `secrets` map to define the secrets that the application will have access to. For each secret, the map key defines the environment variable name. The `managed_by` property, which can be set to `"generated"` or `"manual"`, defines whether or not to generate a random secret or to reference an existing secret that was manually created and stored into AWS SSM. The `secret_store_name` property defines the SSM parameter name that stores the secret value. If `managed_by = "generated"`, then `secret_store_name` is where terraform will store the secret. If `managed_by = "manual"`, then `secret_store_name` is where terraform will look for the existing secret. For example:
 
 ```terraform
 # environment-variables.tf
 
 locals {
-  secrets = [
-    {
-      name           = "SOME_API_KEY"
-      ssm_param_name = "/${var.app_name}-${var.environment}/secret-sauce"
+  secrets = {
+    GENERATED_SECRET = {
+      manage_method     = "generated"
+      secret_store_name = "/${var.app_name}-${var.environment}/generated-secret"
     }
-  ]
+    MANUALLY_CREATED_SECRET = {
+      manage_method     = "manual"
+      secret_store_name = "/${var.app_name}-${var.environment}/manually-created-secret"
+    }
+  }
 }
 ```
 
-> ⚠️ Make sure you store the secret in SSM Parameter Store before you try to add secrets to your application service, or else the service won't be able to start since the ECS Task Executor won't be able to fetch the configured secret.
+> ⚠️ For secrets with `managed_by = "manual"`, make sure you store the secret in SSM Parameter Store *before* you try to add configure your application service with the secrets, or else the service won't be able to start since the ECS Task Executor won't be able to fetch the configured secret.

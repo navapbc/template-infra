@@ -12,12 +12,23 @@ locals {
   # Configuration for secrets
   # List of configurations for defining environment variables that pull from SSM parameter
   # store. Configurations are of the format
-  # { name = "ENV_VAR_NAME", ssm_param_name = "/ssm/param/name" }
-  secrets = [
-    # Example secret
-    # {
-    #   name           = "SECRET_SAUCE"
-    #   ssm_param_name = "/${var.app_name}-${var.environment}/secret-sauce"
+  # {
+  #   ENV_VAR_NAME = {
+  #     manage_method     = "generated" # or "manual" for a secret that was created and stored in SSM manually
+  #     secret_store_name = "/ssm/param/name"
+  #   }
+  # }
+  secrets = {
+    # Example generated secret
+    # RANDOM_SECRET = {
+    #   manage_method     = "generated"
+    #   secret_store_name = "/${var.app_name}-${var.environment}/random-secret"
     # }
-  ]
+
+    # Example secret that references a manually created secret
+    # SECRET_SAUCE = {
+    #   manage_method     = "manual"
+    #   secret_store_name = "/${var.app_name}-${var.environment}/secret-sauce"
+    # }
+  }
 }
