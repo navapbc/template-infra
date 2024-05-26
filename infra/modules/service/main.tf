@@ -98,10 +98,13 @@ resource "aws_ecs_task_definition" "app" {
       portMappings = [
         {
           containerPort = var.container_port,
+          hostPort      = var.container_port,
+          protocol      = "tcp"
         }
       ],
       linuxParameters = {
         capabilities = {
+          add  = []
           drop = ["ALL"]
         },
         initProcessEnabled = true
@@ -114,6 +117,9 @@ resource "aws_ecs_task_definition" "app" {
           "awslogs-stream-prefix" = local.log_stream_prefix
         }
       }
+      mountPoints    = []
+      systemControls = []
+      volumesFrom    = []
     }
   ])
 
