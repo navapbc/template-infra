@@ -24,10 +24,26 @@ on:
         type: string
 
 jobs:
+  get-commit-hash:
+    name: Get commit hash
+    runs-on: ubuntu-latest
+    outputs:
+      commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Get commit hash
+        id: get-commit-hash
+        run: |
+          COMMIT_HASH=$(git rev-parse ${{ inputs.ref }})
+          echo "Commit hash: $COMMIT_HASH"
+          echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
   build-and-publish:
     name: Build and publish
     runs-on: ubuntu-latest
-    concurrency: ${{ github.workflow }}-${{ github.sha }}
+    needs: get-commit-hash
+    concurrency: ${{ github.workflow }}-${{ needs.get-commit-hash.outputs.commit_hash }}
 
     permissions:
       contents: read
@@ -38,14 +54,23 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
 
-      - name: Build release
-        run: make APP_NAME=${{ inputs.app_name }} release-build
-
       - name: Configure AWS credentials
         uses: ./.github/actions/configure-aws-credentials
         with:
           app_name: ${{ inputs.app_name }}
           environment: shared
 
+      - name: Check if image is already published
+        id: check-image-published
+        run: |
+          IS_IMAGE_PUBLISHED=$(./bin/is-image-published.sh "${{ inputs.app_name }}" "${{ inputs.ref }}")
+          echo "Is image published: $IS_IMAGE_PUBLISHED"
+          echo "IS_IMAGE_PUBLISHED=$IS_IMAGE_PUBLISHED" >> "$GITHUB_OUTPUT"
+
+      - name: Build release
+        if: steps.check-image-published.outputs.IS_IMAGE_PUBLISHED == 'false'
+        run: make APP_NAME=${{ inputs.app_name }} release-build
+
       - name: Publish release
+        if: steps.check-image-published.outputs.IS_IMAGE_PUBLISHED == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-publish
