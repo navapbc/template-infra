@@ -1,6 +1,6 @@
 #!/bin/bash
 # Checks if an image tag has already been published to the container repository
-# Prints 1 if so, 0 otherwise
+# Prints "true" if so, "false" otherwise
 
 set -euo pipefail
 
