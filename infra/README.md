@@ -57,8 +57,6 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 
 ### 1️⃣ First time initialization
 
-
-
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
 1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
@@ -79,7 +77,8 @@ To get set up as a new developer on a project that has already been deployed to 
 
 1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
-3. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
+3. [Review the infrastructure style guide](/docs/infra/style-guide.md)
+4. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
 
 ## 📇 Additional reading
 
