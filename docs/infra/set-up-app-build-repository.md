@@ -27,6 +27,14 @@ Now run the following commands to create the resources, making sure to verify th
 make infra-update-app-build-repository APP_NAME=app
 ```
 
+## 3. Check that the build repository was created properly
+
+Run the [Build and publish GitHub Actions workflow](/.github/workflows/build-and-publish.yml) to build your application's image and publish it to the container image registry you just created. If you have the GitHub CLI installed, you can do this using the following command.
+
+```bash
+gh workflow run build-and-publish.yml --field app_name=app --field ref=main
+```
+
 ## Set up application environments
 
 Once you set up the deployment process, you can proceed to [set up application environments](./set-up-app-env.md)
