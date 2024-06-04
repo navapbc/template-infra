@@ -1,5 +1,18 @@
 # Style guide
 
+## Table of contents
+
+- [Style guide](#style-guide)
+  - [Table of contents](#table-of-contents)
+  - [Terraform code style](#terraform-code-style)
+    - [Exceptions and additions to Hashicorp's Terraform style guide](#exceptions-and-additions-to-hashicorps-terraform-style-guide)
+      - [Modules](#modules)
+      - [Variables](#variables)
+      - [.gitignore](#gitignore)
+      - [Integration and unit testing](#integration-and-unit-testing)
+      - [Policy](#policy)
+  - [Shell script style](#shell-script-style)
+
 ## Terraform code style
 
 Follow [Hashicorp's Terraform style guide](https://developer.hashicorp.com/terraform/language/style) when writing Terraform code, with a few exceptions (see below).
