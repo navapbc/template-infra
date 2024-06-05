@@ -19,7 +19,7 @@ def check():
         db.connect_using_iam(migrator_username) as migrator_conn,
     ):
         check_search_path(migrator_conn, schema_name)
-        check_migrator_create_table(migrator_conn, app_username)
+        check_migrator_create_table(migrator_conn)
         check_app_use_table(app_conn)
         cleanup_migrator_drop_table(migrator_conn)
 
@@ -31,10 +31,8 @@ def check_search_path(migrator_conn: Connection, schema_name: str):
     assert db.execute(migrator_conn, "SHOW search_path") == [[schema_name]]
 
 
-def check_migrator_create_table(migrator_conn: Connection, app_username: str):
-    print(
-        f"-- Check that migrator is able to create tables and grant access to app user: {app_username}"
-    )
+def check_migrator_create_table(migrator_conn: Connection):
+    print(f"-- Check that migrator is able to create tables")
     cleanup_migrator_drop_table(migrator_conn)
     db.execute(
         migrator_conn,
