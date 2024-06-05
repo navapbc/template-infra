@@ -33,22 +33,22 @@ def check_search_path(migrator_conn: Connection, schema_name: str):
 
 def check_migrator_create_table(migrator_conn: Connection, app_username: str):
     print(
-        "-- Check that migrator is able to create tables and grant access to app user: %s",
-        app_username,
+        f"-- Check that migrator is able to create tables and grant access to app user: {app_username}"
     )
     cleanup_migrator_drop_table(migrator_conn)
     db.execute(
-        migrator_conn, "CREATE TABLE IF NOT EXISTS temporary(created_at TIMESTAMP)"
+        migrator_conn,
+        "CREATE TABLE IF NOT EXISTS role_manager_test(created_at TIMESTAMP)",
     )
 
 
 def check_app_use_table(app_conn: Connection):
     app_username = app_conn.user.decode("utf-8")
     print(f"-- Check that {app_username} is able to read and write from the table")
-    db.execute(app_conn, "INSERT INTO temporary (created_at) VALUES (NOW())")
-    db.execute(app_conn, "SELECT * FROM temporary")
+    db.execute(app_conn, "INSERT INTO role_manager_test (created_at) VALUES (NOW())")
+    db.execute(app_conn, "SELECT * FROM role_manager_test")
 
 
 def cleanup_migrator_drop_table(migrator_conn: Connection):
-    print("-- Clean up temporary table if it exists")
-    db.execute(migrator_conn, "DROP TABLE IF EXISTS temporary")
+    print("-- Clean up role_manager_test table if it exists")
+    db.execute(migrator_conn, "DROP TABLE IF EXISTS role_manager_test")
