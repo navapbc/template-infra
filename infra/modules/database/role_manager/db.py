@@ -34,12 +34,7 @@ def get_master_password() -> str:
     param_name = os.environ["DB_PASSWORD_PARAM_NAME"]
     print("Fetching password from parameter store:\n%s" % param_name)
     result = json.loads(
-        ssm.get_parameter(
-            Name=param_name,
-            WithDecryption=True,
-        )[
-            "Parameter"
-        ]["Value"]
+        ssm.get_parameter(Name=param_name, WithDecryption=True)["Parameter"]["Value"]
     )
     return result["password"]
 

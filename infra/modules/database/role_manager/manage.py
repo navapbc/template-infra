@@ -154,7 +154,7 @@ def configure_default_privileges():
     Configure default privileges so that future tables, sequences, and routines
     created by the migrator user can be accessed by the app user.
     You can only alter default privileges for the current role, so we need to
-    run these SQL queries as the migrator user rather than as the maste user.
+    run these SQL queries as the migrator user rather than as the master user.
     """
     migrator_username = os.environ.get("MIGRATOR_USER")
     schema_name = os.environ.get("DB_SCHEMA")

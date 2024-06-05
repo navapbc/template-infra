@@ -43,7 +43,8 @@ def check_migrator_create_table(migrator_conn: Connection, app_username: str):
 
 
 def check_app_use_table(app_conn: Connection):
-    print("-- Check that app is able to read and write from the table")
+    app_username = app_conn.user.decode("utf-8")
+    print(f"-- Check that {app_username} is able to read and write from the table")
     db.execute(app_conn, "INSERT INTO temporary (created_at) VALUES (NOW())")
     db.execute(app_conn, "SELECT * FROM temporary")
 
