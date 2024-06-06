@@ -18,6 +18,7 @@ cp -r \
   infra \
   Makefile \
   .dockleconfig \
+  .gitignore \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
