@@ -18,10 +18,10 @@ cp -r \
   infra \
   Makefile \
   .dockleconfig \
+  .gitignore \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
-  .gitignore \
   "$CUR_DIR"
 
 # Store template version in a file
