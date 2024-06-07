@@ -4,30 +4,30 @@
 # that the Postgres users were configured properly.
 #
 # Positional parameters:
-#   APP_NAME (required) – the name of subdirectory of /infra that holds the
+#   app_name (required) – the name of subdirectory of /infra that holds the
 #     application's infrastructure code.
-#   ENVIRONMENT (required) - the name of the application environment (e.g. dev
+#   environment (required) - the name of the application environment (e.g. dev,
 #     staging, prod)
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
-APP_NAME=$1
-ENVIRONMENT=$2
+app_name=$1
+environment=$2
 
-./bin/terraform-init.sh "infra/$APP_NAME/database" "$ENVIRONMENT"
-DB_ROLE_MANAGER_FUNCTION_NAME=$(terraform -chdir="infra/$APP_NAME/database" output -raw role_manager_function_name)
+./bin/terraform-init.sh "infra/$app_name/database" "$environment"
+db_role_manager_function_name=$(terraform -chdir="infra/$app_name/database" output -raw role_manager_function_name)
 
 echo "======================="
 echo "Checking database roles"
 echo "======================="
 echo "Input parameters"
-echo "  APP_NAME=$APP_NAME"
-echo "  ENVIRONMENT=$ENVIRONMENT"
+echo "  app_name=$app_name"
+echo "  environment=$environment"
 echo
-echo "Invoking Lambda function: $DB_ROLE_MANAGER_FUNCTION_NAME"
+echo "Invoking Lambda function: $db_role_manager_function_name"
 echo
-CLI_RESPONSE=$(aws lambda invoke \
-  --function-name "$DB_ROLE_MANAGER_FUNCTION_NAME" \
+cli_response=$(aws lambda invoke \
+  --function-name "$db_role_manager_function_name" \
   --no-cli-pager \
   --log-type Tail \
   --payload "$(echo -n '"check"' | base64)" \
@@ -35,14 +35,14 @@ CLI_RESPONSE=$(aws lambda invoke \
   response.json)
 
 # Print logs out (they are returned base64 encoded)
-echo "$CLI_RESPONSE" | jq -r '.LogResult' | base64 --decode
+echo "$cli_response" | jq -r '.LogResult' | base64 --decode
 echo
 echo "Lambda function response:"
 cat response.json
 rm response.json
 
 # Exit with nonzero status if function failed
-FUNCTION_ERROR=$(echo "$CLI_RESPONSE" | jq -r '.FunctionError')
-if [ "$FUNCTION_ERROR" != "null" ]; then
+function_error=$(echo "$cli_response" | jq -r '.FunctionError')
+if [ "$function_error" != "null" ]; then
   exit 1
 fi
