@@ -2,45 +2,45 @@
 
 set -euo pipefail
 
-APP_NAME=$1
-IMAGE_NAME=$2
-IMAGE_TAG=$3
+app_name=$1
+image_name=$2
+image_tag=$3
 
 echo "---------------"
 echo "Publish release"
 echo "---------------"
 echo "Input parameters:"
-echo "  APP_NAME=$APP_NAME"
-echo "  IMAGE_NAME=$IMAGE_NAME"
-echo "  IMAGE_TAG=$IMAGE_TAG"
+echo "  app_name=$app_name"
+echo "  image_name=$image_name"
+echo "  image_tag=$image_tag"
 
 # Need to init module when running in CD since GitHub actions does a fresh checkout of repo
-terraform -chdir="infra/$APP_NAME/app-config" init > /dev/null
-terraform -chdir="infra/$APP_NAME/app-config" apply -auto-approve > /dev/null
-IMAGE_REPOSITORY_NAME=$(terraform -chdir="infra/$APP_NAME/app-config" output -raw image_repository_name)
+terraform -chdir="infra/$app_name/app-config" init > /dev/null
+terraform -chdir="infra/$app_name/app-config" apply -auto-approve > /dev/null
+image_repository_name=$(terraform -chdir="infra/$app_name/app-config" output -raw image_repository_name)
 
-REGION=$(./bin/current-region.sh)
-read -r IMAGE_REGISTRY_ID IMAGE_REPOSITORY_URL <<< "$(aws ecr describe-repositories --repository-names "$IMAGE_REPOSITORY_NAME" --query "repositories[0].[registryId,repositoryUri]" --output text)"
-IMAGE_REGISTRY="$IMAGE_REGISTRY_ID.dkr.ecr.$REGION.amazonaws.com"
+region=$(./bin/current-region.sh)
+read -r image_registry_id image_repository_url <<< "$(aws ecr describe-repositories --repository-names "$image_repository_name" --query "repositories[0].[registryId,repositoryUri]" --output text)"
+image_registry="$image_registry_id.dkr.ecr.$region.amazonaws.com"
 
 echo "Build repository info:"
-echo "  REGION=$REGION"
-echo "  IMAGE_REGISTRY=$IMAGE_REGISTRY"
-echo "  IMAGE_REPOSITORY_NAME=$IMAGE_REPOSITORY_NAME"
-echo "  IMAGE_REPOSITORY_URL=$IMAGE_REPOSITORY_URL"
+echo "  region=$region"
+echo "  image_registry=$image_registry"
+echo "  image_repository_name=$image_repository_name"
+echo "  image_repository_url=$image_repository_url"
 echo
 echo "Authenticating Docker with ECR"
-aws ecr get-login-password --region "$REGION" \
-  | docker login --username AWS --password-stdin "$IMAGE_REGISTRY"
+aws ecr get-login-password --region "$region" \
+  | docker login --username AWS --password-stdin "$image_registry"
 echo
 echo "Check if tag has already been published..."
-RESULT=""
-RESULT=$(aws ecr describe-images --repository-name "$IMAGE_REPOSITORY_NAME" --image-ids "imageTag=$IMAGE_TAG" --region "$REGION" 2> /dev/null ) || true
-if [ -n "$RESULT" ];then
-  echo "Image with tag $IMAGE_TAG already published"
+result=""
+result=$(aws ecr describe-images --repository-name "$image_repository_name" --image-ids "imageTag=$image_tag" --region "$region" 2> /dev/null ) || true
+if [ -n "$result" ];then
+  echo "Image with tag $image_tag already published"
   exit 0
 fi
 
 echo "New tag. Publishing image"
-docker tag "$IMAGE_NAME:$IMAGE_TAG" "$IMAGE_REPOSITORY_URL:$IMAGE_TAG"
-docker push "$IMAGE_REPOSITORY_URL:$IMAGE_TAG"
+docker tag "$image_name:$image_tag" "$image_repository_url:$image_tag"
+docker push "$image_repository_url:$image_tag"
