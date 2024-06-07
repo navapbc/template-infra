@@ -4,21 +4,21 @@
 
 set -euo pipefail
 
-APP_NAME=$1
-GIT_REF=$2
+app_name=$1
+git_ref=$2
 
 # Get commit hash
-IMAGE_TAG=$(git rev-parse "$GIT_REF")
+image_tag=$(git rev-parse "$git_ref")
 
 # Need to init module when running in CD since GitHub actions does a fresh checkout of repo
-terraform -chdir="infra/$APP_NAME/app-config" init > /dev/null
-terraform -chdir="infra/$APP_NAME/app-config" apply -auto-approve > /dev/null
-IMAGE_REPOSITORY_NAME=$(terraform -chdir="infra/$APP_NAME/app-config" output -raw image_repository_name)
-REGION=$(./bin/current-region.sh)
+terraform -chdir="infra/$app_name/app-config" init > /dev/null
+terraform -chdir="infra/$app_name/app-config" apply -auto-approve > /dev/null
+image_repository_name=$(terraform -chdir="infra/$app_name/app-config" output -raw image_repository_name)
+region=$(./bin/current-region.sh)
 
-RESULT=""
-RESULT=$(aws ecr describe-images --repository-name "$IMAGE_REPOSITORY_NAME" --image-ids "imageTag=$IMAGE_TAG" --region "$REGION" 2> /dev/null ) || true
-if [ -n "$RESULT" ];then
+result=""
+result=$(aws ecr describe-images --repository-name "$image_repository_name" --image-ids "imageTag=$image_tag" --region "$region" 2> /dev/null ) || true
+if [ -n "$result" ];then
   echo "true"
 else
   echo "false"
