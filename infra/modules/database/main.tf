@@ -34,6 +34,7 @@ resource "aws_rds_cluster" "db" {
   manage_master_user_password = true
   storage_encrypted           = true
   kms_key_id                  = aws_kms_key.db.arn
+  allow_major_version_upgrade = false
 
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.rds_query_logging.name
 
@@ -76,7 +77,7 @@ resource "aws_kms_key" "db" {
 # -------------
 
 resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
-  name        = var.name
+  name        = "${var.name}-${local.engine_major_version}"
   family      = "aurora-postgresql${local.engine_major_version}"
   description = "Default cluster parameter group"
 
