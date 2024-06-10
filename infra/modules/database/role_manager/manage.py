@@ -89,6 +89,11 @@ def configure_database(conn: Connection) -> None:
     schema_name = os.environ.get("DB_SCHEMA")
     database_name = os.environ.get("DB_NAME")
 
+    # This is redundant as of Postgres 15, but leaving in for
+    # compatibility with projects using older versions of Postgres.
+    print("---- Revoking default access on public schema")
+    db.execute(conn, "REVOKE CREATE ON SCHEMA public FROM PUBLIC")
+    
     print("---- Revoking database access from public role")
     db.execute(conn, f"REVOKE ALL ON DATABASE {identifier(database_name)} FROM PUBLIC")
     print(f"---- Setting default search path to schema {schema_name}")
