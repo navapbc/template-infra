@@ -133,6 +133,11 @@ infra-check-app-database-roles: ## Check that app database roles have been confi
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
 
+infra-update-app-database-add-pgvector: ## Add pgvector extension to the database
+	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
+	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
+	./bin/update-database-add-pgvector.sh $(APP_NAME) $(ENVIRONMENT)
+
 infra-check-compliance: ## Run compliance checks
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
 

@@ -65,6 +65,17 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 }
 ```
 
+## 4. (Optional) Add the pgvector extension to Postgres
+
+[pgvector](https://github.com/pgvector/pgvector) is an extension for Postgres that adds support for a new `vector` column type, allowing similarity search between embeddings.
+
+Recent versions of AWS Aurora include the extension, but it must be created with the rds_superuser role. If your application needs to use vectors, create the extension with:
+
+```bash
+make infra-update-app-database-add-pgvector
+```
+
+
 ### Important note on Postgres table permissions
 
 Before creating migrations that create tables, first create a migration that includes the following SQL command (or equivalent if your migrations are written in a general-purpose programming language):
