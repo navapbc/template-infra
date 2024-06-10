@@ -65,16 +65,6 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 }
 ```
 
-## 4. (Optional) Add the pgvector extension to Postgres
-
-[pgvector](https://github.com/pgvector/pgvector) is an extension for Postgres that adds support for a new `vector` column type, allowing similarity search between embeddings.
-
-Recent versions of AWS Aurora include the extension, but it must be created with the rds_superuser role. If your application needs to use vectors, create the extension with:
-
-```bash
-make infra-update-app-database-add-pgvector
-```
-
 
 ### Important note on Postgres table permissions
 
@@ -88,7 +78,18 @@ This will cause all future tables created by the `migrator` user to automaticall
 
 Why is this needed? The reason is that the `migrator` role will be used by the migration task to run database migrations (creating tables, altering tables, etc.), while the `app` role will be used by the web service to access the database. Moreover, in Postgres, new tables won't automatically be accessible by roles other than the creator unless specifically granted, even if those other roles have usage access to the schema that the tables are created in. In other words, if the `migrator` user created a new table `foo` in the `app` schema, the `app` user will not automatically be able to access it by default.
 
-## 4. Check that database roles have been configured properly
+## 4. (Optional) Add the pgvector extension to Postgres
+
+[pgvector](https://github.com/pgvector/pgvector) is an extension for Postgres that adds support for a new `vector` column type, allowing similarity search between embeddings.
+
+Recent versions of AWS Aurora include the extension, but it must be created with the rds_superuser role. If your application needs to use vectors, create the extension with:
+
+```bash
+make infra-update-app-database-add-pgvector APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+```
+
+
+## 5. Check that database roles have been configured properly
 
 ```bash
 make infra-check-app-database-roles APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
