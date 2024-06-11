@@ -19,7 +19,7 @@ environment=$2
 ./bin/terraform-init.sh "infra/$app_name/database" "$environment"
 db_role_manager_function_name=$(terraform -chdir="infra/$app_name/database" output -raw role_manager_function_name)
 db_config=$(terraform -chdir="infra/$app_name/database" output -json db_config)
-payload='{"action":"manage","config":'$db_config'}'
+payload="{\"action\":\"manage\",\"config\":\"${db_config}\"}" 
 
 echo "================================"
 echo "Creating/updating database users"
