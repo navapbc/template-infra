@@ -50,7 +50,7 @@ def check_app_use_table(app_conn: Connection):
 
 def check_pgvector_extension(app_conn: Connection):
     print("-- Check that pgvector extension is available")
-    result = app_conn.run("SELECT * FROM pg_extension WHERE extname='vector'")
+    result = db.execute(app_conn, "SELECT * FROM pg_extension WHERE extname='vector'")
     if len(result) < 1:
         print("---- pgvector extension is NOT available")
     else:

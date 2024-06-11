@@ -26,6 +26,24 @@ make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
 
+### (Optional) Enable the pgvector extension
+[pgvector](https://github.com/pgvector/pgvector) is an extension for Postgres that adds support for a new `vector` column type, allowing similarity search between embeddings.
+
+If your application will need to use this extension, set `enable_pgvector_extension = true` in your app config.
+
+If you don't know if you will need it yet, you can skip this step and enable it later.
+
+```terraform
+# infra/app/app-config/env-config/outputs.tf
+
+output "database_config" {
+  value = var.has_database ? {
+    ...
+    enable_pgvector_extension = true
+  } : null
+}
+```
+
 ## 2. Create database resources
 
 Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes. This can take over 5 minutes.

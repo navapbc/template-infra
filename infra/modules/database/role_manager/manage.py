@@ -16,8 +16,7 @@ def manage(enable_pgvector_extension=False):
     with db.connect_as_master_user() as master_conn:
         print_current_db_config(master_conn)
         configure_database(master_conn)
-        if enable_pgvector_extension:
-            configure_pgvector_extension(master_conn)
+        configure_pgvector_extension(master_conn, enable_pgvector_extension)
         roles, schema_privileges = print_current_db_config(master_conn)
         roles_with_groups = get_roles_with_groups(master_conn)
 
@@ -207,6 +206,10 @@ def print_schema_privileges(schema_privileges: list[tuple[str, str]]) -> None:
         print(f"------ Schema {name=} {acl=}")
 
 
-def configure_pgvector_extension(conn: Connection):
-    print("-- Configuring pgvector extension")
-    db.execute(conn, "CREATE EXTENSION IF NOT EXISTS vector SCHEMA pg_catalog")
+def configure_pgvector_extension(conn: Connection, enable=False):
+    if enable:
+        print("-- Enabling pgvector extension")
+        db.execute(conn, "CREATE EXTENSION IF NOT EXISTS vector SCHEMA pg_catalog")
+    else:
+        print("-- Disabling or skipping pgvector extension")
+        db.execute(conn, "DROP EXTENSION IF EXISTS vector")
