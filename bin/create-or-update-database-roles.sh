@@ -18,8 +18,8 @@ ENVIRONMENT=$2
 
 ./bin/terraform-init.sh "infra/$APP_NAME/database" "$ENVIRONMENT"
 DB_ROLE_MANAGER_FUNCTION_NAME=$(terraform -chdir="infra/$APP_NAME/database" output -raw role_manager_function_name)
-SUPERUSER_EXTENSIONS=$(terraform -chdir="infra/$APP_NAME/database" output -json superuser_extensions)
-PAYLOAD='{"action":"manage","config":{"superuser_extensions":'$SUPERUSER_EXTENSIONS'}}'
+DB_CONFIG=$(terraform -chdir="infra/$APP_NAME/database" output -json db_config)
+PAYLOAD='{"action":"manage","config":'$DB_CONFIG'}'
 
 echo "================================"
 echo "Creating/updating database users"
@@ -29,6 +29,8 @@ echo "  APP_NAME=$APP_NAME"
 echo "  ENVIRONMENT=$ENVIRONMENT"
 echo
 echo "Invoking Lambda function: $DB_ROLE_MANAGER_FUNCTION_NAME"
+echo "  Payload: $PAYLOAD"
+echo
 CLI_RESPONSE=$(aws lambda invoke \
   --function-name "$DB_ROLE_MANAGER_FUNCTION_NAME" \
   --no-cli-pager \
