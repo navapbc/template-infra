@@ -9,4 +9,4 @@ def lambda_handler(event, context):
         elif event["action"] == "manage":
             return manage(event["config"])
     
-    raise Exception("Invalid payload")
+    raise Exception("Invalid payload, could not find an action to perform in the lambda handler")
