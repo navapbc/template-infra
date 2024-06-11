@@ -209,5 +209,4 @@ def print_schema_privileges(schema_privileges: list[tuple[str, str]]) -> None:
 
 def configure_pgvector_extension(conn: Connection):
     print("-- Configuring pgvector extension")
-    with db.connect_as_master_user() as conn:
-        conn.run("CREATE EXTENSION IF NOT EXISTS vector SCHEMA pg_catalog")
+    db.execute(conn, "CREATE EXTENSION IF NOT EXISTS vector SCHEMA pg_catalog")
