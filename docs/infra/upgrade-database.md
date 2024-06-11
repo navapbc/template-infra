@@ -11,7 +11,7 @@ These steps are a minimal starting point for the changes you'll need to make. As
 
 1. Set `allow_major_version_upgrade = true`
 
-Set this the `aws_rds_cluster` resource in [infra/modules/database/main.tf#L20](../../infra/modules/database/main.tf).
+Set the `aws_rds_cluster` resource in [infra/modules/database/main.tf#L20](../../infra/modules/database/main.tf).
 
 2. (if needed) Update the `serverlessv2_scaling_configuration`
 
@@ -60,7 +60,10 @@ resource "aws_rds_cluster" "db" {
 
 Note that the upgrade is not applied immediately; it is queued for the next maintenance window.
 
-If you wish to apply the upgrade immediately, you can manually change the engine version to match in the AWS Console.
+If you wish to apply the upgrade immediately, you can manually change the engine version to match in the AWS Console. See also:
+
+ - https://developer.hashicorp.com/terraform/tutorials/aws/aws-rds
+ - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html
 
 
 ## 2. Removing the old DBParameter group
@@ -68,3 +71,14 @@ If you wish to apply the upgrade immediately, you can manually change the engine
 Once the upgrade has been applied, you can remove the old parameter group.
 
 You should also remove `allow_major_version_upgrade = true` (or set it to false).
+
+If you had to increase your autoscaling settings to support the upgrade, you may wish to revert that change now as well.
+
+Finally, the new DBParameter group will have a new resource name (e.g., in the example above, `rds_query_logging_15`). You can revert this to the original name (`rds_query_logging`) without modifying the infrastructure by using [Terraform's moved block](https://developer.hashicorp.com/terraform/cli/state/move), e.g.:
+
+```terraform
+moved {
+  from = aws_rds_cluster_parameter_group.rds_query_logging_15
+  to   = aws_rds_cluster_parameter_group.rds_query_logging
+}
+```

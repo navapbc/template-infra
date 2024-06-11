@@ -89,8 +89,10 @@ def configure_database(conn: Connection) -> None:
     schema_name = os.environ.get("DB_SCHEMA")
     database_name = os.environ.get("DB_NAME")
 
-    # This is redundant as of Postgres 15, but leaving in for
-    # compatibility with projects using older versions of Postgres.
+    # In Postgres 15 and higher, the CREATE privilege on the public
+    # schema is already revoked/removed from all users except the
+    # database owner. However, we are explicitly revoking access anyways
+    # for projects that wish to use earlier versions of Postgres.
     print("---- Revoking default access on public schema")
     db.execute(conn, "REVOKE CREATE ON SCHEMA public FROM PUBLIC")
     
