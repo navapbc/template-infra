@@ -47,7 +47,7 @@ output "database_config" {
 
 If you're not sure whether you need any of these extensions, you can skip this step and come back to it later.
 
-Note that this should only be used for extensions that require the `rds_superuser` role to be created. For most extensions, you should instead enable them as part of your application's standard database migrations.
+Note that this should only be used for extensions that require the `rds_superuser` role to be created. For many extensions, you can instead enable them as part of your application's standard database migrations. This [list of trusted extensions from AWS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts.General.Extensions.Trusted) shows which extensions can be enabled via a database migrations.
 
 ## 2. Create database resources
 
