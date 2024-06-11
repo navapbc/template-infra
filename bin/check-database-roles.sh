@@ -33,7 +33,7 @@ cli_response=$(aws lambda invoke \
   --function-name "$db_role_manager_function_name" \
   --no-cli-pager \
   --log-type Tail \
-  --payload "$(echo -n $payload | base64)" \
+  --payload "$(echo -n "$payload" | base64)" \
   --output json \
   response.json)
 
