@@ -12,6 +12,7 @@ output "database_config" {
     schema_name                 = var.app_name
     app_access_policy_name      = "${var.app_name}-${var.environment}-app-access"
     migrator_access_policy_name = "${var.app_name}-${var.environment}-migrator-access"
+    enable_pgvector_extension   = false
   } : null
 }
 
