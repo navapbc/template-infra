@@ -7,7 +7,7 @@ from pg8000.native import Connection, identifier
 import db
 
 
-def manage(enable_pgvector_extension=False):
+def manage(config: dict):
     """Manage database roles, schema, and privileges"""
 
     print(
@@ -16,7 +16,8 @@ def manage(enable_pgvector_extension=False):
     with db.connect_as_master_user() as master_conn:
         print_current_db_config(master_conn)
         configure_database(master_conn)
-        configure_pgvector_extension(master_conn, enable_pgvector_extension)
+        if "superuser_extensions" in config:
+            configure_superuser_extensions(master_conn, config["superuser_extensions"])
         roles, schema_privileges = print_current_db_config(master_conn)
         roles_with_groups = get_roles_with_groups(master_conn)
 
@@ -206,10 +207,11 @@ def print_schema_privileges(schema_privileges: list[tuple[str, str]]) -> None:
         print(f"------ Schema {name=} {acl=}")
 
 
-def configure_pgvector_extension(conn: Connection, enable=False):
-    if enable:
-        print("-- Enabling pgvector extension")
-        db.execute(conn, "CREATE EXTENSION IF NOT EXISTS vector SCHEMA pg_catalog")
-    else:
-        print("-- Disabling or skipping pgvector extension")
-        db.execute(conn, "DROP EXTENSION IF EXISTS vector")
+def configure_superuser_extensions(conn: Connection, superuser_extensions: dict):
+    for extension, should_be_enabled in superuser_extensions.items():
+        if should_be_enabled:
+            print(f"-- Enabling {extension} extension")
+            db.execute(conn, "CREATE EXTENSION IF NOT EXISTS %s SCHEMA pg_catalog", params=(extension,))
+        else:
+            print("-- Disabling or skipping {extension} extension")
+            db.execute(conn, "DROP EXTENSION IF EXISTS %s", params=(extension,)

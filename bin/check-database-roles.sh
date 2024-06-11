@@ -16,6 +16,8 @@ ENVIRONMENT=$2
 
 ./bin/terraform-init.sh "infra/$APP_NAME/database" "$ENVIRONMENT"
 DB_ROLE_MANAGER_FUNCTION_NAME=$(terraform -chdir="infra/$APP_NAME/database" output -raw role_manager_function_name)
+SUPERUSER_EXTENSIONS=$(terraform -chdir="infra/$APP_NAME/database" output -json superuser_extensions)
+PAYLOAD='{"action":"check","config":{"superuser_extensions":'$SUPERUSER_EXTENSIONS'}}'
 
 echo "======================="
 echo "Checking database roles"
@@ -30,7 +32,7 @@ CLI_RESPONSE=$(aws lambda invoke \
   --function-name "$DB_ROLE_MANAGER_FUNCTION_NAME" \
   --no-cli-pager \
   --log-type Tail \
-  --payload "$(echo -n '"check"' | base64)" \
+  --payload "$(echo -n $PAYLOAD | base64)" \
   --output json \
   response.json)
 

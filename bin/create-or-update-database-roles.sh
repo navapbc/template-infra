@@ -18,12 +18,9 @@ ENVIRONMENT=$2
 
 ./bin/terraform-init.sh "infra/$APP_NAME/database" "$ENVIRONMENT"
 DB_ROLE_MANAGER_FUNCTION_NAME=$(terraform -chdir="infra/$APP_NAME/database" output -raw role_manager_function_name)
-ENABLE_PGVECTOR_EXTENSION=$(terraform -chdir="infra/$APP_NAME/database" output -raw enable_pgvector_extension)
+SUPERUSER_EXTENSIONS=$(terraform -chdir="infra/$APP_NAME/database" output -json superuser_extensions)
+PAYLOAD='{"action":"manage","superuser_extensions":'$SUPERUSER_EXTENSIONS'}'
 
-PAYLOAD_OPTION=""
-if [ "$ENABLE_PGVECTOR_EXTENSION" = "true" ]; then
-  PAYLOAD_OPTION="--payload $(echo -n '"enable-pgvector-extension"' | base64)"
-fi
 
 echo "================================"
 echo "Creating/updating database users"
@@ -37,6 +34,7 @@ CLI_RESPONSE=$(aws lambda invoke \
   --function-name "$DB_ROLE_MANAGER_FUNCTION_NAME" \
   --no-cli-pager \
   --log-type Tail \
+  --payload "$(echo -n $PAYLOAD | base64)" \
   --output json \
   $PAYLOAD_OPTION \
   response.json)

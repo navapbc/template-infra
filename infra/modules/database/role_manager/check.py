@@ -5,7 +5,7 @@ from pg8000.native import Connection
 import db
 
 
-def check():
+def check(config: dict):
     """Check that database roles, schema, and privileges were
     properly configured
     """
@@ -21,7 +21,8 @@ def check():
         check_search_path(migrator_conn, schema_name)
         check_migrator_create_table(migrator_conn)
         check_app_use_table(app_conn)
-        check_pgvector_extension(app_conn)
+        if "superuser_extensions" in config:
+            check_superuser_extensions(app_conn, config["superuser_extensions"])
         cleanup_migrator_drop_table(migrator_conn)
 
     return {"success": True}
@@ -48,15 +49,17 @@ def check_app_use_table(app_conn: Connection):
     db.execute(app_conn, "SELECT * FROM role_manager_test")
 
 
-def check_pgvector_extension(app_conn: Connection):
-    print("-- Check that pgvector extension is available")
-    result = db.execute(app_conn, "SELECT * FROM pg_extension WHERE extname='vector'")
-    if len(result) < 1:
-        print("---- pgvector extension is NOT available")
-    else:
-        print("----   pgvector extension is available")
+def check_superuser_extensions(app_conn: Connection, superuser_extensions: dict):
+    for extension, should_be_enabled in superuser_extensions.items():
+        print(f"-- Check that {extension} extension is {"enabled" if should_be_enabled else "disabled"}")
+        result = db.execute(app_conn, "SELECT * FROM pg_extension WHERE extname=%s", params=(extension,))
+        is_enabled = len(result) > 0
+        if (should_be_enabled and is_enabled) or (not should_be_enabled and not is_enabled):
+            print(f"---- Success, {extension} is {"enabled" if is_enabled else "disabled"}")
+        else:
+            print(f"---- Warning, {extension} is {"enabled" if is_enabled else "disabled"}")
 
 
-def cleanup_migrator_drop_table(migrator_conn: Connection):
+def cleanup_migrator_drop_table(migrator_conn: Connection),:
     print("-- Clean up role_manager_test table if it exists")
     db.execute(migrator_conn, "DROP TABLE IF EXISTS role_manager_test")
