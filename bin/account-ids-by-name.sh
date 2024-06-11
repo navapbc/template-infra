@@ -4,21 +4,20 @@
 # <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend in the infra/accounts directory.
 set -euo pipefail
 
-
 # We use script dir to make this script agnostic to where it's called from.
 # This is needed since this script its called from infra/<app>/build-repository
 # in an external data source
-SCRIPT_DIR=$(dirname "$0")
+script_dir=$(dirname "$0")
 
-KEY_VALUE_PAIRS=()
-BACKEND_CONFIG_FILE_PATHS=$(ls -1 "$SCRIPT_DIR"/../infra/accounts/*.*.s3.tfbackend)
+key_value_pairs=()
+backend_config_file_paths=$(ls -1 "$script_dir"/../infra/accounts/*.*.s3.tfbackend)
 
-for BACKEND_CONFIG_FILE_PATH in $BACKEND_CONFIG_FILE_PATHS; do 
-  BACKEND_CONFIG_FILE=$(basename "$BACKEND_CONFIG_FILE_PATH")
-  BACKEND_CONFIG_NAME="${BACKEND_CONFIG_FILE/.s3.tfbackend/}"
-  IFS='.' read -r ACCOUNT_NAME ACCOUNT_ID <<< "$BACKEND_CONFIG_NAME"
-  KEY_VALUE_PAIRS+=("\"$ACCOUNT_NAME\":\"$ACCOUNT_ID\"")
+for backend_config_file_path in $backend_config_file_paths; do
+  backend_config_file=$(basename "$backend_config_file_path")
+  backend_config_name="${backend_config_file/.s3.tfbackend/}"
+  IFS='.' read -r account_name account_id <<< "$backend_config_name"
+  key_value_pairs+=("\"$account_name\":\"$account_id\"")
 done
 
 IFS=","
-echo "{${KEY_VALUE_PAIRS[*]}}"
+echo "{${key_value_pairs[*]}}"
