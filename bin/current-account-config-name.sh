@@ -4,8 +4,9 @@
 # infra/accounts that matches "<account name>.<account id>.s3.tfbackend".
 # The config name is "<account name>.<account id>""
 set -euo pipefail
-CURRENT_ACCOUNT_ID=$(./bin/current-account-id.sh)
-BACKEND_CONFIG_FILE_PATH=$(ls -1 infra/accounts/*."$CURRENT_ACCOUNT_ID".s3.tfbackend)
-BACKEND_CONFIG_FILE=$(basename "$BACKEND_CONFIG_FILE_PATH")
-BACKEND_CONFIG_NAME="${BACKEND_CONFIG_FILE/.s3.tfbackend/}"
-echo "$BACKEND_CONFIG_NAME"
+
+current_account_id=$(./bin/current-account-id.sh)
+backend_config_file_path=$(ls -1 infra/accounts/*."$current_account_id".s3.tfbackend)
+backend_config_file=$(basename "$backend_config_file_path")
+backend_config_name="${backend_config_file/.s3.tfbackend/}"
+echo "$backend_config_name"
