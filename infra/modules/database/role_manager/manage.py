@@ -211,7 +211,7 @@ def configure_superuser_extensions(conn: Connection, superuser_extensions: dict)
     for extension, should_be_enabled in superuser_extensions.items():
         if should_be_enabled:
             print(f"-- Enabling {extension} extension")
-            db.execute(conn, "CREATE EXTENSION IF NOT EXISTS %s SCHEMA pg_catalog", params=(extension,))
+            db.execute(conn, f"CREATE EXTENSION IF NOT EXISTS {identifier(extension)} SCHEMA pg_catalog")
         else:
-            print("-- Disabling or skipping {extension} extension")
-            db.execute(conn, "DROP EXTENSION IF EXISTS %s", params=(extension,)
+            print(f"-- Disabling or skipping {extension} extension")
+            db.execute(conn, f"DROP EXTENSION IF EXISTS {identifier(extension)}")

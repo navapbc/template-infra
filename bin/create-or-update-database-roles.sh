@@ -19,8 +19,7 @@ ENVIRONMENT=$2
 ./bin/terraform-init.sh "infra/$APP_NAME/database" "$ENVIRONMENT"
 DB_ROLE_MANAGER_FUNCTION_NAME=$(terraform -chdir="infra/$APP_NAME/database" output -raw role_manager_function_name)
 SUPERUSER_EXTENSIONS=$(terraform -chdir="infra/$APP_NAME/database" output -json superuser_extensions)
-PAYLOAD='{"action":"manage","superuser_extensions":'$SUPERUSER_EXTENSIONS'}'
-
+PAYLOAD='{"action":"manage","config":{"superuser_extensions":'$SUPERUSER_EXTENSIONS'}}'
 
 echo "================================"
 echo "Creating/updating database users"
@@ -36,7 +35,6 @@ CLI_RESPONSE=$(aws lambda invoke \
   --log-type Tail \
   --payload "$(echo -n $PAYLOAD | base64)" \
   --output json \
-  $PAYLOAD_OPTION \
   response.json)
 
 # Print logs out (they are returned base64 encoded)

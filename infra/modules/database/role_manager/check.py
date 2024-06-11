@@ -1,6 +1,6 @@
 import os
 
-from pg8000.native import Connection
+from pg8000.native import Connection, literal
 
 import db
 
@@ -50,16 +50,19 @@ def check_app_use_table(app_conn: Connection):
 
 
 def check_superuser_extensions(app_conn: Connection, superuser_extensions: dict):
+    def to_str(enabled):
+        return "enabled" if enabled else "disabled"
+
     for extension, should_be_enabled in superuser_extensions.items():
-        print(f"-- Check that {extension} extension is {"enabled" if should_be_enabled else "disabled"}")
-        result = db.execute(app_conn, "SELECT * FROM pg_extension WHERE extname=%s", params=(extension,))
+        print(f"-- Check that {extension} extension is {to_str(should_be_enabled)}")
+        result = db.execute(app_conn, f"SELECT * FROM pg_extension WHERE extname={literal(extension)}")
         is_enabled = len(result) > 0
         if (should_be_enabled and is_enabled) or (not should_be_enabled and not is_enabled):
-            print(f"---- Success, {extension} is {"enabled" if is_enabled else "disabled"}")
+            print(f"---- Success, {extension} is {to_str(is_enabled)}")
         else:
-            print(f"---- Warning, {extension} is {"enabled" if is_enabled else "disabled"}")
+            print(f"---- Warning, {extension} is {to_str(is_enabled)}")
 
 
-def cleanup_migrator_drop_table(migrator_conn: Connection),:
+def cleanup_migrator_drop_table(migrator_conn: Connection):
     print("-- Clean up role_manager_test table if it exists")
     db.execute(migrator_conn, "DROP TABLE IF EXISTS role_manager_test")
