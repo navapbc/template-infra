@@ -21,6 +21,7 @@ def check():
         check_search_path(migrator_conn, schema_name)
         check_migrator_create_table(migrator_conn)
         check_app_use_table(app_conn)
+        check_pgvector_extension(app_conn)
         cleanup_migrator_drop_table(migrator_conn)
 
     return {"success": True}
@@ -45,6 +46,15 @@ def check_app_use_table(app_conn: Connection):
     print(f"-- Check that {app_username} is able to read and write from the table")
     db.execute(app_conn, "INSERT INTO role_manager_test (created_at) VALUES (NOW())")
     db.execute(app_conn, "SELECT * FROM role_manager_test")
+
+
+def check_pgvector_extension(app_conn: Connection):
+    print("-- Check that pgvector extension is available")
+    result = app_conn.run("SELECT * FROM pg_extension WHERE extname='vector'")
+    if len(result) < 1:
+        print("---- pgvector extension is NOT available")
+    else:
+        print("----   pgvector extension is available")
 
 
 def cleanup_migrator_drop_table(migrator_conn: Connection):
