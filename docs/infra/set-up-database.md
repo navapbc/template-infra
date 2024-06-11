@@ -26,12 +26,11 @@ make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
 
-### (Optional) Enable the pgvector extension
-[pgvector](https://github.com/pgvector/pgvector) is an extension for Postgres that adds support for a new `vector` column type, allowing similarity search between embeddings.
+### (Optional) Enable any database extensions that require `rds_superuser`
 
-If your application will need to use this extension, set `enable_pgvector_extension = true` in your app config.
+To enable some extensions, such as [pgvector](https://github.com/pgvector/pgvector), requires the rds_superuser role. You can configure any such extensions via the `superuser_extensions` variable, and set them to either enabled or disabled.
 
-If you don't know if you will need it yet, you can skip this step and enable it later.
+For example, to enable the pgvector extension:
 
 ```terraform
 # infra/app/app-config/env-config/outputs.tf
@@ -39,10 +38,16 @@ If you don't know if you will need it yet, you can skip this step and enable it 
 output "database_config" {
   value = var.has_database ? {
     ...
-    enable_pgvector_extension = true
+    superuser_extensions = {
+      "vector": true,
+    }
   } : null
 }
 ```
+
+If you're not sure whether you need any of these extensions, you can skip this step and come back to it later.
+
+Note that this should only be used for extensions that require the `rds_superuser` role to be created. For most extensions, you should enable them as part of your application's standard database migrations.
 
 ## 2. Create database resources
 
