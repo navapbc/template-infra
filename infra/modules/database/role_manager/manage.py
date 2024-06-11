@@ -15,9 +15,7 @@ def manage(config: dict):
     )
     with db.connect_as_master_user() as master_conn:
         print_current_db_config(master_conn)
-        configure_database(master_conn)
-        if "superuser_extensions" in config:
-            configure_superuser_extensions(master_conn, config["superuser_extensions"])
+        configure_database(master_conn, config)
         roles, schema_privileges = print_current_db_config(master_conn)
         roles_with_groups = get_roles_with_groups(master_conn)
 
@@ -84,7 +82,7 @@ def get_schema_privileges(conn: Connection) -> list[tuple[str, str]]:
     ]
 
 
-def configure_database(conn: Connection) -> None:
+def configure_database(conn: Connection, config: dict) -> None:
     print("-- Configuring database")
     app_username = os.environ.get("APP_USER")
     migrator_username = os.environ.get("MIGRATOR_USER")
@@ -108,7 +106,8 @@ def configure_database(conn: Connection) -> None:
 
     configure_roles(conn, [migrator_username, app_username], database_name)
     configure_schema(conn, schema_name, migrator_username, app_username)
-
+    if "superuser_extensions" in config:
+        configure_superuser_extensions(conn, config["superuser_extensions"])
 
 def configure_roles(conn: Connection, roles: list[str], database_name: str) -> None:
     print("---- Configuring roles")

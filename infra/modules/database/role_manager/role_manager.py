@@ -3,10 +3,9 @@ from manage import manage
 
 
 def lambda_handler(event, context):
-    if event.__class__ is dict and "action" in event and "config" in event:
-        if event["action"] == "check":
-            return check(event["config"])
-        elif event["action"] == "manage":
-            return manage(event["config"])
-    
-    raise Exception("Invalid payload")
+    action = event["action"]
+    assert action in ("check", "manage")
+    if action == "check":
+        return check(event["config"])
+    elif action == "manage":
+        return manage(event["config"])
