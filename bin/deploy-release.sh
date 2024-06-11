@@ -17,7 +17,7 @@ echo
 # Update task definition and update service to use new task definition
 
 echo "::group::Starting $app_name deploy of $image_tag to $environment"
-tf_cli_args_apply="-input=false -auto-approve -var=image_tag=$image_tag" make infra-update-app-service app_name="$app_name" environment="$environment"
+TF_CLI_ARGS_apply="-input=false -auto-approve -var=image_tag=$image_tag" make infra-update-app-service APP_NAME="$app_name" ENVIRONMENT="$environment"
 echo "::endgroup::"
 
 # Wait for the service to become stable
