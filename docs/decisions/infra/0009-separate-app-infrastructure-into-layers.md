@@ -1,4 +1,4 @@
-# Separate app infrastructure into layeres
+# Separate app infrastructure into layers
 
 * Status: accepted
 * Deciders: @lorenyu @rocketnova @jamesbursa
