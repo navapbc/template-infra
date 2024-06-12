@@ -39,7 +39,7 @@ database_config = {
   ...
 
   superuser_extensions = {
-    "vector" : true,
+    "vector" : true, # TODO
   }
 }
 ```
