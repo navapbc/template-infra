@@ -63,7 +63,7 @@ jobs:
       - name: Check if image is already published
         id: check-image-published
         run: |
-          IS_IMAGE_PUBLISHED=$(./bin/is-image-published.sh "${{ inputs.app_name }}" "${{ inputs.ref }}")
+          IS_IMAGE_PUBLISHED=$(./bin/is-image-published "${{ inputs.app_name }}" "${{ inputs.ref }}")
           echo "Is image published: $IS_IMAGE_PUBLISHED"
           echo "IS_IMAGE_PUBLISHED=$IS_IMAGE_PUBLISHED" >> "$GITHUB_OUTPUT"
 
