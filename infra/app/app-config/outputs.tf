@@ -24,10 +24,6 @@ output "has_database" {
   value = local.has_database
 }
 
-output "database_config" {
-  value = local.database_config
-}
-
 output "has_external_non_aws_service" {
   value = local.has_external_non_aws_service
 }

@@ -14,7 +14,6 @@ locals {
   # 2. Each environment's config will have a database_config property that is used to
   #    pass db_vars into the infra/modules/service module, which provides the necessary
   #    configuration for the service to access the database
-
   has_database = false
 
   # Whether or not the application depends on external non-AWS services.
