@@ -106,8 +106,7 @@ def configure_database(conn: Connection, config: dict) -> None:
 
     configure_roles(conn, [migrator_username, app_username], database_name)
     configure_schema(conn, schema_name, migrator_username, app_username)
-    if "superuser_extensions" in config:
-        configure_superuser_extensions(conn, config["superuser_extensions"])
+    configure_superuser_extensions(conn, config["superuser_extensions"])
 
 def configure_roles(conn: Connection, roles: list[str], database_name: str) -> None:
     print("---- Configuring roles")
@@ -207,10 +206,11 @@ def print_schema_privileges(schema_privileges: list[tuple[str, str]]) -> None:
 
 
 def configure_superuser_extensions(conn: Connection, superuser_extensions: dict):
+    print("---- Configuring superuser extensions")
     for extension, should_be_enabled in superuser_extensions.items():
         if should_be_enabled:
-            print(f"-- Enabling {extension} extension")
+            print(f"------ Enabling {extension} extension")
             db.execute(conn, f"CREATE EXTENSION IF NOT EXISTS {identifier(extension)} SCHEMA pg_catalog")
         else:
-            print(f"-- Disabling or skipping {extension} extension")
+            print(f"------ Disabling or skipping {extension} extension")
             db.execute(conn, f"DROP EXTENSION IF EXISTS {identifier(extension)}")

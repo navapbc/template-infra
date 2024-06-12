@@ -21,8 +21,7 @@ def check(config: dict):
         check_search_path(migrator_conn, schema_name)
         check_migrator_create_table(migrator_conn)
         check_app_use_table(app_conn)
-        if "superuser_extensions" in config:
-            check_superuser_extensions(app_conn, config["superuser_extensions"])
+        check_superuser_extensions(app_conn, config["superuser_extensions"])
         cleanup_migrator_drop_table(migrator_conn)
 
     return {"success": True}
@@ -57,11 +56,7 @@ def check_superuser_extensions(app_conn: Connection, superuser_extensions: dict)
         print(f"-- Check that {extension} extension is {to_str(should_be_enabled)}")
         result = db.execute(app_conn, f"SELECT * FROM pg_extension WHERE extname={literal(extension)}")
         is_enabled = len(result) > 0
-        if (should_be_enabled and is_enabled) or (not should_be_enabled and not is_enabled):
-            print(f"---- Success, {extension} is {to_str(is_enabled)}")
-        else:
-            print(f"---- Warning, {extension} is {to_str(is_enabled)}")
-
+        assert should_be_enabled == is_enabled
 
 def cleanup_migrator_drop_table(migrator_conn: Connection):
     print("-- Clean up role_manager_test table if it exists")
