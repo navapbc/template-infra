@@ -16,8 +16,8 @@ locals {
   #    configuration for the service to access the database
   has_database = false
   superuser_extensions = {
-      "vector" : false,
-    }
+    "vector" : false,
+  }
 
   # Whether or not the application depends on external non-AWS services.
   # If enabled, the networks associated with this application's environments

@@ -14,8 +14,8 @@ set -euo pipefail
 app_name=$1
 environment=$2
 
-terraform -chdir="infra/$APP_NAME/app-config" init > /dev/null
-terraform -chdir="infra/$APP_NAME/app-config" apply -auto-approve > /dev/null
+terraform -chdir="infra/$app_name/app-config" init > /dev/null
+terraform -chdir="infra/$app_name/app-config" apply -auto-approve > /dev/null
 ./bin/terraform-init.sh "infra/$app_name/database" "$environment"
 db_role_manager_function_name=$(terraform -chdir="infra/$app_name/database" output -raw role_manager_function_name)
 db_config=$(terraform -chdir="infra/$app_name/app-config" output -json superuser_extensions)
