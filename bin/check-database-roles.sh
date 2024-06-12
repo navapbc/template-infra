@@ -18,7 +18,7 @@ terraform -chdir="infra/$app_name/app-config" init > /dev/null
 terraform -chdir="infra/$app_name/app-config" apply -auto-approve > /dev/null
 ./bin/terraform-init.sh "infra/$app_name/database" "$environment"
 db_role_manager_function_name=$(terraform -chdir="infra/$app_name/database" output -raw role_manager_function_name)
-db_config=$(terraform -chdir="infra/$app_name/app-config/env-config" output -json database_config)
+db_config=$(terraform -chdir="infra/$app_name/app-config" output -json environment_configs | jq -r ".$environment.database_config")
 payload="{\"action\":\"check\",\"config\":$db_config}" 
 
 echo "======================="
