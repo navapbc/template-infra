@@ -23,12 +23,12 @@ git checkout "$TARGET_VERSION"
 # Get version hash to update .template-version after patch is successful
 TARGET_VERSION_HASH=$(git rev-parse HEAD)
 
-# Note: Keep this list in sync with the files copied in install-template.sh
+# Note: Keep this list in sync with the files copied in install-template
 git diff "$CURRENT_VERSION" "$TARGET_VERSION" -- .github bin docs infra Makefile .dockleconfig .gitignore .grype.yml .hadolint.yaml .trivyignore > update.patch
 cd -
 
 echo "Applying patch"
-# Note: Keep this list in sync with the removed files in install-template.sh
+# Note: Keep this list in sync with the removed files in install-template
 EXCLUDE_OPT="--exclude=.github/workflows/template-only-*"
 git apply "$EXCLUDE_OPT" --allow-empty template-infra/update.patch
 
