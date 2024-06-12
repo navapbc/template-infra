@@ -33,18 +33,20 @@ To enable some extensions, such as [pgvector](https://github.com/pgvector/pgvect
 For example, to enable the pgvector extension:
 
 ```terraform
-# infra/app/app-config/main.tf
+# infra/app/app-config/env-config/main.tf
 
-database_config = {
+db_config = {
+  ...
+
   superuser_extensions = {
     "vector" : true,
   }
 }
 ```
 
-If you're not sure whether you need any of these extensions, you can skip this step and come back to it later.
+Note that this should only be used for extensions that require the `rds_superuser` role to be created. For many extensions, you can (and should) instead enable them as part of your application's standard database migrations. This [list of trusted extensions from AWS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts.General.Extensions.Trusted) shows which extensions can be enabled via a database migrations.
 
-Note that this should only be used for extensions that require the `rds_superuser` role to be created. For many extensions, you can instead enable them as part of your application's standard database migrations. This [list of trusted extensions from AWS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts.General.Extensions.Trusted) shows which extensions can be enabled via a database migrations.
+If you're not sure whether you need to do anything here, you can skip this and come back to it later.
 
 ## 2. Create database resources
 
