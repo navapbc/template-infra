@@ -16,8 +16,12 @@ set -euo pipefail
 app_name=$1
 environment=$2
 
+terraform -chdir="infra/$app_name/app-config" init > /dev/null
+terraform -chdir="infra/$app_name/app-config" apply -auto-approve > /dev/null
 ./bin/terraform-init.sh "infra/$app_name/database" "$environment"
 db_role_manager_function_name=$(terraform -chdir="infra/$app_name/database" output -raw role_manager_function_name)
+db_config=$(terraform -chdir="infra/$app_name/app-config" output -json environment_configs | jq -r ".$environment.database_config")
+payload="{\"action\":\"manage\",\"config\":$db_config}" 
 
 echo "================================"
 echo "Creating/updating database users"
@@ -27,10 +31,13 @@ echo "  app_name=$app_name"
 echo "  environment=$environment"
 echo
 echo "Invoking Lambda function: $db_role_manager_function_name"
+echo "  Payload: $payload"
+echo
 cli_response=$(aws lambda invoke \
   --function-name "$db_role_manager_function_name" \
   --no-cli-pager \
   --log-type Tail \
+  --payload "$(echo -n "$payload" | base64)" \
   --output json \
   response.json)
 

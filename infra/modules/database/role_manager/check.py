@@ -1,11 +1,11 @@
 import os
 
-from pg8000.native import Connection
+from pg8000.native import Connection, literal
 
 import db
 
 
-def check():
+def check(config: dict):
     """Check that database roles, schema, and privileges were
     properly configured
     """
@@ -21,6 +21,7 @@ def check():
         check_search_path(migrator_conn, schema_name)
         check_migrator_create_table(migrator_conn)
         check_app_use_table(app_conn)
+        check_superuser_extensions(app_conn, config["superuser_extensions"])
         cleanup_migrator_drop_table(migrator_conn)
 
     return {"success": True}
@@ -46,6 +47,16 @@ def check_app_use_table(app_conn: Connection):
     db.execute(app_conn, "INSERT INTO role_manager_test (created_at) VALUES (NOW())")
     db.execute(app_conn, "SELECT * FROM role_manager_test")
 
+
+def check_superuser_extensions(app_conn: Connection, superuser_extensions: dict):
+    def to_str(enabled):
+        return "enabled" if enabled else "disabled"
+
+    for extension, should_be_enabled in superuser_extensions.items():
+        print(f"-- Check that {extension} extension is {to_str(should_be_enabled)}")
+        result = db.execute(app_conn, f"SELECT * FROM pg_extension WHERE extname={literal(extension)}")
+        is_enabled = len(result) > 0
+        assert should_be_enabled == is_enabled
 
 def cleanup_migrator_drop_table(migrator_conn: Connection):
     print("-- Clean up role_manager_test table if it exists")
