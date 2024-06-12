@@ -14,8 +14,12 @@ locals {
   # 2. Each environment's config will have a database_config property that is used to
   #    pass db_vars into the infra/modules/service module, which provides the necessary
   #    configuration for the service to access the database
+
+  # TODO: #ISSUE_HERE: Move has_database into database_config, below
   has_database = false
   database_config = {
+    # Enable extensions that require the rds_superuser role to be created here
+    # See docs/infra/set-up-database.md for more information
     superuser_extensions = {
       "vector" : false,
     }

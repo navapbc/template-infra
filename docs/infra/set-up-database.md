@@ -33,15 +33,12 @@ To enable some extensions, such as [pgvector](https://github.com/pgvector/pgvect
 For example, to enable the pgvector extension:
 
 ```terraform
-# infra/app/app-config/env-config/outputs.tf
+# infra/app/app-config/main.tf
 
-output "database_config" {
-  value = var.has_database ? {
-    ...
-    superuser_extensions = {
-      "vector": true,
-    }
-  } : null
+database_config = {
+  superuser_extensions = {
+    "vector" : true,
+  }
 }
 ```
 
