@@ -35,7 +35,7 @@ For example, to enable the pgvector extension:
 ```terraform
 # infra/app/app-config/env-config/main.tf
 
-db_config = {
+database_config = {
   ...
 
   superuser_extensions = {

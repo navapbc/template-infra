@@ -4,7 +4,7 @@ output "account_name" {
 }
 
 output "database_config" {
-  value = local.db_config
+  value = local.database_config
 }
 
 output "network_name" {

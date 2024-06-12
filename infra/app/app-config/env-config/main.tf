@@ -6,7 +6,7 @@ locals {
 
   bucket_name = "${local.prefix}${var.project_name}-${var.app_name}-${var.environment}"
 
-  db_config = var.has_database ? {
+  database_config = var.has_database ? {
     region                      = var.default_region
     cluster_name                = "${var.app_name}-${var.environment}"
     app_username                = "app"
