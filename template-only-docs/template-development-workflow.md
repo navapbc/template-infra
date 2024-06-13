@@ -18,7 +18,7 @@ This is the most common workflow:
 
 ### 1. Develop and test your changes on one of the platform-test repos
 
-On the platform test repo, you'll do the following:
+On the [platform-test](https://github.com/navapbc/platform-test) repo, you'll do the following:
 
 1. Create a feature branch. The naming convention for feature branches is `<your name>/<feature name>`. You can optionally include the ticket number in `<feature name>`.
 2. Create a terraform [workspace](/docs/infra/intro-to-terraform-workspaces.md) that you will use for developing and testing your infrastructure changes. Using a workspace avoids conflicting with other developers and avoids CD overwriting any changes you've applied while developing:
