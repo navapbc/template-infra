@@ -40,7 +40,7 @@ To enable service execution access, the VPC requires an additional VPC endpoint.
 make infra-update-network NETWORK_NAME=<NETWORK_NAME>
 ```
 
-`ENVIRONMENT` needs to be the name of the network that the application environment is running in.
+`NETWORK_NAME` needs to be the name of the network that the application environment is running in.
 
 ### 4. Update the application service
 
@@ -67,3 +67,10 @@ aws ecs execute-command --cluster <CLUSTER_NAME> \
 ```
 
 To run other commands, modify the `--command` flag to execute the command, rather than starting a shell.
+
+## Troubleshooting
+
+If you get an error after running the above steps, these diagnosis steps may be helpful:
+1. Verify that `enableExecuteCommand` is `true` on your running task by using `aws ecs describe-tasks --cluster $APP_NAME-$ENVIRONMENT_NAME --task <TASK_ID>`. If not, run the `infra-update-app-service` command above and/or redeploy your service.
+2. Make sure that the SSM Agent is running by checking the `managedAgents` object in the `containers` array of the `aws ecs describe-tasks` command output. If it is `STOPPED`, you may have an issue with your container that is preventing the agent from running.
+3. Run the [amazon-ecs-exec-checker](https://github.com/aws-containers/amazon-ecs-exec-checker) script to further pinpoint issues that may prevent ECS Exec from functioning.

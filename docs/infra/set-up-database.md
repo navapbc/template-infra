@@ -26,6 +26,28 @@ make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
 `ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
 
+### (Optional) Enable any database extensions that require `rds_superuser`
+
+To enable some extensions, such as [pgvector](https://github.com/pgvector/pgvector), requires the `rds_superuser` role. You can enable any such extensions via the `superuser_extensions` configuration variable, and set them to either enabled or disabled.
+
+For example, to enable the pgvector extension:
+
+```terraform
+# infra/app/app-config/env-config/main.tf
+
+database_config = {
+  ...
+
+  superuser_extensions = {
+    "vector" : true, # TODO
+  }
+}
+```
+
+Note that this should only be used for extensions that require the `rds_superuser` role to be created. For many extensions, you can (and should) instead enable them as part of your application's standard database migrations. This [list of trusted extensions from AWS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts.General.Extensions.Trusted) shows which extensions can be enabled via a database migrations.
+
+If you're not sure whether you need to do anything here, you can skip this and come back to it later.
+
 ## 2. Create database resources
 
 Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes. This can take over 5 minutes.
