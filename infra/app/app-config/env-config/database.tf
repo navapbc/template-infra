@@ -4,7 +4,8 @@ locals {
     cluster_name                = "${var.app_name}-${var.environment}"
     app_username                = "app"
     migrator_username           = "migrator"
-    schema_name                 = var.app_name
+    schema_name                 = local.database_safe_app_name
+    database_name               = local.database_safe_app_name
     app_access_policy_name      = "${var.app_name}-${var.environment}-app-access"
     migrator_access_policy_name = "${var.app_name}-${var.environment}-migrator-access"
 

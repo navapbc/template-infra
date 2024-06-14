@@ -30,6 +30,10 @@ variable "migrator_username" {
 variable "schema_name" {
   description = "name of the Postgres schema to create that will be the schema the application will use (rather than using the public schema)"
   type        = string
+  validation {
+    condition     = can(regex("^[_\\da-z]+$", var.schema_name))
+    error_message = "use only lower case letters, numbers, and underscores (no dashes)"
+  }
 }
 
 variable "port" {

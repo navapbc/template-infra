@@ -84,6 +84,7 @@ module "database" {
   app_username      = local.database_config.app_username
   migrator_username = local.database_config.migrator_username
   schema_name       = local.database_config.schema_name
+  database_name     = local.database_config.database_name
 
   vpc_id                         = data.aws_vpc.network.id
   database_subnet_group_name     = local.network_config.database_subnet_group_name
