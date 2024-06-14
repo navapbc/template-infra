@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # This script installs the template-infra to your project. Run
 # This script from your project's root directory.

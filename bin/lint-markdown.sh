@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # To make things simpler, ensure we're in the repo's root directory (one directory up) before
 # running, regardless where the user is when invoking this script.
