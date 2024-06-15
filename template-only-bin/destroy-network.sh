@@ -11,7 +11,7 @@
 set -euxo pipefail
 
 NETWORK_NAME=${1:-"dev"}
-BACKEND_CONFIG_FILE="${ENVIRONMENT_NAME}.s3.tfbackend"
+BACKEND_CONFIG_FILE="${NETWORK_NAME}.s3.tfbackend"
 
 cd infra/networks
 
