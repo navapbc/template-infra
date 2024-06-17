@@ -63,9 +63,9 @@ jobs:
       - name: Check if image is already published
         id: check-image-published
         run: |
-          IS_IMAGE_PUBLISHED=$(./bin/is-image-published.sh "${{ inputs.app_name }}" "${{ inputs.ref }}")
-          echo "Is image published: $IS_IMAGE_PUBLISHED"
-          echo "IS_IMAGE_PUBLISHED=$IS_IMAGE_PUBLISHED" >> "$GITHUB_OUTPUT"
+          is_image_published=$(./bin/is-image-published "${{ inputs.app_name }}" "${{ inputs.ref }}")
+          echo "Is image published: $is_image_published"
+          echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
 
       - name: Build release
         if: steps.check-image-published.outputs.IS_IMAGE_PUBLISHED == 'false'
