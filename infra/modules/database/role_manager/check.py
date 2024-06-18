@@ -28,12 +28,12 @@ def check(config: dict):
 
 
 def check_search_path(migrator_conn: Connection, schema_name: str):
-    print("-- Check that search path is %s", schema_name)
+    print(f"-- Check that search path is {schema_name}")
     assert db.execute(migrator_conn, "SHOW search_path") == [[schema_name]]
 
 
 def check_migrator_create_table(migrator_conn: Connection):
-    print(f"-- Check that migrator is able to create tables")
+    print("-- Check that migrator is able to create tables")
     cleanup_migrator_drop_table(migrator_conn)
     db.execute(
         migrator_conn,

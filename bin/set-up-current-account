@@ -24,8 +24,8 @@ set -euo pipefail
 
 account_name=$1
 
-account_id=$(./bin/current-account-id.sh)
-region=$(./bin/current-region.sh)
+account_id=$(./bin/current-account-id)
+region=$(./bin/current-region)
 
 # Get project name
 terraform -chdir="infra/project-config" apply -auto-approve > /dev/null
@@ -107,4 +107,4 @@ cd -
 
 module_dir=infra/accounts
 backend_config_name="$account_name.$account_id"
-./bin/create-tfbackend.sh "$module_dir" "$backend_config_name" "$tf_state_key"
+./bin/create-tfbackend "$module_dir" "$backend_config_name" "$tf_state_key"
