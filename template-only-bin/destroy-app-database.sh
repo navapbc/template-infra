@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # -----------------------------------------------------------------------------
-# This script destroys the service layer for an application.
+# This script destroys the database layer for an application.
+# Do not run this script if you still have the app service layer deployed.
 # Run this script in your project's root directory.
 #
 # Positional parameters:
@@ -15,14 +16,13 @@ APP_NAME=${1:-"app"}
 ENVIRONMENT=${2:-"dev"}
 BACKEND_CONFIG_FILE="${ENVIRONMENT}.s3.tfbackend"
 
-sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/service/access-logs.tf
-sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/storage/main.tf
-sed -i.bak 's/enable_deletion_protection = !var.is_temporary/enable_deletion_protection = false/g' infra/modules/service/load-balancer.tf
+sed -i.bak 's/deletion_protection = true/deletion_protection = false/g' infra/modules/database/main.tf
+sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/database/backups.tf
 
-cd "infra/${APP_NAME}/service"
+cd "infra/${APP_NAME}/database"
 
 terraform init -reconfigure -backend-config="${BACKEND_CONFIG_FILE}"
 
-terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -var="environment_name=${ENVIRONMENT}"
+terraform apply -auto-approve -target="module.database.aws_backup_vault.backup_vault" -target="module.database.aws_rds_cluster.db" -var="environment_name=${ENVIRONMENT}"
 
 terraform destroy -auto-approve -var="environment_name=${ENVIRONMENT}"

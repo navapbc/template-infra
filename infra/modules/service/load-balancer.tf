@@ -11,6 +11,7 @@ resource "aws_lb" "alb" {
   security_groups = [aws_security_group.alb.id]
   subnets         = var.public_subnet_ids
 
+  # Use a separate line to support automated terraform destroy commands
   # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
   enable_deletion_protection = !var.is_temporary
 
