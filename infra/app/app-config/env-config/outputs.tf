@@ -34,6 +34,12 @@ output "service_config" {
       # For job configs that don't define a source_bucket, add the source_bucket config property
       job_name => merge({ source_bucket = local.bucket_name }, job_config)
     }
+
+    # Identity provider configuration
+    enable_identity_provider = var.enable_identity_provider
+    # Support local development against remote resources
+    auth_callback_urls = var.domain_name != null ? ["https://${var.domain_name}", "http://localhost:3000"] : ["http://localhost:3000"]
+    logout_urls        = var.domain_name != null ? ["https://${var.domain_name}", "http://localhost:3000"] : ["http://localhost:3000"]
   }
 }
 

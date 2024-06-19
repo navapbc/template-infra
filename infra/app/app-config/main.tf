@@ -24,6 +24,13 @@ locals {
 
   has_incident_management_service = false
 
+  # Whether or not the application should deploy an identity provider
+  # If enabled:
+  # 1. A Cognito user pool will be created
+  # 2. A Cognito user pool app client will be created
+  # 3. Environment variables for the app client will be added to the service
+  enable_identity_provider = false
+
   environment_configs = {
     dev     = module.dev_config
     staging = module.staging_config

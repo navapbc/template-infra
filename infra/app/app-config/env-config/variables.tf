@@ -87,3 +87,9 @@ variable "enable_command_execution" {
   description = "Enables the ability to manually execute commands on running service containers using AWS ECS Exec"
   default     = false
 }
+
+variable "enable_identity_provider" {
+  type        = bool
+  description = "Enables identity provider"
+  default     = false
+}

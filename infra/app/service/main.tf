@@ -153,19 +153,33 @@ module "service" {
   extra_environment_variables = merge({
     FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
     BUCKET_NAME           = local.storage_config.bucket_name
-  }, local.service_config.extra_environment_variables)
+    },
+    local.service_config.enable_identity_provider ? {
+      COGNITO_USER_POOL_ID = module.identity_provider[0].user_pool_id
+      COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
+    } : {},
+    local.service_config.extra_environment_variables
+  )
 
-  secrets = [
-    for secret_name in keys(local.service_config.secrets) : {
+  secrets = concat(
+    [for secret_name in keys(local.service_config.secrets) : {
       name      = secret_name
       valueFrom = module.secrets[secret_name].secret_arn
-    }
-  ]
+    }],
+    local.service_config.enable_identity_provider ? [{
+      name      = "COGNITO_CLIENT_SECRET"
+      valueFrom = module.identity_provider_client[0].client_secret_arn
+    }] : []
+  )
 
-  extra_policies = {
+  extra_policies = merge({
     feature_flags_access = module.feature_flags.access_policy_arn,
     storage_access       = module.storage.access_policy_arn
-  }
+    },
+    local.service_config.enable_identity_provider ? {
+      identity_access = module.identity_provider_client[0].access_policy_arn,
+    } : {}
+  )
 
   is_temporary = local.is_temporary
 }
@@ -191,4 +205,20 @@ module "storage" {
   source       = "../../modules/storage"
   name         = local.storage_config.bucket_name
   is_temporary = local.is_temporary
+}
+
+module "identity_provider" {
+  count  = local.service_config.enable_identity_provider ? 1 : 0
+  source = "../../modules/identity-provider"
+  name   = local.service_config.service_name
+}
+
+module "identity_provider_client" {
+  count  = local.service_config.enable_identity_provider ? 1 : 0
+  source = "../../modules/identity-provider-client"
+  name   = local.service_config.service_name
+
+  cognito_user_pool_id = module.identity_provider[0].user_pool_id
+  callback_urls        = local.service_config.auth_callback_urls
+  logout_urls          = local.service_config.logout_urls
 }
