@@ -18,11 +18,12 @@ backend_config_file="${environment}.s3.tfbackend"
 sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/service/access-logs.tf
 sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/storage/main.tf
 sed -i.bak 's/enable_deletion_protection = !var.is_temporary/enable_deletion_protection = false/g' infra/modules/service/load-balancer.tf
+sed -i.bak 's/deletion_protection = "ACTIVE"/deletion_protection = "INACTIVE"/g' infra/modules/identity-provider/main.tf
 
 cd "infra/${app_name}/service"
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
-terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -var="environment_name=${environment}"
+terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -target="module.identity_provider.aws_cognito_user_pool.main" -var="environment_name=${ENVIRONMENT}"
 
 terraform destroy -auto-approve -var="environment_name=${environment}"
