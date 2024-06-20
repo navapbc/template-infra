@@ -46,6 +46,7 @@ resource "aws_rds_cluster" "db" {
   skip_final_snapshot = true
 
   # Use a separate line to support automated terraform destroy commands
+  # checkov:skip=CKV_AWS_139:Allow disabling deletion protection for automated tests
   deletion_protection = !var.is_temporary
 
   serverlessv2_scaling_configuration {
