@@ -16,7 +16,7 @@ Before setting up the application's environments you'll need to have:
    3. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
    4. Make sure your application environment is using the AWS Account you want to use by checking the `account_name` property in the environment configuration and updating it if necessary.
 4. [Create a nondefault VPC to be used by the application](./set-up-network.md)
-5. (If the application has external non-AWS services) [Set up network access to the public internet](./public-internet-access.md)
+5. (If the application has external non-AWS services) [Set up network access to the public internet](./set-up-public-internet-access.md)
 6. (If the application has a database) [Set up the database for the application](./set-up-database.md)
 7. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
 8. [Set up the application build repository](./set-up-app-build-repository.md)
