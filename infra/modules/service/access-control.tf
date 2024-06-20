@@ -62,10 +62,26 @@ data "aws_iam_policy_document" "task_executor" {
     ]
     resources = [data.aws_ecr_repository.app.arn]
   }
+
+  dynamic "statement" {
+    for_each = length(var.secrets) > 0 ? [1] : []
+    content {
+      sid       = "SecretsAccess"
+      actions   = ["ssm:GetParameters"]
+      resources = [for secret in var.secrets : secret.valueFrom]
+    }
+  }
 }
 
 resource "aws_iam_role_policy" "task_executor" {
   name   = "${var.service_name}-task-executor-role-policy"
   role   = aws_iam_role.task_executor.id
   policy = data.aws_iam_policy_document.task_executor.json
+}
+
+resource "aws_iam_role_policy_attachment" "extra_policies" {
+  for_each = var.extra_policies
+
+  role       = aws_iam_role.app_service.name
+  policy_arn = each.value
 }

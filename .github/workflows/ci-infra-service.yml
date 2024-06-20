@@ -7,11 +7,13 @@ on:
   #     - main
   #   paths:
   #     - infra/*/service/**
+  #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
   # pull_request:
   #   paths:
   #     - infra/*/service/**
+  #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
   workflow_dispatch:
@@ -30,7 +32,7 @@ jobs:
 
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.2.1
+          terraform_version: 1.8.3
           terraform_wrapper: false
 
       - uses: actions/setup-go@v3

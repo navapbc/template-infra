@@ -18,7 +18,7 @@ locals {
 }
 
 terraform {
-  required_version = ">= 1.2.0, < 2.0.0"
+  required_version = "~>1.8.0"
 
   required_providers {
     aws = {
@@ -48,7 +48,7 @@ module "app_config" {
 }
 
 data "external" "account_ids_by_name" {
-  program = ["../../../bin/account-ids-by-name.sh"]
+  program = ["../../../bin/account-ids-by-name"]
 }
 
 module "container_image_repository" {

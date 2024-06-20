@@ -19,14 +19,20 @@ brew install tfenv
 Then install the version of Terraform you need.
 
 ```bash
-tfenv install 1.4.6
+tfenv install 1.8.0
 ```
 
-If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./introduction-to-terraform.md).
+You may need to set the Terraform version.
+
+```bash
+tfenv use 1.8.0
+```
+
+If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./intro-to-terraform.md).
 
 ### Install AWS CLI
 
-The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS commmand line tool by following the instructions found here:
+The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS command line tool by following the instructions found here:
 
 - [Install AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html)
 
@@ -36,7 +42,7 @@ The [Go programming language](https://go.dev/dl/) is required to run [Terratest]
 
 ### Install GitHub CLI
 
-The [GitHub CLI](https://cli.github.com/) is useful for automating certain operations for GitHub such as with GitHub actions. This is needed to run [check-github-actions-auth.sh](/bin/check-github-actions-auth.sh)
+The [GitHub CLI](https://cli.github.com/) is useful for automating certain operations for GitHub such as with GitHub actions. This is needed to run [check-github-actions-auth](/bin/check-github-actions-auth)
 
 ```bash
 brew install gh
@@ -44,18 +50,23 @@ brew install gh
 
 ### Install linters
 
-[Shellcheck](https://github.com/koalaman/shellcheck) and [actionlint](https://github.com/rhysd/actionlint) are optional utilites for running infrastructure linters locally.
+We have several optional utilities for running infrastructure linters locally. These are run as part of the CI pipeline, therefore, it is often simpler to test them locally first.
+
+- [Shellcheck](https://github.com/koalaman/shellcheck)
+- [actionlint](https://github.com/rhysd/actionlint)
+- [markdown-link-check](https://github.com/tcort/markdown-link-check)
 
 ```bash
 brew install shellcheck
 brew install actionlint
+make infra-lint
 ```
 
 ## AWS Authentication
 
-In order for Terraform to authenticate with your accounts you will need to configure your aws credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
+In order for Terraform to authenticate with your accounts you will need to configure your AWS credentials using the AWS CLI or manually create your config and credentials file. If you need to manage multiple credentials or create named profiles for use with different environments you can add the `--profile` option.
 
-There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file, and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
+There are multiple ways to authenticate, but we recommend creating a separate profile for your project in your AWS credentials file and setting your local environment variable `AWS_PROFILE` to the profile name. We recommend using [direnv](https://direnv.net/) to manage local environment variables.
 **Credentials should be located in ~/.aws/credentials** (Linux & Mac) or **%USERPROFILE%\.aws\credentials** (Windows)
 
 ### Examples
@@ -68,7 +79,7 @@ Default region name [None]: us-east-2
 Default output format [None]: json
 ```
 
-**Using the above command will create a [default] profile.**  
+**Using the above command will create a [default] profile.**
 
 ```bash
 $ aws configure --profile dev
@@ -78,7 +89,7 @@ Default region name [None]: us-east-2
 Default output format [None]: json
 ```
 
-**Using the above command will create a [dev] profile.**  
+**Using the above command will create a [dev] profile.**
 
 Once you're done, verify access by running the following command to print out information about the AWS IAM user you authenticated as.
 

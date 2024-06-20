@@ -1,10 +1,10 @@
 PROJECT_ROOT ?= $(notdir $(PWD))
 
-# Use `=` instead of `:=` so that we only execute `./bin/current-account-alias.sh` when needed
+# Use `=` instead of `:=` so that we only execute `./bin/current-account-alias` when needed
 # See https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
-CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias.sh`
+CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias`
 
-CURRENT_ACCOUNT_ID = $(./bin/current-account-id.sh)
+CURRENT_ACCOUNT_ID = $(./bin/current-account-id)
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
@@ -23,7 +23,7 @@ check_defined = \
 __check_defined = \
 	$(if $(value $1),, \
 		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
-			required by target `$@')))
+			required by target '$@')))
 
 
 .PHONY : \
@@ -51,6 +51,7 @@ __check_defined = \
 	infra-update-current-account \
 	infra-update-network \
 	infra-validate-modules \
+	lint-markdown \
 	release-build \
 	release-deploy \
 	release-image-name \
@@ -62,40 +63,43 @@ __check_defined = \
 
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
-	./bin/set-up-current-account.sh $(ACCOUNT_NAME)
+	./bin/set-up-current-account $(ACCOUNT_NAME)
 
-infra-configure-network: ## Configure default network
-	./bin/create-tfbackend.sh infra/networks default
+infra-configure-network: ## Configure network $NETWORK_NAME
+	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
+	./bin/create-tfbackend infra/networks $(NETWORK_NAME)
 
 infra-configure-app-build-repository: ## Configure infra/$APP_NAME/build-repository tfbackend and tfvars files
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/create-tfbackend.sh "infra/$(APP_NAME)/build-repository" shared
+	./bin/create-tfbackend "infra/$(APP_NAME)/build-repository" shared
 
 infra-configure-app-database: ## Configure infra/$APP_NAME/database module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/create-tfbackend.sh "infra/$(APP_NAME)/database" "$(ENVIRONMENT)"
+	./bin/create-tfbackend "infra/$(APP_NAME)/database" "$(ENVIRONMENT)"
 
 infra-configure-monitoring-secrets: ## Set $APP_NAME's incident management service integration URL for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	@:$(call check_defined, URL, incident management service (PagerDuty or VictorOps) integration URL)
-	./bin/configure-monitoring-secret.sh $(APP_NAME) $(ENVIRONMENT) $(URL)
+	./bin/configure-monitoring-secret $(APP_NAME) $(ENVIRONMENT) $(URL)
 
 infra-configure-app-service: ## Configure infra/$APP_NAME/service module's tfbackend and tfvars files for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/create-tfbackend.sh "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
+	./bin/create-tfbackend "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
 
 infra-update-current-account: ## Update infra resources for current AWS profile
-	./bin/terraform-init-and-apply.sh infra/accounts `./bin/current-account-config-name.sh`
+	./bin/terraform-init-and-apply infra/accounts `./bin/current-account-config-name`
 
-infra-update-network: ## Update default network
-	./bin/terraform-init-and-apply.sh infra/networks default
+infra-update-network: ## Update network
+	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
+	terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$(NETWORK_NAME).s3.tfbackend"
+	terraform -chdir="infra/networks" apply -var="network_name=$(NETWORK_NAME)"
 
 infra-update-app-build-repository: ## Create or update $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/terraform-init-and-apply.sh infra/$(APP_NAME)/build-repository shared
+	./bin/terraform-init-and-apply infra/$(APP_NAME)/build-repository shared
 
 infra-update-app-database: ## Create or update $APP_NAME's database module for $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -106,10 +110,9 @@ infra-update-app-database: ## Create or update $APP_NAME's database module for $
 infra-update-app-database-roles: ## Create or update database roles and schemas for $APP_NAME's database in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/create-or-update-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
+	./bin/create-or-update-database-roles $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-app-service: ## Create or update $APP_NAME's web service module
-	# APP_NAME has a default value defined above, but check anyways in case the default is ever removed
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
@@ -117,7 +120,8 @@ infra-update-app-service: ## Create or update $APP_NAME's web service module
 
 # The prerequisite for this rule is obtained by
 # prefixing each module with the string "infra-validate-module-"
-infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES)) ## Run terraform validate on reusable child modules
+infra-validate-modules: ## Run terraform validate on reusable child modules
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
 
 infra-validate-module-%:
 	@echo "Validate library module: $*"
@@ -127,9 +131,10 @@ infra-validate-module-%:
 infra-check-app-database-roles: ## Check that app database roles have been configured properly
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
-	./bin/check-database-roles.sh $(APP_NAME) $(ENVIRONMENT)
+	./bin/check-database-roles $(APP_NAME) $(ENVIRONMENT)
 
-infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec ## Run compliance checks
+infra-check-compliance: ## Run compliance checks
+infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
 
 infra-check-compliance-checkov: ## Run checkov compliance checks
 	checkov --directory infra
@@ -137,7 +142,8 @@ infra-check-compliance-checkov: ## Run checkov compliance checks
 infra-check-compliance-tfsec: ## Run tfsec compliance checks
 	tfsec infra
 
-infra-lint: infra-lint-scripts infra-lint-terraform infra-lint-workflows ## Lint infra code
+infra-lint: ## Lint infra code
+infra-lint: lint-markdown infra-lint-scripts infra-lint-terraform infra-lint-workflows
 
 infra-lint-scripts: ## Lint shell scripts
 	shellcheck bin/**
@@ -153,6 +159,9 @@ infra-format: ## Format infra code
 
 infra-test-service: ## Run service layer infra test suite
 	cd infra/test && go test -run TestService -v -timeout 30m
+
+lint-markdown: ## Lint Markdown docs for broken links
+	./bin/lint-markdown
 
 ########################
 ## Release Management ##
@@ -183,17 +192,17 @@ release-build: ## Build release for $APP_NAME and tag it with current git hash
 
 release-publish: ## Publish release to $APP_NAME's build repository
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
-	./bin/publish-release.sh $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
+	./bin/publish-release $(APP_NAME) $(IMAGE_NAME) $(IMAGE_TAG)
 
 release-run-database-migrations: ## Run $APP_NAME's database migrations in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
-	./bin/run-database-migrations.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
+	./bin/run-database-migrations $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-deploy: ## Deploy release to $APP_NAME's web service in $ENVIRONMENT
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "dev")
-	./bin/deploy-release.sh $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
+	./bin/deploy-release $(APP_NAME) $(IMAGE_TAG) $(ENVIRONMENT)
 
 release-image-name: ## Prints the image name of the release image
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
@@ -207,4 +216,17 @@ release-image-tag: ## Prints the image tag of the release image
 ########################
 
 help: ## Prints the help documentation and info about each command
-	@grep -E '^[/a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -Eh '^[[:print:]]+:.*?##' $(MAKEFILE_LIST) | \
+	sort -d | \
+	awk -F':.*?## ' '{printf "\033[36m%s\033[0m\t%s\n", $$1, $$2}' | \
+	column -t -s "$$(printf '\t')"
+	@echo ""
+	@echo "APP_NAME=$(APP_NAME)"
+	@echo "ENVIRONMENT=$(ENVIRONMENT)"
+	@echo "IMAGE_NAME=$(IMAGE_NAME)"
+	@echo "IMAGE_TAG=$(IMAGE_TAG)"
+	@echo "INFO_TAG=$(INFO_TAG)"
+	@echo "GIT_REPO_AVAILABLE=$(GIT_REPO_AVAILABLE)"
+	@echo "SHELL=$(SHELL)"
+	@echo "MAKE_VERSION=$(MAKE_VERSION)"
+	@echo "MODULES=$(MODULES)"

@@ -1,16 +1,20 @@
 import logging
 import os
+from datetime import datetime
 
-import boto3
+import click
 from flask import Flask
-import psycopg
-import psycopg.conninfo
+
+import storage
+from db import get_db_connection
+from feature_flags import is_feature_enabled
 
 logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__)
+
 
 def main():
     host = os.environ.get("HOST")
@@ -28,7 +32,11 @@ def hello_world():
 def health():
     conn = get_db_connection()
     conn.execute("SELECT 1")
-    return "OK"
+    return {
+        "status": "healthy",
+        "version": os.environ.get("IMAGE_TAG"),
+    }
+
 
 @app.route("/migrations")
 def migrations():
@@ -41,33 +49,44 @@ def migrations():
         last_migration_date = cur.fetchone()[0]
         return f"Last migration on {last_migration_date}"
 
-def get_db_token(host, port, user):
-    region = os.environ.get("AWS_REGION")
 
-    # gets the credentials from .aws/credentials
-    logger.info("Getting RDS client for region %s", region)
-    client = boto3.client("rds", region_name=region)
+@app.route("/feature-flags")
+def feature_flags():
+    foo_status = "enabled" if is_feature_enabled("foo") else "disabled"
+    bar_status = "enabled" if is_feature_enabled("bar") else "disabled"
 
-    logger.info("Generating auth token for user %s", user)
-    token = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=user, Region=region)
-    return token
+    return f"<p>Feature foo is {foo_status}</p><p>Feature bar is {bar_status}</p>"
 
 
-def get_db_connection():
-    host = os.environ.get("DB_HOST")
-    port = os.environ.get("DB_PORT")
-    user = os.environ.get("DB_USER")
+@app.route("/document-upload")
+def document_upload():
+    path = f"uploads/{datetime.now().date()}/${{filename}}"
+    upload_url, fields = storage.create_upload_url(path)
+    additional_fields = "".join(
+        [
+            f'<input type="hidden" name="{name}" value="{value}">'
+            for name, value in fields.items()
+        ]
+    )
+    # Note: Additional fields should come first before the file and submit button
+    return f'<form method="post" action="{upload_url}" enctype="multipart/form-data">{additional_fields}<input type="file" name="file"><input type="submit"></form>'
 
-    # Tokens last for 15 minutes, so normally you wouldn't need to generate
-    # an auth token every time you create a new connection, but we do that
-    # here to keep the example app simple.
-    password = get_db_token(host, port, user)
-    dbname = os.environ.get("DB_NAME")
 
-    conninfo = psycopg.conninfo.make_conninfo(host=host, port=port, user=user, password=password, dbname=dbname)
+@app.route("/secrets")
+def secrets():
+    secret_sauce = os.environ["SECRET_SAUCE"]
+    random_secret = os.environ["RANDOM_SECRET"]
+    return f'The secret sauce is "{secret_sauce}".<br> The random secret is "{random_secret}".'
 
-    conn = psycopg.connect(conninfo)
-    return conn
+
+@app.cli.command("etl", help="Run ETL job")
+@click.argument("input")
+def etl(input):
+    # input should be something like "etl/input/somefile.ext"
+    assert input.startswith("etl/input/")
+    output = input.replace("/input/", "/output/")
+    data = storage.download_file(input)
+    storage.upload_file(output, data)
 
 
 if __name__ == "__main__":
