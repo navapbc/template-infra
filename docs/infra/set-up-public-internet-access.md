@@ -3,7 +3,7 @@
 Some applications depend on external services that are not provided directly by AWS. External services include:
 
 1. Software as a service (SaaS) providers like New Relic
-2. Custom API applications in the same GitHub repository
+2. Custom API applications in the same git repository
 
 Applications that depend on external services need access to the public internet via a NAT (Network Address Translation) gateway. This document describes how to configure public internet access for your application. The setup process will:
 
