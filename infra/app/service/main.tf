@@ -188,6 +188,7 @@ module "feature_flags" {
 }
 
 module "storage" {
-  source = "../../modules/storage"
-  name   = local.storage_config.bucket_name
+  source       = "../../modules/storage"
+  name         = local.storage_config.bucket_name
+  is_temporary = local.is_temporary
 }
