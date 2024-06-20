@@ -65,3 +65,9 @@ variable "aws_services_security_group_id" {
   type        = string
   description = "Security group ID for VPC endpoints that access AWS Services"
 }
+
+variable "is_temporary" {
+  description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
+  type        = bool
+  default     = false
+}

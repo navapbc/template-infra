@@ -25,6 +25,8 @@ locals {
     description = "Database resources for the ${var.environment_name} environment"
   })
 
+  is_temporary = terraform.workspace != "default"
+
   environment_config = module.app_config.environment_configs[var.environment_name]
   database_config    = local.environment_config.database_config
   network_config     = module.project_config.network_configs[local.environment_config.network_name]
@@ -89,4 +91,5 @@ module "database" {
   database_subnet_group_name     = local.network_config.database_subnet_group_name
   private_subnet_ids             = data.aws_subnets.database.ids
   aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
+  is_temporary                   = local.is_temporary
 }
