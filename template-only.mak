@@ -37,7 +37,7 @@ destroy-app-service:
 	./template-only-bin/destroy-app-service
 
 destroy-app-database:
-	./template-only-bin/destroy-app-database.sh
+	./template-only-bin/destroy-app-database
 
 destroy-app-build-repository:
 	./template-only-bin/destroy-app-build-repository
