@@ -71,4 +71,4 @@ project-root$ terraform apply -chdir=infra/app/service -var="environment_name=de
 
 ## See also
 
-While developing infrastructure, you often don't want to make changes directly to the infrastructure before your infrastructure code has been tested, peer reviewed, and merged into main. In these situations, [use workspaces to develop and test your infrastructure changes in isolation](./develop-and-test-infrastructure-using-workspaces.md).
+While developing infrastructure, you often don't want to make changes directly to the infrastructure before your infrastructure code has been tested, peer reviewed, and merged into main. In these situations, [use workspaces to develop and test your infrastructure changes in isolation](./develop-and-test-infrastructure-in-isolation-using-workspaces.md).
