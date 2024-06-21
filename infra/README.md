@@ -77,8 +77,8 @@ To get set up as a new developer on a project that has already been deployed to 
 
 1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
-3. [Review the infrastructure style guide](/docs/infra/style-guide.md)
-4. (Optional) Set up a [terraform workspace](/docs/infra/intro-to-terraform-workspaces.md)
+3. [Review how to develop and test infrastructure changes](/docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
+4. [Review the infrastructure style guide](/docs/infra/style-guide.md)
 
 ## 📇 Additional reading
 
