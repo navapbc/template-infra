@@ -39,7 +39,7 @@ This command will create the S3 tfstate bucket and the GitHub OIDC provider. It 
 
 ### 3. Check that GitHub actions can authenticate into the AWS account
 
-This step requires [GitHub CLI](https://cli.github.com/) to be installed. If you don't have it, you can install on Mac via `brew install gh`
+This step requires [GitHub CLI](https://cli.github.com/) to be installed and [configured to authenticate with your GitHub account](https://cli.github.com/manual/). If you don't have it, you can install on Mac via `brew install gh`
 
 ```bash
 make infra-check-github-actions-auth ACCOUNT_NAME=<ACCOUNT_NAME>
