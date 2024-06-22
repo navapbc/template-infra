@@ -1,11 +1,15 @@
-name: Check CI/CD authentication
-run-name: Check ${{ inputs.account_name }} account authentication
+name: Check CI/CD AWS authentication
+run-name: Check CI/CD AWS authentication
 
 on:
   workflow_dispatch:
     inputs:
-      account_name:
-        description: the name of the AWS account to authenticate with
+      aws_region:
+        description: AWS region
+        default: us-east-1
+        required: false
+      role_to_assume:
+        description: ARN of IAM role to assume
         required: true
 
 permissions:
@@ -19,42 +23,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Get AWS account authentication details (AWS account, IAM role, AWS region)
-        run: |
-          # Get AWS account authentication details (AWS account, IAM role, AWS region)
-  
-          echo "::group::AWS account authentication details"
-  
-          terraform -chdir=infra/project-config init > /dev/null
-          terraform -chdir=infra/project-config apply -auto-approve > /dev/null
-          aws_region=$(terraform -chdir=infra/project-config output -raw default_region)
-          echo "aws_region=$aws_region"
-          github_actions_role_name=$(terraform -chdir=infra/project-config output -raw github_actions_role_name)
-          echo "github_actions_role_name=${github_actions_role_name}"
-  
-          # Get the account id associated with the account name extracting the
-          # account_id part of the tfbackend file name which looks like
-          # <account_name>.<account_id>.s3.tfbackend.
-          # The cut command splits the string with period as the delimeter and
-          # extracts the second field.
-          account_id=$(find infra/accounts/"${{ inputs.account_name }}".*.s3.tfbackend | cut -d. -f2)
-          echo "account_id=${account_id}"
-  
-          aws_role_to_assume="arn:aws:iam::${account_id}:role/${github_actions_role_name}"
-          echo "aws_role_to_assume=$aws_role_to_assume"
-  
-          echo "::endgroup::"
-  
-          echo "Setting env vars AWS_ROLE_TO_ASSUME and AWS_REGION..."
-          echo "AWS_ROLE_TO_ASSUME=$aws_role_to_assume" >> "$GITHUB_ENV"
-          echo "AWS_REGION=$aws_region" >> "$GITHUB_ENV"
-        shell: bash
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: ${{ env.AWS_ROLE_TO_ASSUME }}
-          aws-region: ${{ env.AWS_REGION }}
-
+          aws-region: ${{ inputs.aws_region }}
+          role-to-assume: ${{ inputs.role_to_assume }}
       - run: aws sts get-caller-identity
