@@ -144,7 +144,7 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	// Check that GitHub Actions can authenticate with AWS
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"check-github-actions-auth", "ACCOUNT_NAME=prod"},
+		Args:       []string{"infra-check-github-actions-auth", "ACCOUNT_NAME=prod"},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
