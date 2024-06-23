@@ -2,6 +2,7 @@ name: Check CI/CD AWS authentication
 run-name: Check CI/CD AWS authentication
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       aws_region:
