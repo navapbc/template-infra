@@ -1,5 +1,4 @@
 name: Check CI/CD AWS authentication
-run-name: Check CI/CD AWS authentication
 
 on:
   workflow_dispatch:
