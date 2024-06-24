@@ -16,8 +16,8 @@ app_name=${1:-"app"}
 environment=${2:-"dev"}
 backend_config_file="${environment}.s3.tfbackend"
 
-sed -i.bak 's/deletion_protection = true/deletion_protection = false/g' infra/modules/database/main.tf
-sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/database/backups.tf
+sed -i.bak 's/deletion_protection = !var.is_temporary/deletion_protection = false/g' infra/modules/database/main.tf
+sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/database/backups.tf
 
 cd "infra/${app_name}/database"
 

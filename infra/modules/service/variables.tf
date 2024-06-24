@@ -154,4 +154,5 @@ variable "file_upload_jobs" {
 variable "is_temporary" {
   description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection for the load balancer."
   type        = bool
+  default     = false
 }

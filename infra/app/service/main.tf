@@ -28,7 +28,7 @@ locals {
     description = "Application resources created in ${var.environment_name} environment"
   })
 
-  is_temporary = startswith(terraform.workspace, "t-")
+  is_temporary = terraform.workspace != "default"
 
   environment_config                             = module.app_config.environment_configs[var.environment_name]
   service_config                                 = local.environment_config.service_config
@@ -188,6 +188,7 @@ module "feature_flags" {
 }
 
 module "storage" {
-  source = "../../modules/storage"
-  name   = local.storage_config.bucket_name
+  source       = "../../modules/storage"
+  name         = local.storage_config.bucket_name
+  is_temporary = local.is_temporary
 }

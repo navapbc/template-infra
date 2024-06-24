@@ -141,11 +141,10 @@ func ValidateAccountBackend(t *testing.T, region string, projectName string) {
 
 func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName string) {
 	fmt.Println("::group::Validating that GitHub actions can authenticate with AWS account")
-	githubActionsRole := fmt.Sprintf("arn:aws:iam::%s:role/%s-github-actions", accountId, projectName)
 	// Check that GitHub Actions can authenticate with AWS
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth", fmt.Sprintf("GITHUB_ACTIONS_ROLE=%s", githubActionsRole)},
+		Args:       []string{"infra-check-github-actions-auth", "ACCOUNT_NAME=prod"},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")

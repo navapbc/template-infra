@@ -37,3 +37,9 @@ sed -i.bak "s/<DEFAULT_REGION>/$default_region/" main.tf
 
 # Remove the backup file created by sed
 rm main.tf.bak
+
+cd -
+
+# Set has_database to false for template only CI since database setup takes too long
+sed -i.bak "s/has_database = true/has_database = false/" infra/app/app-config/main.tf
+rm infra/app/app-config/main.tf.bak

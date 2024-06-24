@@ -23,7 +23,7 @@ resource "aws_s3_bucket" "access_logs" {
   bucket_prefix = "${var.service_name}-access-logs"
 
   # Use a separate line to support automated terraform destroy commands
-  force_destroy = false
+  force_destroy = var.is_temporary
 
   # checkov:skip=CKV2_AWS_62:Event notification not necessary for this bucket expecially due to likely use of lifecycle rules
   # checkov:skip=CKV_AWS_18:Access logging was not considered necessary for this bucket
