@@ -35,7 +35,7 @@ The infrastructure derives all of its configuration from static configuration mo
 - Project config
 - App config (per application)
 
-The configuration modules contain only statically known information and do not have any side effects such as creating infrastructure resources. As such, are used both (a) as root modules by shell scripts and CI/CD workflows and (b) as child modules by root modules across the infrastructure layers. See [infrastructure configuration](/docs/infra/infrastructure-configuration.md) for more info.
+The configuration modules contain only statically known information and do not have any side effects such as creating infrastructure resources. As such, they are used as both (a) root modules by shell scripts and CI/CD workflows and (b) child modules called by root modules across the infrastructure layers. See [infrastructure configuration](/docs/infra/infrastructure-configuration.md) for more info.
 
 ### 🧅 Infrastructure layers
 
