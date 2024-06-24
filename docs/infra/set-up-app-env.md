@@ -11,7 +11,7 @@ Before setting up the application's environments you'll need to have:
 1. [A compatible application in the app folder](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md)
 2. [Set up the AWS account that this environment is going to use](/docs/infra/set-up-aws-account.md).
 3. [Configure the app](/infra/app/app-config/main.tf).
-   1. Make sure you update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with.
+   1. Make sure you update `has_database` to `true` or `false` (defaults to `true`) depending on whether or not your application has a database to integrate with.
    2. Make sure you update `has_external_non_aws_service` to `true` or `false` depending on whether your application utilizes any non-AWS services. Other applications within the same git repo count as external services, so if your application makes API calls to another application service in the same git repo, set `has_external_non_aws_service` to `true`.
    3. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
    4. Make sure your application environment is using the AWS Account you want to use by checking the `account_name` property in the environment configuration and updating it if necessary.
