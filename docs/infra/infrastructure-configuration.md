@@ -5,7 +5,7 @@
 The infrastructure derives all of its configuration from static configuration modules:
 
 - Project config ([/infra/project-config/](/infra/project-config/))
-- App config (`/infra/<app_name>/app-config` per application)
+- App config (`/infra/<APP_NAME>/app-config` per application)
 
 Shell scripts running in CI jobs or locally on developer machines treat config modules as root modules and fetch configuration values by running `terraform apply -auto-approve` followed by `terraform output`.
 
