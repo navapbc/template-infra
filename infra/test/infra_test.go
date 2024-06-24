@@ -132,7 +132,6 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		},
 		WorkingDir: "../../",
 	})
-
 	shell.RunCommand(t, shell.Command{
 		Command: "sed",
 		Args: []string{
