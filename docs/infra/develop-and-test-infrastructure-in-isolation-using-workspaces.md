@@ -36,7 +36,7 @@ Then creat a new workspace. Since the workspace name is used to prefix resource 
 terraform -chdir=infra/$app_name/service workspace new ly
 ```
 
-Verify that the new workspace was created and selected
+Verify that the new workspace was created and selected:
 
 ```bash
 # List all workspaces, with a * next to the selected workspace
