@@ -5,7 +5,7 @@
 # Run this script in your project's root directory.
 #
 # Positional parameters:
-#   APP_NAME (optional) - the name of the application directory in /infra
+#   app_name (optional) - the name of the application directory in /infra
 #     Defaults to "app".
 # -----------------------------------------------------------------------------
 set -euxo pipefail
