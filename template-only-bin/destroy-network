@@ -5,16 +5,16 @@
 # Run this script in your project's root directory.
 #
 # Positional parameters:
-#   NETWORK_NAME (optional) - the name of the network
+#   network_name (optional) - the name of the network
 #     Defaults to "dev".
 # -----------------------------------------------------------------------------
 set -euxo pipefail
 
-NETWORK_NAME=${1:-"dev"}
-BACKEND_CONFIG_FILE="${NETWORK_NAME}.s3.tfbackend"
+network_name=${1:-"dev"}
+backend_config_file="${network_name}.s3.tfbackend"
 
 cd infra/networks
 
-terraform init -reconfigure -backend-config="${BACKEND_CONFIG_FILE}"
+terraform init -reconfigure -backend-config="${backend_config_file}"
 
-terraform destroy -auto-approve -var="network_name=${NETWORK_NAME}"
+terraform destroy -auto-approve -var="network_name=${network_name}"
