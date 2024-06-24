@@ -8,6 +8,7 @@ The structure for the infrastructure code looks like this:
 
 ```text
 infra/                  Infrastructure code
+  project-config/       Project-level configuration for account-level resources and resource tags
   accounts/             [Root module] IaC and IAM resources
   [app_name]/           Application directory: infrastructure for the main application
   modules/              Reusable child modules
@@ -27,9 +28,18 @@ Details about terraform root modules and child modules are documented in [module
 
 ## 🏗️ Project architecture
 
+### ⚙️ Configuration
+
+The infrastructure derives all of its configuration from static configuration modules:
+
+- Project config
+- App config (per application)
+
+The configuration modules contain only statically known information and do not have any side effects such as creating infrastructure resources. As such, they are used as both (a) root modules by shell scripts and CI/CD workflows and (b) child modules called by root modules across the infrastructure layers. See [infrastructure configuration](/docs/infra/infrastructure-configuration.md) for more info.
+
 ### 🧅 Infrastructure layers
 
-The infrastructure template is designed to operate on different layers:
+The infrastructure is designed to operate on different layers:
 
 - Account layer
 - Network layer
