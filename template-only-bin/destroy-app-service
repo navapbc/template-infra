@@ -24,6 +24,6 @@ cd "infra/${app_name}/service"
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
-terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -target="module.identity_provider.aws_cognito_user_pool.main" -var="environment_name=${ENVIRONMENT}"
+terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -target="module.identity_provider.aws_cognito_user_pool.main" -var="environment_name=${environment}"
 
 terraform destroy -auto-approve -var="environment_name=${environment}"
