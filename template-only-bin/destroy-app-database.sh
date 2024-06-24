@@ -5,24 +5,24 @@
 # Run this script in your project's root directory.
 #
 # Positional parameters:
-#   APP_NAME (optional) - the name of the application directory in /infra
+#   app_name (optional) - the name of the application directory in /infra
 #     Defaults to "app".
-#   ENVIRONMENT (optional) - the name of the environment
+#   environment (optional) - the name of the environment
 #     Defaults to "dev".
 # -----------------------------------------------------------------------------
 set -euxo pipefail
 
-APP_NAME=${1:-"app"}
-ENVIRONMENT=${2:-"dev"}
-BACKEND_CONFIG_FILE="${ENVIRONMENT}.s3.tfbackend"
+app_name=${1:-"app"}
+environment=${2:-"dev"}
+backend_config_file="${environment}.s3.tfbackend"
 
 sed -i.bak 's/deletion_protection = true/deletion_protection = false/g' infra/modules/database/main.tf
 sed -i.bak 's/force_destroy = false/force_destroy = true/g' infra/modules/database/backups.tf
 
-cd "infra/${APP_NAME}/database"
+cd "infra/${app_name}/database"
 
-terraform init -reconfigure -backend-config="${BACKEND_CONFIG_FILE}"
+terraform init -reconfigure -backend-config="${backend_config_file}"
 
-terraform apply -auto-approve -target="module.database.aws_backup_vault.backup_vault" -target="module.database.aws_rds_cluster.db" -var="environment_name=${ENVIRONMENT}"
+terraform apply -auto-approve -target="module.database.aws_backup_vault.backup_vault" -target="module.database.aws_rds_cluster.db" -var="environment_name=${environment}"
 
-terraform destroy -auto-approve -var="environment_name=${ENVIRONMENT}"
+terraform destroy -auto-approve -var="environment_name=${environment}"
