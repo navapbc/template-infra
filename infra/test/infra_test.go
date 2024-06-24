@@ -136,7 +136,7 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		Command: "sed",
 		Args: []string{
 			"-i.bak",
-			's/deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"/deletion_protection = "INACTIVE"/g',
+			"s/deletion_protection = var.is_temporary ? \"INACTIVE\" : \"ACTIVE\"/deletion_protection = \"INACTIVE\"/g",
 			"infra/modules/identity-provider/main.tf",
 		},
 		WorkingDir: "../../",
