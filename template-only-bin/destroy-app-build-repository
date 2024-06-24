@@ -10,11 +10,11 @@
 # -----------------------------------------------------------------------------
 set -euxo pipefail
 
-APP_NAME=${1:-"app"}
-BACKEND_CONFIG_FILE="shared.s3.tfbackend"
+app_name=${1:-"app"}
+backend_config_file="shared.s3.tfbackend"
 
-cd "infra/${APP_NAME}/build-repository"
+cd "infra/${app_name}/build-repository"
 
-terraform init -reconfigure -backend-config="${BACKEND_CONFIG_FILE}"
+terraform init -reconfigure -backend-config="${backend_config_file}"
 
 terraform destroy -auto-approve
