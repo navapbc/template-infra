@@ -30,10 +30,10 @@ First, make sure that the Terraform root module is initialized to the dev enviro
 terraform -chdir=infra/$app_name/service init -backend-config=dev.s3.tfbackend
 ```
 
-Then creat a new workspace. Since the workspace name is used to prefix resource names, use a short workspace name to avoid hitting resource name size limits. Assuming you're only working on one thing at a time (following the Kanban principle of limiting work in progress), your initials would make a good workspace name.
+Then creat a new workspace. Since the workspace name is used to prefix resource names, use a short workspace name to avoid hitting resource name size limits. Assuming you're only working on one thing at a time (following the Kanban principle of limiting work in progress), your initials would make a good workspace name. For example, if your name was Loren Yu, you could use `ly` as your workspace name.
 
 ```bash
-terraform -chdir=infra/$app_name/service workspace new ly
+terraform -chdir=infra/$app_name/service workspace new <WORKSPACE_NAME>
 ```
 
 Verify that the new workspace was created and selected:
@@ -64,5 +64,5 @@ terraform -chdir=infra/$app_name/service destroy -var=environment_name=dev
 # Select default workspace so that you can delete your workspace, since you can't delete the selected workspace
 terraform -chdir=infra/$app_name/service workspace select default
 # Delete your workspace
-terraform -chdir=infra/$app_name/service delete ly
+terraform -chdir=infra/$app_name/service delete <WORKSPACE_NAME>
 ```
