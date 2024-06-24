@@ -43,5 +43,5 @@ graph TD
 
 ## ⛑️ Helper workflows
 
-- [`check-infra-auth`](./check-infra-auth.yml): verifes that the project's Github repo is able to connect to AWS
+- [`check-ci-cd-auth`](./check-ci-cd-auth.yml): verifes that the project's Github repo is able to connect to AWS
 

@@ -32,6 +32,7 @@ __check_defined = \
 	infra-check-compliance-checkov \
 	infra-check-compliance-tfsec \
 	infra-check-compliance \
+	infra-check-github-actions-auth \
 	infra-configure-app-build-repository \
 	infra-configure-app-database \
 	infra-configure-app-service \
@@ -135,6 +136,11 @@ infra-check-app-database-roles: ## Check that app database roles have been confi
 
 infra-check-compliance: ## Run compliance checks
 infra-check-compliance: infra-check-compliance-checkov infra-check-compliance-tfsec
+
+infra-check-github-actions-auth: ## Check that GitHub actions can authenticate to the AWS account
+	@:$(call check_defined, ACCOUNT_NAME, the name of account in infra/accounts)
+	./bin/check-github-actions-auth $(ACCOUNT_NAME)
+
 
 infra-check-compliance-checkov: ## Run checkov compliance checks
 	checkov --directory infra

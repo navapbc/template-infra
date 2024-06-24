@@ -28,8 +28,6 @@ You may need to set the Terraform version.
 tfenv use 1.8.0
 ```
 
-If you are unfamiliar with Terraform, check out this [basic introduction to Terraform](./intro-to-terraform.md).
-
 ### Install AWS CLI
 
 The [AWS Command Line Interface (AWS CLI)](https://aws.amazon.com/cli/) is a unified tool to manage your AWS services. With just one tool to download and configure, you can control multiple AWS services from the command line and automate them through scripts. Install the AWS command line tool by following the instructions found here:

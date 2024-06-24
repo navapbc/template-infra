@@ -1,4 +1,4 @@
-name: Check GitHub Actions AWS Authentication
+name: Check CI/CD AWS authentication
 
 on:
   workflow_dispatch:
