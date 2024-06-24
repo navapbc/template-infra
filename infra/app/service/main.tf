@@ -211,6 +211,7 @@ module "identity_provider" {
   count  = local.service_config.enable_identity_provider ? 1 : 0
   source = "../../modules/identity-provider"
   name   = local.service_config.service_name
+  is_temporary = local.is_temporary
 }
 
 module "identity_provider_client" {

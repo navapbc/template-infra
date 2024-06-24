@@ -13,7 +13,7 @@ resource "aws_cognito_user_pool" "main" {
   name = var.name
 
   # Use a separate line to support automated terraform destroy commands
-  deletion_protection = "ACTIVE"
+  deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"
 
   username_attributes      = ["email"]
   auto_verified_attributes = ["email"]

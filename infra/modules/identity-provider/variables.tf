@@ -56,3 +56,9 @@ variable "verification_email_subject" {
   description = "The email subject for a password reset email"
   default     = null
 }
+
+variable "is_temporary" {
+  description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
+  type        = bool
+  default     = false
+}
