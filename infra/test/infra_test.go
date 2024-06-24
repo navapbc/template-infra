@@ -133,12 +133,23 @@ func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
 		WorkingDir: "../../",
 	})
 
+	shell.RunCommand(t, shell.Command{
+		Command: "sed",
+		Args: []string{
+			"-i.bak",
+			's/deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"/deletion_protection = "INACTIVE"/g',
+			"infra/modules/identity-provider/main.tf",
+		},
+		WorkingDir: "../../",
+	})
+
 	// Clone the options and set targets to only apply to the buckets
 	terraformOptions, err := terraformOptions.Clone()
 	require.NoError(t, err)
 	terraformOptions.Targets = []string{
 		"module.service.aws_s3_bucket.access_logs",
 		"module.storage.aws_s3_bucket.storage",
+		"module.identity_provider.aws_cognito_user_pool.main",
 	}
 	terraform.Apply(t, terraformOptions)
 	fmt.Println("::endgroup::")
