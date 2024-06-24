@@ -1,8 +1,8 @@
 # Infrastructure configuration
 
-## Configure infrastructure with static configuration modules
+## Configure infrastructure with configuration modules
 
-The infrastructure derives all of its configuration from static configuration modules:
+The infrastructure derives all of its configuration from the following modules:
 
 - Project config ([/infra/project-config/](/infra/project-config/))
 - App config (`/infra/<APP_NAME>/app-config` per application)
@@ -21,7 +21,17 @@ module "app_config" {
 }
 ```
 
-## Benefits over variable definitions (.tfvars) files
+### Design config module outputs to be static
+
+Config modules are designed to be static. This means that all of the outputs can be statically determined without needing to execute the code. In particular:
+
+- All config module outputs are either constant or derived from constants via deterministic functions.
+- Config module outputs do not rely on the environment, including which root module is being applied, which workspace is selected, or the current timestamp.
+- Config modules have no side effects. In particular, they do not create any infrastructure resources.
+
+When configuring your project and application, keep these principles in mind to avoid violating the static nature of config modules.
+
+## Benefits of config modules over variable definitions (.tfvars) files
 
 Putting configuration in static configuration modules has a number of benefits over managing configuration in Terraform [variable definitions (.tfvars) files](https://developer.hashicorp.com/terraform/language/values/variables#assigning-values-to-root-module-variables):
 
