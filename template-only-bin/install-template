@@ -1,15 +1,15 @@
 #!/bin/bash
 #
 # This script installs the template-infra to your project. Run
-# This script from your project's root directory.
+# this script from your project's root directory.
 set -euox pipefail
 
-CUR_DIR=$(pwd)
-SCRIPT_DIR=$(dirname "$0")
-TEMPLATE_DIR="$SCRIPT_DIR/.."
+cur_dir=$(pwd)
+script_dir=$(dirname "$0")
+template_dir="$script_dir/.."
 
 echo "Copy files from template-infra"
-cd "$TEMPLATE_DIR"
+cd "$template_dir"
 # Note: Keep this list of paths in sync with INCLUDE_PATHS in update-template
 cp -r \
   .github \
@@ -22,10 +22,10 @@ cp -r \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
-  "$CUR_DIR"
+  "$cur_dir"
 
 # Store template version in a file
-git rev-parse HEAD > "$CUR_DIR/.template-version"
+git rev-parse HEAD > "$cur_dir/.template-version"
 
 cd -
 
