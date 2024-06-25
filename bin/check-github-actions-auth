@@ -44,7 +44,7 @@ echo "account_id=${account_id}"
 aws_role_to_assume="arn:aws:iam::${account_id}:role/${github_actions_role_name}"
 echo "aws_role_to_assume=$aws_role_to_assume"
 
-echo "::endgroup::"  
+echo "::endgroup::"
 
 ##################
 ## Run workflow ##
