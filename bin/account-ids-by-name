@@ -12,7 +12,7 @@ script_dir=$(dirname "$0")
 key_value_pairs=()
 backend_config_file_paths=$(ls -1 "${script_dir}"/../infra/accounts/*.*.s3.tfbackend)
 
-for backend_config_file_path in "${backend_config_file_paths}"; do
+for backend_config_file_path in ${backend_config_file_paths}; do
   backend_config_file=$(basename "${backend_config_file_path}")
   backend_config_name="${backend_config_file/.s3.tfbackend/}"
   IFS='.' read -r account_name account_id <<< "${backend_config_name}"
