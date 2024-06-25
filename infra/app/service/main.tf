@@ -35,6 +35,7 @@ locals {
   database_config                                = local.environment_config.database_config
   storage_config                                 = local.environment_config.storage_config
   incident_management_service_integration_config = local.environment_config.incident_management_service_integration
+  identity_provider_config                       = local.environment_config.identity_provider_config
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
 }
@@ -150,11 +151,12 @@ module "service" {
     }
   } : null
 
-  extra_environment_variables = merge({
-    FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
-    BUCKET_NAME           = local.storage_config.bucket_name
+  extra_environment_variables = merge(
+    {
+      FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
+      BUCKET_NAME           = local.storage_config.bucket_name
     },
-    local.service_config.enable_identity_provider ? {
+    local.identity_provider_config.enable_identity_provider ? {
       COGNITO_USER_POOL_ID = module.identity_provider[0].user_pool_id
       COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
     } : {},
@@ -166,17 +168,18 @@ module "service" {
       name      = secret_name
       valueFrom = module.secrets[secret_name].secret_arn
     }],
-    local.service_config.enable_identity_provider ? [{
+    local.identity_provider_config.enable_identity_provider ? [{
       name      = "COGNITO_CLIENT_SECRET"
       valueFrom = module.identity_provider_client[0].client_secret_arn
     }] : []
   )
 
-  extra_policies = merge({
-    feature_flags_access = module.feature_flags.access_policy_arn,
-    storage_access       = module.storage.access_policy_arn
+  extra_policies = merge(
+    {
+      feature_flags_access = module.feature_flags.access_policy_arn,
+      storage_access       = module.storage.access_policy_arn
     },
-    local.service_config.enable_identity_provider ? {
+    local.identity_provider_config.enable_identity_provider ? {
       identity_access = module.identity_provider_client[0].access_policy_arn,
     } : {}
   )
@@ -208,18 +211,26 @@ module "storage" {
 }
 
 module "identity_provider" {
-  count        = local.service_config.enable_identity_provider ? 1 : 0
+  count        = local.identity_provider_config.enable_identity_provider ? 1 : 0
   source       = "../../modules/identity-provider"
-  name         = local.service_config.service_name
   is_temporary = local.is_temporary
+
+  name                             = local.identity_provider_config.identity_provider_name
+  sender_email                     = local.identity_provider_config.email.sender_email
+  sender_display_name              = local.identity_provider_config.email.sender_display_name
+  reply_to_email                   = local.identity_provider_config.email.reply_to_email
+  password_minimum_length          = local.identity_provider_config.password_policy.password_minimum_length
+  temporary_password_validity_days = local.identity_provider_config.password_policy.temporary_password_validity_days
+  verification_email_message       = local.identity_provider_config.verification_email.verification_email_message
+  verification_email_subject       = local.identity_provider_config.verification_email.verification_email_subject
 }
 
 module "identity_provider_client" {
-  count  = local.service_config.enable_identity_provider ? 1 : 0
+  count  = local.identity_provider_config.enable_identity_provider ? 1 : 0
   source = "../../modules/identity-provider-client"
-  name   = local.service_config.service_name
 
+  name                 = local.identity_provider_config.identity_provider_name
   cognito_user_pool_id = module.identity_provider[0].user_pool_id
-  callback_urls        = local.service_config.auth_callback_urls
-  logout_urls          = local.service_config.logout_urls
+  callback_urls        = local.identity_provider_config.client.auth_callback_urls
+  logout_urls          = local.identity_provider_config.client.logout_urls
 }

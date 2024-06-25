@@ -93,3 +93,15 @@ variable "enable_identity_provider" {
   description = "Enables identity provider"
   default     = false
 }
+
+variable "extra_identity_provider_callback_urls" {
+  type        = list(string)
+  description = "A list of additional callback urls to pass to the identity provider"
+  default     = []
+}
+
+variable "extra_identity_provider_logout_urls" {
+  type        = list(string)
+  description = "A list of additional logout urls to pass to the identity provider"
+  default     = []
+}

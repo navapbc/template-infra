@@ -33,18 +33,6 @@ variable "temporary_password_validity_days" {
   default     = 7
 }
 
-variable "invite_email_message" {
-  type        = string
-  description = "The email body for an account invitation email sent by an admin user. Must contain {username} and {####} placeholders, for username and temporary password, respectively."
-  default     = null
-}
-
-variable "invite_email_subject" {
-  type        = string
-  description = "The email subject for an account invitation email sent by an admin user"
-  default     = null
-}
-
 variable "verification_email_message" {
   type        = string
   description = "The email body for a password reset email. Must contain the {####} placeholder."

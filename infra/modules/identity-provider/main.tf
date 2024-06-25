@@ -76,17 +76,6 @@ resource "aws_cognito_user_pool" "main" {
     }
   }
 
-  admin_create_user_config {
-    # Optionally configures email template for activating the account
-    dynamic "invite_message_template" {
-      for_each = var.invite_email_message != null || var.invite_email_subject != null ? [0] : []
-      content {
-        email_message = var.invite_email_message != null ? var.invite_email_message : null
-        email_subject = var.invite_email_subject != null ? var.invite_email_subject : null
-      }
-    }
-  }
-
   # Optionally configures email template for resetting a password
   verification_message_template {
     default_email_option = "CONFIRM_WITH_CODE"
