@@ -156,7 +156,7 @@ module "service" {
       FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
       BUCKET_NAME           = local.storage_config.bucket_name
     },
-    local.identity_provider_config.enable_identity_provider ? {
+    module.app_config.enable_identity_provider ? {
       COGNITO_USER_POOL_ID = module.identity_provider[0].user_pool_id
       COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
     } : {},
@@ -168,7 +168,7 @@ module "service" {
       name      = secret_name
       valueFrom = module.secrets[secret_name].secret_arn
     }],
-    local.identity_provider_config.enable_identity_provider ? [{
+    module.app_config.enable_identity_provider ? [{
       name      = "COGNITO_CLIENT_SECRET"
       valueFrom = module.identity_provider_client[0].client_secret_arn
     }] : []
@@ -179,7 +179,7 @@ module "service" {
       feature_flags_access = module.feature_flags.access_policy_arn,
       storage_access       = module.storage.access_policy_arn
     },
-    local.identity_provider_config.enable_identity_provider ? {
+    module.app_config.enable_identity_provider ? {
       identity_access = module.identity_provider_client[0].access_policy_arn,
     } : {}
   )
@@ -211,7 +211,7 @@ module "storage" {
 }
 
 module "identity_provider" {
-  count        = local.identity_provider_config.enable_identity_provider ? 1 : 0
+  count        = module.app_config.enable_identity_provider ? 1 : 0
   source       = "../../modules/identity-provider"
   is_temporary = local.is_temporary
 
@@ -226,7 +226,7 @@ module "identity_provider" {
 }
 
 module "identity_provider_client" {
-  count  = local.identity_provider_config.enable_identity_provider ? 1 : 0
+  count  = module.app_config.enable_identity_provider ? 1 : 0
   source = "../../modules/identity-provider-client"
 
   name                 = local.identity_provider_config.identity_provider_name

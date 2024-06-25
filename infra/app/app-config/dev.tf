@@ -12,8 +12,11 @@ module "dev_config" {
   has_incident_management_service = local.has_incident_management_service
 
   # Enable and configure identity provider.
-  enable_identity_provider              = local.enable_identity_provider
+  enable_identity_provider = local.enable_identity_provider
+
+  # Support local development against the dev instance.
   extra_identity_provider_callback_urls = ["http://localhost:3000"]
+  extra_identity_provider_logout_urls   = ["http://localhost:3000"]
 
   # Enables ECS Exec access for debugging or jump access.
   # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html

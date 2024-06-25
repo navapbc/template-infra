@@ -1,9 +1,7 @@
 # Identity provider configuration
 locals {
-  enable_identity_provider = var.enable_identity_provider
-
   identity_provider_config = var.enable_identity_provider ? {
-    identity_provider_name   = "${local.prefix}${var.app_name}-${var.environment}"
+    identity_provider_name = "${local.prefix}${var.app_name}-${var.environment}"
 
     password_policy = {
       password_minimum_length          = 12
