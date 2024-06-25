@@ -15,8 +15,8 @@
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
-module_dir=$1
-backend_config_name=$2
+module_dir="$1"
+backend_config_name="$2"
 tf_state_key="${3:-${module_dir}/${backend_config_name}.tfstate}"
 
 # The local tfbackend config file that will store the terraform backend config

@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-app_name=$1
-image_tag=$2
-environment=$3
+app_name="$1"
+image_tag="$2"
+environment="$3"
 
 echo "--------------"
 echo "Deploy release"

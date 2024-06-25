@@ -13,8 +13,8 @@
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
-app_name=$1
-environment=$2
+app_name="$1"
+environment="$2"
 
 terraform -chdir="infra/${app_name}/app-config" init > /dev/null
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null

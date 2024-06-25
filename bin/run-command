@@ -140,7 +140,7 @@ echo "  log_stream=${log_stream}"
 num_retries_waiting_for_logs=0
 while true; do
   num_retries_waiting_for_logs=$((num_retries_waiting_for_logs+1))
-  if [ $num_retries_waiting_for_logs -eq 20 ]; then
+  if [ "${num_retries_waiting_for_logs}" -eq 20 ]; then
     echo "Timing out task ${ecs_task_id} waiting for logs"
     exit 1
   fi
@@ -165,7 +165,7 @@ echo "  log_group=${log_group}"
 echo "  log_stream=${log_stream}"
 echo "  task_start_time_millis=${task_start_time_millis}"
 # Initialize the logs start time filter to the time we started the task
-logs_start_time_millis=${task_start_time_millis}
+logs_start_time_millis="${task_start_time_millis}"
 while true; do
   # Print logs with human readable timestamps by fetching the log events as JSON
   # then transforming them afterwards using jq
