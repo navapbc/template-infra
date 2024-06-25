@@ -27,7 +27,7 @@ Follow these steps if you want to develop and test a change to the service layer
 First, make sure that the Terraform root module is initialized to the dev environment
 
 ```bash
-terraform -chdir=infra/<APP_NAME>/service init -backend-config=dev.s3.tfbackend
+terraform -chdir=infra/<APP_NAME>/service init -reconfigure -backend-config=dev.s3.tfbackend
 ```
 
 Then create a new workspace. Since the workspace name is used to prefix resource names, use a short workspace name to avoid hitting resource name character limits. Assuming you're only working on one thing at a time (following the Kanban principle of limiting work in progress), your initials would make a good workspace name. For example, if your name was Loren Yu, you could use `ly` as your workspace name.
