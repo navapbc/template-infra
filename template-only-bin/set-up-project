@@ -1,9 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-project_name=$1
-owner=$2
-default_region=$3
+project_name="$1"
+owner="$2"
+default_region="$3"
 repo_url=$(git remote get-url origin)
 
 echo "Account configuration"
