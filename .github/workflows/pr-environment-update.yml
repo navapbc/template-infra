@@ -1,0 +1,50 @@
+name: PR Environment Update
+run-name: Update PR Environment ${{ github.event.number }}
+on:
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+jobs:
+  build-and-publish:
+    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+    uses: ./.github/workflows/build-and-publish.yml
+    with:
+      app_name: ${{ inputs.app_name }}
+      ref: ${{ github.sha }}
+
+  update:
+    name: Update environment
+    needs: [build-and-publish]
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write # Needed to comment on PR
+
+    concurrency: pr-environment-${{ github.event.number }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.8.3
+          terraform_wrapper: false
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/configure-aws-credentials
+        with:
+          app_name: ${{ inputs.app_name }}
+          environment: ${{ inputs.environment }}
+
+      - name: Update environment
+        run: ./bin/update-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ github.event.number }}" "${{ github.sha }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
