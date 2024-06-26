@@ -22,7 +22,7 @@ locals {
   # make calls to the internet.
   has_external_non_aws_service = false
 
-  has_incident_management_service = true
+  has_incident_management_service = false
 
   environment_configs = {
     dev     = module.dev_config
