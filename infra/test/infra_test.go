@@ -10,7 +10,6 @@ import (
 	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"github.com/stretchr/testify/require"
 )
 
 var uniqueId = strings.ToLower(random.UniqueId())
@@ -103,59 +102,7 @@ func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
 	fmt.Println("::endgroup::")
 }
 
-func EnableDestroyService(t *testing.T, terraformOptions *terraform.Options) {
-	fmt.Println("::group::Set force_destroy = true and prevent_destroy = false for s3 buckets in service layer")
-	shell.RunCommand(t, shell.Command{
-		Command: "sed",
-		Args: []string{
-			"-i.bak",
-			"s/force_destroy = false/force_destroy = true/g",
-			"infra/modules/service/access-logs.tf",
-		},
-		WorkingDir: "../../",
-	})
-	shell.RunCommand(t, shell.Command{
-		Command: "sed",
-		Args: []string{
-			"-i.bak",
-			"s/prevent_destroy = true/prevent_destroy = false/g",
-			"infra/modules/service/access-logs.tf",
-		},
-		WorkingDir: "../../",
-	})
-	shell.RunCommand(t, shell.Command{
-		Command: "sed",
-		Args: []string{
-			"-i.bak",
-			"s/force_destroy = false/force_destroy = true/g",
-			"infra/modules/storage/main.tf",
-		},
-		WorkingDir: "../../",
-	})
-	shell.RunCommand(t, shell.Command{
-		Command: "sed",
-		Args: []string{
-			"-i.bak",
-			"s/deletion_protection = var.is_temporary ? \"INACTIVE\" : \"ACTIVE\"/deletion_protection = \"INACTIVE\"/g",
-			"infra/modules/identity-provider/main.tf",
-		},
-		WorkingDir: "../../",
-	})
-
-	// Clone the options and set targets to only apply to the buckets
-	terraformOptions, err := terraformOptions.Clone()
-	require.NoError(t, err)
-	terraformOptions.Targets = []string{
-		"module.service.aws_s3_bucket.access_logs",
-		"module.storage.aws_s3_bucket.storage",
-		"module.identity_provider.aws_cognito_user_pool.main",
-	}
-	terraform.Apply(t, terraformOptions)
-	fmt.Println("::endgroup::")
-}
-
 func DestroyService(t *testing.T, terraformOptions *terraform.Options) {
-	EnableDestroyService(t, terraformOptions)
 	fmt.Println("::group::Destroy service layer")
 	terraform.Destroy(t, terraformOptions)
 	fmt.Println("::endgroup::")
