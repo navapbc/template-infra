@@ -23,7 +23,7 @@ This guidance is not strict. It is still okay to combine database migrations and
 Pull request environments are created by GitHub Actions workflows. There are two reusable callable workflows that manage pull request environments:
 
 - [pr-environment-update.yml](/.github/workflows/pr-environment-update.yml) - creates or updates a temporary environment in a separate Terraform workspace for a given application and pull request
-- [pr-environment-update.yml](/.github/workflows/pr-environment-update.yml) - destroys a temporary environment and workspace for a given application and pull request
+- [pr-environment-destroy.yml](/.github/workflows/pr-environment-destroy.yml) - destroys a temporary environment and workspace for a given application and pull request
 
 Using these reusable workflows, configure PR environments for each application with application-specific workflows:
 
