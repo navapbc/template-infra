@@ -36,5 +36,5 @@ echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
 echo "Post comment to PR with service endpoint"
-service_endpoint=$(terraform -chdir="infra/${app_name}/service" output -raw service_endpoint)
+service_endpoint="$(terraform -chdir="infra/${app_name}/service" output -raw service_endpoint)"
 gh pr comment "${pr_number}" -b "Updated PR environment at ${service_endpoint}"
