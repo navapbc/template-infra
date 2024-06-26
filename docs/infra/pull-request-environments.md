@@ -16,7 +16,7 @@ Database migrations are not reflected in PR environments. In particular, PR envi
 
 Therefore, isolate database changes in their own pull request and merge that pull request first before opening pull requests with application changes that depend on those database changes. Note that it is still okay and encouraged to develop database and application changes together during local development.
 
-That this guidance is not strict. It is still okay to combine database migrations and application changes in a single pull request. However, when doing so, note that the PR environment may not be fully functional if the application changes rely on the database migrations.
+This guidance is not strict. It is still okay to combine database migrations and application changes in a single pull request. However, when doing so, note that the PR environment may not be fully functional if the application changes rely on the database migrations.
 
 ## Implementing pull request environments for each application
 
