@@ -10,9 +10,9 @@
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
-app_name=$1
-environment=$2
-pr_number=$3
+app_name="$1"
+environment="$2"
+pr_number="$3"
 
 workspace="p-${pr_number}"
 
