@@ -6,7 +6,7 @@
 #   app_name (required) – the name of subdirectory of /infra that holds the
 #     application's infrastructure code.
 #   environment - the name of the application environment (e.g. dev, staging, prod)
-#   pr_nubmer - the pull request number in GitHub
+#   pr_number - the pull request number in GitHub
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
