@@ -26,9 +26,9 @@ locals {
 
   # Whether or not the application should deploy an identity provider
   # If enabled:
-  # 1. A Cognito user pool will be created
-  # 2. A Cognito user pool app client will be created
-  # 3. Environment variables for the app client will be added to the service
+  # 1. Creates a Cognito user pool
+  # 2. Creates a Cognito user pool app client
+  # 3. Adds environment variables for the app client to the service
   enable_identity_provider = false
 
   environment_configs = {
