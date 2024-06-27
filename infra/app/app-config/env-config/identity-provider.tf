@@ -20,7 +20,7 @@ locals {
       )
     }
 
-    # Set any values not `null` to override AWS Cognito defaults.
+    # Set attributes to non-null values to override AWS Cognito defaults.
     email = {
       # When you're ready to use SES instead of the Cognito default to send emails, set this
       # to the SES-verified email address to be used when sending emails.
@@ -35,7 +35,7 @@ locals {
     }
 
     # Optionally configure email template for resetting a password.
-    # Set any values not `null` to override AWS Cognito defaults.
+    # Set any attribute to a non-null value to override AWS Cognito defaults.
     verification_email = {
       verification_email_message = null
       verification_email_subject = null
