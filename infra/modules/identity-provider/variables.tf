@@ -1,11 +1,23 @@
+variable "is_temporary" {
+  description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
+  type        = bool
+  default     = false
+}
+
 variable "name" {
   type        = string
   description = "The name of the Cognito User Pool"
 }
 
-variable "sender_email" {
+variable "password_minimum_length" {
+  type        = number
+  description = "The password minimum length"
+  default     = 12
+}
+
+variable "reply_to_email" {
   type        = string
-  description = "Email address to use to send identity provider emails. If none is provided, the identity service will be configured to use Cognito's default email functionality, which should only be relied on outside of production."
+  description = "Email address used as the REPLY-TO for identity service emails"
   default     = null
 }
 
@@ -15,16 +27,10 @@ variable "sender_display_name" {
   default     = null
 }
 
-variable "reply_to_email" {
+variable "sender_email" {
   type        = string
-  description = "Email address used as the REPLY-TO for identity service emails"
+  description = "Email address to use to send identity provider emails. If none is provided, the identity service will be configured to use Cognito's default email functionality, which should only be relied on outside of production."
   default     = null
-}
-
-variable "password_minimum_length" {
-  type        = number
-  description = "The password minimum length"
-  default     = 12
 }
 
 variable "temporary_password_validity_days" {
@@ -43,10 +49,4 @@ variable "verification_email_subject" {
   type        = string
   description = "The email subject for a password reset email"
   default     = null
-}
-
-variable "is_temporary" {
-  description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
-  type        = bool
-  default     = false
 }
