@@ -87,3 +87,21 @@ variable "enable_command_execution" {
   description = "Enables the ability to manually execute commands on running service containers using AWS ECS Exec"
   default     = false
 }
+
+variable "enable_identity_provider" {
+  type        = bool
+  description = "Enables identity provider"
+  default     = false
+}
+
+variable "extra_identity_provider_callback_urls" {
+  type        = list(string)
+  description = "A list of additional callback urls to pass to the identity provider"
+  default     = []
+}
+
+variable "extra_identity_provider_logout_urls" {
+  type        = list(string)
+  description = "A list of additional logout urls to pass to the identity provider"
+  default     = []
+}
