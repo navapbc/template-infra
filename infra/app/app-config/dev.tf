@@ -15,8 +15,8 @@ module "dev_config" {
   enable_identity_provider = local.enable_identity_provider
 
   # Support local development against the dev instance.
-  extra_identity_provider_callback_urls = ["http://localhost:3000"]
-  extra_identity_provider_logout_urls   = ["http://localhost:3000"]
+  extra_identity_provider_callback_urls = ["http://localhost"]
+  extra_identity_provider_logout_urls   = ["http://localhost"]
 
   # Enables ECS Exec access for debugging or jump access.
   # See https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html

@@ -231,6 +231,6 @@ module "identity_provider_client" {
 
   name                 = local.identity_provider_config.identity_provider_name
   cognito_user_pool_id = module.identity_provider[0].user_pool_id
-  callback_urls        = local.identity_provider_config.client.auth_callback_urls
+  callback_urls        = local.identity_provider_config.client.callback_urls
   logout_urls          = local.identity_provider_config.client.logout_urls
 }
