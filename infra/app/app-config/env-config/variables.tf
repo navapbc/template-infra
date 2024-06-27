@@ -96,12 +96,12 @@ variable "enable_identity_provider" {
 
 variable "extra_identity_provider_callback_urls" {
   type        = list(string)
-  description = "A list of additional callback urls to pass to the identity provider"
+  description "List of additional URLs that the identity provider will redirect the user to after a successful sign-in. Used for local development."
   default     = []
 }
 
 variable "extra_identity_provider_logout_urls" {
   type        = list(string)
-  description = "A list of additional logout urls to pass to the identity provider"
+  description = "List of additional URLs that the identity provider will redirect the user to after signing out. Used for local development."
   default     = []
 }
