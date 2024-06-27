@@ -41,6 +41,10 @@ output "identity_provider_config" {
   value = local.identity_provider_config
 }
 
+output "notifications_config" {
+  value = local.notifications_config
+}
+
 output "storage_config" {
   value = {
     # Include project name in bucket name since buckets need to be globally unique across AWS

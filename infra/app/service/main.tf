@@ -36,6 +36,7 @@ locals {
   storage_config                                 = local.environment_config.storage_config
   incident_management_service_integration_config = local.environment_config.incident_management_service_integration
   identity_provider_config                       = local.environment_config.identity_provider_config
+  notifications_config                           = local.environment_config.notifications_config
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
 }
@@ -216,13 +217,14 @@ module "identity_provider" {
   is_temporary = local.is_temporary
 
   name                             = local.identity_provider_config.identity_provider_name
-  sender_email                     = local.identity_provider_config.email.sender_email
-  sender_display_name              = local.identity_provider_config.email.sender_display_name
-  reply_to_email                   = local.identity_provider_config.email.reply_to_email
   password_minimum_length          = local.identity_provider_config.password_policy.password_minimum_length
   temporary_password_validity_days = local.identity_provider_config.password_policy.temporary_password_validity_days
   verification_email_message       = local.identity_provider_config.verification_email.verification_email_message
   verification_email_subject       = local.identity_provider_config.verification_email.verification_email_subject
+
+  sender_email        = local.notifications_config == null ? null : local.notifications_config.sender_email
+  sender_display_name = local.notifications_config == null ? null : local.notifications_config.sender_display_name
+  reply_to_email      = local.notifications_config == null ? null : local.notifications_config.reply_to_email
 }
 
 module "identity_provider_client" {
