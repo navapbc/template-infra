@@ -8,14 +8,24 @@ locals {
       temporary_password_validity_days = 7
     }
 
+    # If your application should redirect users, after successful authentication, to a
+    # page other than the homepage, specify the path fragment here.
+    # Example: "profile"
+    callback_url_path = ""
+
+    # If your application should redirect users, after signing out, to a page other than
+    # the homepage, specify the path fragment here.
+    # Example: "logout"
+    logout_url_path = ""
+
+    # Do not modify this block directly.
     client = {
-      # Support local development against remote resources
-      auth_callback_urls = concat(
-        var.domain_name != null ? ["https://${var.domain_name}"] : [],
+      callback_urls = concat(
+        var.domain_name != null ? ["https://${var.domain_name}/${local.callback_url_path}"] : [],
         var.extra_identity_provider_callback_urls
       )
       logout_urls = concat(
-        var.domain_name != null ? ["https://${var.domain_name}"] : [],
+        var.domain_name != null ? ["https://${var.domain_name}/${local.logout_url_path}"] : [],
         var.extra_identity_provider_logout_urls
       )
     }
