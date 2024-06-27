@@ -180,7 +180,7 @@ module "service" {
       storage_access       = module.storage.access_policy_arn
     },
     module.app_config.enable_identity_provider ? {
-      identity_access = module.identity_provider_client[0].access_policy_arn,
+      identity_provider_access = module.identity_provider_client[0].access_policy_arn,
     } : {}
   )
 
