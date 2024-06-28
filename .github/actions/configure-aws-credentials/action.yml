@@ -12,7 +12,7 @@ inputs:
   account_name:
     description: 'Name of account, must match <ACCOUNT_NAME> in <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend file in /infra/accounts'
   network_name:
-    description: 'Name of network, given by the corresponding <NETWORK_NAME>.s3.tfbackend file in /infra/networks'
+    description: 'Name of network, must match <NETWORK_NAME> in <NETWORK_NAME>.s3.tfbackend file in /infra/networks'
   app_name:
     description: 'Name of application folder under /infra'
   environment:
