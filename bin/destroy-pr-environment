@@ -33,5 +33,21 @@ terraform -chdir="infra/${app_name}/service" workspace select default
 echo "Delete workspace: ${workspace}"
 terraform -chdir="infra/${app_name}/service" workspace delete "${workspace}"
 
-echo "Post comment to PR confirming environment destruction"
-gh pr comment "${pr_number}" -b "Destroyed PR environment"
+pr_info=$(cat <<EOF
+<!-- begin PR environment info -->
+## Preview environment
+Environment destroyed
+<!-- end PR environment info -->
+EOF
+)
+
+pr_body="$(gh pr view "${pr_number}" --json body | jq --raw-output .body)"
+if [[ $pr_body == *"<!-- begin PR environment info -->"*"<!-- end PR environment info -->"* ]]; then
+  pr_body="${pr_body//<!-- begin PR environment info -->*<!-- end PR environment info -->/$pr_info}"
+else
+  pr_body="${pr_body}"$'\n\n'"${pr_info}"
+fi
+
+echo "Update PR description with PR environment info"
+echo "${pr_info}"
+gh pr edit "${pr_number}" --body "${pr_body}"
