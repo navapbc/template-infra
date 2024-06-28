@@ -34,12 +34,12 @@ locals {
     region = module.project_config.default_region
   }
 
-  # The name of the AWS account that contains the resources shared across all
+  # The name of the network that contains the resources shared across all
   # application environments, such as the build repository.
-  # The list of configured AWS accounts can be found in /infra/account
+  # The list of networks can be found in /infra/networks
   # by looking for the backend config files of the form:
-  #   <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend
-  shared_account_name = "dev"
+  #   <NETWORK_NAME>.s3.tfbackend
+  shared_network_name = "dev"
 }
 
 module "project_config" {

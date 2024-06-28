@@ -12,7 +12,8 @@ locals {
 
   # Get list of AWS account ids for the application environments that
   # will need access to the build repository
-  app_account_names   = values(module.app_config.account_names_by_environment)
+  network_names       = [for environment in module.app_config.environments : environment.network_name]
+  app_account_names   = [for network_name in network_names : module.module.project_config.network_configs[network_name].account_name]
   account_ids_by_name = data.external.account_ids_by_name.result
   app_account_ids     = [for account_name in local.app_account_names : local.account_ids_by_name[account_name] if contains(keys(local.account_ids_by_name), account_name)]
 }
