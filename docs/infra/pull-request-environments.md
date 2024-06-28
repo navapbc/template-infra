@@ -1,10 +1,11 @@
 # Pull request environments
 
-A temporary environment is created for each pull request that stays up while the pull request is open. Use cases for the temporary pull request environment includes:
+A temporary environment is created for each pull request that stays up while the pull request is open. The endpoint for the pull request and the deployed commit are added to the pull request description, and updated when the environment is updated. Use cases for the temporary pull request environment includes:
 
 - Allow other delivery stakeholders—including product managers, designers, and business owners—to review changes before being merged and deployed
 - Enable automated end-to-end tests on the pull request
 - Enable automated accessibility checks on the pull request
+- Facilitate workspace creation for developing and testing service layer infrastructure changes
 
 ## Lifecycle of pull request environments
 
