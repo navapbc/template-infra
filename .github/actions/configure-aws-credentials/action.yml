@@ -44,7 +44,7 @@ runs:
       if: ${{ inputs.network_name || steps.get-network-name.outputs.network_name }}
       run: |
         network_name="${{ inputs.network_name || steps.get-network-name.outputs.network_name }}"
-        echo "Get account name for ${network_name}"
+        echo "Get account name for network: ${network_name}"
 
         terraform -chdir=infra/project-config init > /dev/null
         terraform -chdir=infra/project-config apply -auto-approve > /dev/null
