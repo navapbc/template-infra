@@ -27,31 +27,31 @@ Follow these steps if you want to develop and test a change to the service layer
 First, make sure that the Terraform root module is initialized to the dev environment
 
 ```bash
-terraform -chdir=infra/$app_name/service init -backend-config=dev.s3.tfbackend
+terraform -chdir=infra/<APP_NAME>/service init -reconfigure -backend-config=dev.s3.tfbackend
 ```
 
-Then creat a new workspace. Since the workspace name is used to prefix resource names, use a short workspace name to avoid hitting resource name size limits. Assuming you're only working on one thing at a time (following the Kanban principle of limiting work in progress), your initials would make a good workspace name. For example, if your name was Loren Yu, you could use `ly` as your workspace name.
+Then create a new workspace. Since the workspace name is used to prefix resource names, use a short workspace name to avoid hitting resource name character limits. Assuming you're only working on one thing at a time (following the Kanban principle of limiting work in progress), your initials would make a good workspace name. For example, if your name was Loren Yu, you could use `ly` as your workspace name.
 
 ```bash
-terraform -chdir=infra/$app_name/service workspace new <WORKSPACE_NAME>
+terraform -chdir=infra/<APP_NAME>/service workspace new <WORKSPACE_NAME>
 ```
 
 Verify that the new workspace was created and selected:
 
 ```bash
 # List all workspaces, with a * next to the selected workspace
-terraform -chdir=infra/$app_name/service workspace list
+terraform -chdir=infra/<APP_NAME>/service workspace list
 # - OR -
 # Show your current selected workspace
-terraform -chdir=infra/$app_name/service workspace show
+terraform -chdir=infra/<APP_NAME>/service workspace show
 ```
 
 ### 2. Create resources in your workspace
 
 ```bash
-terraform -chdir=infra/$app_name/service apply -var=environment_name=dev
+terraform -chdir=infra/<APP_NAME>/service apply -var=environment_name=dev
 # - OR -
-make infra-update-app-service "APP_NAME=$app_name" ENVIRONMENT=dev
+make infra-update-app-service "APP_NAME=<APP_NAME>" ENVIRONMENT=dev
 ```
 
 ### 3. Clean up after merging to main and deploying changes to default workspace
@@ -60,9 +60,9 @@ Finally, after you merged your pull request and have deployed your changes to th
 
 ```bash
 # Destroy all infrastructure resources within the workspace
-terraform -chdir=infra/$app_name/service destroy -var=environment_name=dev
+terraform -chdir=infra/<APP_NAME>/service destroy -var=environment_name=dev
 # Select default workspace so that you can delete your workspace, since you can't delete the selected workspace
-terraform -chdir=infra/$app_name/service workspace select default
+terraform -chdir=infra/<APP_NAME>/service workspace select default
 # Delete your workspace
-terraform -chdir=infra/$app_name/service delete <WORKSPACE_NAME>
+terraform -chdir=infra/<APP_NAME>/service delete <WORKSPACE_NAME>
 ```

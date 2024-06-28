@@ -1,0 +1,37 @@
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# Destroy the temporary environment that was created for the pull request.
+#
+# Positional parameters:
+#   app_name (required) – the name of subdirectory of /infra that holds the
+#     application's infrastructure code.
+#   environment - the name of the application environment (e.g. dev, staging, prod)
+#   pr_number - the pull request number in GitHub
+# -----------------------------------------------------------------------------
+set -euo pipefail
+
+app_name="$1"
+environment="$2"
+pr_number="$3"
+
+workspace="p-${pr_number}"
+
+echo "::group::Initialize Terraform with backend for environment: ${environment}"
+terraform -chdir="infra/${app_name}/service" init -backend-config="${environment}.s3.tfbackend"
+echo "::endgroup::"
+
+echo "Select Terraform workspace: ${workspace}"
+terraform -chdir="infra/${app_name}/service" workspace select "${workspace}"
+
+echo "::group::Destroy resources"
+terraform -chdir="infra/${app_name}/service" destroy -var="environment_name=${environment}" -input=false -auto-approve
+echo "::endgroup::"
+
+echo "Select default workspace"
+terraform -chdir="infra/${app_name}/service" workspace select default
+
+echo "Delete workspace: ${workspace}"
+terraform -chdir="infra/${app_name}/service" workspace delete "${workspace}"
+
+echo "Post comment to PR confirming environment destruction"
+gh pr comment "${pr_number}" -b "Destroyed PR environment"
