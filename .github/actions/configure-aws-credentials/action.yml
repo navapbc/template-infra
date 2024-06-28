@@ -10,7 +10,7 @@ description: 'Configure AWS Credentials for an AWS account so that |
 
 inputs:
   account_name:
-    description: 'Name of account, given by the corresponding <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend file in /infra/accounts'
+    description: 'Name of account, must match <ACCOUNT_NAME> in <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend file in /infra/accounts'
   network_name:
     description: 'Name of network, given by the corresponding <NETWORK_NAME>.s3.tfbackend file in /infra/networks'
   app_name:
