@@ -28,13 +28,13 @@ set -euo pipefail
 environment_variables=""
 task_role_arn=""
 while :; do
-  case $1 in
+  case "$1" in
     --environment-variables)
-      environment_variables=$2
+      environment_variables="$2"
       shift 2
       ;;
     --task-role-arn)
-      task_role_arn=$2
+      task_role_arn="$2"
       shift 2
       ;;
     *)
