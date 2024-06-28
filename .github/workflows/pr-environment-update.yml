@@ -15,7 +15,7 @@ jobs:
     uses: ./.github/workflows/build-and-publish.yml
     with:
       app_name: ${{ inputs.app_name }}
-      ref: ${{ github.sha }}
+      ref: ${{ github.event.pull_request.head.sha }}
 
   update:
     name: Update environment
@@ -45,6 +45,6 @@ jobs:
           environment: ${{ inputs.environment }}
 
       - name: Update environment
-        run: ./bin/update-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ github.event.number }}" "${{ github.sha }}"
+        run: ./bin/update-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ github.event.number }}" "${{ github.event.pull_request.head.sha }}"
         env:
           GH_TOKEN: ${{ github.token }}
