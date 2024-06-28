@@ -35,7 +35,7 @@ runs:
           network_name=$(terraform -chdir=infra/${{ inputs.app_name }}/app-config output -json environment_configs | jq -r .${{ inputs.environment }}.network_name)
         fi
 
-        echo "network_name=${network_name}"
+        echo "Network name retrieved: ${network_name}"
         echo "network_name=${network_name}" >> "$GITHUB_OUTPUT"
       shell: bash
 
