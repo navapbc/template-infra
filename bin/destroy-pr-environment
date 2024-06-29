@@ -36,7 +36,7 @@ terraform -chdir="infra/${app_name}/service" workspace delete "${workspace}"
 pr_info=$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment
-Environment destroyed
+♻️ Environment destroyed ♻️
 <!-- end PR environment info -->
 EOF
 )
