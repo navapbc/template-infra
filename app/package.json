@@ -1,0 +1,12 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:pa11y-desktop": "pa11y-ci --config .pa11yci-desktop.json",
+    "test:pa11y-mobile": "pa11y-ci --config .pa11yci-mobile.json"
+  },
+  "dependencies": {
+    "pa11y-ci": "^3.1.0"
+  }
+}
