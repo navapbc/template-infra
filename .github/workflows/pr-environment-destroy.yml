@@ -1,5 +1,5 @@
 name: PR Environment Destroy
-run-name: Destroy PR Environment ${{ github.event.number }}
+run-name: Destroy PR Environment ${{ inputs.pr_number }}
 on:
   workflow_call:
     inputs:
@@ -7,6 +7,9 @@ on:
         required: true
         type: string
       environment:
+        required: true
+        type: string
+      pr_number:
         required: true
         type: string
 jobs:
@@ -19,7 +22,7 @@ jobs:
       id-token: write
       pull-requests: write # Needed to comment on PR
 
-    concurrency: pr-environment-${{ github.event.number }}
+    concurrency: pr-environment-${{ inputs.pr_number }}
 
     steps:
       - uses: actions/checkout@v4
@@ -37,6 +40,6 @@ jobs:
           environment: ${{ inputs.environment }}
 
       - name: Destroy environment
-        run: ./bin/destroy-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ github.event.number }}"
+        run: ./bin/destroy-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ inputs.pr_number }}"
         env:
           GH_TOKEN: ${{ github.token }}

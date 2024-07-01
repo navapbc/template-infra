@@ -35,6 +35,23 @@ service_name="$(terraform -chdir="infra/$app_name/service" output -raw service_n
 echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
-echo "Post comment to PR with service endpoint"
 service_endpoint="$(terraform -chdir="infra/${app_name}/service" output -raw service_endpoint)"
-gh pr comment "${pr_number}" -b "Updated PR environment at ${service_endpoint}"
+pr_info=$(cat <<EOF
+<!-- begin PR environment info -->
+## Preview environment
+- Service endpoint: ${service_endpoint}
+- Deployed commit: ${image_tag}
+<!-- end PR environment info -->
+EOF
+)
+
+pr_body="$(gh pr view "${pr_number}" --json body | jq --raw-output .body)"
+if [[ $pr_body == *"<!-- begin PR environment info -->"*"<!-- end PR environment info -->"* ]]; then
+  pr_body="${pr_body//<!-- begin PR environment info -->*<!-- end PR environment info -->/$pr_info}"
+else
+  pr_body="${pr_body}"$'\n\n'"${pr_info}"
+fi
+
+echo "Update PR description with PR environment info"
+echo "${pr_info}"
+gh pr edit "${pr_number}" --body "${pr_body}"
