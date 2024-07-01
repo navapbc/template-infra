@@ -9,7 +9,11 @@ on:
         required: true
         type: string
   # !! Uncomment the following lines once you've set up the dev environment and are ready to enable PR environments
-  # pull_request:
+  pull_request:
+    types:
+        - opened
+        - reopened
+        - synchronize
 jobs:
   update:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
