@@ -29,7 +29,7 @@ region=$(./bin/current-region)
 
 # Get project name
 terraform -chdir="infra/project-config" apply -auto-approve > /dev/null
-project_name=$(terraform -chdir=infra/project-config output -raw project_name)
+project_name=$(terraform -chdir="infra/project-config" output --raw project_name)
 
 tf_state_bucket_name="${project_name}-${account_id}-${region}-tf"
 tf_state_key="infra/account.tfstate"
@@ -105,6 +105,6 @@ terraform apply \
 
 cd -
 
-module_dir=infra/accounts
+module_dir="infra/accounts"
 backend_config_name="${account_name}.${account_id}"
 ./bin/create-tfbackend "${module_dir}" "${backend_config_name}" "${tf_state_key}"
