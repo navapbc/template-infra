@@ -1,14 +1,3 @@
-variable "account_name" {
-  description = <<EOT
-	Name of the AWS account that contains the resources for the applicationenvironment.
-	The list of configured AWS accounts is stored in /infra/account as
-	backend config files with the namingconvention:
-	<ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend
-	Provide the ACCOUNT_NAME for thisvariable.
-	EOT
-  type        = string
-}
-
 variable "app_name" {
   type = string
 }
