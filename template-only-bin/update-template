@@ -18,22 +18,22 @@ git clone https://github.com/navapbc/template-infra.git
 
 echo "Creating patch"
 cd template-infra
-git checkout "$target_version"
+git checkout "${target_version}"
 
 # Get version hash to update .template-version after patch is successful
 target_version_hash=$(git rev-parse HEAD)
 
 # Note: Keep this list in sync with the files copied in install-template
-git diff "$current_version" "$target_version" -- .github bin docs infra Makefile .dockleconfig .gitignore .grype.yml .hadolint.yaml .trivyignore > update.patch
+git diff "${current_version}" "${target_version}" -- .github bin docs infra Makefile .dockleconfig .gitignore .grype.yml .hadolint.yaml .trivyignore > update.patch
 cd -
 
 echo "Applying patch"
 # Note: Keep this list in sync with the removed files in install-template
 exclude_opt="--exclude=.github/workflows/template-only-*"
-git apply "$exclude_opt" --allow-empty template-infra/update.patch
+git apply "${exclude_opt}" --allow-empty template-infra/update.patch
 
 echo "Saving new template version to .template-infra"
-echo "$target_version_hash" > .template-version
+echo "${target_version_hash}" > .template-version
 
 echo "Clean up template-infra folder"
 rm -fr template-infra

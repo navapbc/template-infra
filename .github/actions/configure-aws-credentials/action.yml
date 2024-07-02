@@ -26,13 +26,13 @@ runs:
       run: |
         echo "Get network name for app_name=${{ inputs.app_name }} and environment=${{ inputs.environment }}"
 
-        terraform -chdir=infra/${{ inputs.app_name }}/app-config init > /dev/null
-        terraform -chdir=infra/${{ inputs.app_name }}/app-config apply -auto-approve > /dev/null
+        terraform -chdir="infra/${{ inputs.app_name }}/app-config" init > /dev/null
+        terraform -chdir="infra/${{ inputs.app_name }}/app-config" apply -auto-approve > /dev/null
 
         if [[ "${{ inputs.environment }}" == "shared" ]]; then
-          network_name=$(terraform -chdir=infra/${{ inputs.app_name }}/app-config output -raw shared_network_name)
+          network_name=$(terraform -chdir="infra/${{ inputs.app_name }}/app-config" output -raw shared_network_name)
         else
-          network_name=$(terraform -chdir=infra/${{ inputs.app_name }}/app-config output -json environment_configs | jq -r .${{ inputs.environment }}.network_name)
+          network_name=$(terraform -chdir="infra/${{ inputs.app_name }}/app-config" output -json environment_configs | jq -r ".${{ inputs.environment }}.network_name")
         fi
 
         echo "Network name retrieved: ${network_name}"
@@ -46,9 +46,9 @@ runs:
         network_name="${{ inputs.network_name || steps.get-network-name.outputs.network_name }}"
         echo "Get account name for network: ${network_name}"
 
-        terraform -chdir=infra/project-config init > /dev/null
-        terraform -chdir=infra/project-config apply -auto-approve > /dev/null
-        account_name=$(terraform -chdir=infra/project-config output -json network_configs | jq -r .${network_name}.account_name)
+        terraform -chdir="infra/project-config" init > /dev/null
+        terraform -chdir="infra/project-config" apply -auto-approve > /dev/null
+        account_name=$(terraform -chdir="infra/project-config" output -json network_configs | jq -r ".${network_name}.account_name")
 
         echo "Account name retrieved: ${account_name}"
         echo "account_name=${account_name}" >> "$GITHUB_OUTPUT"
@@ -64,22 +64,22 @@ runs:
 
         account_name="${{ inputs.account_name || steps.get-account-name.outputs.account_name }}"
 
-        terraform -chdir=infra/project-config init > /dev/null
-        terraform -chdir=infra/project-config apply -auto-approve > /dev/null
-        aws_region=$(terraform -chdir=infra/project-config output -raw default_region)
+        terraform -chdir="infra/project-config" init > /dev/null
+        terraform -chdir="infra/project-config" apply -auto-approve > /dev/null
+        aws_region=$(terraform -chdir="infra/project-config" output -raw default_region)
         echo "aws_region=${aws_region}"
-        github_actions_role_name=$(terraform -chdir=infra/project-config output -raw github_actions_role_name)
+        github_actions_role_name=$(terraform -chdir="infra/project-config" output -raw github_actions_role_name)
         echo "github_actions_role_name=${github_actions_role_name}"
 
         # Get the account id associated with the account name extracting the
         # ACCOUNT_ID part of the tfbackend file name which looks like
         # <ACCOUNT_NAME>.<ACCOUNT_ID>.s3.tfbackend.
-        # The cut command splits the string with period as the delimeter and
+        # The cut command splits the string with period as the delimiter and
         # extracts the second field.
         account_id=$(ls infra/accounts/${account_name}.*.s3.tfbackend | cut -d. -f2)
         echo "account_id=${account_id}"
 
-        aws_role_to_assume=arn:aws:iam::${account_id}:role/${github_actions_role_name}
+        aws_role_to_assume="arn:aws:iam::${account_id}:role/${github_actions_role_name}"
         echo "aws_role_to_assume=${aws_role_to_assume}"
 
         echo "::endgroup::"
