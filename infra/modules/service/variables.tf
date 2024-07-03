@@ -75,20 +75,24 @@ variable "file_upload_jobs" {
     task_command  = list(string)
   }))
   description = <<EOT
-	Configurations for jobs that trigger on a file uploadevent.
-	Each configuration is a map from the job name to an object defining the
-	event's source bucket ( the bucket the file was uploadedto), a
-	path prefix filter ( only files that match the path prefix will trigger
-		thejob), and the task command to run ( this overrides the CMD entrypoint
-	in thecontainer).
-	To reference the file path and bucket that triggered theevent, the task
-	command can optionally include the placeholder values`<object_key>`
-	and`<bucket_name>`. For example if task_commandis:
-	["python", "etl.py", "<object_key>"]
-	Then if an object was uploaded tos3://somebucket/path/to/file.txt, the
-	task will execute thecommand:
-	pythonetl.pypath/to/file.txt
-	EOT
+    Configurations for jobs that trigger on a file upload event.
+    Each configuration is a map from the job name to an object defining the
+    event's source bucket ( the bucket the file was uploaded to), a
+    path prefix filter ( only files that match the path prefix will trigger
+    the job), and the task command to run ( this overrides the CMD entrypoint
+    in the container).
+
+    To reference the file path and bucket that triggered the event, the task
+    command can optionally include the placeholder values`<object_key>`
+    and`<bucket_name>`. For example if task_command is:
+
+      ["python", "etl.py", "<object_key>"]
+
+    Then if an object was uploaded tos3://somebucket/path/to/file.txt, the
+    task will execute the command:
+
+      python etl.py path/to/file.txt
+  EOT
   default     = {}
 }
 
