@@ -13,7 +13,7 @@ variable "certificate_configs" {
 
     `private_key` and `certificate_body` describe the certificate information for
     imported certificates, which is required if `source` is 'imported'.
-    EOT
+  EOT
 
   validation {
     condition = alltrue([
