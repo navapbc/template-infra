@@ -33,6 +33,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
       - name: Configure AWS credentials
         uses: ./.github/actions/configure-aws-credentials
         with:
