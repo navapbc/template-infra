@@ -22,11 +22,11 @@ jobs:
           - navapbc/platform-test-nextjs
     steps:
       - name: Checkout template-infra repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: template-infra
       - name: Checkout project repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: project-repo
           repository: ${{ matrix.project_repo }}
