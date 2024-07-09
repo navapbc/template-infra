@@ -22,6 +22,7 @@ cp -r \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
+  .terraform-version \
   "${cur_dir}"
 
 # Store template version in a file
