@@ -2,6 +2,12 @@ output "database_config" {
   value = local.database_config
 }
 
+output "incident_management_service_integration" {
+  value = var.has_incident_management_service ? {
+    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
+  } : null
+}
+
 output "network_name" {
   value = var.network_name
 }
@@ -37,10 +43,4 @@ output "storage_config" {
     # Include project name in bucket name since buckets need to be globally unique across AWS
     bucket_name = local.bucket_name
   }
-}
-
-output "incident_management_service_integration" {
-  value = var.has_incident_management_service ? {
-    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
-  } : null
 }

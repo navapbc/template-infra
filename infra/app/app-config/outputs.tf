@@ -2,6 +2,14 @@ output "app_name" {
   value = local.app_name
 }
 
+output "build_repository_config" {
+  value = local.build_repository_config
+}
+
+output "environment_configs" {
+  value = local.environment_configs
+}
+
 output "environments" {
   value = local.environments
 }
@@ -24,14 +32,6 @@ output "has_incident_management_service" {
 
 output "image_repository_name" {
   value = local.image_repository_name
-}
-
-output "build_repository_config" {
-  value = local.build_repository_config
-}
-
-output "environment_configs" {
-  value = local.environment_configs
 }
 
 output "shared_network_name" {
