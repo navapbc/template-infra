@@ -53,25 +53,10 @@ resource "aws_lambda_function" "role_manager" {
   # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
 }
 
-# Installs python packages needed by the role manager lambda function before
-# creating the zip archive. 
-# Runs pip install on every apply so that the role manager archive file that
-# is generated locally is guaranteed to have the required dependencies even
-# when terraform is run by a developer that did not originally create the
-# environment.
-# Timestamp is used to always trigger replacement.
-resource "terraform_data" "role_manager_python_vendor_packages" {
-  triggers_replace = fileexists(local.role_manager_package) ? file("${path.module}/role_manager/requirements.txt") : timestamp()
-  provisioner "local-exec" {
-    command = "pip3 install -r ${path.module}/role_manager/requirements.txt -t ${path.module}/role_manager/vendor --upgrade"
-  }
-}
-
 data "archive_file" "role_manager" {
   type        = "zip"
   source_dir  = "${path.module}/role_manager"
   output_path = local.role_manager_package
-  depends_on  = [terraform_data.role_manager_python_vendor_packages]
 }
 
 data "aws_kms_key" "default_ssm_key" {
