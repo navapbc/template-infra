@@ -12,7 +12,7 @@ on:
         required: true
         type: string
 
-concurrency: database-migrations-${{ inputs.environment }}
+concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }}
 
 jobs:
   build-and-publish:
@@ -31,7 +31,10 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
 
       - name: Configure AWS credentials
         uses: ./.github/actions/configure-aws-credentials

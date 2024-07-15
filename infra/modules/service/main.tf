@@ -7,6 +7,7 @@ data "aws_ecr_repository" "app" {
 locals {
   alb_name                = var.service_name
   cluster_name            = var.service_name
+  container_name          = var.service_name
   log_group_name          = "service/${var.service_name}"
   log_stream_prefix       = var.service_name
   task_executor_role_name = "${var.service_name}-task-executor"
@@ -16,6 +17,7 @@ locals {
     { name : "PORT", value : tostring(var.container_port) },
     { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
     { name : "AWS_REGION", value : data.aws_region.current.name },
+    { name : "IMAGE_TAG", value : var.image_tag },
   ]
   db_environment_variables = var.db_vars == null ? [] : [
     { name : "DB_HOST", value : var.db_vars.connection_info.host },
@@ -27,7 +29,10 @@ locals {
   environment_variables = concat(
     local.base_environment_variables,
     local.db_environment_variables,
-    var.extra_environment_variables,
+    [
+      for name, value in var.extra_environment_variables :
+      { name : name, value : value }
+    ],
   )
 }
 
@@ -36,11 +41,12 @@ locals {
 #-------------------
 
 resource "aws_ecs_service" "app" {
-  name            = var.service_name
-  cluster         = aws_ecs_cluster.cluster.arn
-  launch_type     = "FARGATE"
-  task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = var.desired_instance_count
+  name                   = var.service_name
+  cluster                = aws_ecs_cluster.cluster.arn
+  launch_type            = "FARGATE"
+  task_definition        = aws_ecs_task_definition.app.arn
+  desired_count          = var.desired_instance_count
+  enable_execute_command = var.enable_command_execution ? true : null
 
   # Allow changes to the desired_count without differences in terraform plan.
   # This allows autoscaling to manage the desired count for us.
@@ -49,10 +55,8 @@ resource "aws_ecs_service" "app" {
   }
 
   network_configuration {
-    # TODO(https://github.com/navapbc/template-infra/issues/152) set assign_public_ip = false after using private subnets
-    # checkov:skip=CKV_AWS_333:Switch to using private subnets
-    assign_public_ip = true
-    subnets          = var.subnet_ids
+    assign_public_ip = false
+    subnets          = var.private_subnet_ids
     security_groups  = [aws_security_group.app.id]
   }
 
@@ -70,13 +74,13 @@ resource "aws_ecs_task_definition" "app" {
 
   container_definitions = jsonencode([
     {
-      name                   = var.service_name,
+      name                   = local.container_name,
       image                  = local.image_url,
       memory                 = var.memory,
       cpu                    = var.cpu,
       networkMode            = "awsvpc",
       essential              = true,
-      readonlyRootFilesystem = true,
+      readonlyRootFilesystem = !var.enable_command_execution,
 
       # Need to define all parameters in the healthCheck block even if we want
       # to use AWS's defaults, otherwise the terraform plan will show a diff
@@ -90,13 +94,17 @@ resource "aws_ecs_task_definition" "app" {
         ]
       },
       environment = local.environment_variables,
+      secrets     = var.secrets,
       portMappings = [
         {
           containerPort = var.container_port,
+          hostPort      = var.container_port,
+          protocol      = "tcp"
         }
       ],
       linuxParameters = {
         capabilities = {
+          add  = []
           drop = ["ALL"]
         },
         initProcessEnabled = true
@@ -109,6 +117,9 @@ resource "aws_ecs_task_definition" "app" {
           "awslogs-stream-prefix" = local.log_stream_prefix
         }
       }
+      mountPoints    = []
+      systemControls = []
+      volumesFrom    = []
     }
   ])
 

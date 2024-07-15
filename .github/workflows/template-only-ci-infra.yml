@@ -7,7 +7,7 @@ on:
   pull_request:
     paths:
       - bin/**
-      - infra/modules/**
+      - infra/**
       - template-only-bin/**
       - template-only-infra/**
       - template-only-test/**
@@ -24,7 +24,7 @@ jobs:
     name: Lint template scripts
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Shellcheck
         run: make -f template-only.mak lint-template-scripts
   test:
@@ -32,10 +32,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: 1.4.6
+          terraform_version: 1.8.3
           terraform_wrapper: false
       - uses: actions/setup-go@v3
         with:

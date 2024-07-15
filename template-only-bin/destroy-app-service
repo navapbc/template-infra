@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# This script destroys the service layer for an application.
+# Run this script in your project's root directory.
+#
+# Positional parameters:
+#   app_name (optional) - the name of the application directory in /infra
+#     Defaults to "app".
+#   environment (optional) - the name of the environment
+#     Defaults to "dev".
+# -----------------------------------------------------------------------------
+set -euxo pipefail
+
+app_name=${1:-"app"}
+environment=${2:-"dev"}
+backend_config_file="${environment}.s3.tfbackend"
+
+sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/service/access-logs.tf
+sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/storage/main.tf
+sed -i.bak 's/enable_deletion_protection = !var.is_temporary/enable_deletion_protection = false/g' infra/modules/service/load-balancer.tf
+
+cd "infra/${app_name}/service"
+
+terraform init -reconfigure -backend-config="${backend_config_file}"
+
+terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -var="environment_name=${environment}"
+
+terraform destroy -auto-approve -var="environment_name=${environment}"

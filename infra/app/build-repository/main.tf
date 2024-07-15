@@ -12,13 +12,14 @@ locals {
 
   # Get list of AWS account ids for the application environments that
   # will need access to the build repository
-  app_account_names   = values(module.app_config.account_names_by_environment)
+  network_names       = toset([for environment_config in values(module.app_config.environment_configs) : environment_config.network_name])
+  app_account_names   = [for network_name in local.network_names : module.project_config.network_configs[network_name].account_name]
   account_ids_by_name = data.external.account_ids_by_name.result
   app_account_ids     = [for account_name in local.app_account_names : local.account_ids_by_name[account_name] if contains(keys(local.account_ids_by_name), account_name)]
 }
 
 terraform {
-  required_version = ">= 1.2.0, < 2.0.0"
+  required_version = "~>1.8.0"
 
   required_providers {
     aws = {
@@ -48,7 +49,7 @@ module "app_config" {
 }
 
 data "external" "account_ids_by_name" {
-  program = ["../../../bin/account-ids-by-name.sh"]
+  program = ["../../../bin/account-ids-by-name"]
 }
 
 module "container_image_repository" {

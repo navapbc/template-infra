@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# This script destroys the build repository layer for an application.
+# Do not run this script if you still have app database or service layers deployed.
+# Run this script in your project's root directory.
+#
+# Positional parameters:
+#   app_name (optional) - the name of the application directory in /infra
+#     Defaults to "app".
+# -----------------------------------------------------------------------------
+set -euxo pipefail
+
+app_name=${1:-"app"}
+backend_config_file="shared.s3.tfbackend"
+
+cd "infra/${app_name}/build-repository"
+
+terraform init -reconfigure -backend-config="${backend_config_file}"
+
+terraform destroy -auto-approve

@@ -18,13 +18,12 @@ import (
 var uniqueId = strings.ToLower(random.UniqueId())
 var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
 
-func TestSetUpAccount(t *testing.T) {
+func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
 	SetUpProject(t, projectName)
-	SetUpAccount(t)
-
+	t.Run("SetUpAccount", SetUpAccount)
 	t.Run("ValidateAccount", ValidateAccount)
-	t.Run("TestBuildRepository", SubtestBuildRepository)
+	t.Run("Network", SubtestNetwork)
 }
 
 func ValidateAccount(t *testing.T) {
@@ -35,19 +34,23 @@ func ValidateAccount(t *testing.T) {
 	ValidateGithubActionsAuth(t, accountId, projectName)
 }
 
-func SubtestBuildRepository(t *testing.T) {
-	projectName := projectName
-	defer TeardownBuildRepository(t)
-	SetUpBuildRepository(t, projectName)
-	ValidateBuildRepository(t, projectName)
+func SubtestNetwork(t *testing.T) {
+	defer TeardownNetwork(t)
+	t.Run("SetUpNetwork", SetUpNetwork)
+	t.Run("BuildRepository", SubtestBuildRepository)
+}
 
-	t.Run("TestDevEnvironment", SubtestDevEnvironment)
+func SubtestBuildRepository(t *testing.T) {
+	defer TeardownBuildRepository(t)
+	t.Run("SetUpBuildRepository", SetUpBuildRepository)
+	t.Run("ValidateBuildRepository", ValidateBuildRepository)
+	t.Run("Service", SubtestDevEnvironment)
 }
 
 func SubtestDevEnvironment(t *testing.T) {
 	defer TeardownDevEnvironment(t)
-	SetUpDevEnvironment(t)
-	ValidateDevEnvironment(t)
+	t.Run("SetUpDevEnvironment", SetUpDevEnvironment)
+	t.Run("ValidateDevEnvironment", ValidateDevEnvironment)
 }
 
 func SetUpProject(t *testing.T, projectName string) {
@@ -70,7 +73,23 @@ func SetUpAccount(t *testing.T) {
 	fmt.Println("::endgroup::")
 }
 
-func SetUpBuildRepository(t *testing.T, projectName string) {
+func SetUpNetwork(t *testing.T) {
+	fmt.Println("::group::Creating network resources")
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-configure-network", "NETWORK_NAME=dev"},
+		WorkingDir: "../",
+	})
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"infra-update-network", "NETWORK_NAME=dev"},
+		Env:        map[string]string{"TF_CLI_ARGS_apply": "-input=false -auto-approve"},
+		WorkingDir: "../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func SetUpBuildRepository(t *testing.T) {
 	fmt.Println("::group::Creating build repository resources")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
@@ -122,18 +141,17 @@ func ValidateAccountBackend(t *testing.T, region string, projectName string) {
 
 func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName string) {
 	fmt.Println("::group::Validating that GitHub actions can authenticate with AWS account")
-	githubActionsRole := fmt.Sprintf("arn:aws:iam::%s:role/%s-github-actions", accountId, projectName)
 	// Check that GitHub Actions can authenticate with AWS
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "check-github-actions-auth", fmt.Sprintf("GITHUB_ACTIONS_ROLE=%s", githubActionsRole)},
+		Args:       []string{"infra-check-github-actions-auth", "ACCOUNT_NAME=prod"},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
 	fmt.Println("::endgroup::")
 }
 
-func ValidateBuildRepository(t *testing.T, projectName string) {
+func ValidateBuildRepository(t *testing.T) {
 	fmt.Println("::group::Validating ability to publish build artifacts to build repository")
 
 	err := shell.RunCommandE(t, shell.Command{
@@ -174,6 +192,13 @@ func ValidateDevEnvironment(t *testing.T) {
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
+
+	// Hit feature flags endpoint to make sure Evidently integration is working
+	featureFlagsEndpoint := fmt.Sprintf("%s/feature-flags", serviceEndpoint)
+	http_helper.HttpGetWithRetryWithCustomValidation(t, featureFlagsEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
+		return responseStatus == 200
+	})
+
 	fmt.Println("::endgroup::")
 }
 
@@ -182,6 +207,16 @@ func TeardownAccount(t *testing.T) {
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
+		WorkingDir: "../",
+	})
+	fmt.Println("::endgroup::")
+}
+
+func TeardownNetwork(t *testing.T) {
+	fmt.Println("::group::Destroying network resources")
+	shell.RunCommand(t, shell.Command{
+		Command:    "make",
+		Args:       []string{"-f", "template-only.mak", "destroy-network"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")

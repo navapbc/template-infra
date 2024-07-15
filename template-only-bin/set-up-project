@@ -1,0 +1,45 @@
+#!/bin/bash
+set -euo pipefail
+
+project_name="$1"
+owner="$2"
+default_region="$3"
+repo_url=$(git remote get-url origin)
+
+echo "Account configuration"
+echo "====================="
+echo "PROJECT_NAME=${project_name}"
+echo "REPO_URL=${repo_url}"
+echo
+
+cd infra/project-config
+
+echo "-------------------------------------"
+echo "Replace placeholder values in main.tf"
+echo "-------------------------------------"
+
+# First replace the placeholder value for <PROJECT_NAME> in main.tf
+# The project name is used to define unique names for the infrastructure
+# resources that are created in subsequent infra setup steps.
+sed -i.bak "s/<PROJECT_NAME>/${project_name}/" main.tf
+
+# Then replace the placeholder value for <REPO_URL> in main.tf
+# The repository is needed to set up the GitHub OpenID Connect provider
+# in AWS which allows GitHub Actions to authenticate with our AWS account
+# when called from our repository only.
+# Use '|' as the regex delimiter for sed instead of '/' since
+# REPO_URL will have a '/' in it
+sed -i.bak "s|<REPO_URL>|${repo_url}|" main.tf
+
+# Replace remaining placeholder values
+sed -i.bak "s/<OWNER>/${owner}/" main.tf
+sed -i.bak "s/<DEFAULT_REGION>/${default_region}/" main.tf
+
+# Remove the backup file created by sed
+rm main.tf.bak
+
+cd -
+
+# Set has_database to false for template only CI since database setup takes too long
+sed -i.bak "s/has_database = true/has_database = false/" infra/app/app-config/main.tf
+rm infra/app/app-config/main.tf.bak
