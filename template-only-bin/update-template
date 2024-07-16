@@ -24,7 +24,7 @@ git checkout "${target_version}"
 target_version_hash=$(git rev-parse HEAD)
 
 # Note: Keep this list in sync with the files copied in install-template
-git diff "${current_version}" "${target_version}" -- .github bin docs infra Makefile .dockleconfig .gitignore .grype.yml .hadolint.yaml .trivyignore .terraform-version > update.patch
+git diff "${current_version}" "${target_version}" --binary -- .github bin docs infra Makefile .dockleconfig .gitignore .grype.yml .hadolint.yaml .trivyignore .terraform-version > update.patch
 cd -
 
 echo "Applying patch"
