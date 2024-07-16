@@ -4,6 +4,7 @@ locals {
     "apigateway",
     "application-autoscaling",
     "autoscaling",
+    "backup",
     "cloudwatch",
     "cognito-idp",
     "dynamodb",
