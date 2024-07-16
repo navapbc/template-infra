@@ -7,10 +7,6 @@
 # authenticate with AWS, and any additional parameters that need to be passed to
 # terraform plan.
 #
-# Note that the database layer is currently excluded from the matrix strategy since
-# a clean checkout of the repo always produces a Terraform plan with non-empty changes
-# in the role manager.
-#
 # An example of this script's output is as follows (the actual output is minified JSON,
 # but this is a pretty-printed version to be more readable):
 #
@@ -32,6 +28,13 @@
 #       "infra_layer": "build-repository",
 #       "root_module_subdir": "app/build-repository",
 #       "app_name": "app"
+#     },
+#     {
+#       "backend_config_name": "dev",
+#       "infra_layer": "database",
+#       "root_module_subdir": "app/database",
+#       "app_name": "app",
+#       "extra_params": "-var=\"environment_name=dev\""
 #     },
 #     {
 #       "backend_config_name": "dev",
@@ -104,7 +107,7 @@ function get_network_layer_configs() {
 function get_app_configs() {
   local app_name="$1"
   local configs=""
-  for infra_layer in "build-repository" "service"; do
+  for infra_layer in "build-repository" "database" "service"; do
     configs+="$(get_root_module_configs "${infra_layer}" "${app_name}")"
     configs+=$'\n'
   done
