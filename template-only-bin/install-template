@@ -6,10 +6,10 @@ set -euox pipefail
 
 cur_dir=$(pwd)
 script_dir=$(dirname "$0")
-template_dir="$script_dir/.."
+template_dir="${script_dir}/.."
 
 echo "Copy files from template-infra"
-cd "$template_dir"
+cd "${template_dir}"
 # Note: Keep this list of paths in sync with INCLUDE_PATHS in update-template
 cp -r \
   .github \
@@ -22,10 +22,11 @@ cp -r \
   .grype.yml \
   .hadolint.yaml \
   .trivyignore \
-  "$cur_dir"
+  .terraform-version \
+  "${cur_dir}"
 
 # Store template version in a file
-git rev-parse HEAD > "$cur_dir/.template-version"
+git rev-parse HEAD > "${cur_dir}/.template-version"
 
 cd -
 
