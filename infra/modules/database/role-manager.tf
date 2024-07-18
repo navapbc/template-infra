@@ -6,14 +6,15 @@
 # as well as viewing existing roles
 
 locals {
-  db_password_param_name = "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_password.name}"
+  db_password_param_name    = "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.db_password.name}"
+  role_manager_archive_path = "${path.module}/role_manager.zip"
 }
 
 resource "aws_lambda_function" "role_manager" {
   function_name = local.role_manager_name
 
-  filename         = local.role_manager_package
-  source_code_hash = data.archive_file.role_manager.output_base64sha256
+  filename         = local.role_manager_archive_path
+  source_code_hash = filebase64sha256(local.role_manager_archive_path)
   runtime          = "python3.9"
   handler          = "role_manager.lambda_handler"
   role             = aws_iam_role.role_manager.arn
@@ -51,12 +52,6 @@ resource "aws_lambda_function" "role_manager" {
   # checkov:skip=CKV_AWS_272:TODO(https://github.com/navapbc/template-infra/issues/283)
 
   # checkov:skip=CKV_AWS_116:Dead letter queue (DLQ) configuration is only relevant for asynchronous invocations
-}
-
-data "archive_file" "role_manager" {
-  type        = "zip"
-  source_dir  = "${path.module}/role_manager"
-  output_path = local.role_manager_package
 }
 
 data "aws_kms_key" "default_ssm_key" {
