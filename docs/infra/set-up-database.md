@@ -91,12 +91,16 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 }
 ```
 
-### Important note on Postgres table permissions
+### Updating the role manager
 
-Before creating migrations that create tables, first create a migration that includes the following SQL command (or equivalent if your migrations are written in a general-purpose programming language):
+To make changes to the role manager such as updating dependencies or adding functionality, see [database access control](./database-access-control.md#update-the-role-manager)
+
+### Note on Postgres table permissions
+
+The role manager executes the following statement as part of database setup:
 
 ```sql
-ALTER DEFAULT PRIVILEGES GRANT ALL ON TABLES TO app
+ALTER DEFAULT PRIVILEGES IN SCHEMA app GRANT ALL ON TABLES TO app
 ```
 
 This will cause all future tables created by the `migrator` user to automatically be accessible by the `app` user. See the [Postgres docs on ALTER DEFAULT PRIVILEGES](https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html) for more info. As an example see the example app's migrations file [migrations.sql](https://github.com/navapbc/template-infra/blob/main/app/migrations.sql).
