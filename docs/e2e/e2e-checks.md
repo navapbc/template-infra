@@ -33,7 +33,7 @@ Some highlights:
 
 Make targets are setup to easily pass in a particular app name and URL to run tests against
 
-```
+```bash
 make e2e-setup # install playwright deps
 make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 # run tests on a particular app
 ```
