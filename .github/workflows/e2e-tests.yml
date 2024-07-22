@@ -28,17 +28,6 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwoff1 libopus0 libvpx7 libevent-2.1-7 libopus0 libgstreamer1.0-0 \
-          libgstreamer-plugins-base1.0-0 libgstreamer-plugins-good1.0-0 libharfbuzz-icu0 libhyphen0 \
-          libenchant-2-2 libflite1 libgles2 libx264-dev
-
-      - name: Install Node.js dependencies
-        run: npm ci
-        working-directory: ./e2e
-
       - name: Install Playwright browsers
         run: make e2e-setup-ci
 
