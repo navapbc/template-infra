@@ -34,6 +34,7 @@ export default defineConfig({
   },
 
   // Configure projects for major browsers
+  // Supported browsers: https://playwright.dev/docs/browsers#:~:text=Configure%20Browsers%E2%80%8B,Google%20Chrome%20and%20Microsoft%20Edge.
   projects: [
     {
       name: "chromium",
