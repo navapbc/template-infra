@@ -60,7 +60,7 @@ The E2E tests are triggered in PR preview environments on each PR update. For mo
 ### Workflows
 
 The following workflows trigger E2E tests:
-- [PR Environment Update](../../.github/workflows/pr-environment-update.yml)
+- [PR Environment Update](../../.github/workflows/pr-environment-checks.yml)
 - [E2E Tests Workflow](../../.github/workflows/e2e-tests.yml)
 
 The [E2E Tests Workflow](../../.github/workflows/e2e-tests.yml) takes a `service_endpoint` URL and an `app_name` to run the tests against specific configurations for your app.
