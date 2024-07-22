@@ -12,7 +12,7 @@ Each app should have:
 - `ci-[app_name]-vulnerability-scans`: calls `vulnerability-scans`
   - Based on [ci-app-vulnerability-scans](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-vulnerability-scans.yml)
 - `ci-[app_name]-pr-environment-checks.yml`: calls `pr-environment-checks.yml` to create or update a pull request environment (see [pull request environments](/docs/infra/pull-request-environments.md))
-  - Based on [ci-app-pr-environment-checks.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-pr-environment-checks.yml)
+  - Based on [ci-app-pr-environment-checks.yml](/.github/workflows/ci-app-pr-environment-checks.yml)
 - `ci-[app_name]-pr-environment-destroy.yml`: calls `pr-environment-destroy.yml` to destroy the pull request environment (see [pull request environments](/docs/infra/pull-request-environments.md))
   - Based on [ci-app-pr-environment-destroy.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-pr-environment-destroy.yml)
 
