@@ -1,5 +1,5 @@
 // Merge a base and derived config
-function deepMerge(obj1, obj2) {
+export function deepMerge(obj1, obj2) {
     const result = { ...obj1 };
 
     for (let key in obj2) {
