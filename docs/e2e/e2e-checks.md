@@ -40,17 +40,14 @@ make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 # run tests on a parti
 
 ### Running Locally From the `./e2e` Directory
 
-If you prefer to run package.json run scripts, you can do so by creating a `./e2e/.env` file with an `APP_NAME` and `BASE_URL`
+If you prefer to run package.json run scripts, you can do so from the e2e folder:
 
 ```
 cd e2e
 
-# Create .env file with BASE_URL and APP_NAME
-echo "BASE_URL=http://127.0.0.1:3000" > .env
-echo "APP_NAME=your-app-name" >> .env
-
 npm install
-npm run e2e-test
+
+APP_NAME=app npm run e2e-test
 ```
 
 ### PR Environments
