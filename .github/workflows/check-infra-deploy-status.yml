@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include: ${{ needs.collect-configs.outputs.root_module_configs != '[]' && fromJson(needs.collect-configs.outputs.root_module_configs) || '[{}]' }}
+        include: ${{ needs.collect-configs.outputs.root_module_configs != '[]' && fromJson(needs.collect-configs.outputs.root_module_configs) || fromJson('[{}]') }}
 
     permissions:
       contents: read
