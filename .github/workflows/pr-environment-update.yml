@@ -32,6 +32,7 @@ jobs:
       contents: read
       id-token: write
       pull-requests: write # Needed to comment on PR
+      repository-projects: read # Workaround for GitHub CLI bug https://github.com/cli/cli/issues/6274
 
     concurrency: pr-environment-${{ inputs.pr_number }}
 
