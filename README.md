@@ -35,9 +35,10 @@ Now you're ready to set up the various pieces of your infrastructure.
 After downloading and installing the template into your project:
 
 1. Follow the steps in [infra/README.md](/infra/README.md) to setup the infrastructure for your application.
-1. After setting up AWS resources, you can [set up GitHub Actions workflows](./template-only-docs/set-up-ci.md).
-1. After configuring GitHub Actions, you can [set up continuous deployment](./template-only-docs/set-up-cd.md).
-1. At any point, [set up your team workflow](./template-only-docs/set-up-team-workflow.md).
+2. After setting up AWS resources, you can [set up GitHub Actions workflows](./template-only-docs/set-up-ci.md).
+3. After configuring GitHub Actions, you can [set up continuous deployment](./template-only-docs/set-up-cd.md).
+4. After setting up continuous deployment, you can optionally [set up pull request environments](./template-only-docs/set-up-pr-environments.md)
+5. At any point, [set up your team workflow](./template-only-docs/set-up-team-workflow.md).
 
 ## Updates
 
