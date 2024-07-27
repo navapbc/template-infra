@@ -38,7 +38,7 @@ resource "aws_cognito_user_pool" "main" {
     email_sending_account = var.sender_email != null ? "DEVELOPER" : "COGNITO_DEFAULT"
     # Customize the name that users see in the "From" section of their inbox, so that it's clearer who the email is from.
     # This name also needs to be updated manually in the Cognito console for each environment's Advanced Security emails.
-    from_email_address     = var.sender_email != null ? "${var.sender_display_name} <${var.sender_email}>" : null
+    from_email_address     = var.sender_email != null ? (var.sender_display_name != null ? "${var.sender_display_name} <${var.sender_email}>" : var.sender_email) : null
     reply_to_email_address = var.reply_to_email != null ? var.reply_to_email : null
   }
 
