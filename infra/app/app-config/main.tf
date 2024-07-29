@@ -40,6 +40,9 @@ locals {
   # by looking for the backend config files of the form:
   #   <NETWORK_NAME>.s3.tfbackend
   shared_network_name = "dev"
+
+  #Email subscription list:
+  #email_alerts_subscription_list = ["email1@email.com", "email2@email.com"]
 }
 
 module "project_config" {

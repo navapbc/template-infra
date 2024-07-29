@@ -172,8 +172,6 @@ module "service" {
 
 module "monitoring" {
   source = "../../modules/monitoring"
-  #Email subscription list:
-  #email_alerts_subscription_list = ["email1@email.com", "email2@email.com"]
 
   # Module takes service and ALB names to link all alerts with corresponding targets
   service_name                                = local.service_config.service_name
