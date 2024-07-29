@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Script to run Playwright tests with a specified configuration.
+# Script to run Playwright tests with a specified app name.
 # Requires the APP_NAME environment variable to be set.
 
 # Ensure APP_NAME is provided
@@ -9,5 +9,5 @@ if [[ -z "${APP_NAME}" ]]; then
   exit 1
 fi
 
-# Run Playwright tests with the specified configuration
+# Run Playwright tests with the specified app name.
 npx playwright test --config "${APP_NAME}/playwright.config.js"
