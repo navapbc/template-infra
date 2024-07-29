@@ -33,13 +33,13 @@ terraform -chdir="infra/${app_name}/service" workspace select default
 echo "Delete workspace: ${workspace}"
 terraform -chdir="infra/${app_name}/service" workspace delete "${workspace}"
 
-pr_info=$(cat <<EOF
+pr_info="$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment
 ♻️ Environment destroyed ♻️
 <!-- end PR environment info -->
 EOF
-)
+)"
 
 pr_body="$(gh pr view "${pr_number}" --json body | jq --raw-output .body)"
 if [[ $pr_body == *"<!-- begin PR environment info -->"*"<!-- end PR environment info -->"* ]]; then

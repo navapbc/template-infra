@@ -31,16 +31,16 @@ echo "Step 0. Check if app has a database"
 
 terraform -chdir="infra/${app_name}/app-config" init > /dev/null
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null
-has_database=$(terraform -chdir="infra/${app_name}/app-config" output -raw has_database)
+has_database="$(terraform -chdir="infra/${app_name}/app-config" output -raw has_database)"
 if [ "${has_database}" = "false" ]; then
   echo "Application does not have a database, no migrations to run"
   exit 0
 fi
 
-db_migrator_user=$(terraform -chdir="infra/${app_name}/app-config" output -json environment_configs | jq -r ".${environment}.database_config.migrator_username")
+db_migrator_user="$(terraform -chdir="infra/${app_name}/app-config" output -json environment_configs | jq -r ".${environment}.database_config.migrator_username")"
 
 ./bin/terraform-init "infra/${app_name}/service" "${environment}"
-migrator_role_arn=$(terraform -chdir="infra/${app_name}/service" output -raw migrator_role_arn)
+migrator_role_arn="$(terraform -chdir="infra/${app_name}/service" output -raw migrator_role_arn)"
 
 echo
 echo "::group::Step 1. Update task definition without updating service"
@@ -57,9 +57,9 @@ echo 'Step 2. Run "db-migrate" command'
 command='["db-migrate"]'
 
 # Indent the later lines more to make the output of run-command prettier
-environment_variables=$(cat << EOF
+environment_variables="$(cat << EOF
 [{ "name" : "DB_USER", "value" : "${db_migrator_user}" }]
 EOF
-)
+)"
 
 ./bin/run-command --task-role-arn "${migrator_role_arn}" --environment-variables "${environment_variables}" "${app_name}" "${environment}" "${command}"
