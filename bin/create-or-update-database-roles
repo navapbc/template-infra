@@ -49,7 +49,7 @@ cat response.json
 rm response.json
 
 # Exit with nonzero status if function failed
-function_error=$(echo "${cli_response}" | jq -r '.FunctionError')
+function_error="$(echo "${cli_response}" | jq -r '.FunctionError')"
 if [ "${function_error}" != "null" ]; then
   exit 1
 fi

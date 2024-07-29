@@ -31,13 +31,13 @@ echo
 echo "Invoking Lambda function: ${db_role_manager_function_name}"
 echo "  Payload: ${payload}"
 echo
-cli_response=$(aws lambda invoke \
+cli_response="$(aws lambda invoke \
   --function-name "${db_role_manager_function_name}" \
   --no-cli-pager \
   --log-type Tail \
   --payload "$(echo -n "${payload}" | base64)" \
   --output json \
-  response.json)
+  response.json)"
 
 # Print logs out (they are returned base64 encoded)
 echo "${cli_response}" | jq -r '.LogResult' | base64 --decode
@@ -47,7 +47,7 @@ cat response.json
 rm response.json
 
 # Exit with nonzero status if function failed
-function_error=$(echo "${cli_response}" | jq -r '.FunctionError')
+function_error="$(echo "${cli_response}" | jq -r '.FunctionError')"
 if [ "${function_error}" != "null" ]; then
   exit 1
 fi

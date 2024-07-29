@@ -22,8 +22,8 @@ echo "::endgroup::"
 
 # Wait for the service to become stable
 
-cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)
-service_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_name)
+cluster_name="$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)"
+service_name="$(terraform -chdir="infra/${app_name}/service" output -raw service_name)"
 echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
