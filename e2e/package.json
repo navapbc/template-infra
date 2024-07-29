@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "e2e-setup": "npx playwright install",
-    "e2e-test": "npx playwright test --config $APP_NAME/playwright.config.js",
+    "e2e-test": "./run-e2e-test",
     "e2e-test:ui": "npx playwright test --ui"
   },
   "devDependencies": {
