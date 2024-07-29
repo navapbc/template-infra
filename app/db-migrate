@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-export PGPASSWORD=$(aws rds generate-db-auth-token --hostname=$DB_HOST --port=$DB_PORT --username=$DB_USER)
+export PGPASSWORD="$(aws rds generate-db-auth-token --hostname=$DB_HOST --port=$DB_PORT --username=$DB_USER)"
 echo "Running migrations"
 echo "  DB_HOST=$DB_HOST"
 echo "  DB_PORT=$DB_PORT"
