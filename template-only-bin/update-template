@@ -11,7 +11,7 @@ set -euo pipefail
 
 target_version=${1:-"main"}
 
-current_version=$(cat .template-version)
+current_version="$(cat .template-version)"
 
 echo "Clone template-infra"
 git clone https://github.com/navapbc/template-infra.git
@@ -21,7 +21,7 @@ cd template-infra
 git checkout "${target_version}"
 
 # Get version hash to update .template-version after patch is successful
-target_version_hash=$(git rev-parse HEAD)
+target_version_hash="$(git rev-parse HEAD)"
 
 # Note: Keep this list in sync with the files copied in install-template
 git diff "${current_version}" "${target_version}" --binary -- .github bin docs infra Makefile .dockleconfig .gitignore .grype.yml .hadolint.yaml .trivyignore .terraform-version > update.patch
