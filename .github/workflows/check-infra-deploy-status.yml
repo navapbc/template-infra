@@ -29,6 +29,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: collect-configs
 
+    # Skip this job if there are no root module configurations to check,
+    # otherwise the GitHub actions will give the error: "Matrix must define at least one vector"
+    if: ${{ needs.collect-configs.outputs.root_module_configs != '[]' }}
+
     strategy:
       fail-fast: false
       matrix:
