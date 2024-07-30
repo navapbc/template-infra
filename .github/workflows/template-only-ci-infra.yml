@@ -52,8 +52,8 @@ jobs:
           # (see https://docs.aws.amazon.com/cli/latest/reference/iam/create-open-id-connect-provider.html)
           #
           # For this test, use PlatformTestUser20220726 credentials
-          aws-access-key-id: ${{ secrets.PLATFORM_TESTER_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.PLATFORM_TESTER_AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.TESTER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
 
       - name: Run Terratest
         run: make -f template-only.mak test

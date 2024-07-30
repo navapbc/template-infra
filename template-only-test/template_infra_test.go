@@ -28,7 +28,7 @@ func TestEndToEnd(t *testing.T) {
 
 func ValidateAccount(t *testing.T) {
 	projectName := projectName
-	accountId := "368823044688"
+	accountId := "533267424629"
 	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
