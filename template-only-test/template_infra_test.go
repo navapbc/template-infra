@@ -131,7 +131,7 @@ func SetUpDevEnvironment(t *testing.T) {
 
 func ValidateAccountBackend(t *testing.T, region string, projectName string) {
 	fmt.Println("::group::Validating terraform backend for account")
-	expectedTfStateBucket := fmt.Sprintf("%s-368823044688-%s-tf", projectName, region)
+	expectedTfStateBucket := fmt.Sprintf("%s-533267424629-%s-tf", projectName, region)
 	expectedTfStateKey := "infra/account.tfstate"
 	aws.AssertS3BucketExists(t, region, expectedTfStateBucket)
 	_, err := aws.GetS3ObjectContentsE(t, region, expectedTfStateBucket, expectedTfStateKey)
