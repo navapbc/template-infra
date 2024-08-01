@@ -2,6 +2,16 @@
 # If the notification service is configured, the identity provider will use the
 # SES-verified email to send notifications.
 locals {
+  # If your application should redirect users, after successful authentication, to a
+  # page other than the homepage, specify the path fragment here.
+  # Example: "profile"
+  callback_url_path = ""
+
+  # If your application should redirect users, after signing out, to a page other than
+  # the homepage, specify the path fragment here.
+  # Example: "logout"
+  logout_url_path = ""
+
   identity_provider_config = var.enable_identity_provider ? {
     identity_provider_name = "${local.prefix}${var.app_name}-${var.environment}"
 
@@ -9,16 +19,6 @@ locals {
       password_minimum_length          = 12
       temporary_password_validity_days = 7
     }
-
-    # If your application should redirect users, after successful authentication, to a
-    # page other than the homepage, specify the path fragment here.
-    # Example: "profile"
-    callback_url_path = ""
-
-    # If your application should redirect users, after signing out, to a page other than
-    # the homepage, specify the path fragment here.
-    # Example: "logout"
-    logout_url_path = ""
 
     # Optionally configure email template for resetting a password.
     # Set any attribute to a non-null value to override AWS Cognito defaults.
