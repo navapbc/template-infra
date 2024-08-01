@@ -37,6 +37,12 @@ variable "enable_identity_provider" {
   default     = false
 }
 
+variable "enable_notifications" {
+  type        = bool
+  description = "Enables notifications"
+  default     = false
+}
+
 variable "environment" {
   description = "name of the application environment (e.g. dev, staging, prod)"
   type        = string
