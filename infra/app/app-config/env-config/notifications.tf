@@ -2,6 +2,7 @@
 locals {
   notifications_config = var.enable_notifications ? {
     # Set to an SES-verified email address to be used when sending emails.
+    # Docs: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html
     sender_email = null
 
     # Configure the name that users see in the "From" section of their inbox, so that it's
