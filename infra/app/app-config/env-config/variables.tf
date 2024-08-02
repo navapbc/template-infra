@@ -31,9 +31,33 @@ variable "enable_https" {
   default     = false
 }
 
+variable "enable_identity_provider" {
+  type        = bool
+  description = "Enables identity provider"
+  default     = false
+}
+
+variable "enable_notifications" {
+  type        = bool
+  description = "Enables notifications"
+  default     = false
+}
+
 variable "environment" {
   description = "name of the application environment (e.g. dev, staging, prod)"
   type        = string
+}
+
+variable "extra_identity_provider_callback_urls" {
+  type        = list(string)
+  description = "List of additional URLs that the identity provider will redirect the user to after a successful sign-in. Used for local development."
+  default     = []
+}
+
+variable "extra_identity_provider_logout_urls" {
+  type        = list(string)
+  description = "List of additional URLs that the identity provider will redirect the user to after signing out. Used for local development."
+  default     = []
 }
 
 variable "has_database" {

@@ -4,8 +4,6 @@
 PROJECT_NAME ?= platform-template-infra
 PROJECT_OWNER ?= platform-admins
 PROJECT_REGION ?= us-east-1
-ACCOUNT ?= account
-ACCOUNT_ID ?= 368823044688
 
 .PHONY : \
   clean \

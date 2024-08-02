@@ -35,6 +35,8 @@ locals {
   database_config                                = local.environment_config.database_config
   storage_config                                 = local.environment_config.storage_config
   incident_management_service_integration_config = local.environment_config.incident_management_service_integration
+  identity_provider_config                       = local.environment_config.identity_provider_config
+  notifications_config                           = local.environment_config.notifications_config
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
 }
@@ -150,22 +152,38 @@ module "service" {
     }
   } : null
 
-  extra_environment_variables = merge({
-    FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
-    BUCKET_NAME           = local.storage_config.bucket_name
-  }, local.service_config.extra_environment_variables)
+  extra_environment_variables = merge(
+    {
+      FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
+      BUCKET_NAME           = local.storage_config.bucket_name
+    },
+    module.app_config.enable_identity_provider ? {
+      COGNITO_USER_POOL_ID = module.identity_provider[0].user_pool_id
+      COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
+    } : {},
+    local.service_config.extra_environment_variables
+  )
 
-  secrets = [
-    for secret_name in keys(local.service_config.secrets) : {
+  secrets = concat(
+    [for secret_name in keys(local.service_config.secrets) : {
       name      = secret_name
       valueFrom = module.secrets[secret_name].secret_arn
-    }
-  ]
+    }],
+    module.app_config.enable_identity_provider ? [{
+      name      = "COGNITO_CLIENT_SECRET"
+      valueFrom = module.identity_provider_client[0].client_secret_arn
+    }] : []
+  )
 
-  extra_policies = {
-    feature_flags_access = module.feature_flags.access_policy_arn,
-    storage_access       = module.storage.access_policy_arn
-  }
+  extra_policies = merge(
+    {
+      feature_flags_access = module.feature_flags.access_policy_arn,
+      storage_access       = module.storage.access_policy_arn
+    },
+    module.app_config.enable_identity_provider ? {
+      identity_provider_access = module.identity_provider_client[0].access_policy_arn,
+    } : {}
+  )
 
   is_temporary = local.is_temporary
 }
@@ -191,4 +209,30 @@ module "storage" {
   source       = "../../modules/storage"
   name         = local.storage_config.bucket_name
   is_temporary = local.is_temporary
+}
+
+module "identity_provider" {
+  count        = module.app_config.enable_identity_provider ? 1 : 0
+  source       = "../../modules/identity-provider"
+  is_temporary = local.is_temporary
+
+  name                             = local.identity_provider_config.identity_provider_name
+  password_minimum_length          = local.identity_provider_config.password_policy.password_minimum_length
+  temporary_password_validity_days = local.identity_provider_config.password_policy.temporary_password_validity_days
+  verification_email_message       = local.identity_provider_config.verification_email.verification_email_message
+  verification_email_subject       = local.identity_provider_config.verification_email.verification_email_subject
+
+  sender_email        = local.notifications_config == null ? null : local.notifications_config.sender_email
+  sender_display_name = local.notifications_config == null ? null : local.notifications_config.sender_display_name
+  reply_to_email      = local.notifications_config == null ? null : local.notifications_config.reply_to_email
+}
+
+module "identity_provider_client" {
+  count  = module.app_config.enable_identity_provider ? 1 : 0
+  source = "../../modules/identity-provider-client"
+
+  name                 = local.identity_provider_config.identity_provider_name
+  cognito_user_pool_id = module.identity_provider[0].user_pool_id
+  callback_urls        = local.identity_provider_config.client.callback_urls
+  logout_urls          = local.identity_provider_config.client.logout_urls
 }
