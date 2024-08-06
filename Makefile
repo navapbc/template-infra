@@ -59,9 +59,9 @@ __check_defined = \
 	release-image-name \
 	release-image-tag \
 	release-publish \
-	release-run-database-migrations
-
-
+	release-run-database-migrations \
+	e2e-setup \
+	e2e-test
 
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
@@ -221,6 +221,28 @@ release-image-name: ## Prints the image name of the release image
 
 release-image-tag: ## Prints the image tag of the release image
 	@echo $(IMAGE_TAG)
+
+##############################
+## End-to-end (E2E) Testing ##
+##############################
+
+e2e-setup: ## Setup end-to-end tests
+	@cd e2e && npm install
+	@cd e2e && npx playwright install --with-deps
+
+e2e-setup-ci: ## Install system dependencies, Node dependencies, and Playwright browsers
+	sudo apt-get update
+	sudo apt-get install -y libwoff1 libopus0 libvpx7 libevent-2.1-7 libopus0 libgstreamer1.0-0 \
+	libgstreamer-plugins-base1.0-0 libgstreamer-plugins-good1.0-0 libharfbuzz-icu0 libhyphen0 \
+	libenchant-2-2 libflite1 libgles2 libx264-dev
+	cd e2e && npm ci
+	cd e2e && npx playwright install --with-deps
+
+
+e2e-test: ## Run end-to-end tests
+	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
+	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
+	@cd e2e/$(APP_NAME) && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npx playwright test $(E2E_ARGS)
 
 ########################
 ## Scripts and Helper ##

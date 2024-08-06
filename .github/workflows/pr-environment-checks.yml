@@ -36,6 +36,9 @@ jobs:
 
     concurrency: pr-environment-${{ inputs.pr_number }}
 
+    outputs:
+      service_endpoint: ${{ steps.update-environment.outputs.service_endpoint }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -52,6 +55,19 @@ jobs:
           environment: ${{ inputs.environment }}
 
       - name: Update environment
-        run: ./bin/update-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ inputs.pr_number }}" "${{ inputs.commit_hash }}"
+        id: update-environment
+        run: |
+            ./bin/update-pr-environment "${{ inputs.app_name }}" "${{ inputs.environment }}" "${{ inputs.pr_number }}" "${{ inputs.commit_hash }}"
+            service_endpoint=$(terraform -chdir="infra/${{ inputs.app_name }}/service" output -raw service_endpoint)
+            echo "service_endpoint=${service_endpoint}"
+            echo "service_endpoint=${service_endpoint}" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ github.token }}
+
+  e2e-tests:
+    name: Run E2E Tests
+    needs: [update]
+    uses: ./.github/workflows/e2e-tests.yml
+    with:
+      service_endpoint: ${{ needs.update.outputs.service_endpoint }}
+      app_name: ${{ inputs.app_name }}
