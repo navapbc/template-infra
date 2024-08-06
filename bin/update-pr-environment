@@ -36,14 +36,14 @@ echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 
 service_endpoint="$(terraform -chdir="infra/${app_name}/service" output -raw service_endpoint)"
-pr_info="$(cat <<EOF
+pr_info=$(cat <<EOF
 <!-- begin PR environment info -->
 ## Preview environment
 - Service endpoint: ${service_endpoint}
 - Deployed commit: ${image_tag}
 <!-- end PR environment info -->
 EOF
-)"
+)
 
 pr_body="$(gh pr view "${pr_number}" --json body | jq --raw-output .body)"
 if [[ $pr_body == *"<!-- begin PR environment info -->"*"<!-- end PR environment info -->"* ]]; then

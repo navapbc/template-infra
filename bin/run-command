@@ -78,7 +78,7 @@ aws_user_id="$(aws sts get-caller-identity --no-cli-pager --query UserId --outpu
 
 container_name="$(aws ecs describe-task-definition --task-definition "${task_definition_family}" --query "taskDefinition.containerDefinitions[0].name" --output text)"
 
-overrides="$(cat << EOF
+overrides=$(cat << EOF
 {
   "containerOverrides": [
     {
@@ -88,7 +88,7 @@ overrides="$(cat << EOF
   ]
 }
 EOF
-)"
+)
 
 if [ -n "${environment_variables}" ]; then
   overrides="$(echo "${overrides}" | jq ".containerOverrides[0].environment |= ${environment_variables}")"
