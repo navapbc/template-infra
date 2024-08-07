@@ -6,7 +6,7 @@
 # -----------------------------------------------------------------------------
 set -euxo pipefail
 
-config_name=$(./bin/current-account-config-name)
+config_name="$(./bin/current-account-config-name)"
 backend_config_file="${config_name}.s3.tfbackend"
 
 cd infra/accounts

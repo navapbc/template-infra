@@ -94,13 +94,13 @@ function get_app_names() {
 
 function get_account_layer_configs() {
   local configs
-  configs=$(get_root_module_configs "accounts")
+  configs="$(get_root_module_configs "accounts")"
   echo "${configs}" | jq -c '. + {account_name: (.backend_config_name | split(".")[0])}'
 }
 
 function get_network_layer_configs() {
   local configs
-  configs=$(get_root_module_configs "networks")
+  configs="$(get_root_module_configs "networks")"
   echo "${configs}" | jq -c '. + {extra_params: "-var=\"network_name=\(.backend_config_name)\""}'
 }
 

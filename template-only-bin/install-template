@@ -4,8 +4,8 @@
 # this script from your project's root directory.
 set -euox pipefail
 
-cur_dir=$(pwd)
-script_dir=$(dirname "$0")
+cur_dir="$(pwd)"
+script_dir="$(dirname "$0")"
 template_dir="${script_dir}/.."
 
 echo "Copy files from template-infra"
