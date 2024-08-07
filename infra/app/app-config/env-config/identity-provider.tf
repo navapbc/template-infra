@@ -15,7 +15,10 @@ locals {
   logout_url_path = ""
 
   identity_provider_config = var.enable_identity_provider ? {
-    identity_provider_name = "${local.prefix}${var.app_name}-${var.environment}"
+    # We don't prefix the identity provider name with the terraform workspace because
+    # non-default workspaces use the default workspace identity provider instead of
+    # creating a new resource.
+    identity_provider_name = "${var.app_name}-${var.environment}"
 
     password_policy = {
       password_minimum_length          = 12
@@ -29,6 +32,10 @@ locals {
       verification_email_message = null
       verification_email_subject = null
     }
+
+    # Define variable names used across modules.
+    client_secret_ssm_name       = "/${var.app_name}-${var.environment}/identity-provider/client-secret"
+    user_pool_access_policy_name = "${var.app_name}-${var.environment}-cognito-access"
 
     # Do not modify this block directly.
     client = {

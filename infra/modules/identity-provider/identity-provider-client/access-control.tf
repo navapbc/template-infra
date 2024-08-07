@@ -2,7 +2,7 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 resource "aws_iam_policy" "cognito_access" {
-  name   = "${var.name}-cognito-access"
+  name   = var.user_pool_access_policy_name
   policy = data.aws_iam_policy_document.cognito_access.json
 }
 
