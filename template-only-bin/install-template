@@ -16,6 +16,7 @@ cp -r \
   bin \
   docs \
   infra \
+  e2e \
   Makefile \
   .dockleconfig \
   .gitignore \
