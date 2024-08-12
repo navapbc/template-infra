@@ -1,6 +1,6 @@
 output "access_policy_arn" {
   description = "The arn for the IAM access policy granting access to the user pool"
-  value       = data.aws_iam_policy.existing_cognito_access_policy.arn
+  value       = data.aws_iam_policy.existing_identity_access_policy.arn
 }
 
 output "client_id" {

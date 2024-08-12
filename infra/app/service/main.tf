@@ -241,8 +241,9 @@ module "storage" {
 # If the app has `enable_identity_provider` set to true AND this is not a temporary
 # environment, then create a new identity provider.
 module "identity_provider" {
-  count        = module.app_config.enable_identity_provider && !local.is_temporary ? 1 : 0
-  source       = "../../modules/identity-provider/identity-provider"
+  count  = module.app_config.enable_identity_provider && !local.is_temporary ? 1 : 0
+  source = "../../modules/identity-provider/resources"
+
   is_temporary = local.is_temporary
 
   name                             = local.identity_provider_config.identity_provider_name
@@ -260,23 +261,20 @@ module "identity_provider" {
 # environment, then create a new identity provider client for the service.
 module "identity_provider_client" {
   count  = module.app_config.enable_identity_provider && !local.is_temporary ? 1 : 0
-  source = "../../modules/identity-provider/identity-provider-client"
+  source = "../../modules/identity-provider-client/resources"
 
-  callback_urls                = local.identity_provider_config.client.callback_urls
-  client_secret_ssm_name       = local.identity_provider_config.client_secret_ssm_name
-  cognito_user_pool_id         = module.identity_provider[0].user_pool_id
-  logout_urls                  = local.identity_provider_config.client.logout_urls
-  name                         = local.identity_provider_config.identity_provider_name
-  user_pool_access_policy_name = local.identity_provider_config.user_pool_access_policy_name
+  callback_urls = local.identity_provider_config.client.callback_urls
+  logout_urls   = local.identity_provider_config.client.logout_urls
+  name          = local.identity_provider_config.identity_provider_name
+
+  user_pool_id = module.identity_provider[0].user_pool_id
 }
 
 # If the app has `enable_identity_provider` set to true AND this *is* a temporary
 # environment, then use an existing identity provider and client.
 module "existing_identity_provider" {
   count  = module.app_config.enable_identity_provider && local.is_temporary ? 1 : 0
-  source = "../../modules/identity-provider/existing-identity-provider"
+  source = "../../modules/identity-provider-client/data"
 
-  client_secret_ssm_name       = local.identity_provider_config.client_secret_ssm_name
-  name                         = local.identity_provider_config.identity_provider_name
-  user_pool_access_policy_name = local.identity_provider_config.user_pool_access_policy_name
+  name = local.identity_provider_config.identity_provider_name
 }
