@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 import click
-from flask import Flask
+from flask import Flask, render_template
 
 import storage
 from db import get_db_connection
@@ -25,7 +25,7 @@ def main():
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return render_template("index.html")
 
 
 @app.route("/health")
