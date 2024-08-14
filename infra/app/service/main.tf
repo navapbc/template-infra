@@ -53,7 +53,9 @@ locals {
   # Identity provider locals.
   # If this is a temporary environment, re-use an existing Cognito user pool.
   # Otherwise, create a new one.
-  identity_provider_user_pool_id = module.app_config.enable_identity_provider && !local.is_temporary ? module.identity_provider[0].user_pool_id : module.existing_identity_provider[0].user_pool_id
+  identity_provider_user_pool_id = module.app_config.enable_identity_provider ? (
+    local.is_temporary ? module.existing_identity_provider[0].user_pool_id : module.identity_provider[0].user_pool_id
+  ) : null
   identity_provider_environment_variables = module.app_config.enable_identity_provider ? {
     COGNITO_USER_POOL_ID = local.identity_provider_user_pool_id,
     COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
