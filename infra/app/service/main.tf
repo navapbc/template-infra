@@ -22,9 +22,11 @@ data "aws_subnets" "private" {
 }
 
 locals {
-  # The prefix key/value pair is used for Terraform Workspaces, which is useful for projects with multiple infrastructure developers.
-  # By default, Terraform creates a workspace named “default.” If a non-default workspace is not created this prefix will equal “default”,
-  # if you choose not to use workspaces set this value to "dev"
+  # The prefix is used to create uniquely named resources per terraform workspace, which
+  # are needed in CI/CD for preview environments and tests.
+  #
+  # To isolate changes during infrastructure development by using manually created
+  # terraform workspaces, see: /docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md
   prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
 
   # Add environment specific tags
@@ -47,6 +49,15 @@ locals {
   notifications_config                           = local.environment_config.notifications_config
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
+
+  # Identity provider locals.
+  # If this is a temporary environment, re-use an existing Cognito user pool.
+  # Otherwise, create a new one.
+  identity_provider_user_pool_id = module.app_config.enable_identity_provider && !local.is_temporary ? module.identity_provider[0].user_pool_id : module.existing_identity_provider[0].user_pool_id
+  identity_provider_environment_variables = module.app_config.enable_identity_provider ? {
+    COGNITO_USER_POOL_ID = local.identity_provider_user_pool_id,
+    COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
+  } : {}
 }
 
 terraform {
@@ -55,7 +66,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 4.56.0, < 5.0.0"
+      version = ">= 5.35.0, < 6.0.0"
     }
   }
 
@@ -165,21 +176,7 @@ module "service" {
       FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
       BUCKET_NAME           = local.storage_config.bucket_name
     },
-    # If enabled_identity_provider is true:
-    #   If this is a temporary environment, re-use an existing Cognito user pool.
-    #   Otherwise, create a new one.
-    (
-      module.app_config.enable_identity_provider ?
-      (
-        local.is_temporary ?
-        { COGNITO_USER_POOL_ID = module.existing_identity_provider[0].user_pool_id }
-        : { COGNITO_USER_POOL_ID = module.identity_provider[0].user_pool_id }
-      ) : {}
-    ),
-    module.app_config.enable_identity_provider ?
-    {
-      COGNITO_CLIENT_ID = module.identity_provider_client[0].client_id
-    } : {},
+    local.identity_provider_environment_variables,
     local.service_config.extra_environment_variables
   )
 
@@ -267,7 +264,7 @@ module "identity_provider_client" {
 
   callback_urls = local.identity_provider_config.client.callback_urls
   logout_urls   = local.identity_provider_config.client.logout_urls
-  name          = "${local.prefix}local.identity_provider_config.identity_provider_name"
+  name          = "${local.prefix}${local.identity_provider_config.identity_provider_name}"
 
-  user_pool_id = module.app_config.enable_identity_provider && !local.is_temporary ? module.identity_provider[0].user_pool_id : module.existing_identity_provider[0].user_pool_id
+  user_pool_id = local.identity_provider_user_pool_id
 }
