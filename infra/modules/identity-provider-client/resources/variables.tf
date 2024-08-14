@@ -4,7 +4,7 @@ variable "callback_urls" {
   default     = []
 }
 
-variable "cognito_user_pool_id" {
+variable "user_pool_id" {
   type        = string
   description = "The ID of the user pool that the client will be associated with"
 }

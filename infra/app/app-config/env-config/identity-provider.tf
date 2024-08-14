@@ -15,7 +15,7 @@ locals {
   logout_url_path = ""
 
   identity_provider_config = var.enable_identity_provider ? {
-    identity_provider_name = "${local.prefix}${var.app_name}-${var.environment}"
+    identity_provider_name = "${var.app_name}-${var.environment}"
 
     password_policy = {
       password_minimum_length          = 12

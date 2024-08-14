@@ -1,6 +1,6 @@
 resource "aws_cognito_user_pool_client" "client" {
   name         = var.name
-  user_pool_id = var.cognito_user_pool_id
+  user_pool_id = var.user_pool_id
 
   callback_urls                = var.callback_urls
   logout_urls                  = var.logout_urls

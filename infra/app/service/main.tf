@@ -22,12 +22,22 @@ data "aws_subnets" "private" {
 }
 
 locals {
+  # The prefix is used to create uniquely named resources per terraform workspace, which
+  # are needed in CI/CD for preview environments and tests.
+  #
+  # To isolate changes during infrastructure development by using manually created
+  # terraform workspaces, see: /docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md
+  prefix = terraform.workspace == "default" ? "" : "${terraform.workspace}-"
+
   # Add environment specific tags
   tags = merge(module.project_config.default_tags, {
     environment = var.environment_name
     description = "Application resources created in ${var.environment_name} environment"
   })
 
+  # All non-default terraform workspaces are considered temporary.
+  # Temporary environments do not have deletion protection enabled.
+  # Examples: pull request preview environments are temporary.
   is_temporary = terraform.workspace != "default"
 
   environment_config                             = module.app_config.environment_configs[var.environment_name]
@@ -39,6 +49,17 @@ locals {
   notifications_config                           = local.environment_config.notifications_config
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
+
+  # Identity provider locals.
+  # If this is a temporary environment, re-use an existing Cognito user pool.
+  # Otherwise, create a new one.
+  identity_provider_user_pool_id = module.app_config.enable_identity_provider ? (
+    local.is_temporary ? module.existing_identity_provider[0].user_pool_id : module.identity_provider[0].user_pool_id
+  ) : null
+  identity_provider_environment_variables = module.app_config.enable_identity_provider ? {
+    COGNITO_USER_POOL_ID = local.identity_provider_user_pool_id,
+    COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
+  } : {}
 }
 
 terraform {
@@ -157,10 +178,7 @@ module "service" {
       FEATURE_FLAGS_PROJECT = module.feature_flags.evidently_project_name
       BUCKET_NAME           = local.storage_config.bucket_name
     },
-    module.app_config.enable_identity_provider ? {
-      COGNITO_USER_POOL_ID = module.identity_provider[0].user_pool_id
-      COGNITO_CLIENT_ID    = module.identity_provider_client[0].client_id
-    } : {},
+    local.identity_provider_environment_variables,
     local.service_config.extra_environment_variables
   )
 
@@ -211,9 +229,12 @@ module "storage" {
   is_temporary = local.is_temporary
 }
 
+# If the app has `enable_identity_provider` set to true AND this is not a temporary
+# environment, then create a new identity provider.
 module "identity_provider" {
-  count        = module.app_config.enable_identity_provider ? 1 : 0
-  source       = "../../modules/identity-provider"
+  count  = module.app_config.enable_identity_provider && !local.is_temporary ? 1 : 0
+  source = "../../modules/identity-provider/resources"
+
   is_temporary = local.is_temporary
 
   name                             = local.identity_provider_config.identity_provider_name
@@ -227,12 +248,25 @@ module "identity_provider" {
   reply_to_email      = local.notifications_config == null ? null : local.notifications_config.reply_to_email
 }
 
+# If the app has `enable_identity_provider` set to true AND this *is* a temporary
+# environment, then use an existing identity provider.
+module "existing_identity_provider" {
+  count  = module.app_config.enable_identity_provider && local.is_temporary ? 1 : 0
+  source = "../../modules/identity-provider/data"
+
+  name = local.identity_provider_config.identity_provider_name
+}
+
+# If the app has `enable_identity_provider` set to true, create a new identity provider
+# client for the service. A new client is created for all environments, including
+# temporary environments.
 module "identity_provider_client" {
   count  = module.app_config.enable_identity_provider ? 1 : 0
-  source = "../../modules/identity-provider-client"
+  source = "../../modules/identity-provider-client/resources"
 
-  name                 = local.identity_provider_config.identity_provider_name
-  cognito_user_pool_id = module.identity_provider[0].user_pool_id
-  callback_urls        = local.identity_provider_config.client.callback_urls
-  logout_urls          = local.identity_provider_config.client.logout_urls
+  callback_urls = local.identity_provider_config.client.callback_urls
+  logout_urls   = local.identity_provider_config.client.logout_urls
+  name          = "${local.prefix}${local.identity_provider_config.identity_provider_name}"
+
+  user_pool_id = local.identity_provider_user_pool_id
 }
