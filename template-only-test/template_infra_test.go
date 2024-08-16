@@ -67,7 +67,7 @@ func SetUpAccount(t *testing.T) {
 	fmt.Println("::group::Setting up account")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-set-up-account", "ACCOUNT_NAME=prod"},
+		Args:       []string{"infra-set-up-account", "ACCOUNT_NAME=dev"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
@@ -144,7 +144,7 @@ func ValidateGithubActionsAuth(t *testing.T, accountId string, projectName strin
 	// Check that GitHub Actions can authenticate with AWS
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"infra-check-github-actions-auth", "ACCOUNT_NAME=prod"},
+		Args:       []string{"infra-check-github-actions-auth", "ACCOUNT_NAME=dev"},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "GitHub actions failed to authenticate")
