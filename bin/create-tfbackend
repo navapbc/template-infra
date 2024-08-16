@@ -26,9 +26,9 @@ backend_config_file="${module_dir}/${backend_config_name}.s3.tfbackend"
 # and the name of the DynamoDB table that was created for tf state locks.
 # This will be used to configure the S3 backends in all the application
 # modules
-tf_state_bucket_name=$(terraform -chdir="infra/accounts" output --raw tf_state_bucket_name)
-tf_locks_table_name=$(terraform -chdir="infra/accounts" output --raw tf_locks_table_name)
-region=$(terraform -chdir="infra/accounts" output --raw region)
+tf_state_bucket_name="$(terraform -chdir="infra/accounts" output --raw tf_state_bucket_name)"
+tf_locks_table_name="$(terraform -chdir="infra/accounts" output --raw tf_locks_table_name)"
+region="$(terraform -chdir="infra/accounts" output --raw region)"
 
 echo "===================================="
 echo "Create terraform backend config file"
