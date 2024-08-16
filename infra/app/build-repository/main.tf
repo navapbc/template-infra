@@ -10,6 +10,8 @@ locals {
     description      = "Backend resources required for storing built release candidate artifacts to be used for deploying to environments."
   })
 
+  build_repository_config = module.app_config.build_repository_config
+
   # Get list of AWS account ids for the application environments that
   # will need access to the build repository
   network_names       = toset([for environment_config in values(module.app_config.environment_configs) : environment_config.network_name])
@@ -34,7 +36,7 @@ terraform {
 }
 
 provider "aws" {
-  region = module.app_config.build_repository_config.region
+  region = local.build_repository_config.region
   default_tags {
     tags = local.tags
   }
@@ -49,12 +51,12 @@ module "app_config" {
 }
 
 data "external" "account_ids_by_name" {
-  program = ["../../../bin/account-ids-by-name"]
+  program = ["${path.module}/../../../bin/account-ids-by-name"]
 }
 
 module "container_image_repository" {
   source               = "../../modules/container-image-repository"
-  name                 = module.app_config.image_repository_name
+  name                 = local.build_repository_config.name
   push_access_role_arn = data.aws_iam_role.github_actions.arn
   app_account_ids      = local.app_account_ids
 }

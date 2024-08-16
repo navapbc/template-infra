@@ -40,6 +40,7 @@ locals {
   # Examples: pull request preview environments are temporary.
   is_temporary = terraform.workspace != "default"
 
+  build_repository_config                        = module.app_config.build_repository_config
   environment_config                             = module.app_config.environment_configs[var.environment_name]
   service_config                                 = local.environment_config.service_config
   database_config                                = local.environment_config.database_config
@@ -140,8 +141,10 @@ module "service" {
   source       = "../../modules/service"
   service_name = local.service_config.service_name
 
-  image_repository_name = module.app_config.image_repository_name
-  image_tag             = local.image_tag
+  image_repository_arn = local.build_repository_config.repository_arn
+  image_repository_url = local.build_repository_config.repository_url
+
+  image_tag = local.image_tag
 
   vpc_id             = data.aws_vpc.network.id
   public_subnet_ids  = data.aws_subnets.public.ids
