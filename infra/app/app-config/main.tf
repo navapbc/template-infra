@@ -3,9 +3,8 @@ locals {
   # the folder under /infra that corresponds to the application
   app_name = regex("/infra/([^/]+)/app-config$", abspath(path.module))[0]
 
-  environments          = ["dev", "staging", "prod"]
-  project_name          = module.project_config.project_name
-  image_repository_name = "${local.project_name}-${local.app_name}"
+  environments = ["dev", "staging", "prod"]
+  project_name = module.project_config.project_name
 
   # Whether or not the application has a database
   # If enabled:
@@ -40,10 +39,6 @@ locals {
     dev     = module.dev_config
     staging = module.staging_config
     prod    = module.prod_config
-  }
-
-  build_repository_config = {
-    region = module.project_config.default_region
   }
 
   # The name of the network that contains the resources shared across all

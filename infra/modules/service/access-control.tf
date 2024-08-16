@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "task_executor" {
       "ecr:BatchGetImage",
       "ecr:GetDownloadUrlForLayer",
     ]
-    resources = [data.aws_ecr_repository.app.arn]
+    resources = [var.image_repository_arn]
   }
 
   dynamic "statement" {

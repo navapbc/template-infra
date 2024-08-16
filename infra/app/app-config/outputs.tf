@@ -34,10 +34,6 @@ output "enable_identity_provider" {
   value = local.enable_identity_provider
 }
 
-output "image_repository_name" {
-  value = local.image_repository_name
-}
-
 output "shared_network_name" {
   value = local.shared_network_name
 }

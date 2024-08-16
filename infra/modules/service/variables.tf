@@ -102,7 +102,12 @@ variable "hosted_zone_id" {
   default     = null
 }
 
-variable "image_repository_name" {
+variable "image_repository_arn" {
+  type        = string
+  description = "The name of the container image repository"
+}
+
+variable "image_repository_url" {
   type        = string
   description = "The name of the container image repository"
 }
