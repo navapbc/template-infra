@@ -13,7 +13,7 @@ image_tag=$(git rev-parse "${git_ref}")
 # Need to init module when running in CD since GitHub actions does a fresh checkout of repo
 terraform -chdir="infra/${app_name}/app-config" init > /dev/null
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null
-image_repository_name=$(terraform -chdir="infra/${app_name}/app-config" output -raw image_repository_name)
+image_repository_name="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".name")"
 region=$(./bin/current-region)
 
 result=""
