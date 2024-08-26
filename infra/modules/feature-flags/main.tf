@@ -10,9 +10,6 @@ resource "aws_evidently_project" "feature_flags" {
       log_group = aws_cloudwatch_log_group.logs.name
     }
   }
-  # Make sure the resource policy is created first so that AWS doesn't try to
-  # automatically create one
-  depends_on = [aws_cloudwatch_log_resource_policy.logs]
 }
 
 resource "aws_evidently_feature" "feature_flag" {
