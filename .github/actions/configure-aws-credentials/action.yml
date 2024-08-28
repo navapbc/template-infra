@@ -48,7 +48,7 @@ runs:
 
         terraform -chdir="infra/project-config" init > /dev/null
         terraform -chdir="infra/project-config" apply -auto-approve > /dev/null
-        account_name=$(terraform -chdir="infra/project-config" output -json network_configs | jq -r ".${network_name}.account_name")
+        account_name=$(terraform -chdir="infra/project-config" output -json network_configs | jq -r ".[\"${network_name}\"].account_name")
 
         echo "Account name retrieved: ${account_name}"
         echo "account_name=${account_name}" >> "$GITHUB_OUTPUT"
