@@ -139,6 +139,15 @@ variable "public_subnet_ids" {
   description = "Public subnet ids in VPC"
 }
 
+variable "scheduled_jobs" {
+  description = "Variable for configuration of the step functions scheduled job"
+  type = map(object({
+    task_command        = list(string)
+    schedule_expression = string
+  }))
+  default = {}
+}
+
 variable "secrets" {
   type = set(object({
     name      = string
