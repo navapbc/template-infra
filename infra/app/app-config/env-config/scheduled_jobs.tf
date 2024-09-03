@@ -6,9 +6,9 @@ locals {
   # The syntax for `schedule_expression` is explained in the following documentation:
   # https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-scheduled-rule-pattern.html
   scheduled_jobs = {
-    cron = {
-      task_command        = ["python", "-m", "flask", "--app", "app.py", "cron"]
-      schedule_expression = "cron(0 * ? * * *)"
-    }
+    # cron = {
+    #   task_command        = ["python", "-m", "flask", "--app", "app.py", "cron"]
+    #   schedule_expression = "cron(0 * ? * * *)"
+    # }
   }
 }
