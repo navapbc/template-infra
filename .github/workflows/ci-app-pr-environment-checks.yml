@@ -14,6 +14,7 @@ jobs:
   update:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
     uses: ./.github/workflows/pr-environment-checks.yml
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.state == 'open'
     with:
       app_name: "app"
       environment: "dev"
