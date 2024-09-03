@@ -1,8 +1,7 @@
-#---------------------
-# Task Scheduler Role
-#---------------------
+#------------
+# Events Role
+#------------
 # Role and policy used by AWS EventBridge to trigger jobs from events
-#
 
 # Role that EventBridge will assume
 # The role allows EventBridge to run tasks on the ECS cluster

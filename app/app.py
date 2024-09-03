@@ -89,5 +89,12 @@ def etl(input):
     storage.upload_file(output, data)
 
 
+@app.cli.command("cron", help="Run cron job")
+def cron():
+    conn = get_db_connection()
+    conn.execute("SELECT 1")
+    print("Hello from cron job")
+
+
 if __name__ == "__main__":
     main()
