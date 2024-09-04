@@ -10,6 +10,7 @@ aws ecs delete-cluster --no-cli-pager --cluster app-dev
 LOAD_BALANCERS=$(aws elbv2 describe-load-balancers --no-cli-pager --query 'LoadBalancers[*].[LoadBalancerArn]' --output text)
 while IFS= read -r LOAD_BALANCER; do
     echo "Deleting load balancer $LOAD_BALANCER"
+    aws elbv2 modify-load-balancer-attributes --no-cli-pager --load-balancer-arn "$LOAD_BALANCER" --attributes Key=deletion_protection.enabled,Value=false
     aws elbv2 delete-load-balancer --load-balancer-arn "$LOAD_BALANCER"
 done <<< "$LOAD_BALANCERS"
 
