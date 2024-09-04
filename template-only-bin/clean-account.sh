@@ -78,6 +78,10 @@ echo "Deleting role app-dev-app"
 aws iam delete-role --role-name app-dev-app
 echo "Deleting role app-dev-events"
 aws iam delete-role --role-name app-dev-events
+echo "Deleting role app-dev-scheduler"
+aws iam delete-role --role-name app-dev-scheduler
+echo "Deleting role app-dev-workflow-orchestrator"
+aws iam delete-role --role-name app-dev-workflow-orchestrator
 echo "Deleting role app-dev-task-executor"
 # Must delete inline policies first
 aws iam delete-role-policy --role-name app-dev-task-executor --policy-name app-dev-task-executor-role-policy
