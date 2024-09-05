@@ -4,4 +4,4 @@ GitHub Actions needs permissions to create, modify, and destroy resources in the
 
 ## Adding/removing permissions from GitHub Actions
 
-To add or remove permissions from the CI/CD role, update the list of AWS services that GitHub Actions has access to, defined in the project-config module in [project-config/aws-services.tf](/infra/project-config/aws-services.tf)
+To add or remove permissions from the CI/CD role, update the list of AWS services that GitHub Actions has access to, defined in the project-config module in [project-config/aws_services.tf](/infra/project-config/aws_services.tf)
