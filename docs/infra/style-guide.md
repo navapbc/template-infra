@@ -26,7 +26,6 @@ Here are some exceptions (and additions) to Hashicorp's Terraform style guide.
 - Use module names based on the logical function of the module rather than the underlying proprietary service used for implementing the module. For example, use "database" instead of "rds", or "storage" instead of "s3".
 - Organize resources according to the infrastructure layers described in [module architecture](/docs/infra/module-architecture.md).
 - [Use shared configuration](/docs/infra/module-dependencies.md) instead of the [tfe_outputs data source](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/data-sources/outputs) to share state between two state files.
-- Use underscores instead of dashes in file names and module names.
 
 #### Variables
 
