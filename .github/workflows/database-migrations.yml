@@ -11,6 +11,10 @@ on:
         description: "the name of the application environment (e.g. dev, staging, prod)"
         required: true
         type: string
+      version:
+        description: "git reference to deploy (e.g., a branch, tag, or commit SHA)"
+        required: true
+        type: string
 
 concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }}
 
@@ -20,7 +24,7 @@ jobs:
     uses: ./.github/workflows/build-and-publish.yml
     with:
       app_name: ${{ inputs.app_name }}
-      ref: ${{ github.ref }}
+      ref: ${{ inputs.version }}
   run-migrations:
     name: Run migrations
     runs-on: ubuntu-latest
@@ -32,6 +36,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform

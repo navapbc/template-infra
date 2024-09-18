@@ -11,6 +11,10 @@ on:
         description: "the name of the application environment (e.g. dev, staging, prod)"
         required: true
         type: string
+      version:
+        description: "git reference to deploy (e.g., a branch, tag, or commit SHA)"
+        required: true
+        type: string
 
 concurrency: cd-${{inputs.app_name}}-${{ inputs.environment }}
 
@@ -23,6 +27,7 @@ jobs:
     with:
       app_name: ${{ inputs.app_name }}
       environment: ${{ inputs.environment }}
+      version: ${{ inputs.version }}
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -32,6 +37,8 @@ jobs:
       id-token: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
