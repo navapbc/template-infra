@@ -36,8 +36,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.version }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
@@ -50,4 +48,4 @@ jobs:
 
       - name: Run migrations
         run: |
-          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
+          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }} IMAGE_TAG=${{ inputs.version }}
