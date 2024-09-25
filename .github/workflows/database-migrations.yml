@@ -18,7 +18,7 @@ on:
     outputs:
       commit_hash:
         description: The SHA that was used for migrations
-        value: ${{ jobs.get-commit-hash.outputs.commit_hash }}
+        value: ${{ jobs.build-and-publish.outputs.commit_hash }}
 
 concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }}
 
