@@ -15,6 +15,10 @@ on:
         description: "git reference to deploy (e.g., a branch, tag, or commit SHA)"
         required: true
         type: string
+    outputs:
+      commit_hash:
+        description: The SHA that was deployed
+        value: ${{ jobs.database-migrations.outputs.commit_hash }}
 
 concurrency: cd-${{inputs.app_name}}-${{ inputs.environment }}
 
