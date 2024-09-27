@@ -30,27 +30,28 @@ resource "aws_iam_policy" "run_task" {
 
 data "aws_iam_policy_document" "run_task" {
   statement {
-    effect    = "Allow"
-    actions   = ["ecs:RunTask"]
-    resources = ["${aws_ecs_task_definition.app.arn_without_revision}:*"]
-    condition {
-      test     = "ArnLike"
-      variable = "ecs:cluster"
-      values   = [aws_ecs_cluster.cluster.arn]
-    }
+    sid = "StepFunctionsEvents"
+    actions = [
+      "events:PutTargets",
+      "events:PutRule",
+      "events:DescribeRule",
+    ]
+    resources = ["arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"]
   }
 
   statement {
-    effect  = "Allow"
-    actions = ["iam:PassRole"]
-    resources = [
-      aws_iam_role.task_executor.arn,
-      aws_iam_role.app_service.arn,
+    actions = [
+      "states:StartExecution",
     ]
-    condition {
-      test     = "StringLike"
-      variable = "iam:PassedToService"
-      values   = ["ecs-tasks.amazonaws.com"]
-    }
+    resources = [for job in aws_sfn_state_machine.file_upload_jobs : "${job.arn}"]
   }
+
+  statement {
+    actions = [
+      "states:DescribeExecution",
+      "states:StopExecution",
+    ]
+    resources = [for job in aws_sfn_state_machine.file_upload_jobs : "${job.arn}:*"]
+  }
+
 }
