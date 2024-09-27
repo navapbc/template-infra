@@ -11,6 +11,14 @@ on:
         description: "the name of the application environment (e.g. dev, staging, prod)"
         required: true
         type: string
+      version:
+        description: "git reference to deploy (e.g., a branch, tag, or commit SHA)"
+        required: true
+        type: string
+    outputs:
+      commit_hash:
+        description: The SHA that was used for migrations
+        value: ${{ jobs.build-and-publish.outputs.commit_hash }}
 
 concurrency: database-migrations-${{ inputs.app_name }}-${{ inputs.environment }}
 
@@ -20,7 +28,7 @@ jobs:
     uses: ./.github/workflows/build-and-publish.yml
     with:
       app_name: ${{ inputs.app_name }}
-      ref: ${{ github.ref }}
+      ref: ${{ inputs.version }}
   run-migrations:
     name: Run migrations
     runs-on: ubuntu-latest
@@ -44,4 +52,4 @@ jobs:
 
       - name: Run migrations
         run: |
-          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }}
+          make release-run-database-migrations APP_NAME=${{ inputs.app_name }} ENVIRONMENT=${{ inputs.environment }} IMAGE_TAG=${{ needs.build-and-publish.outputs.commit_hash }}

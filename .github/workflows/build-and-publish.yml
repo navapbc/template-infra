@@ -12,6 +12,10 @@ on:
         description: The branch, tag or SHA to checkout. When checking out the repository that triggered a workflow, this defaults to the reference or SHA for that event. Otherwise, use branch or tag that triggered the workflow run.
         required: true
         type: string
+    outputs:
+      commit_hash:
+        description: The SHA that was built
+        value: ${{ jobs.get-commit-hash.outputs.commit_hash }}
   workflow_dispatch:
     inputs:
       app_name:
@@ -63,7 +67,7 @@ jobs:
       - name: Check if image is already published
         id: check-image-published
         run: |
-          is_image_published=$(./bin/is-image-published "${{ inputs.app_name }}" "${{ inputs.ref }}")
+          is_image_published=$(./bin/is-image-published "${{ inputs.app_name }}" "${{ needs.get-commit-hash.outputs.commit_hash }}")
           echo "Is image published: $is_image_published"
           echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
 
