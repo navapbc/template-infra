@@ -94,4 +94,8 @@ resource "aws_rds_cluster_parameter_group" "rds_query_logging" {
     # Logs all statements that run 100ms or longer
     value = "100"
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
