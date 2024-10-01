@@ -26,7 +26,7 @@ cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_
 service_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_name)
 echo "Wait for service ${service_name} to become stable"
 if ! aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"; then
-  echo "First attempt to wait for service stability failed, retrying..."
+  echo "Retrying"
   aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 fi
 
