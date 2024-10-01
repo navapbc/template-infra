@@ -25,6 +25,9 @@ echo "::endgroup::"
 cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)
 service_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_name)
 echo "Wait for service ${service_name} to become stable"
-aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
+if ! aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"; then
+  echo "First attempt to wait for service stability failed, retrying..."
+  aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
+fi
 
 echo "Completed ${app_name} deploy of ${image_tag} to ${environment}"
