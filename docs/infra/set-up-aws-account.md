@@ -2,7 +2,7 @@
 
 The AWS account setup process will:
 
-1. Create the [Terraform backend](https://www.terraform.io/language/settings/backends/configuration) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
+1. Create the [Terraform backend](https://developer.hashicorp.com/terraform/language/backend) resources needed to store Terraform's infrastructure state files. The project uses an [S3 backend](https://www.terraform.io/language/settings/backends/s3).
 2. Create the [OpenID connect provider in AWS](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html) to allow GitHub Actions to access AWS account resources.
 3. Create the IAM role and policy that GitHub Actions will use to manage infrastructure resources.
 
