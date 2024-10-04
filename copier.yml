@@ -1,0 +1,3 @@
+app_name:
+  type: str
+  help: The name of the app
