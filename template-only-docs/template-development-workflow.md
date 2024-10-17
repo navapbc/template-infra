@@ -34,12 +34,7 @@ On the [platform-test](https://github.com/navapbc/platform-test) repo, you'll do
 
 ### 3. Push changes to platform test repos
 
-In most cases, after you merge changes to the infra template, the changes will be automatically pushed to the various platform test repos. However, the following changes aren't automatically propagated to the platform test repos:
-
-1. Changes to [this list of files in update-template](https://github.com/navapbc/template-infra/blob/main/template-only-bin/update-template#L17-L28)
-2. Deletions of template files
-
-For those changes, you will need to manually make those changes on the `main` branch of the platform test repos.
+In most cases, after you merge changes to the infra template, the changes will be automatically pushed to the various platform test repos. However, some changes require manual intervention due to merge conflicts when the template deployment workflow attempts to apply the patch. In those cases you will need to manually make those changes on the `main` branch of the platform test repos.
 
 ### 4. Clean up: Close the pull request on the platform test repo
 
