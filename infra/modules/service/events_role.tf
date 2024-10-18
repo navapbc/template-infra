@@ -29,6 +29,7 @@ resource "aws_iam_policy" "run_task" {
 }
 
 data "aws_iam_policy_document" "run_task" {
+
   statement {
     sid = "StepFunctionsEvents"
     actions = [
@@ -39,19 +40,26 @@ data "aws_iam_policy_document" "run_task" {
     resources = ["arn:aws:events:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:rule/StepFunctionsGetEventsForStepFunctionsExecutionRule"]
   }
 
-  statement {
-    actions = [
-      "states:StartExecution",
-    ]
-    resources = [for job in aws_sfn_state_machine.file_upload_jobs : "${job.arn}"]
+  dynamic "statement" {
+    for_each = aws_sfn_state_machine.file_upload_jobs
+
+    content {
+      actions = [
+        "states:StartExecution",
+      ]
+      resources = [statement.value.arn]
+    }
   }
 
-  statement {
-    actions = [
-      "states:DescribeExecution",
-      "states:StopExecution",
-    ]
-    resources = [for job in aws_sfn_state_machine.file_upload_jobs : "${job.arn}:*"]
-  }
+  dynamic "statement" {
+    for_each = aws_sfn_state_machine.file_upload_jobs
 
+    content {
+      actions = [
+        "states:DescribeExecution",
+        "states:StopExecution",
+      ]
+      resources = ["${statement.value.arn}:*"]
+    }
+  }
 }
