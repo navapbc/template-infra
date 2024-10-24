@@ -36,7 +36,7 @@ jobs:
       matrix:
         project_repo:
           - navapbc/platform-test
-          # - navapbc/platform-test-flask
+          - navapbc/platform-test-flask
           - navapbc/platform-test-nextjs
     steps:
       - name: Checkout template-infra repo
