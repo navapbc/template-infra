@@ -25,6 +25,8 @@ jobs:
       - name: Update
         working-directory: template-infra
         run: |
+          git config user.name nava-platform-bot
+          git config user.email platform-admins@navapbc.com
           git merge origin/main
           git push
   deploy:
