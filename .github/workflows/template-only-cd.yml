@@ -54,7 +54,7 @@ jobs:
           repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
       - name: Install nava-platform CLI
-        run: pipx install git+ssh://git@github.com/navapbc/platform-cli
+        run: pipx install git+https://git@github.com/navapbc/platform-cli
 
       - name: Update infra template
         working-directory: project-repo
