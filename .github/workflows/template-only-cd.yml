@@ -64,6 +64,7 @@ jobs:
         run: pipx install --python python3.13 git+https://github.com/navapbc/platform-cli
 
       - name: Configure git
+        working-directory: project-repo
         run: |
           git config user.name nava-platform-bot
           git config user.email platform-admins@navapbc.com
