@@ -20,6 +20,8 @@ jobs:
         with:
           path: template-infra
           ref: lorenyu/platform-cli
+          # Fetch history so we can merge main into the branch
+          fetch-depth: 0
       - name: Update
         working-directory: template-infra
         run: |
