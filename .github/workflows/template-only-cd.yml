@@ -19,10 +19,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: template-infra
+          ref: lorenyu/platform-cli
       - name: Update
         working-directory: template-infra
         run: |
-          git checkout lorenyu/platform-cli
+          git fetch origin main
           git merge main
           git push
   deploy:
