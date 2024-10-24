@@ -18,7 +18,7 @@ locals {
   #
   # The database module requires VPC access from private networks to SSM, KMS, and RDS
   aws_service_integrations = toset(
-    module.app_config.has_database ? ["ssm", "kms"] : []
+    module.app_config.has_database ? ["ssm", "kms", "secretsmanager"] : []
   )
 }
 
