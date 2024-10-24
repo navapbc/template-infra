@@ -81,4 +81,4 @@ jobs:
           git add --all
           # Commit changes (if no changes then no-op)
           git diff-index --quiet HEAD || git commit -m "Template infra deploy #${{ github.run_id }}"
-          # git push
+          git push
