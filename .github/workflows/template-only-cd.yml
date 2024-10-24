@@ -45,6 +45,8 @@ jobs:
           path: template-infra
           # TODO: Revert to checking out main once we've merged the platform-cli branch into the main branch
           ref: lorenyu/platform-cli
+          # Fetch history because the Platform CLI needs it to do the update
+          fetch-depth: 0
       - name: Checkout project repo
         uses: actions/checkout@v4
         with:
