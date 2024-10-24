@@ -51,8 +51,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: project-repo
-          # TODO: Revert to checking out main once we've tested that the update works
-          ref: lorenyu/platform-cli
           repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
 
