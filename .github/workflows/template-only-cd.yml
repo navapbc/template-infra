@@ -47,6 +47,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: project-repo
+          # TODO: Revert to checking out main once we've tested that the update works
+          ref: lorenyu/platform-cli
           repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
       - name: Install nava-platform CLI
@@ -64,6 +66,4 @@ jobs:
           git add --all
           # Commit changes (if no changes then no-op)
           git diff-index --quiet HEAD || git commit -m "Template infra deploy #${{ github.run_id }}"
-
-          # TODO uncomment this line once we have validated that things are working
           # git push
