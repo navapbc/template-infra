@@ -63,6 +63,11 @@ jobs:
       - name: Install nava-platform CLI
         run: pipx install --python python3.13 git+https://github.com/navapbc/platform-cli
 
+      - name: Configure git
+        run: |
+          git config user.name nava-platform-bot
+          git config user.email platform-admins@navapbc.com
+
       - name: Update infra template
         working-directory: project-repo
         run: nava-platform infra update --template-uri ../template-infra --version lorenyu/platform-cli .
@@ -70,8 +75,6 @@ jobs:
       - name: Push changes to project repo
         working-directory: project-repo
         run: |
-          git config user.name nava-platform-bot
-          git config user.email platform-admins@navapbc.com
           git add --all
           # Commit changes (if no changes then no-op)
           git diff-index --quiet HEAD || git commit -m "Template infra deploy #${{ github.run_id }}"
