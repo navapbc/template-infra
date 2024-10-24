@@ -54,6 +54,12 @@ jobs:
           repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
 
+      # Set up Python since built in Python version (3.10.12) is not supported by Platform CLI (<4.0,>=3.11)
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
       - name: Install nava-platform CLI
         run: pipx install git+https://git@github.com/navapbc/platform-cli
 
