@@ -49,10 +49,12 @@ jobs:
           path: project-repo
           repository: ${{ matrix.project_repo }}
           token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+      - name: Install nava-platform CLI
+        run: pipx install git+ssh://git@github.com/navapbc/platform-cli
 
       - name: Update infra template
         working-directory: project-repo
-        run: ../template-infra/template-only-bin/update-template
+        run: nava-platform infra update --template-uri ../template-infra --version lorenyu/platform-cli .
 
       - name: Push changes to project repo
         working-directory: project-repo
@@ -62,4 +64,6 @@ jobs:
           git add --all
           # Commit changes (if no changes then no-op)
           git diff-index --quiet HEAD || git commit -m "Template infra deploy #${{ github.run_id }}"
-          git push
+
+          # TODO uncomment this line once we have validated that things are working
+          # git push
