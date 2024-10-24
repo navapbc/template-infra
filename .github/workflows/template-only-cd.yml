@@ -24,7 +24,7 @@ jobs:
         working-directory: template-infra
         run: |
           git fetch origin main
-          git merge main
+          git merge origin/main
           git push
   deploy:
     name: Deploy to ${{ matrix.project_repo }}
