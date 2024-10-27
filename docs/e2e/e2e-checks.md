@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository uses [Playwright](https://playwright.dev/) to perform end-to-end (E2E) tests. The tests can be run locally, but also run on [Pull Request preview environments](../infra/pull-request-environments.md). This ensures that any new code changes are validated through E2E tests before being merged.
+This repository uses [Playwright](https://playwright.dev/) to perform end-to-end (E2E) tests. The tests can be run locally (natively or within Docker), but they also run on [Pull Request preview environments](../infra/pull-request-environments.md). This ensures that any new code changes are validated through E2E tests before being merged.
 
 ## Folder Structure
 In order to support e2e for multiple apps, the folder structure will include a base playwright config (`./e2e/playwright.config.js`), and app-specific derived playwright config that override the base config. See the example folder structure below:
@@ -26,29 +26,59 @@ Some highlights:
 - Parallelism limited on CI to ensure stable execution
 - Accessibility testing can be performed using the `@axe-core/playwright` package (https://playwright.dev/docs/accessibility-testing)
 
+### Running with Docker
 
-## Running Locally
 
-### Running Locally From the Root Directory
 
-Make targets are setup to easily pass in a particular app name and URL to run tests against
 
-```bash
-make e2e-setup # install playwright deps
-make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 # run tests on a particular app
-```
+## How to Run Tests
+<table border="1" style="width:100%; text-align:center;">
+  <tr>
+    <th></th>
+    <th>Local Natively Without Docker</th>
+    <th>Local With Docker</th>
+    <th>CI / Github Actions</th>
+  </tr>
+  <tr>
+  <td>Location App is Running</td>
+  <td colspan="2" style="vertical-align:top;">Locally (*port 3000 in examples) </td>
+  <td>PR Preview Environment</td>
+  </tr>
+  <tr>
+    <td style="vertical-align:top;">With make commands</td>
+    <td style="vertical-align:top;">
+      From root folder:<br>
+      <ul style="list-style-position:inside; text-align:left;">
+        <li><code>make e2e-setup-native</code></li>
+        <li><code>make e2e-test APP_NAME=app BASE_URL=http://localhost:3000</code></li>
+        <li><code>make e2e-copy-report</code></li>
+      </ul>
+    </td>
+    <td style="vertical-align:top;">
+      From root folder:<br>
+      <ul style="list-style-position:inside; text-align:left;">
+        <li><code>make e2e-run APP_NAME=app BASE_URL=http://host.docker.internal:3000</code></li>
+        <br />
+        <em>* BASE_URL cannot use localhost</em>
+      </ul>
+    </td>
+    <td style="vertical-align:top;">
+      <em>* uses make commands <br /><br /> see the relevant <a href="../../.github/workflows/e2e-tests.yml">e2e Github Actions workflow file</a>
+    </em>
+    </td>
+  </tr>
 
-### Running Locally From the `./e2e` Directory
+  <tr>
+    <td style="vertical-align:top;">Show Report</td>
+    <td colspan="2" style="vertical-align:top;">From the root: <br /><code>make e2e-show-report</code></td>
+    <td style="vertical-align:top;">View Artifacts of Github Actions job</td>
+  </tr>
+</table>
 
-If you prefer to run package.json run scripts, you can do so from the e2e folder:
+- Running local with Docker is the preferred approach
+    - When running locally with Docker, the `playwright-report` will be copied to your local `./e2e/` folder
+- For all local runs, your application needs to be running
 
-```
-cd e2e
-
-npm install
-
-APP_NAME=app npm run e2e-test
-```
 
 ### PR Environments
 

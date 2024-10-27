@@ -2,7 +2,7 @@
   "name": "e2e",
   "version": "1.0.0",
   "scripts": {
-    "e2e-setup": "npx playwright install",
+    "e2e-setup": "npx playwright install --with-deps",
     "e2e-test": "./run-e2e-test",
     "e2e-test:ui": "npx playwright test --ui"
   },
@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@axe-core/playwright": "^4.9.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "playwright": "^1.48.1"
   }
 }
