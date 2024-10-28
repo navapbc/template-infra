@@ -1,4 +1,4 @@
-name: CI App PR Environment Destroy
+name: CI {{ app_name }} PR Environment Destroy
 on:
   workflow_dispatch:
     inputs:
@@ -13,6 +13,6 @@ jobs:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
     uses: ./.github/workflows/pr-environment-destroy.yml
     with:
-      app_name: "app"
+      app_name: "{{ app_name }}"
       environment: "dev"
-      pr_number: ${{ inputs.pr_number || github.event.number }}
+      pr_number: ${{'{{'}} inputs.pr_number || github.event.number {{'}}'}}

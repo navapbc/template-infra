@@ -1,4 +1,4 @@
-name: CI App PR Environment Checks
+name: CI {{ app_name }} PR Environment Checks
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +16,7 @@ jobs:
     uses: ./.github/workflows/pr-environment-checks.yml
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.state == 'open'
     with:
-      app_name: "app"
+      app_name: "{{ app_name }}"
       environment: "dev"
-      pr_number: ${{ inputs.pr_number || github.event.number }}
-      commit_hash: ${{ inputs.commit_hash || github.event.pull_request.head.sha }}
+      pr_number: ${{'{{'}} inputs.pr_number || github.event.number {{'}}'}}
+      commit_hash: ${{'{{'}} inputs.commit_hash || github.event.pull_request.head.sha {{'}}'}}
