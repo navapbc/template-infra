@@ -222,6 +222,10 @@ infra-format: ## Format infra code
 infra-test-service: ## Run service layer infra test suite
 	cd infra/test && go test -run TestService -v -timeout 30m
 
+#############
+## Linting ##
+#############
+
 lint-markdown: ## Lint Markdown docs for broken links
 	./bin/lint-markdown
 
