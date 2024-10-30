@@ -235,7 +235,7 @@ release-image-tag: ## Prints the image tag of the release image
 e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dockerfile
 	docker build -t playwright-e2e -f ./e2e/Dockerfile .
 
-e2e-clean-report: ## Remove the local ./e2e/playwright-report folder and its contents
+e2e-clean-report: ## Remove the local ./e2e/playwright-report and ./e2e/test-results folder and their contents
 	rm -rf ./e2e/playwright-report
 	rm -rf ./e2e/test-results
 
