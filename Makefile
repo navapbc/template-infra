@@ -69,6 +69,51 @@ __check_defined = \
 	release-publish \
 	release-run-database-migrations
 
+##############################
+## End-to-end (E2E) Testing ##
+##############################
+
+e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dockerfile
+	docker build -t playwright-e2e -f ./e2e/Dockerfile .
+
+e2e-clean-report: ## Remove the local ./e2e/playwright-report and ./e2e/test-results folder and their contents
+	rm -rf ./e2e/playwright-report
+	rm -rf ./e2e/test-results
+
+e2e-delete-image: ## Delete the Docker image for e2e tests
+	@docker rmi -f playwright-e2e 2>/dev/null || echo "Docker image playwright-e2e does not exist, skipping."
+
+e2e-setup-ci: ## Setup end-to-end tests for CI
+	@cd e2e && npm ci
+	@cd e2e && npx playwright install --with-deps
+
+e2e-setup-native: ## Setup end-to-end tests
+	@cd e2e && npm install
+	@cd e2e && npx playwright install --with-deps
+
+e2e-show-report: ## Show the ./e2e/playwright-report
+	@cd e2e && npx playwright show-report
+
+e2e-test: ## Run E2E Playwright tests in a Docker container and copy the report locally
+e2e-test: e2e-build
+	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
+	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
+	docker run --rm \
+		--name playwright-e2e-container \
+		-e APP_NAME=$(APP_NAME) \
+		-e BASE_URL=$(BASE_URL) \
+		-v $(PWD)/e2e/playwright-report:/e2e/playwright-report \
+		playwright-e2e
+
+e2e-test-native: ## Run end-to-end tests
+	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
+	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
+	@cd e2e/$(APP_NAME) && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npx playwright test $(E2E_ARGS)
+
+###########
+## Infra ##
+###########
+
 infra-set-up-account: ## Configure and create resources for current AWS profile and save tfbackend file to infra/accounts/$ACCOUNT_NAME.ACCOUNT_ID.s3.tfbackend
 	@:$(call check_defined, ACCOUNT_NAME, human readable name for account e.g. "prod" or the AWS account alias)
 	./bin/set-up-current-account $(ACCOUNT_NAME)
@@ -177,6 +222,10 @@ infra-format: ## Format infra code
 infra-test-service: ## Run service layer infra test suite
 	cd infra/test && go test -run TestService -v -timeout 30m
 
+#############
+## Linting ##
+#############
+
 lint-markdown: ## Lint Markdown docs for broken links
 	./bin/lint-markdown
 
@@ -227,47 +276,6 @@ release-image-name: ## Prints the image name of the release image
 
 release-image-tag: ## Prints the image tag of the release image
 	@echo $(IMAGE_TAG)
-
-##############################
-## End-to-end (E2E) Testing ##
-##############################
-
-e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dockerfile
-	docker build -t playwright-e2e -f ./e2e/Dockerfile .
-
-e2e-clean-report: ## Remove the local ./e2e/playwright-report and ./e2e/test-results folder and their contents
-	rm -rf ./e2e/playwright-report
-	rm -rf ./e2e/test-results
-
-e2e-delete-image: ## Delete the Docker image for e2e tests
-	@docker rmi -f playwright-e2e 2>/dev/null || echo "Docker image playwright-e2e does not exist, skipping."
-
-e2e-setup-ci: ## Setup end-to-end tests for CI
-	@cd e2e && npm ci
-	@cd e2e && npx playwright install --with-deps
-
-e2e-setup-native: ## Setup end-to-end tests
-	@cd e2e && npm install
-	@cd e2e && npx playwright install --with-deps
-
-e2e-show-report: ## Show the ./e2e/playwright-report
-	@cd e2e && npx playwright show-report
-
-e2e-test: ## Run E2E Playwright tests in a Docker container and copy the report locally
-e2e-test: e2e-build
-	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
-	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
-	docker run --rm \
-		--name playwright-e2e-container \
-		-e APP_NAME=$(APP_NAME) \
-		-e BASE_URL=$(BASE_URL) \
-		-v $(PWD)/e2e/playwright-report:/e2e/playwright-report \
-		playwright-e2e
-
-e2e-test-native: ## Run end-to-end tests
-	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
-	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
-	@cd e2e/$(APP_NAME) && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npx playwright test $(E2E_ARGS)
 
 ########################
 ## Scripts and Helper ##
