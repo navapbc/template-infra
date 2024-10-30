@@ -1,4 +1,5 @@
 name: E2E Tests
+run-name: E2E Tests
 
 on:
   workflow_call:
@@ -12,22 +13,15 @@ on:
 
 jobs:
   e2e:
-    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+    name: "E2E Tests"
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install Playwright browsers
-        run: make e2e-setup-ci
-
-      - name: Run e2e tests
+      # Run the Playwright tests inside the Docker container
+      - name: Run E2E tests in Docker container
         run: make e2e-test APP_NAME=${{ inputs.app_name }} BASE_URL=${{ inputs.service_endpoint }}
 
       - name: Upload Playwright report
