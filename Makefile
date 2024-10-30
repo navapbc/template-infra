@@ -34,7 +34,7 @@ __check_defined = \
 	e2e-setup-native \
 	e2e-show-report \
 	e2e-test \
-	e2e-test-native
+	e2e-test-native \
 	help \
 	infra-check-app-database-roles \
 	infra-check-compliance-checkov \
@@ -241,6 +241,17 @@ e2e-clean-report: ## Remove the local ./e2e/playwright-report folder and its con
 e2e-delete-image: ## Delete the Docker image for e2e tests
 	@docker rmi -f playwright-e2e 2>/dev/null || echo "Docker image playwright-e2e does not exist, skipping."
 
+e2e-setup-ci: ## Setup end-to-end tests for CI
+	@cd e2e && npm ci
+	@cd e2e && npx playwright install --with-deps
+
+e2e-setup-native: ## Setup end-to-end tests
+	@cd e2e && npm install
+	@cd e2e && npx playwright install --with-deps
+
+e2e-show-report: ## Show the ./e2e/playwright-report
+	@cd e2e && npx playwright show-report
+
 e2e-test: ## Run E2E Playwright tests in a Docker container and copy the report locally
 e2e-test: e2e-build
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
@@ -251,17 +262,6 @@ e2e-test: e2e-build
 		-e BASE_URL=$(BASE_URL) \
 		-v $(PWD)/e2e/playwright-report:/e2e/playwright-report \
 		playwright-e2e
-
-e2e-setup-native: ## Setup end-to-end tests
-	@cd e2e && npm install
-	@cd e2e && npx playwright install --with-deps
-
-e2e-setup-ci: ## Setup end-to-end tests for CI
-	@cd e2e && npm ci
-	@cd e2e && npx playwright install --with-deps
-
-e2e-show-report: ## Show the ./e2e/playwright-report
-	@cd e2e && npx playwright show-report
 
 e2e-test-native: ## Run end-to-end tests
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
