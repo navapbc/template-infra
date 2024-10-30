@@ -237,6 +237,7 @@ e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dock
 
 e2e-clean-report: ## Remove the local ./e2e/playwright-report folder and its contents
 	rm -rf ./e2e/playwright-report
+	rm -rf ./e2e/test-results
 
 e2e-delete-image: ## Delete the Docker image for e2e tests
 	@docker rmi -f playwright-e2e 2>/dev/null || echo "Docker image playwright-e2e does not exist, skipping."
