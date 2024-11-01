@@ -6,3 +6,12 @@ local_port:
   type: int
   help: The port to be used in local development
   default: 3000
+
+is_dev_env_setup:
+  type: bool
+  help: If there's a dev environment deployed, to enable various CI/CD.
+  default: false
+
+_envops:
+  trim_blocks: true
+  lstrip_blocks: true

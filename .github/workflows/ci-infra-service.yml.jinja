@@ -1,7 +1,26 @@
 name: CI Infra Service Checks
 
 on:
-  # !! Uncomment to trigger automated infra tests once dev environment is set up
+  {% if is_dev_env_setup %}
+  push:
+    branches:
+      - main
+    paths:
+      - infra/*/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-infra-service.yml
+  pull_request:
+    paths:
+      - infra/*/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-infra-service.yml
+  {% else %}
+  # !! Once you've set up the dev environment and are ready to enable automated
+  # infra tests, run `nava-platform update --data is_dev_env_setup=true` to
+  # enable these lines. They are here as comments for context.
+  #
   # push:
   #   branches:
   #     - main
@@ -16,6 +35,7 @@ on:
   #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
+  {% endif %}
   workflow_dispatch:
 
 jobs:
