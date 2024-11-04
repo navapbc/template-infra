@@ -220,7 +220,8 @@ infra-format: ## Format infra code
 	terraform fmt -recursive infra
 
 infra-test-service: ## Run service layer infra test suite
-	cd infra/test && go test -run TestService -v -timeout 30m
+	@:$(call check_defined, APP_NAME, "the name of subdirectory of /infra that holds the application's infrastructure code")
+	cd infra/test && APP_NAME=$(APP_NAME) go test -run TestService -v -timeout 30m
 
 #############
 ## Linting ##
