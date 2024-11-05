@@ -41,7 +41,7 @@ jobs:
         with:
           go-version: ">=1.19.0"
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
 
