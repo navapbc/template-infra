@@ -2,6 +2,8 @@
 
 The CI/CD for this project uses [reusable Github Actions workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
 
+TODO: update the workflow links to point to blob/main before merge
+
 ## 🧪 CI
 
 ### Per app workflows
@@ -10,11 +12,11 @@ Each app should have:
 
 - `ci-<APP_NAME>`: must be created; should run linting and testing
 - `ci-<APP_NAME>-vulnerability-scans`: calls `vulnerability-scans`
-  - Based on [ci-app-vulnerability-scans](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-vulnerability-scans.yml)
+  - Based on [ci-{{app_name}}-vulnerability-scans](https://github.com/navapbc/template-infra/blob/lorenyu%2Fplatform-cli/.github/workflows/ci-{{app_name}}-vulnerability-scans.yml.jinja)
 - `ci-<APP_NAME>-pr-environment-checks.yml`: calls `pr-environment-checks.yml` to create or update a pull request environment (see [pull request environments](/docs/infra/pull-request-environments.md))
-  - Based on [ci-app-pr-environment-checks.yml](/.github/workflows/ci-app-pr-environment-checks.yml)
+  - Based on [ci-{{app_name}}-pr-environment-checks.yml](https://github.com/navapbc/template-infra/blob/lorenyu%2Fplatform-cli/.github/workflows/ci-{{app_name}}-pr-environment-checks.yml.jinja)
 - `ci-<APP_NAME>-pr-environment-destroy.yml`: calls `pr-environment-destroy.yml` to destroy the pull request environment (see [pull request environments](/docs/infra/pull-request-environments.md))
-  - Based on [ci-app-pr-environment-destroy.yml](https://github.com/navapbc/template-infra/blob/main/.github/workflows/ci-app-pr-environment-destroy.yml)
+  - Based on [ci-{{app_name}}-pr-environment-destroy.yml](https://github.com/navapbc/template-infra/blob/lorenyu%2Fplatform-cli/.github/workflows/ci-{{app_name}}-pr-environment-destroy.yml.jinja)
 
 ### App-agnostic workflows
 
@@ -27,7 +29,7 @@ Each app should have:
 Each app should have:
 
 - `cd-<APP_NAME>`: deploys an application
-  - Based on [`cd-app`](https://github.com/navapbc/template-infra/blob/main/.github/workflows/cd-app.yml)
+  - Based on [`cd-{{app_name}}`](https://github.com/navapbc/template-infra/blob/lorenyu%2Fplatform-cli/.github/workflows/cd-{{app_name}}.yml.jinja)
 
 The CD workflow uses these reusable workflows:
 
