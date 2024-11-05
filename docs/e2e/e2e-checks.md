@@ -88,9 +88,9 @@ The [E2E Tests Workflow](../../.github/workflows/e2e-tests.yml) takes a `service
 ## Configuration
 
 The E2E tests are configured using the following files:
-- [Base Configuration](../../e2e/playwright.config.js)
-- [App-specific Configuration](../../e2e/app/playwright.config.js)
+- Base Configuration in `e2e/playwright.config.js`
+- App-specific Configuration in `e2e/<APP_NAME>/playwright.config.js`
 
 The app-specific configuration files extend the common base configuration.
 
-By default when running `make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 ` - you don't necessarily need to pass an `BASE_URL` since the default is defined in the app-specific playwright config (`./e2e/app/playwright.config.js`).
+By default when running `make e2e-test APP_NAME=app BASE_URL=http://localhost:3000 ` - you don't necessarily need to pass an `BASE_URL` since the default is defined in the app-specific playwright config (`./e2e/<APP_NAME>/playwright.config.js`).

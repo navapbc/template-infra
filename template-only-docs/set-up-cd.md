@@ -7,5 +7,4 @@ enable continuous deployment by running:
 nava-platform update --data is_dev_env_setup=true
 ```
 
-TODO still needed?
-1. Update the `role-to-assume` with the GitHub actions ARN.
+And update the `role-to-assume` with the GitHub actions ARN.

@@ -10,7 +10,7 @@ Before setting up the application's environments you'll need to have:
 
 1. [A compatible application in the app folder](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md)
 2. [Set up the AWS account that this environment is going to use](/docs/infra/set-up-aws-account.md).
-3. [Configure the app](/infra/app/app-config/main.tf).
+3. Configure the app in `infra/<APP_NAME>/app-config/main.tf`.
    1. Make sure you update `has_database` to `true` or `false` (defaults to `true`) depending on whether or not your application has a database to integrate with.
    2. Make sure you update `has_external_non_aws_service` to `true` or `false` depending on whether your application utilizes any non-AWS services. Other applications within the same git repo count as external services, so if your application makes API calls to another application service in the same git repo, set `has_external_non_aws_service` to `true`.
    3. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
@@ -29,10 +29,10 @@ To create the `tfbackend` and `tfvars` files for the new application environment
 make infra-configure-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. It defaults to `app`.
-`ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder.
+`ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
-Depending on the value of `has_database` in the [app-config module](/infra/app/app-config/main.tf), the application will be configured with or without database access.
+Depending on the value of `has_database` in the app-config module (`infra/<APP_NAME>/app-config/main.tf`), the application will be configured with or without database access.
 
 ## 2. Build and publish the application to the application build repository
 
