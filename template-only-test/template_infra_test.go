@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -17,6 +18,8 @@ import (
 // Note: projectName can't be too long since S3 bucket names have a 63 character max length
 var uniqueId = strings.ToLower(random.UniqueId())
 var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
+
+var imageTag = os.Getenv("IMAGE_TAG")
 
 func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
@@ -111,13 +114,6 @@ func SetUpDevEnvironment(t *testing.T) {
 		Command:    "make",
 		Args:       []string{"infra-configure-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
 		WorkingDir: "../",
-	})
-
-	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
-	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
-		Command:    "git",
-		Args:       []string{"rev-parse", "HEAD"},
-		WorkingDir: "./",
 	})
 
 	shell.RunCommand(t, shell.Command{
@@ -240,12 +236,4 @@ func TeardownDevEnvironment(t *testing.T) {
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
-}
-
-func GetCurrentCommitHash(t *testing.T) string {
-	return shell.RunCommandAndGetOutput(t, shell.Command{
-		Command:    "git",
-		Args:       []string{"rev-parse", "HEAD"},
-		WorkingDir: "./",
-	})
 }

@@ -32,14 +32,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout template-infra repo
+        uses: actions/checkout@v4
+        with:
+          path: template-infra
+          # TODO: Revert to checking out main once we've merged the platform-cli branch into the main branch
+          ref: lorenyu/platform-cli
+
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.8.3
           terraform_wrapper: false
+
       - uses: actions/setup-go@v3
         with:
           go-version: ">=1.19.0"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install nava-platform CLI
+        run: pipx install --python python3.13 git+https://github.com/navapbc/platform-cli
+
+      - name: Install infra template
+        run: |
+          nava-platform infra install --template-uri ./template-infra \
+          --data app_name=app \
+          --data local_port=3000 \
+          --data is_dev_env_setup=true \
+          project-dir
+
+      - name: Copy template-only things to project copy of template
+        run: |
+          cp -vr ./template-infra/template-only* ./project-dir
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
@@ -56,7 +84,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
 
       - name: Run Terratest
+        working-directory: project-dir
         run: make -f template-only.mak test
         env:
           # GitHub token needed for GitHub CLI which is used during tests to check GitHub Actions auth
           GH_TOKEN: ${{ secrets.PLATFORM_TESTER_GITHUB_TOKEN }}
+          IMAGE_TAG: ${{ github.sha }}
