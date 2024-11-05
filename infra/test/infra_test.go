@@ -1,6 +1,7 @@
 package test
 
 import (
+	"crypto/tls"
 	"fmt"
 	"os"
 	"strings"
@@ -98,7 +99,16 @@ func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
 func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
 	fmt.Println("::group::Check service for healthy status 200")
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
-	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint+"/health", nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
+
+	// if the service is using the `enable_https` option, there will be issues
+	// with certs using `service_endpoint`, like:
+	//
+	// tls: failed to verify certificate: x509: certificate is valid for <app_name>.<acct>-<env>.navateam.com, not <workspace>-<app_name>-<env>-<acct>.<region>.elb.amazonaws.com. Sleeping for 1s and will try again.
+	//
+	// so have the test skip over invalid certs
+	tlsConfig := tls.Config{InsecureSkipVerify: true}
+
+	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint+"/health", &tlsConfig, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
 	fmt.Println("::endgroup::")
