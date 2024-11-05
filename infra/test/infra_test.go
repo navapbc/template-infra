@@ -98,7 +98,7 @@ func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
 func RunEndToEndTests(t *testing.T, terraformOptions *terraform.Options) {
 	fmt.Println("::group::Check service for healthy status 200")
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
-	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
+	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint+"/health", nil, 5, 1*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
 	fmt.Println("::endgroup::")
