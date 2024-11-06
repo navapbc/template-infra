@@ -58,7 +58,17 @@ jobs:
 
       - name: Install infra template
         run: |
+          # Note: projectName can't be too long since S3 bucket names have a 63
+          # character max length, $RANDOM has a max value of 32767
+          unique_id=$(printf '%.5d' $((RANDOM)))
+          project_name=plt-tst-act-${unique_id}
+          echo "PROJECT_NAME=${project_name}" >> "$GITHUB_ENV"
+
           nava-platform infra install --template-uri ./template-infra \
+          --data project_name="${project_name}" \
+          --data owner=navapbc \
+          --data code_repository_url=${{ github.repositoryUrl }} \
+          --data default_region=us-east-1 \
           --data app_name=app \
           --data local_port=3000 \
           --data is_dev_env_setup=true \
@@ -75,7 +85,7 @@ jobs:
 
           # Use access key credentials for the template infra test workflow
           # instead of using GitHub OIDC because only one GitHub OIDC provider
-          # can be added to the Platform accoutn, and we want to create a
+          # can be added to the Platform account, and we want to create a
           # GitHub OIDC provider as part of the template test.
           # (see https://docs.aws.amazon.com/cli/latest/reference/iam/create-open-id-connect-provider.html)
           #
@@ -90,3 +100,4 @@ jobs:
           # GitHub token needed for GitHub CLI which is used during tests to check GitHub Actions auth
           GH_TOKEN: ${{ secrets.PLATFORM_TESTER_GITHUB_TOKEN }}
           IMAGE_TAG: ${{ github.sha }}
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}

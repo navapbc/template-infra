@@ -3,22 +3,17 @@ package test
 import (
 	"fmt"
 	"os"
-	"strings"
 	"testing"
 	"time"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
-	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
-// Note: projectName can't be too long since S3 bucket names have a 63 character max length
-var uniqueId = strings.ToLower(random.UniqueId())
-var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
-
+var projectName = os.Getenv("PROJECT_NAME")
 var imageTag = os.Getenv("IMAGE_TAG")
 
 func TestEndToEnd(t *testing.T) {
@@ -60,7 +55,7 @@ func SetUpProject(t *testing.T, projectName string) {
 	fmt.Println("::group::Configuring project")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-project", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"-f", "template-only.mak", "set-up-project"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
