@@ -147,14 +147,14 @@ func ValidateBuildRepository(t *testing.T) {
 
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"release-build", "APP_NAME=app"},
+		Args:       []string{"release-build", "APP_NAME=app", fmt.Sprintf("IMAGE_TAG=%s", imageTag)},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "Could not build release")
 
 	err = shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"release-publish", "APP_NAME=app"},
+		Args:       []string{"release-publish", "APP_NAME=app", fmt.Sprintf("IMAGE_TAG=%s", imageTag)},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "Could not publish release")
