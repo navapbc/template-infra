@@ -64,14 +64,16 @@ jobs:
           project_name=plt-tst-act-${unique_id}
           echo "PROJECT_NAME=${project_name}" >> "$GITHUB_ENV"
 
+          # TODO: add --data-file support to CLI and have as many of these
+          # settings in more maintainable separate file
           nava-platform infra install --template-uri ./template-infra \
-          --data project_name="${project_name}" \
-          --data owner=platform-admins \
-          --data code_repository_url=${{ github.repositoryUrl }} \
-          --data default_region=us-east-1 \
+          --data base_project_name="${project_name}" \
+          --data base_owner=platform-admins \
+          --data base_code_repository_url=${{ github.repositoryUrl }} \
+          --data base_default_region=us-east-1 \
           --data app_name=app \
-          --data local_port=3000 \
-          --data is_dev_env_setup=true \
+          --data app_local_port=3000 \
+          --data app_is_dev_env_setup=true \
           project-dir
 
       - name: Copy template-only things to project copy of template

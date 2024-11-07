@@ -5,12 +5,12 @@ on:
       pr_number:
         required: true
         type: string
-  {% if is_dev_env_setup %}
+  {% if app_is_dev_env_setup %}
   pull_request:
     types: [closed]
   {% else %}
   # !! Once you've set up the dev environment and are ready to enable PR
-  # environments, run `nava-platform update --data is_dev_env_setup=true` to
+  # environments, run `nava-platform update --data app_is_dev_env_setup=true` to
   # enable these lines. They are here as comments for context.
   #
   # pull_request:

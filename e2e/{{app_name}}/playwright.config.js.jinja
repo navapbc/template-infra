@@ -6,7 +6,7 @@ export default defineConfig(deepMerge(
   baseConfig,
   {
     use: {
-      baseURL: baseConfig.use.baseURL || "localhost:{{ local_port }}"
+      baseURL: baseConfig.use.baseURL || "localhost:{{ app_local_port }}"
     },
   }
 ));
