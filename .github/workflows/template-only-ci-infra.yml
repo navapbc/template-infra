@@ -58,7 +58,7 @@ jobs:
 
       - name: Install infra template
         run: |
-          # Note: projectName can't be too long since S3 bucket names have a 63
+          # Note: project_name can't be too long since S3 bucket names have a 63
           # character max length, $RANDOM has a max value of 32767
           unique_id=$(printf '%.5d' $((RANDOM)))
           project_name=plt-tst-act-${unique_id}
@@ -66,7 +66,7 @@ jobs:
 
           nava-platform infra install --template-uri ./template-infra \
           --data project_name="${project_name}" \
-          --data owner=navapbc \
+          --data owner=platform-admins \
           --data code_repository_url=${{ github.repositoryUrl }} \
           --data default_region=us-east-1 \
           --data app_name=app \
