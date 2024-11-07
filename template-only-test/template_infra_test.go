@@ -180,6 +180,8 @@ func ValidateDevEnvironment(t *testing.T) {
 		TerraformDir: "../infra/app/service/",
 	})
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
+	// Not checking the /health endpoint as we don't deploy the database for
+	// this testing, so that endpoint will fail as currently coded
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
