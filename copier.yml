@@ -1,21 +1,32 @@
+template:
+  type: str
+  choices:
+    - base
+    - app
+
 #
 # Base vars
 #
 base_project_name:
   type: str
   help: The slugified name of the project (lower case, dashes, and underscores)
+  when: &base
+    "{{ template == 'base' }}"
 
 base_owner:
   type: str
   help: Project owner slug (used for tagging infra resources)
+  when: *base
 
 base_code_repository_url:
   type: str
   help: URL of project source code repository
+  when: *base
 
 base_default_region:
   type: str
   help: Default AWS region for project
+  when: *base
   default: us-east-2
   choices:
     - us-east-1
@@ -57,16 +68,20 @@ base_default_region:
 app_name:
   type: str
   help: The name of the app
+  when: &app
+    "{{ template == 'app' }}"
 
 app_local_port:
   type: int
   help: The port to be used in local development
   default: 3000
+  when: *app
 
 app_is_dev_env_setup:
   type: bool
   help: If there's a dev environment deployed, to enable various CI/CD.
   default: false
+  when: *app
 
 _envops:
   trim_blocks: true
