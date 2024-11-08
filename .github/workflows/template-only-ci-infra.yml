@@ -80,6 +80,10 @@ jobs:
         run: |
           cp -vr ./template-infra/template-only* ./project-dir
 
+      - name: Install example app for infra tests
+        run: |
+          mv -vf ./project-dir/template-only-app ./project-dir/app
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:

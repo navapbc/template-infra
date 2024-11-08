@@ -86,3 +86,7 @@ app_is_dev_env_setup:
 _envops:
   trim_blocks: true
   lstrip_blocks: true
+
+_skip_if_exists:
+  - "/{{ app_name }}/"
+  - "/{{ app_name }}/Makefile"

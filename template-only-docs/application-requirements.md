@@ -22,7 +22,7 @@ If your application needs a database, it must also:
 
 ## Example Application
 
-The infra template includes an example "hello, world" application that works with the template. The source code for this test application is at [app](/app).
+The infra template includes an example "hello, world" application that works with the template. The source code for this test application is at [template-only-app](/template-only-app).
 
 A live demo of the test application is fully deployed by the <https://github.com/navapbc/platform-test> repo, which is used for testing the infra template. Please check [that repo's README](https://github.com/navapbc/platform-test?tab=readme-ov-file#environment-urls) to locate a URL for seeing the live demo.
 
