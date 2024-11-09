@@ -10,13 +10,11 @@ WORKDIR /
 # Setup npm install layer that can be cached
 COPY Makefile /Makefile
 COPY e2e/package.json e2e/package-lock.json /e2e/
+
+# install deps
 RUN make e2e-setup-ci
 
 # Copy entire e2e folder over
 COPY e2e /e2e
 
-# Change the working directory back to the root to run Makefile commands
-WORKDIR /
-
-# Default command when running the container
 CMD ["make", "e2e-test-native"]
