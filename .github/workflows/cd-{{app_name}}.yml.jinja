@@ -14,8 +14,11 @@ on:
       - "infra/**"
   {% else %}
   # !! Once you've set up the dev environment and are ready to enable continuous
-  # deployment, run `nava-platform update --data app_is_dev_env_setup=true` to
-  # enable these lines. They are here as comments for context.
+  # deployment, run:
+  #
+  # nava-platform infra update --data app_is_dev_env_setup=true .
+  #
+  # to enable these lines. They are here as comments for context.
   #
   # push:
   #   branches:

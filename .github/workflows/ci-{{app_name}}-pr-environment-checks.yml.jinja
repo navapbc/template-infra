@@ -12,8 +12,11 @@ on:
   pull_request:
   {% else %}
   # !! Once you've set up the dev environment and are ready to enable PR
-  # environments, run `nava-platform update --data app_is_dev_env_setup=true` to
-  # enable these lines. They are here as comments for context.
+  # environments, run:
+  #
+  # nava-platform infra update --data app_is_dev_env_setup=true .
+  #
+  # to enable these lines. They are here as comments for context.
   #
   # pull_request:
   {% endif %}
