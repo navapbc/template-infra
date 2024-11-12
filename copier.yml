@@ -10,6 +10,10 @@ template:
 base_project_name:
   type: str
   help: The slugified name of the project (lower case, dashes, and underscores)
+  validator: >-
+    {% if not (base_project_name | regex_search('^[a-z0-9\-_]+$')) %}
+    The project name can not be empty and should only contain lower case letters, digits, dashes, and underscores.
+    {% endif %}
   when: &base
     "{{ template == 'base' }}"
 
@@ -21,11 +25,12 @@ base_owner:
 base_code_repository_url:
   type: str
   help: URL of project source code repository
+  default: "https://github.com/{{ base_owner }}/{{ base_project_name }}"
   when: *base
 
 base_default_region:
   type: str
-  help: Default AWS region for project
+  help: Default AWS region for the project
   when: *base
   default: us-east-2
   choices:
@@ -68,18 +73,22 @@ base_default_region:
 app_name:
   type: str
   help: The name of the app
+  validator: >-
+    {% if not (app_name | regex_search('^[a-z0-9\-_]+$')) %}
+    The app name can not be empty and should only contain lower case letters, digits, dashes, and underscores.
+    {% endif %}
   when: &app
     "{{ template == 'app' }}"
 
 app_local_port:
   type: int
-  help: The port to be used in local development
+  help: "The port to be used in local development of '{{ app_name }}'"
   default: 3000
   when: *app
 
 app_has_dev_env_setup:
   type: bool
-  help: If there's a dev environment deployed, to enable various CI/CD.
+  help: "Does '{{ app_name }}' have a dev environment deployed? (to enable various CI/CD)"
   default: false
   when: *app
 
