@@ -12,7 +12,7 @@ on:
       - template-only-infra/**
       - template-only-test/**
       - .github/workflows/template-only-ci-infra.yml
-      - app/Dockerfile
+      - template-only-app/Dockerfile
   workflow_dispatch:
 
 # For now, only allow one workflow run at a time, since this provisions an OIDC
