@@ -75,6 +75,16 @@ jobs:
         working-directory: project-repo
         run: nava-platform infra update --template-uri ../template-infra --version lorenyu/platform-cli .
 
+      - name: Install example app
+        if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
+        run: |
+          mv -vf ./template-infra/template-only-app ./project-repo/app
+          cd project-repo
+          if [[ $(git status app --porcelain | wc -l) -ne 0 ]]; then
+            git add app
+            git commit --message "Update app/ from example"
+          fi
+
       - name: Push changes to project repo
         working-directory: project-repo
         run: git push
