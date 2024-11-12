@@ -73,7 +73,7 @@ jobs:
           --data base_default_region=us-east-1 \
           --data app_name=app \
           --data app_local_port=3000 \
-          --data app_is_dev_env_setup=true \
+          --data app_has_dev_env_setup=true \
           project-dir
 
       - name: Copy template-only things to project copy of template

@@ -77,7 +77,7 @@ app_local_port:
   default: 3000
   when: *app
 
-app_is_dev_env_setup:
+app_has_dev_env_setup:
   type: bool
   help: If there's a dev environment deployed, to enable various CI/CD.
   default: false

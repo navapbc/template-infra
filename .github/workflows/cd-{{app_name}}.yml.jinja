@@ -4,7 +4,7 @@ name: Deploy {{ app_name }}
 run-name: Deploy ${{'{{'}}inputs.version || 'main' {{'}}'}} to {{ app_name }} ${{'{{'}} inputs.environment || 'dev' {{'}}'}}
 
 on:
-  {% if app_is_dev_env_setup %}
+  {% if app_has_dev_env_setup %}
   push:
     branches:
       - "main"
@@ -16,7 +16,7 @@ on:
   # !! Once you've set up the dev environment and are ready to enable continuous
   # deployment, run:
   #
-  # nava-platform infra update --data app_is_dev_env_setup=true .
+  # nava-platform infra update --data app_has_dev_env_setup=true .
   #
   # to enable these lines. They are here as comments for context.
   #
