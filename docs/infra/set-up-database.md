@@ -28,7 +28,7 @@ make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
-`ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
+`ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
 ### (Optional) Enable any database extensions that require `rds_superuser`
 
@@ -37,7 +37,7 @@ To enable some extensions, such as [pgvector](https://github.com/pgvector/pgvect
 For example, to enable the pgvector extension:
 
 ```terraform
-# infra/app/app-config/env-config/main.tf
+# infra/<APP_NAME>/app-config/env-config/main.tf
 
 database_config = {
   ...

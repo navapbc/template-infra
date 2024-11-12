@@ -4,7 +4,7 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
 
 ## Instructions
 
-1. First, destroy all your environments. Within `/infra/app/service` run the following, replacing `dev` with the environment you're destroying.
+1. First, destroy all your environments. Within `/infra/<APP_NAME>/service` run the following, replacing `dev` with the environment you're destroying.
 
    ```bash
    $ terraform init --backend-config=dev.s3.tfbackend
