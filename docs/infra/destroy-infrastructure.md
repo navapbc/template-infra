@@ -43,7 +43,7 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
    # Comment out or delete the backend block
    backend "s3" {
      ...
-   }2
+   }
    ```
 
 4. Then run the following from within the `infra/accounts` directory to copy the `tfstate` back to a local `tfstate` file:
