@@ -17,6 +17,7 @@ Before setting up the network you'll need to have:
 3. Configure the app in `infra/<APP_NAME>/app-config/main.tf`.
    1. Update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with. This setting determines whether or not to create VPC endpoints needed by the database layer.
    2. Update `has_external_non_aws_service` to `true` or `false` depending on whether or not your application makes calls over the public internet. Set this to `true` (a) if your application makes calls to a SaaS service, or (b) if your application needs to call services from another application in the same git repo. This setting determines whether or not to create NAT gateways, which allows the service in the private subnet to make requests to the internet. For more information, see [set up network access to the public internet](./set-up-public-internet-access.md)
+<!-- markdown-link-check-disable-next-line -->
    3. If you made changes to the configuration of the networks in the optional step 2 above and or to the default application environments: Update `network_name` for your application environments. This mapping ensures that each network is configured appropriately based on the application(s) in that network (see `local.apps_in_network` in [/infra/networks/main.tf](/infra/networks/main.tf)) Failure to set the network name properly means that the network layer may not receive the correct application configurations for `has_database` and `has_external_non_aws_service`.
 
 ## 1. Configure backend
