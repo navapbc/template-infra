@@ -36,7 +36,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: template-infra
-          fetch-depth: 0
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -65,7 +64,7 @@ jobs:
 
           # TODO: add --data-file support to CLI and have as many of these
           # settings in more maintainable separate file
-          nava-platform infra install --template-uri ./template-infra \
+          nava-platform infra install --template-uri ./template-infra --version HEAD \
           --data base_project_name="${project_name}" \
           --data base_owner=platform-admins \
           --data base_code_repository_url=${{ github.repositoryUrl }} \

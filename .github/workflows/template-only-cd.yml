@@ -52,7 +52,7 @@ jobs:
 
       - name: Update infra template
         working-directory: project-repo
-        run: nava-platform infra update --template-uri ../template-infra .
+        run: nava-platform infra update --template-uri ../template-infra --version HEAD .
 
       - name: Install example app
         if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
