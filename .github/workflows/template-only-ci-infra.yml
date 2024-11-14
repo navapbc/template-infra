@@ -36,8 +36,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: template-infra
-          # TODO: Revert to checking out main once we've merged the platform-cli branch into the main branch
-          ref: lorenyu/platform-cli
 
       - uses: hashicorp/setup-terraform@v2
         with:

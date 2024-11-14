@@ -10,25 +10,6 @@ on:
 concurrency: platform-template-only-cd
 
 jobs:
-  # TODO: Get rid of this job once we've merged the platform-cli branch into the main branch
-  update-platform-cli-branch:
-    name: Update platform-cli branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout template-infra repo
-        uses: actions/checkout@v4
-        with:
-          path: template-infra
-          ref: lorenyu/platform-cli
-          # Fetch history of all branches so we can merge main into the feature branch
-          fetch-depth: 0
-      - name: Update
-        working-directory: template-infra
-        run: |
-          git config user.name nava-platform-bot
-          git config user.email platform-admins@navapbc.com
-          git merge origin/main
-          git push
   deploy:
     name: Deploy to ${{ matrix.project_repo }}
     runs-on: ubuntu-latest
@@ -45,10 +26,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: template-infra
-          # TODO: Revert to checking out main once we've merged the platform-cli branch into the main branch
-          ref: lorenyu/platform-cli
           # Fetch history because the Platform CLI needs it to do the update
           fetch-depth: 0
+
       - name: Checkout project repo
         uses: actions/checkout@v4
         with:
@@ -73,7 +53,7 @@ jobs:
 
       - name: Update infra template
         working-directory: project-repo
-        run: nava-platform infra update --template-uri ../template-infra --version lorenyu/platform-cli .
+        run: nava-platform infra update --template-uri ../template-infra .
 
       - name: Install example app
         if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
