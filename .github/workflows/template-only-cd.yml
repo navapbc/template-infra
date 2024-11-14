@@ -13,7 +13,6 @@ jobs:
   deploy:
     name: Deploy to ${{ matrix.project_repo }}
     runs-on: ubuntu-latest
-    needs: update-platform-cli-branch
     strategy:
       fail-fast: true
       matrix:
