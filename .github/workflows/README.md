@@ -2,8 +2,6 @@
 
 The CI/CD for this project uses [reusable Github Actions workflows](https://docs.github.com/en/actions/using-workflows/reusing-workflows).
 
-TODO: update the workflow links to point to blob/main before merge
-
 ## 🧪 CI
 
 ### Per app workflows
