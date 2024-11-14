@@ -43,7 +43,7 @@ jobs:
           python-version: '3.13'
 
       - name: Install nava-platform CLI
-        run: pipx install --python python3.13 git+https://github.com/navapbc/platform-cli
+        run: pipx install --python "$(which python)" git+https://github.com/navapbc/platform-cli
 
       - name: Configure git
         working-directory: project-repo
