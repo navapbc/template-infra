@@ -10,9 +10,10 @@ The structure for the infrastructure code looks like this:
 infra/                  Infrastructure code
   project-config/       Project-level configuration for account-level resources and resource tags
   accounts/             [Root module] IaC and IAM resources
-  <APP_NAME>/           Application directory: infrastructure for the main application
+  <APP_NAME>/           Application directory(-ies): infrastructure for the application <APP_NAME>
   modules/              Reusable child modules
   networks/             [Root module] Account level network config (shared across all apps, environments, and terraform workspaces)
+  test/                 Infrastructure tests
 ```
 
 Each application directory contains the following:
