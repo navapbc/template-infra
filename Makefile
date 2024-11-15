@@ -78,6 +78,7 @@ e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dock
 
 e2e-clean-report: ## Remove the local ./e2e/playwright-report and ./e2e/test-results folder and their contents
 	rm -rf ./e2e/playwright-report
+	rm -rf ./e2e/blob-report
 	rm -rf ./e2e/test-results
 
 e2e-delete-image: ## Delete the Docker image for e2e tests
@@ -98,16 +99,21 @@ e2e-test: ## Run E2E Playwright tests in a Docker container and copy the report 
 e2e-test: e2e-build
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
 	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
-	docker run --rm \
+	docker run --rm\
 		--name playwright-e2e-container \
 		-e APP_NAME=$(APP_NAME) \
 		-e BASE_URL=$(BASE_URL) \
+		-e CURRENT_SHARD=$(CURRENT_SHARD) \
+		-e TOTAL_SHARDS=$(TOTAL_SHARDS) \
+		-e CI=$(CI) \
 		-v $(PWD)/e2e/playwright-report:/e2e/playwright-report \
+		-v $(PWD)/e2e/blob-report:/e2e/blob-report \
 		playwright-e2e
 
 e2e-test-native: ## Run end-to-end tests
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
 	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
+	@echo "Running tests with CI=${CI}, APP_NAME=${APP_NAME}, BASE_URL=${BASE_URL}"
 	@cd e2e/$(APP_NAME) && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npx playwright test $(E2E_ARGS)
 
 ###########
