@@ -30,6 +30,7 @@ __check_defined = \
 	e2e-build \
 	e2e-clean-report \
 	e2e-delete-image \
+	e2e-merge-reports \
 	e2e-setup-ci \
 	e2e-setup-native \
 	e2e-show-report \
