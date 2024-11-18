@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      fail-fast: false # Allows e2e test report to be merged if only some of the shards have passed
+      fail-fast: false # Continue running tests to completion even if some shards fail
       matrix:
         shard: [1, 2, 3]
         total_shards: [3] # Github Actions doesn't have a built-in method to get the length of an array
