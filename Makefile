@@ -84,6 +84,9 @@ e2e-clean-report: ## Remove the local ./e2e/playwright-report and ./e2e/test-res
 e2e-delete-image: ## Delete the Docker image for e2e tests
 	@docker rmi -f playwright-e2e 2>/dev/null || echo "Docker image playwright-e2e does not exist, skipping."
 
+e2e-merge-reports: ## Merge Playwright blob reports from multiple shards into an HTML report
+	@cd e2e && npx playwright merge-reports --reporter html blob-report
+
 e2e-setup-ci: ## Setup end-to-end tests for CI
 	@cd e2e && npm ci
 	@cd e2e && npx playwright install --with-deps
@@ -113,7 +116,7 @@ e2e-test: e2e-build
 e2e-test-native: ## Run end-to-end tests
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
 	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
-	@echo "Running tests with CI=${CI}, APP_NAME=${APP_NAME}, BASE_URL=${BASE_URL}"
+	@echo "Running e2e tests with CI=${CI}, APP_NAME=${APP_NAME}, BASE_URL=${BASE_URL}"
 	@cd e2e/$(APP_NAME) && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npx playwright test $(E2E_ARGS)
 
 ###########
