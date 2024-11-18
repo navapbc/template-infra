@@ -20,6 +20,7 @@ jobs:
           - navapbc/platform-test
           - navapbc/platform-test-flask
           - navapbc/platform-test-nextjs
+          - navapbc/pfml-starter-kit-app
     steps:
       - name: Checkout template-infra repo
         uses: actions/checkout@v4
