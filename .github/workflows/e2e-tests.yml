@@ -12,15 +12,15 @@ on:
         type: string
 
 jobs:
-
   e2e:
     name: Run E2E tests (${{ matrix.shard }} of ${{ matrix.total_shards }})
     runs-on: ubuntu-latest
 
     strategy:
-        matrix:
-          shard: [1, 2, 3]
-          total_shards: [3] # Github Actions doesn't have a built-in method to get the length of an array
+      fail-fast: false # Continue running tests to completion even if some shards fail
+      matrix:
+        shard: [1, 2, 3]
+        total_shards: [3] # Github Actions doesn't have a built-in method to get the length of an array
 
     steps:
       - name: Checkout code
@@ -33,11 +33,11 @@ jobs:
 
       - name: Run e2e tests (Shard ${{ matrix.shard }}/${{ matrix.total_shards }})
         run: |
-          make e2e-test \
-            APP_NAME=${{ inputs.app_name }} \
-            BASE_URL=${{ inputs.service_endpoint }} \
-            CURRENT_SHARD=${{ matrix.shard }} \
-            TOTAL_SHARDS=${{ matrix.total_shards }}
+            make e2e-test \
+                APP_NAME=${{ inputs.app_name }} \
+                BASE_URL=${{ inputs.service_endpoint }} \
+                CURRENT_SHARD=${{ matrix.shard }} \
+                TOTAL_SHARDS=${{ matrix.total_shards }}
 
       - name: Verify blob report directory after tests
         run: |
@@ -66,32 +66,40 @@ jobs:
         with:
             node-version: lts/*
 
+      - name: Cache Node.js dependencies
+        id: cache-node
+        uses: actions/cache@v4
+        with:
+            path: e2e/node_modules
+            key: ${{ runner.os }}-node-${{ hashFiles('e2e/package-lock.json') }}
+
       - name: Install dependencies in ./e2e to be able to run `playwright merge-reports`
+        if: steps.cache-node.outputs.cache-hit != 'true'
         run: make e2e-setup-ci
 
       - name: Download blob reports from GitHub Actions Artifacts
         uses: actions/download-artifact@v4
         with:
-          path: all-blob-reports
+          path: ./e2e/blob-report
           pattern: blob-report-shard-*
           merge-multiple: true
 
       - name: Verify downloaded artifacts
         run: |
-          echo "Contents of all-blob-reports after download:"
-          ls -R all-blob-reports
+          echo "Contents of ./e2e/blob-report after download:"
+          ls -R ./e2e/blob-report
 
-      - name: Merge into HTML report
-        run: npx playwright merge-reports --reporter html ./all-blob-reports
+      - name: Merge reports
+        run: make e2e-merge-reports
 
       - name: Verify merged report
         run: |
-          echo "Contents of ./playwright-report after merge:"
-          ls -R ./playwright-report || echo "No report found in ./playwright-report"
+          echo "Contents of ./e2e/playwright-report after merge:"
+          ls -R ./e2e/playwright-report || echo "No report found in ./e2e/playwright-report"
 
       - name: Upload merged HTML report
         uses: actions/upload-artifact@v4
         with:
-            name: merged-html-report
-            path: ./playwright-report
+            name: e2e-test-report
+            path: ./e2e/playwright-report
             retention-days: 7
