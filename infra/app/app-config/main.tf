@@ -31,9 +31,10 @@ locals {
   enable_identity_provider = false
 
   # Whether or not the application should deploy a notification service
-  # Note: This is not yet ready for use.
-  # TODO(https://github.com/navapbc/template-infra/issues/567)
-  enable_notifications = false
+  # If enabled:
+  # 1. Creates an AWS Pinpoint application
+  # 2. Configures email notifications using AWS SES
+  enable_notifications = true
 
   environment_configs = {
     dev     = module.dev_config

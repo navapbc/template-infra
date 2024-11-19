@@ -183,6 +183,7 @@ module "service" {
       BUCKET_NAME           = local.storage_config.bucket_name
     },
     local.identity_provider_environment_variables,
+    local.notifications_environment_variables,
     local.service_config.extra_environment_variables
   )
 
