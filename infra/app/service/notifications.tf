@@ -9,7 +9,7 @@ locals {
     AWS_PINPOINT_APP_ID       = module.notifications[0].app_id,
     AWS_PINPOINT_SENDER_EMAIL = local.notifications_config.sender_email
   } : {}
-  notifications_app_name = "${local.prefix}${local.notifications_config.name}"
+  notifications_app_name = module.app_config.enable_notifications ? "${local.prefix}${local.notifications_config.name}" : ""
 }
 
 # If the app has `enable_notifications` set to true AND this is not a temporary
