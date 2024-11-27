@@ -14,7 +14,6 @@ locals {
     "elasticbeanstalk",
     "elasticloadbalancing",
     "events",
-    "evidently",
     "iam",
     "kms",
     "lambda",
