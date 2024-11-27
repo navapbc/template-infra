@@ -8,7 +8,7 @@ This project leverages [Amazon CloudWatch Evidently](https://docs.aws.amazon.com
 
 ## Creating feature flags
 
-The list of feature flags for an application is defined in the `feature_flags` property in its app-config module (in `/infra/[app_name]/app-config/feature-flags.tf`). To create a new feature flag, add a new string to that list. To remove a feature flag, remove the feature flag from the list. The set of feature flags will be updated on the next `terraform apply` of the service layer, or during the next deploy of the application.
+The list of feature flags for an application is defined in the `feature_flags` property in its app-config module (in `/infra/<APP_NAME>/app-config/feature-flags.tf`). To create a new feature flag, add a new string to that list. To remove a feature flag, remove the feature flag from the list. The set of feature flags will be updated on the next `terraform apply` of the service layer, or during the next deploy of the application.
 
 ## Querying feature flags in the application
 
