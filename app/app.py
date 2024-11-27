@@ -7,7 +7,6 @@ from flask import Flask, render_template
 
 import storage
 from db import get_db_connection
-from feature_flags import is_feature_enabled
 
 logging.basicConfig()
 logger = logging.getLogger()
@@ -48,14 +47,6 @@ def migrations():
     else:
         last_migration_date = cur.fetchone()[0]
         return f"Last migration on {last_migration_date}"
-
-
-@app.route("/feature-flags")
-def feature_flags():
-    foo_status = "enabled" if is_feature_enabled("foo") else "disabled"
-    bar_status = "enabled" if is_feature_enabled("bar") else "disabled"
-
-    return f"<p>Feature foo is {foo_status}</p><p>Feature bar is {bar_status}</p>"
 
 
 @app.route("/document-upload")
