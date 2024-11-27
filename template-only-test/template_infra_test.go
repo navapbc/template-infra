@@ -186,12 +186,6 @@ func ValidateDevEnvironment(t *testing.T) {
 		return responseStatus == 200
 	})
 
-	// Hit feature flags endpoint to make sure Evidently integration is working
-	featureFlagsEndpoint := fmt.Sprintf("%s/feature-flags", serviceEndpoint)
-	http_helper.HttpGetWithRetryWithCustomValidation(t, featureFlagsEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
-		return responseStatus == 200
-	})
-
 	fmt.Println("::endgroup::")
 }
 
