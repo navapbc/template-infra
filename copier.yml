@@ -99,3 +99,11 @@ _envops:
 _skip_if_exists:
   - "/{{ app_name }}/"
   - "/{{ app_name }}/Makefile"
+
+_exclude:
+  - /.git
+  - /copier.yml
+  - /CODEOWNERS
+  - /CONTRIBUTING.md
+  - /LICENSE.md
+  - /README.md
