@@ -126,7 +126,6 @@ e2e-test: e2e-build
 
 e2e-test-native: ## Run end-to-end tests natively
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
-	@:$(call check_defined, BASE_URL, You must pass in a BASE_URL)
 	@echo "Running e2e tests with CI=${CI}, APP_NAME=${APP_NAME}, BASE_URL=${BASE_URL}"
 	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm run e2e-test -- $(E2E_ARGS)
 
