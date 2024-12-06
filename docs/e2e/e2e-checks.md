@@ -4,7 +4,7 @@
 
 This repository uses [Playwright](https://playwright.dev/) to perform end-to-end (E2E) tests. The tests can be run locally (natively or within Docker), but they also run on [Pull Request preview environments](../infra/pull-request-environments.md). This ensures that any new code changes are validated through E2E tests before being merged.
 
-By default, tests are sharded across 3 concurrent runs to reduce total runtime. As the test suite grows, consider increasing the shard count to further optimize execution time. This is set in the [workflow file](../../.github/workflows/e2e-tests.yml#L22).
+By default in CI, tests are sharded across 3 concurrent runs to reduce total runtime. As the test suite grows, consider increasing the shard count to further optimize execution time. This is set in the [workflow file](../../.github/workflows/e2e-tests.yml#L22).
 
 ## Folder Structure
 In order to support e2e for multiple apps, the folder structure will include a base playwright config (`./e2e/playwright.config.js`), and app-specific derived playwright config that override the base config. See the example folder structure below:
@@ -22,10 +22,10 @@ In order to support e2e for multiple apps, the folder structure will include a b
 ```
 
 Some highlights:
-- By default, the base config is defined to run on a minimal browser-set (desktop and mobile chrome). Browsers can be added in the app-specific playwright config.
-- Snapshots will be output locally (in the `./e2e` folder or the container) - or in the artifacts of the CI job
-- HTML reports are output to the `playwright-report` folder
-- Accessibility testing can be performed using the `@axe-core/playwright` package (https://playwright.dev/docs/accessibility-testing)
+>- By default, the base config is defined to run on a minimal browser-set (desktop and mobile chrome). Browsers can be added in the app-specific playwright config.
+>- Snapshots will be output locally (in the `./e2e` folder or the container) - or in the artifacts of the CI job
+>- HTML reports are output to the `playwright-report` folder
+>- Accessibility testing can be performed using the `@axe-core/playwright` package (https://playwright.dev/docs/accessibility-testing)
 
 ## Run tests locally
 
@@ -38,7 +38,7 @@ Then, run end-to-end tests using Docker with:
 make e2e-test APP_NAME=app BASE_URL=http://host.docker.internal:3000
 ```
 
-*Note that `BASE_URL` cannot be `localhost`
+>*Note that `BASE_URL` cannot be `localhost`
 
 
 ### Run tests natively
@@ -53,10 +53,20 @@ make e2e-setup-native
 
 Then, run the tests with your app name and base url:
 ```bash
-make e2e-test-native APP_NAME=app BASE_URL=http://localhost:3000
+make e2e-test-native APP_NAME=app
+```
+>* `BASE_URL` is optional for both `e2e-test-native` and `e2e-test-native-ui` targets. It will by default use the [app-specific](../../e2e/app/playwright.config.js) `baseURL`
+
+### Run tests in UI mode
+
+When developing or debugging tests, it’s often helpful to see them running in real-time. You can achieve this by running the e2e tests in UI mode:
+
+```
+make e2e-test-native-ui APP_NAME=app
 ```
 
-#### Run tests in parallel 
+
+#### Run tests in parallel
 
 The following commands split test execution into 3 separate shards, with results consolidated into a merged report located in `./e2e/blob-report`. This setup emulates how the sharded tests run in CI.
 ```
@@ -86,7 +96,7 @@ To clean the report folder you can run:
 make e2e-clean-report
 ```
 
-*On CI, the report shows up in the Github Actions artifacts tab
+>*On CI, the report shows up in the Github Actions artifacts tab
 
 
 ### PR preview environments
