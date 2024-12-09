@@ -9,12 +9,12 @@
       "e2e-test:ui": "./run-e2e-test --ui"
     },
     "devDependencies": {
-      "@playwright/test": "^1.45.1",
-      "@types/node": "^20.14.10"
+      "@playwright/test": "^1.49.0",
+      "@types/node": "^22.10.1"
     },
     "dependencies": {
-      "@axe-core/playwright": "^4.9.1",
-      "dotenv": "^16.4.5",
-      "playwright": "^1.48.1"
+      "@axe-core/playwright": "^4.10.1",
+      "dotenv": "^16.4.7",
+      "playwright": "^1.49.0"
     }
   }
