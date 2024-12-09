@@ -18,6 +18,7 @@ locals {
     "kms",
     "lambda",
     "logs",
+    "mobiletargeting", # this is pinpoint
     "pipes",
     "rds",
     "route53",
@@ -27,6 +28,7 @@ locals {
     "schemas",
     "secretsmanager",
     "servicediscovery",
+    "ses",
     "sns",
     "ssm",
     "states",
