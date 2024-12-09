@@ -1,21 +1,44 @@
-name: CI Infra Service Checks
+name: CI Infra Service Checks - {{ app_name }}
 
 on:
-  # !! Uncomment to trigger automated infra tests once dev environment is set up
+  {% if app_has_dev_env_setup %}
+  push:
+    branches:
+      - main
+    paths:
+      - infra/{{ app_name }}/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-{{ app_name }}-infra-service.yml
+  pull_request:
+    paths:
+      - infra/{{ app_name }}/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-{{ app_name }}-infra-service.yml
+  {% else %}
+  # !! Once you've set up the dev environment and are ready to enable automated
+  # infra tests, run:
+  #
+  # nava-platform infra update --data app_has_dev_env_setup=true .
+  #
+  # to enable these lines. They are here as comments for context.
+  #
   # push:
   #   branches:
   #     - main
   #   paths:
-  #     - infra/*/service/**
+  #     - infra/{{ app_name }}/service/**
   #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
   # pull_request:
   #   paths:
-  #     - infra/*/service/**
+  #     - infra/{{ app_name }}/service/**
   #     - infra/modules/**
   #     - infra/test/**
   #     - .github/workflows/ci-infra-service.yml
+  {% endif %}
   workflow_dispatch:
 
 jobs:
@@ -42,9 +65,9 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/configure-aws-credentials
         with:
-          app_name: app
+          app_name: {{ app_name }}
           # Run infra CI on dev environment
           environment: dev
 
       - name: Run Terratest
-        run: make infra-test-service
+        run: make infra-test-service APP_NAME={{ app_name }}
