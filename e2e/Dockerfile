@@ -1,5 +1,5 @@
 # Use the official Playwright image as a base
-FROM mcr.microsoft.com/playwright:v1.48.1-noble
+FROM mcr.microsoft.com/playwright:v1.49.0-noble
 
 # Install make and any other necessary dependencies
 RUN apt-get update
