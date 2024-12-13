@@ -1,4 +1,5 @@
-FROM python:3-alpine as release
+# Run `make update-docker-digest` to update the image
+FROM python:3-alpine@sha256:657dbdb20479a6523b46c06114c8fec7db448232f956a429d3cc0606d30c1b59 as release
 
 RUN adduser --system --disabled-password --no-create-home app
 
@@ -7,7 +8,7 @@ WORKDIR /app
 RUN apk update && \
   apk --no-cache add \
   aws-cli~=2 \
-  postgresql14-client~=14
+  postgresql17-client~=17
 
 COPY requirements.txt ./
 
