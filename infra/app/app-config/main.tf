@@ -31,6 +31,7 @@ locals {
   enable_identity_provider = false
 
   # Whether or not the application should deploy a notification service
+  # To use this in a particular environment, domain_name must also be set.
   # If enabled:
   # 1. Creates an AWS Pinpoint application
   # 2. Configures email notifications using AWS SES
