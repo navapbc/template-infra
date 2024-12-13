@@ -18,7 +18,8 @@ module "notifications_email_domain" {
   count  = module.app_config.enable_notifications && !local.is_temporary ? 1 : 0
   source = "../../modules/notifications-email-domain/resources"
 
-  domain_name = local.service_config.domain_name
+  domain_name    = local.service_config.domain_name
+  hosted_zone_id = local.service_config.domain_name != null ? data.aws_route53_zone.zone[0].zone_id : null
 }
 
 # If the app has `enable_notifications` set to true AND this *is* a temporary
