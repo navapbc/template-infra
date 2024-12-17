@@ -30,8 +30,14 @@ locals {
   # 3. Adds environment variables for the app client to the service
   enable_identity_provider = false
 
-  # Whether or not the application should deploy a notification service
+  # Whether or not the application should deploy a notification service.
+  #
   # To use this in a particular environment, domain_name must also be set.
+  # The domain name in set in infra/<APP_NAME>/app-config/<ENVIRONMENT>.tf
+  # The domain name the same domain as, of a subdomain of, the hosted zone in that environment.
+  # The hosted zone is set in infra/project-config/networks.tf
+  # If either (domain name or hosteed zone) is not set in an environment, notifications will not actually be enabled.
+  #
   # If enabled:
   # 1. Creates an AWS Pinpoint application
   # 2. Configures email notifications using AWS SES
