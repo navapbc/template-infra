@@ -5,7 +5,7 @@
 ############################################################################################
 
 locals {
-  dash_domain = var.domain_identity_arn != null ? replace(var.domain_name, ".", "-") : null
+  dash_domain = var.domain_name != null ? replace(var.domain_name, ".", "-") : null
 }
 
 resource "aws_cognito_user_pool" "main" {
