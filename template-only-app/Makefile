@@ -7,3 +7,6 @@ release-build:
 		--platform=linux/amd64 \
 		$(OPTS) \
 		.
+
+update-docker-digest:
+	../template-only-bin/update-docker-digest Dockerfile
