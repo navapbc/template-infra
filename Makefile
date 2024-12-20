@@ -245,7 +245,8 @@ infra-format: ## Format infra code
 	terraform fmt -recursive infra
 
 infra-test-service: ## Run service layer infra test suite
-	cd infra/test && go test -run TestService -v -timeout 30m
+	@:$(call check_defined, APP_NAME, "the name of subdirectory of /infra that holds the application's infrastructure code")
+	cd infra/test && APP_NAME=$(APP_NAME) go test -run TestService -v -timeout 30m
 
 #############
 ## Linting ##
@@ -262,6 +263,10 @@ lint-markdown: ## Lint Markdown docs for broken links
 # does not conflict with other images during local development
 IMAGE_NAME := $(PROJECT_ROOT)-$(APP_NAME)
 
+# Generate an informational tag so we can see where every image comes from.
+DATE := $(shell date -u '+%Y%m%d.%H%M%S')
+INFO_TAG := $(DATE).$(USER)
+
 GIT_REPO_AVAILABLE := $(shell git rev-parse --is-inside-work-tree 2>/dev/null)
 
 # Generate a unique tag based solely on the git hash.
@@ -271,10 +276,6 @@ IMAGE_TAG := $(shell git rev-parse HEAD)
 else
 IMAGE_TAG := "unknown-dev.$(DATE)"
 endif
-
-# Generate an informational tag so we can see where every image comes from.
-DATE := $(shell date -u '+%Y%m%d.%H%M%S')
-INFO_TAG := $(DATE).$(USER)
 
 release-build: ## Build release for $APP_NAME and tag it with current git hash
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
