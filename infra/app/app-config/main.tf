@@ -34,7 +34,7 @@ locals {
   #
   # To use this in a particular environment, domain_name must also be set.
   # The domain name is set in infra/<APP_NAME>/app-config/<ENVIRONMENT>.tf
-  # The domain name the same domain as, of a subdomain of, the hosted zone in that environment.
+  # The domain name is the same domain as, or a subdomain of, the hosted zone in that environment.
   # The hosted zone is set in infra/project-config/networks.tf
   # If either (domain name or hosteed zone) is not set in an environment, notifications will not actually be enabled.
   #
