@@ -1,6 +1,6 @@
-variable "domain_name" {
-  description = "The domain name to configure SES"
+variable "email_identity_arn" {
   type        = string
+  description = "The arn of the SESv2 email identity to use to send emails"
   default     = null
 }
 
