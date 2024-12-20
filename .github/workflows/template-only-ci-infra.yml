@@ -37,10 +37,8 @@ jobs:
         with:
           path: template-infra
 
-      - uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.8.3
-          terraform_wrapper: false
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
 
       - uses: actions/setup-go@v5
         with:
@@ -49,7 +47,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: "3.13"
 
       - name: Install nava-platform CLI
         run: pipx install --python "$(which python)" git+https://github.com/navapbc/platform-cli

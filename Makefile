@@ -123,6 +123,7 @@ e2e-test: e2e-build
 		-v $(PWD)/e2e/blob-report:/e2e/blob-report \
 		$(E2E_IMAGE_NAME) \
 		$(E2E_ARGS)
+	@echo "Run 'make e2e-show-report' to view the test report"
 
 e2e-test-native: ## Run end-to-end tests natively
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
