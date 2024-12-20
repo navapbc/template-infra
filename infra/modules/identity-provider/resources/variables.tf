@@ -4,6 +4,12 @@ variable "domain_name" {
   default     = null
 }
 
+variable "domain_identity_arn" {
+  description = "The ARN of the domain identity to in use for SES"
+  type        = string
+  default     = null
+}
+
 variable "is_temporary" {
   description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
   type        = bool

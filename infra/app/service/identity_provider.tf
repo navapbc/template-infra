@@ -23,15 +23,10 @@ module "identity_provider" {
   verification_email_message       = local.identity_provider_config.verification_email.verification_email_message
   verification_email_subject       = local.identity_provider_config.verification_email.verification_email_subject
   domain_name                      = local.network_config.domain_config.hosted_zone
+  domain_identity_arn              = local.notifications_config == null ? null : module.notifications_email_domain.domain_identity_arn
   sender_email                     = local.notifications_config == null ? null : local.notifications_config.sender_email
   sender_display_name              = local.notifications_config == null ? null : local.notifications_config.sender_display_name
   reply_to_email                   = local.notifications_config == null ? null : local.notifications_config.reply_to_email
-
-  # This module both explicitly requires the notifications module,
-  # because its `aws_sesv2_email_identity` resource to be imported.
-  depends_on = [
-    module.notifications,
-  ]
 }
 
 # If the app has `enable_identity_provider` set to true AND this *is* a temporary
