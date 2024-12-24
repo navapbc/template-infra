@@ -38,7 +38,9 @@ jobs:
           path: template-infra
 
       - name: Set up Terraform
-        uses: ./.github/actions/setup-terraform
+        uses: ./template-infra/.github/actions/setup-terraform
+        with:
+          version-file: ./template-infra/.terraform-version
 
       - uses: actions/setup-go@v5
         with:
