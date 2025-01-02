@@ -19,7 +19,7 @@ We aim to achieve these requirements without adding complexity to the other laye
 
 ### Network configuration
 
-Define the configuration for networks in a new property `network_configs` in the [project-config module](/infra/project-config/main.tf). `network_configs` is a map from the network name to the network configuration. The network name is a name the project team chooses to serve as a human-readable identifier to reference the network. To keep network configuration DRY and reuse common configurations between networks, create a sub-module `network-config` under the project-config module, analogous to the [env-config module](/infra/app/app-config/env-config/) under the [app-config module](/infra/app/app-config/). The `project-config` module might look something like this:
+Define the configuration for networks in a new property `network_configs` in the project-config module (`infra/project-config/main.tf`). `network_configs` is a map from the network name to the network configuration. The network name is a name the project team chooses to serve as a human-readable identifier to reference the network. To keep network configuration DRY and reuse common configurations between networks, create a sub-module `network-config` under the project-config module, analogous to the env-config module (`infra/<APP_NAME>/app-config/env-config/`) under the app-config module (`/infra/<APP_NAME>/app-config/`). The `project-config` module might look something like this:
 
 ```terraform
 # project-config/main.tf
@@ -59,7 +59,7 @@ Add a "network_name" name tag to the VPC with the name of the network. The VPC t
 
 ## Application-specific network configuration
 
-In order to determine which VPC to use for each application environment, add a `network_name` property to the [environment config](/infra/app/app-config/env-config/). The network name will be used in the database and service layers by the `aws_vpc` data source:
+In order to determine which VPC to use for each application environment, add a `network_name` property to the environment config (`infra/<APP_NAME>/app-config/env-config/`). The network name will be used in the database and service layers by the `aws_vpc` data source:
 
 ```terraform
 data "aws_vpc" "network" {

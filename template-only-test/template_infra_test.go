@@ -2,21 +2,19 @@ package test
 
 import (
 	"fmt"
-	"strings"
+	"os"
 	"testing"
 	"time"
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
-	"github.com/gruntwork-io/terratest/modules/random"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
 )
 
-// Note: projectName can't be too long since S3 bucket names have a 63 character max length
-var uniqueId = strings.ToLower(random.UniqueId())
-var projectName = fmt.Sprintf("plt-tst-act-%s", uniqueId)
+var projectName = os.Getenv("PROJECT_NAME")
+var imageTag = os.Getenv("IMAGE_TAG")
 
 func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
@@ -57,7 +55,7 @@ func SetUpProject(t *testing.T, projectName string) {
 	fmt.Println("::group::Configuring project")
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "set-up-project", fmt.Sprintf("PROJECT_NAME=%s", projectName)},
+		Args:       []string{"-f", "template-only.mak", "set-up-project"},
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
@@ -113,13 +111,6 @@ func SetUpDevEnvironment(t *testing.T) {
 		WorkingDir: "../",
 	})
 
-	// Get current commit hash, which should be the one that was deployed as part of validating the build-repository
-	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
-		Command:    "git",
-		Args:       []string{"rev-parse", "HEAD"},
-		WorkingDir: "./",
-	})
-
 	shell.RunCommand(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"infra-update-app-service", "APP_NAME=app", "ENVIRONMENT=dev"},
@@ -156,14 +147,14 @@ func ValidateBuildRepository(t *testing.T) {
 
 	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"release-build", "APP_NAME=app"},
+		Args:       []string{"release-build", "APP_NAME=app", fmt.Sprintf("IMAGE_TAG=%s", imageTag)},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "Could not build release")
 
 	err = shell.RunCommandE(t, shell.Command{
 		Command:    "make",
-		Args:       []string{"release-publish", "APP_NAME=app"},
+		Args:       []string{"release-publish", "APP_NAME=app", fmt.Sprintf("IMAGE_TAG=%s", imageTag)},
 		WorkingDir: "../",
 	})
 	assert.NoError(t, err, "Could not publish release")
@@ -189,6 +180,8 @@ func ValidateDevEnvironment(t *testing.T) {
 		TerraformDir: "../infra/app/service/",
 	})
 	serviceEndpoint := terraform.Output(t, terraformOptions, "service_endpoint")
+	// Not checking the /health endpoint as we don't deploy the database for
+	// this testing, so that endpoint will fail as currently coded
 	http_helper.HttpGetWithRetryWithCustomValidation(t, serviceEndpoint, nil, 10, 3*time.Second, func(responseStatus int, responseBody string) bool {
 		return responseStatus == 200
 	})
@@ -234,12 +227,4 @@ func TeardownDevEnvironment(t *testing.T) {
 		WorkingDir: "../",
 	})
 	fmt.Println("::endgroup::")
-}
-
-func GetCurrentCommitHash(t *testing.T) string {
-	return shell.RunCommandAndGetOutput(t, shell.Command{
-		Command:    "git",
-		Args:       []string{"rev-parse", "HEAD"},
-		WorkingDir: "./",
-	})
 }

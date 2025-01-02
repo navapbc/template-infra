@@ -2,8 +2,6 @@
 # and is not intended to be used by projects that are using the template
 
 PROJECT_NAME ?= platform-template-infra
-PROJECT_OWNER ?= platform-admins
-PROJECT_REGION ?= us-east-1
 
 .PHONY : \
   clean \
@@ -18,7 +16,7 @@ test:
 	cd template-only-test && PROJECT_NAME=$(PROJECT_NAME) go test -v -timeout 30m
 
 set-up-project:
-	./template-only-bin/set-up-project $(PROJECT_NAME) $(PROJECT_OWNER) $(PROJECT_REGION)
+	./template-only-bin/set-up-project $(PROJECT_NAME)
 
 clean:
 	rm -fr infra/accounts/account/.terraform infra/app/envs/dev/.terraform infra/app/envs/staging/.terraform infra/app/envs/prod/.terraform infra/app/build-repository/.terraform
