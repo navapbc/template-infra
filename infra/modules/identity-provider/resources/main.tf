@@ -4,6 +4,10 @@
 ## - Configures MFA
 ############################################################################################
 
+locals {
+  dash_domain = var.domain_name != null ? replace(var.domain_name, ".", "-") : null
+}
+
 resource "aws_cognito_user_pool" "main" {
   name = var.name
 
@@ -29,11 +33,12 @@ resource "aws_cognito_user_pool" "main" {
     # Use this SES email to send cognito emails. If we're not using SES for emails then use null.
     # Optionally configures the FROM address and the REPLY-TO address.
     # Optionally configures using the Cognito default email or using SES.
-    source_arn            = var.email_identity_arn
-    email_sending_account = var.email_identity_arn != null ? "DEVELOPER" : "COGNITO_DEFAULT"
+    source_arn            = var.domain_identity_arn
+    configuration_set     = local.dash_domain
+    email_sending_account = var.domain_identity_arn != null ? "DEVELOPER" : "COGNITO_DEFAULT"
     # Customize the name that users see in the "From" section of their inbox, so that it's clearer who the email is from.
     # This name also needs to be updated manually in the Cognito console for each environment's Advanced Security emails.
-    from_email_address     = var.email_identity_arn != null ? (var.sender_display_name != null ? "${var.sender_display_name} <${var.sender_email}>" : var.sender_email) : null
+    from_email_address     = var.domain_identity_arn != null ? (var.sender_display_name != null ? "${var.sender_display_name} <${var.sender_email}>" : var.sender_email) : null
     reply_to_email_address = var.reply_to_email
   }
 
