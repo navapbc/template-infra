@@ -47,7 +47,7 @@
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
-source bin/util.bash
+source bin/util.sh
 
 # Return the names of Terraform backend configuration files in (without the ".s3.tfbackend" suffix)
 # for the root module given by "infra/${root_module_subdir}".

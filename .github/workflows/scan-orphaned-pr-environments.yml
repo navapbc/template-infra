@@ -18,7 +18,7 @@ jobs:
       - name: Get app names
         id: get-app-names
         run: |
-          source bin/util.bash
+          source bin/util.sh
           app_names="$(get_app_names)"
           # turn app_names into a json list using jq
           app_names="$(echo "${app_names}" | jq -R -s -c 'split("\n")[:-1]')"
@@ -52,7 +52,7 @@ jobs:
 
       - name: List PR workspaces
         run: |
-          ./bin/orphaned-prs ${{ matrix.app_name }}
+          ./bin/orphaned-pr-environments ${{ matrix.app_name }}
         env:
           GH_TOKEN: ${{ github.token }}
           TF_IN_AUTOMATION: "true"
