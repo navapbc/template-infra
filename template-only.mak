@@ -3,11 +3,29 @@
 
 PROJECT_NAME ?= platform-template-infra
 
+MODULES := $(notdir $(wildcard templates/base/infra/modules/*))
+
 .PHONY : \
   clean \
 	test \
 	setup-app-backends \
 	destroy-account
+
+infra-lint-scripts: ## Lint shell scripts
+	shellcheck templates/*/bin/**
+
+infra-lint-terraform: ## Lint Terraform code
+	terraform fmt -recursive -check templates/*/infra
+
+# The prerequisite for this rule is obtained by
+# prefixing each module with the string "infra-validate-module-"
+infra-validate-modules: ## Run terraform validate on reusable child modules
+infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
+
+infra-validate-module-%:
+	@echo "Validate library module: $*"
+	terraform -chdir=templates/base/infra/modules/$* init -backend=false
+	terraform -chdir=templates/base/infra/modules/$* validate
 
 lint-template-scripts: ## Lint template only scripts
 	shellcheck template-only-bin/**
