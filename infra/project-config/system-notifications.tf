@@ -1,5 +1,5 @@
 locals {
-  
+
   # Configuration for system notifications
   # used by CI/CD workflows to send notifications for deployments,
   # failed workflows, etc.
