@@ -16,4 +16,4 @@ jobs:
       - uses: gaurav-nelson/github-action-markdown-link-check@1.0.15
         with:
           use-quiet-mode: "yes" # errors only.
-          config-file: ".github/workflows/markdownlint-config.json"
+          config-file: "templates/base/.github/workflows/markdownlint-config.json"
