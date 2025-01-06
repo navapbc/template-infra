@@ -29,6 +29,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
       - name: Get channel configuration
         id: get-channel-type
         run: |
@@ -51,6 +54,10 @@ jobs:
             slack_token_secret_name="$(echo "${channel_config}" | jq -r ".slack_token_secret_name")"
             echo "Slack token secret name: ${slack_token_secret_name}"
             echo "SLACK_TOKEN_SECRET_NAME=${slack_token_secret_name}" >> "$GITHUB_ENV"
+
+            # Convert Markdown links in message [text](url) to Slack format <url|text>
+            echo "Convert message from Markdown to Slack format"
+            echo "SLACK_MESSAGE=$(echo "${{ inputs.message }}" | sed -E 's/\[(.+)\]\((.+)\)/<\2|\1>/g')" >> "$GITHUB_ENV"
           fi
         shell: bash
 
@@ -62,4 +69,4 @@ jobs:
           token: ${{ secrets[env.SLACK_TOKEN_SECRET_NAME] }}
           payload: |
             channel: ${{ secrets[env.CHANNEL_ID_SECRET_NAME] }}
-            text: ${{ inputs.message }}
+            text: ${{ env.SLACK_MESSAGE }}

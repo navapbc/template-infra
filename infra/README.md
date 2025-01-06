@@ -75,7 +75,8 @@ To set up this project for the first time (i.e., it has never been deployed to t
 2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 3. [Set up AWS account](/docs/infra/set-up-aws-account.md)
 4. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
-5. For each application:
+5. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
+6. For each application:
     1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     2. [Set up application database](/docs/infra/set-up-database.md)
     3. [Set up application environment](/docs/infra/set-up-app-env.md)
