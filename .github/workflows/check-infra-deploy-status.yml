@@ -69,3 +69,12 @@ jobs:
           echo "::endgroup::"
         env:
           TF_IN_AUTOMATION: "true"
+  notify:
+    name: Notify
+    needs: check
+    if: failure()
+    uses: ./.github/workflows/send-system-notification.yml
+    with:
+      channel: "workflow-failures"
+      message: "🔍 [Infrastructure state differs from configuration](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+    secrets: inherit
