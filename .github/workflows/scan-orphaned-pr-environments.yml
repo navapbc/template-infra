@@ -31,6 +31,7 @@ jobs:
     needs: get-app-names
 
     strategy:
+      fail-fast: false
       matrix:
         app_name: ${{ fromJson(needs.get-app-names.outputs.app_names) }}
 
