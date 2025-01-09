@@ -6,7 +6,7 @@ on:
         required: true
         type: string
   {% if app_has_dev_env_setup %}
-  pull_request:
+  pull_request_target:
     types: [closed]
   {% else %}
   # !! Once you've set up the dev environment and are ready to enable PR
