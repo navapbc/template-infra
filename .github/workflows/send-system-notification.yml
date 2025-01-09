@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       channel:
-        description: "Name of channel to use. Must be defined in /infra/project-config/system-notifications.tf"
+        description: "Name of channel to use. Must be defined in /infra/project-config/system_notifications.tf"
         required: true
         type: string
       message:

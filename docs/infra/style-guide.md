@@ -7,6 +7,7 @@
   - [Terraform code style](#terraform-code-style)
     - [Exceptions and additions to Hashicorp's Terraform style guide](#exceptions-and-additions-to-hashicorps-terraform-style-guide)
       - [Modules](#modules)
+      - [File Names](#file-names)
       - [Variables](#variables)
       - [.gitignore](#gitignore)
       - [Integration and unit testing](#integration-and-unit-testing)
@@ -27,6 +28,11 @@ Here are some exceptions (and additions) to Hashicorp's Terraform style guide.
 - Organize resources according to the infrastructure layers described in [module architecture](/docs/infra/module-architecture.md).
 - [Use shared configuration](/docs/infra/module-dependencies.md) instead of the [tfe_outputs data source](https://registry.terraform.io/providers/hashicorp/tfe/latest/docs/data-sources/outputs) to share state between two state files.
 - Use underscores instead of dashes in file names and module names.
+
+#### File Names
+
+- Separate words in filenames with underscores (\_) instead of dashes (-), e.g., main.tf, output_variables.tf.
+- Use lowercase letters to avoid case sensitivity issues.
 
 #### Variables
 
