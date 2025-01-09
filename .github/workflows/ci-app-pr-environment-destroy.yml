@@ -6,7 +6,7 @@ on:
         required: true
         type: string
   # !! Uncomment the following lines once you've set up the dev environment and are ready to enable PR environments
-  # pull_request:
+  # pull_request_target:
   #   types: [closed]
 jobs:
   destroy:
