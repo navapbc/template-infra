@@ -45,9 +45,9 @@ TF_CLI_ARGS_apply='-var=image_tag=abcdef1' make infra-update-app-service APP_NAM
 An alternative to using the Makefile is to directly use the terraform wrapper scripts that the Makefile uses:
 
 ```bash
-project-root$ ./bin/terraform-init <APP_NAME>/service dev
-project-root$ ./bin/terraform-apply <APP_NAME>/service dev
-project-root$ ./bin/terraform-init-and-apply <APP_NAME>/service dev  # calls init and apply in the same script
+project-root$ ./bin/terraform-init infra/<APP_NAME>/service dev
+project-root$ ./bin/terraform-apply infra/<APP_NAME>/service dev
+project-root$ ./bin/terraform-init-and-apply infra/<APP_NAME>/service dev  # calls init and apply in the same script
 ```
 
 Look in the script files for more details on usage.
