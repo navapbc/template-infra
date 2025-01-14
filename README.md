@@ -22,13 +22,12 @@ This template assumes that you have an application to deploy. See [application r
 
 ## Installation
 
-To get started using the infrastructure template on your project, clone this
-repository to a local directory next to your project, [install the nava-platform
+To get started, [install the nava-platform
 tool](https://github.com/navapbc/platform-cli), and then run the following
 command in your project's root directory:
 
 ```sh
-nava-platform infra install --template-uri ../template-infra .
+nava-platform infra install .
 ```
 
 Now you're ready to set up the various pieces of your infrastructure.
@@ -46,9 +45,8 @@ After downloading and installing the template into your project:
 ## Updates
 
 With the [nava-platform tool
-installed](https://github.com/navapbc/platform-cli), pull updates to your local
-`template-infra` repository, then run the following in your project's root
-directory:
+installed](https://github.com/navapbc/platform-cli), run the following in your
+project's root directory:
 
 ```sh
 nava-platform infra update .
