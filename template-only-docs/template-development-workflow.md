@@ -6,7 +6,7 @@ This is the workflow for developers making changes to the infrastructure templat
 
 For most infrastructure changes, you will need an environment to work with. Since template-infra is a template and not a live project, it doesn't have any long-lived environments. Thus, you should develop and test your infrastructure changes using the `dev` environment on one of the following test repos:
 
-- [platform-test](https://github.com/navapbc/platform-test) – Test project that uses [template-infra](https://github.com/navapbc/template-infra) and the [example app](https://github.com/navapbc/template-infra/tree/main/app) that comes with the template. This is the default project we use for development and testing infrastructure changes.
+- [platform-test](https://github.com/navapbc/platform-test) – Test project that uses [template-infra](https://github.com/navapbc/template-infra) and the [example app](https://github.com/navapbc/template-infra/tree/main/template-only-app) that comes with the template. This is the default project we use for development and testing infrastructure changes.
 - [platform-test-flask](https://github.com/navapbc/platform-test-flask) - Test project that uses [template-infra](https://github.com/navapbc/template-infra) and [template-application-flask](https://github.com/navapbc/template-application-flask)
 - [platform-test-nextjs](https://github.com/navapbc/platform-test-nextjs) - Test project that uses [template-infra](https://github.com/navapbc/template-infra) and [template-application-nextjs](https://github.com/navapbc/template-application-nextjs)
 

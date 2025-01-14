@@ -6,12 +6,12 @@ on:
       - main
   pull_request:
     paths:
-      - app/**
+      - template-only-app/**
       - .github/workflows/template-only-ci-app.yml
 
 defaults:
   run:
-    working-directory: ./app
+    working-directory: ./template-only-app
 
 jobs:
   # Run the build to make sure it doesn't fail

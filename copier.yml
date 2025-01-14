@@ -1,0 +1,109 @@
+template:
+  type: str
+  choices:
+    - base
+    - app
+
+#
+# Base vars
+#
+base_project_name:
+  type: str
+  help: The slugified name of the project (lower case, dashes, and underscores)
+  validator: >-
+    {% if not (base_project_name | regex_search('^[a-z0-9\-_]+$')) %}
+    The project name can not be empty and should only contain lower case letters, digits, dashes, and underscores.
+    {% endif %}
+  when: &base
+    "{{ template == 'base' }}"
+
+base_owner:
+  type: str
+  help: Project owner slug (used for tagging infra resources)
+  when: *base
+
+base_code_repository_url:
+  type: str
+  help: URL of project source code repository
+  default: "https://github.com/{{ base_owner }}/{{ base_project_name }}"
+  when: *base
+
+base_default_region:
+  type: str
+  help: Default AWS region for the project
+  when: *base
+  default: us-east-2
+  choices:
+    - us-east-1
+    - us-east-2
+    - us-west-1
+    - us-west-2
+    - af-south-1
+    - ap-east-1
+    - ap-south-2
+    - ap-southeast-3
+    - ap-southeast-5
+    - ap-southeast-4
+    - ap-south-1
+    - ap-northeast-3
+    - ap-northeast-2
+    - ap-southeast-1
+    - ap-southeast-2
+    - ap-northeast-1
+    - ca-central-1
+    - ca-west-1
+    - cn-north-1
+    - cn-northwest-1
+    - eu-central-1
+    - eu-west-1
+    - eu-west-2
+    - eu-south-1
+    - eu-west-3
+    - eu-south-2
+    - eu-north-1
+    - eu-central-2
+    - il-central-1
+    - me-south-1
+    - me-central-1
+    - sa-east-1
+
+#
+# App vars
+#
+app_name:
+  type: str
+  help: The name of the app
+  validator: >-
+    {% if not (app_name | regex_search('^[a-z0-9\-_]+$')) %}
+    The app name can not be empty and should only contain lower case letters, digits, dashes, and underscores.
+    {% endif %}
+  when: &app
+    "{{ template == 'app' }}"
+
+app_local_port:
+  type: int
+  help: "The port to be used in local development of '{{ app_name }}'"
+  default: 3000
+  when: *app
+
+app_has_dev_env_setup:
+  type: bool
+  help: "Does '{{ app_name }}' have a dev environment deployed? (to enable various CI/CD)"
+  default: false
+  when: *app
+
+_envops:
+  trim_blocks: true
+  lstrip_blocks: true
+
+_skip_if_exists:
+  - "/{{ app_name }}/"
+  - "/{{ app_name }}/Makefile"
+
+_exclude:
+  - /.git
+  - /copier.yml
+  - /CODEOWNERS
+  - /CONTRIBUTING.md
+  - /LICENSE.md
+  - /README.md

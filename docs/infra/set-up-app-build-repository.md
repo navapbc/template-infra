@@ -7,7 +7,7 @@ The application build repository setup process will create infrastructure resour
 Before setting up the application's build repository you'll need to have:
 
 1. [Set up the AWS account](./set-up-aws-account.md)
-2. [Configure the app](/infra/app/app-config/main.tf)
+2. Configure the app in `infra/<APP_NAME>/app-config/main.tf`.
 
 ## 1. Configure backend
 
@@ -17,7 +17,7 @@ To create the `tfbackend` file for the build repository using the backend config
 make infra-configure-app-build-repository APP_NAME=app
 ```
 
-Pass in the name of the app folder within `infra`. By default this is `app`.
+Pass in the name of the app folder within `infra`.
 
 ## 2. Create build repository resources
 

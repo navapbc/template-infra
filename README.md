@@ -22,10 +22,12 @@ This template assumes that you have an application to deploy. See [application r
 
 ## Installation
 
-To get started using the infrastructure template on your project, run the following command in your project's directory to execute the [download and install script](https://github.com/navapbc/template-infra/tree/main/template-only-bin/download-and-install-template), which clones the template repository, copies the template files to your repository, and removes any files that are only relevant to the template itself:
+To get started, [install the nava-platform
+tool](https://github.com/navapbc/platform-cli), and then run the following
+command in your project's root directory:
 
-```bash
-curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/download-and-install-template | bash -s
+```sh
+nava-platform infra install .
 ```
 
 Now you're ready to set up the various pieces of your infrastructure.
@@ -42,24 +44,16 @@ After downloading and installing the template into your project:
 
 ## Updates
 
-There are multiple ways to receive template updates on your project. For most updates, you can simply run the [update-template](/template-only-bin/update-template) script
+With the [nava-platform tool
+installed](https://github.com/navapbc/platform-cli), run the following in your
+project's root directory:
 
-```bash
-curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template | bash -s
+```sh
+nava-platform infra update .
 ```
 
-If the update fails the simplest option may be to re-run the installation script above and manually review the changes.
+If the update fails, the tool will provide some guidance, but effectively the
+next step will be apply the updates in smaller pieces with manual merge conflict
+resolution.
 
 **Remember:** Make sure to read the release notes in case there are breaking changes you need to address.
-
-### Renamed applications
-
-If you renamed your application from `infra/app` to something else like `infra/foo`, then first rename your app back to `infra/app` before applying the updates e.g.
-
-```bash
-mv foo app
-mv infra/foo infra/app
-curl https://raw.githubusercontent.com/navapbc/template-infra/main/template-only-bin/update-template | bash -s
-mv infra/app infra/foo
-mv app foo
-```
