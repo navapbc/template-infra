@@ -17,7 +17,7 @@ The goal is to design a notifications infrastructure that simplifies setup for p
 ## Decision Drivers
 
 - Avoid circular dependencies.
-- Avoid revisiting a layer (e.g., database layer, application layer) more than once during application environment setup.
+- Avoid revisiting a layer (e.g., network layer, service layer) more than once during application environment setup.
 - Keep the architecture simple to understand and customize.
 - Minimize the number of steps required to set up an environment.
 - Ensure the solution is testable at each step.
@@ -80,6 +80,6 @@ The goal is to design a notifications infrastructure that simplifies setup for p
 
 **Summary of chosen options**:
 
-- Use the domain of the environment (e.g., hosted zone) for the sender's email address.
-- Create resources in the service layer of one app and require custom work for others to access the notifications service in the app that contains that service.
+- Use the domain of the environment (e.g. hosted zone) for the sender's email address.
+- Create resources in the service layer of one app and require custom work for other applications in the same repo to access the notifications service.
 - Create DKIM and DMARC DNS Records in the service layer.
