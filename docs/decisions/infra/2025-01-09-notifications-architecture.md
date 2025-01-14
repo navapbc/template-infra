@@ -58,7 +58,7 @@ The goal is to design a notifications infrastructure that simplifies setup for p
    - **Pros**:
      - Simplest to understand as it mirrors the structure of the rest of the infrastructure
    - **Cons**:
-     - Only feasible if domains are not shared across multiple applications i.e. we use the domain of the app for sender email notifications. which was not the chosen option due to other factors.
+     - Only feasible if domains are not shared across multiple applications i.e. we use the domain of the app for sender email notifications, which was not the chosen option due to other factors.
 
 4. **Option 4 (Chosen)**: Create resources in the service layer of one app and require custom work for others to access the notifications service in the app that contains that service.
    - **Pros**:
