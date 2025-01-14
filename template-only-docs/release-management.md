@@ -11,3 +11,5 @@
    2. Add a table of the infrastructure layers that have been updated. This table should inform project teams which layers they need to run `make infra-update-*` for.
    3. Organize the commit messages into sections, adding a section for each layer that has been updated.
    4. Reword commit messages to be more user-friendly to users of the Platform who have less context of the Platform internals
+5. Publish release as latest release
+6. 🔒 Send a Slack message in #platform-announcements with a high level summary of the most important changes to be aware of and link to the release notes
