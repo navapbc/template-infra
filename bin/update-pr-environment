@@ -18,6 +18,7 @@ pr_number="$3"
 image_tag="$4"
 
 workspace="p-${pr_number}"
+prefix="${workspace}-"
 
 echo "::group::Initialize Terraform with backend for environment: ${environment}"
 terraform -chdir="infra/${app_name}/service" init -backend-config="${environment}.s3.tfbackend"
@@ -31,7 +32,7 @@ terraform -chdir="infra/${app_name}/service" apply -input=false -auto-approve -v
 echo "::endgroup::"
 
 cluster_name="$(terraform -chdir="infra/$app_name/service" output -raw service_cluster_name)"
-service_name="$(terraform -chdir="infra/$app_name/service" output -raw service_name)"
+service_name="${prefix}$(terraform -chdir="infra/$app_name/service" output -raw service_name)"
 echo "Wait for service ${service_name} to become stable"
 aws ecs wait services-stable --cluster "${cluster_name}" --services "${service_name}"
 

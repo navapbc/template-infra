@@ -44,12 +44,13 @@ locals {
   environment_config                             = module.app_config.environment_configs[var.environment_name]
   service_config                                 = local.environment_config.service_config
   database_config                                = local.environment_config.database_config
-  storage_config                                 = local.environment_config.storage_config
   incident_management_service_integration_config = local.environment_config.incident_management_service_integration
   identity_provider_config                       = local.environment_config.identity_provider_config
   notifications_config                           = local.environment_config.notifications_config
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
+
+  service_name = "${local.prefix}${local.service_config.service_name}"
 }
 
 terraform {
@@ -128,7 +129,7 @@ data "aws_route53_zone" "zone" {
 
 module "service" {
   source       = "../../modules/service"
-  service_name = local.service_config.service_name
+  service_name = local.service_name
 
   image_repository_arn = local.build_repository_config.repository_arn
   image_repository_url = local.build_repository_config.repository_url
@@ -168,7 +169,7 @@ module "service" {
 
   extra_environment_variables = merge(
     {
-      BUCKET_NAME = local.storage_config.bucket_name
+      BUCKET_NAME = local.bucket_name
     },
     local.identity_provider_environment_variables,
     local.notifications_environment_variables,
@@ -204,13 +205,7 @@ module "monitoring" {
   #email_alerts_subscription_list = ["email1@email.com", "email2@email.com"]
 
   # Module takes service and ALB names to link all alerts with corresponding targets
-  service_name                                = local.service_config.service_name
+  service_name                                = local.service_name
   load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
   incident_management_service_integration_url = module.app_config.has_incident_management_service && !local.is_temporary ? data.aws_ssm_parameter.incident_management_service_integration_url[0].value : null
-}
-
-module "storage" {
-  source       = "../../modules/storage"
-  name         = local.storage_config.bucket_name
-  is_temporary = local.is_temporary
 }

@@ -18,7 +18,7 @@ output "network_name" {
 
 output "service_config" {
   value = {
-    service_name             = "${local.prefix}${var.app_name}-${var.environment}"
+    service_name             = "${var.app_name}-${var.environment}"
     domain_name              = var.domain_name
     enable_https             = var.enable_https
     region                   = var.default_region
