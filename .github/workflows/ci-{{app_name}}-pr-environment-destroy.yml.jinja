@@ -1,0 +1,30 @@
+name: CI {{ app_name }} PR Environment Destroy
+on:
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        required: true
+        type: string
+  {% if app_has_dev_env_setup %}
+  pull_request_target:
+    types: [closed]
+  {% else %}
+  # !! Once you've set up the dev environment and are ready to enable PR
+  # environments, run:
+  #
+  # nava-platform infra update --answers-only --data app_has_dev_env_setup=true .
+  #
+  # to enable these lines. They are here as comments for context.
+  #
+  # pull_request:
+  #   types: [closed]
+  {% endif %}
+
+jobs:
+  destroy:
+    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+    uses: ./.github/workflows/pr-environment-destroy.yml
+    with:
+      app_name: "{{ app_name }}"
+      environment: "dev"
+      pr_number: ${{'{{'}} inputs.pr_number || github.event.number {{'}}'}}

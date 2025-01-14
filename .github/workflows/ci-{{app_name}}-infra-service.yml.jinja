@@ -1,0 +1,71 @@
+name: CI Infra Service Checks - {{ app_name }}
+
+on:
+  {% if app_has_dev_env_setup %}
+  push:
+    branches:
+      - main
+    paths:
+      - infra/{{ app_name }}/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-{{ app_name }}-infra-service.yml
+  pull_request:
+    paths:
+      - infra/{{ app_name }}/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-{{ app_name }}-infra-service.yml
+  {% else %}
+  # !! Once you've set up the dev environment and are ready to enable automated
+  # infra tests, run:
+  #
+  # nava-platform infra update --answers-only --data app_has_dev_env_setup=true .
+  #
+  # to enable these lines. They are here as comments for context.
+  #
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - infra/{{ app_name }}/service/**
+  #     - infra/modules/**
+  #     - infra/test/**
+  #     - .github/workflows/ci-infra-service.yml
+  # pull_request:
+  #   paths:
+  #     - infra/{{ app_name }}/service/**
+  #     - infra/modules/**
+  #     - infra/test/**
+  #     - .github/workflows/ci-infra-service.yml
+  {% endif %}
+  workflow_dispatch:
+
+jobs:
+  infra-test-e2e:
+    name: Test service
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: ./.github/actions/setup-terraform
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: ">=1.19.0"
+
+      - name: Configure AWS credentials
+        uses: ./.github/actions/configure-aws-credentials
+        with:
+          app_name: {{ app_name }}
+          # Run infra CI on dev environment
+          environment: dev
+
+      - name: Run Terratest
+        run: make infra-test-service APP_NAME={{ app_name }}
