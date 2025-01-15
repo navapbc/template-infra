@@ -58,7 +58,11 @@ jobs:
       - name: Install example app
         if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
         run: |
+          # replace existing app with updated example app code
+          rm -rf ./project-repo/app
           mv -vf ./template-infra/template-only-app ./project-repo/app
+
+          # and commit if there are changes
           cd project-repo
           if [[ $(git status app --porcelain | wc -l) -ne 0 ]]; then
             git add app
