@@ -50,7 +50,9 @@ locals {
 
   network_config = module.project_config.network_configs[local.environment_config.network_name]
 
-  service_name = "${local.prefix}${local.service_config.service_name}"
+  service_name   = "${local.prefix}${local.service_config.service_name}"
+  domain_name    = local.service_config.domain_name
+  hosted_zone_id = local.domain_name != null ? data.aws_route53_zone.zone[0].zone_id : null
 }
 
 terraform {
@@ -119,11 +121,11 @@ data "aws_security_groups" "aws_services" {
 
 data "aws_acm_certificate" "certificate" {
   count  = local.service_config.enable_https ? 1 : 0
-  domain = local.service_config.domain_name
+  domain = local.domain_name
 }
 
 data "aws_route53_zone" "zone" {
-  count = local.service_config.domain_name != null ? 1 : 0
+  count = local.domain_name != null ? 1 : 0
   name  = local.network_config.domain_config.hosted_zone
 }
 
@@ -140,8 +142,8 @@ module "service" {
   public_subnet_ids  = data.aws_subnets.public.ids
   private_subnet_ids = data.aws_subnets.private.ids
 
-  domain_name     = local.service_config.domain_name
-  hosted_zone_id  = local.service_config.domain_name != null ? data.aws_route53_zone.zone[0].zone_id : null
+  domain_name     = local.domain_name
+  hosted_zone_id  = local.hosted_zone_id
   certificate_arn = local.service_config.enable_https ? data.aws_acm_certificate.certificate[0].arn : null
 
   cpu                      = local.service_config.cpu
