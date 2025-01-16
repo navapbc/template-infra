@@ -14,6 +14,12 @@ variable "enable_command_execution" {
   default     = false
 }
 
+variable "enable_notifications" {
+  type        = bool
+  description = "Whether the application(s) in this network need AWS Pinpoint access."
+  default     = false
+}
+
 variable "has_database" {
   type        = bool
   description = "Whether the application(s) in this network have a database. Determines whether to create VPC endpoints needed by the database layer."

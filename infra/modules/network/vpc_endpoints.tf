@@ -18,6 +18,9 @@ locals {
 
     # AWS services used by ECS Exec
     var.enable_command_execution ? ["ssmmessages"] : [],
+
+    # AWS services used by notifications
+    var.enable_notifications ? ["pinpoint", "email-smtp"] : [],
   )
 
   # S3 and DynamoDB use Gateway VPC endpoints. All other services use Interface VPC endpoints
