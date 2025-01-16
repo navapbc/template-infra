@@ -195,7 +195,10 @@ module "service" {
     },
     module.app_config.enable_identity_provider ? {
       identity_provider_access = module.identity_provider_client[0].access_policy_arn,
-    } : {}
+    } : {},
+    module.app_config.enable_notifications ? {
+      notifications_access = module.notifications[0].access_policy_arn,
+    } : {},
   )
 
   is_temporary = local.is_temporary
