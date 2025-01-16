@@ -1,26 +1,3 @@
-data "aws_vpc" "network" {
-  tags = {
-    project      = module.project_config.project_name
-    network_name = local.environment_config.network_name
-  }
-}
-
-data "aws_subnets" "public" {
-  tags = {
-    project      = module.project_config.project_name
-    network_name = local.environment_config.network_name
-    subnet_type  = "public"
-  }
-}
-
-data "aws_subnets" "private" {
-  tags = {
-    project      = module.project_config.project_name
-    network_name = local.environment_config.network_name
-    subnet_type  = "private"
-  }
-}
-
 locals {
   # The prefix is used to create uniquely named resources per terraform workspace, which
   # are needed in CI/CD for preview environments and tests.
@@ -40,19 +17,11 @@ locals {
   # Examples: pull request preview environments are temporary.
   is_temporary = terraform.workspace != "default"
 
-  build_repository_config                        = module.app_config.build_repository_config
-  environment_config                             = module.app_config.environment_configs[var.environment_name]
-  service_config                                 = local.environment_config.service_config
-  database_config                                = local.environment_config.database_config
-  incident_management_service_integration_config = local.environment_config.incident_management_service_integration
-  identity_provider_config                       = local.environment_config.identity_provider_config
-  notifications_config                           = local.environment_config.notifications_config
+  build_repository_config = module.app_config.build_repository_config
+  environment_config      = module.app_config.environment_configs[var.environment_name]
+  service_config          = local.environment_config.service_config
 
-  network_config = module.project_config.network_configs[local.environment_config.network_name]
-
-  service_name   = "${local.prefix}${local.service_config.service_name}"
-  domain_name    = local.service_config.domain_name
-  hosted_zone_id = local.domain_name != null ? data.aws_route53_zone.zone[0].zone_id : null
+  service_name = "${local.prefix}${local.service_config.service_name}"
 }
 
 terraform {
@@ -83,50 +52,6 @@ module "project_config" {
 
 module "app_config" {
   source = "../app-config"
-}
-
-data "aws_rds_cluster" "db_cluster" {
-  count              = module.app_config.has_database ? 1 : 0
-  cluster_identifier = local.database_config.cluster_name
-}
-
-data "aws_iam_policy" "app_db_access_policy" {
-  count = module.app_config.has_database ? 1 : 0
-  name  = local.database_config.app_access_policy_name
-}
-
-data "aws_iam_policy" "migrator_db_access_policy" {
-  count = module.app_config.has_database ? 1 : 0
-  name  = local.database_config.migrator_access_policy_name
-}
-
-# Retrieve url for external incident management tool (e.g. Pagerduty, Splunk-On-Call)
-
-data "aws_ssm_parameter" "incident_management_service_integration_url" {
-  count = module.app_config.has_incident_management_service ? 1 : 0
-  name  = local.incident_management_service_integration_config.integration_url_param_name
-}
-
-data "aws_security_groups" "aws_services" {
-  filter {
-    name   = "group-name"
-    values = ["${module.project_config.aws_services_security_group_name_prefix}*"]
-  }
-
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.network.id]
-  }
-}
-
-data "aws_acm_certificate" "certificate" {
-  count  = local.service_config.enable_https ? 1 : 0
-  domain = local.domain_name
-}
-
-data "aws_route53_zone" "zone" {
-  count = local.domain_name != null ? 1 : 0
-  name  = local.network_config.domain_config.hosted_zone
 }
 
 module "service" {
@@ -202,15 +127,4 @@ module "service" {
   )
 
   is_temporary = local.is_temporary
-}
-
-module "monitoring" {
-  source = "../../modules/monitoring"
-  #Email subscription list:
-  #email_alerts_subscription_list = ["email1@email.com", "email2@email.com"]
-
-  # Module takes service and ALB names to link all alerts with corresponding targets
-  service_name                                = local.service_name
-  load_balancer_arn_suffix                    = module.service.load_balancer_arn_suffix
-  incident_management_service_integration_url = module.app_config.has_incident_management_service && !local.is_temporary ? data.aws_ssm_parameter.incident_management_service_integration_url[0].value : null
 }
