@@ -63,20 +63,19 @@ module "service" {
 
   image_tag = local.image_tag
 
-  vpc_id             = data.aws_vpc.network.id
-  public_subnet_ids  = data.aws_subnets.public.ids
-  private_subnet_ids = data.aws_subnets.private.ids
+  vpc_id                         = module.network.vpc_id
+  public_subnet_ids              = module.network.public_subnet_ids
+  private_subnet_ids             = module.network.private_subnet_ids
+  aws_services_security_group_id = module.network.aws_services_security_group_id
 
-  domain_name     = local.domain_config.domain_name
-  hosted_zone_id  = local.hosted_zone_id
-  certificate_arn = local.certificate_arn
+  domain_name     = module.domain.domain_name
+  hosted_zone_id  = module.domain.hosted_zone_id
+  certificate_arn = module.domain.certificate_arn
 
   cpu                      = local.service_config.cpu
   memory                   = local.service_config.memory
   desired_instance_count   = local.service_config.desired_instance_count
   enable_command_execution = local.service_config.enable_command_execution
-
-  aws_services_security_group_id = data.aws_security_groups.aws_services.ids[0]
 
   file_upload_jobs = local.service_config.file_upload_jobs
   scheduled_jobs   = local.environment_config.scheduled_jobs

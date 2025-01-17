@@ -72,7 +72,7 @@ locals {
 }
 
 resource "aws_security_group" "aws_services" {
-  name_prefix = var.aws_services_security_group_name_prefix
+  name_prefix = module.interface.aws_services_security_group_name_prefix
   description = "VPC endpoints to access AWS services from the VPCs private subnets"
   vpc_id      = module.aws_vpc.vpc_id
 }
