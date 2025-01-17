@@ -20,7 +20,7 @@ module "notifications_email_domain" {
   count  = local.notifications_config != null && !local.is_temporary ? 1 : 0
   source = "../../modules/notifications-email-domain/resources"
 
-  domain_name    = local.domain_name
+  domain_name    = local.domain_config.domain_name
   hosted_zone_id = local.hosted_zone_id
 }
 
@@ -30,7 +30,7 @@ module "existing_notifications_email_domain" {
   count  = local.notifications_config != null && local.is_temporary ? 1 : 0
   source = "../../modules/notifications-email-domain/data"
 
-  domain_name = local.domain_name
+  domain_name = local.domain_config.domain_name
 }
 
 # If the app has `enable_notifications` set to true, create a new email notification
