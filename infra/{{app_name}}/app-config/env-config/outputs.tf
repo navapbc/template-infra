@@ -16,11 +16,13 @@ output "network_name" {
   value = var.network_name
 }
 
+output "domain_config" {
+  value = local.domain_config
+}
+
 output "service_config" {
   value = {
     service_name             = "${var.app_name}-${var.environment}"
-    domain_name              = var.domain_name
-    enable_https             = var.enable_https
     region                   = var.default_region
     cpu                      = var.service_cpu
     memory                   = var.service_memory
