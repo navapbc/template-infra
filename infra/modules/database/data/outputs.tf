@@ -18,6 +18,10 @@ output "migrator_access_policy_arn" {
   value = data.aws_iam_policy.migrator_db_access_policy.arn
 }
 
+output "migrator_username" {
+  value = module.interface.migrator_username
+}
+
 output "port" {
   value = data.aws_rds_cluster.db_cluster.port
 }
