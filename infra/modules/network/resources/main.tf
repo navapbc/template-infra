@@ -32,6 +32,7 @@ module "aws_vpc" {
   database_subnets             = var.has_database ? ["10.0.5.0/24", "10.0.6.0/24", "10.0.7.0/24"] : []
   database_subnet_tags         = module.interface.database_subnet_tags
   create_database_subnet_group = var.has_database
+  database_subnet_group_name   = module.interface.database_subnet_group_name
 
   # If application needs external services, then create one NAT gateway per availability zone
   enable_nat_gateway     = var.has_external_non_aws_service
