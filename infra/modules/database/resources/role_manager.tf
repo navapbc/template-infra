@@ -36,9 +36,9 @@ resource "aws_lambda_function" "role_manager" {
       DB_NAME                = aws_rds_cluster.db.database_name
       DB_PASSWORD_PARAM_NAME = local.db_password_param_name
       DB_PASSWORD_SECRET_ARN = aws_rds_cluster.db.master_user_secret[0].secret_arn
-      DB_SCHEMA              = var.schema_name
-      APP_USER               = var.app_username
-      MIGRATOR_USER          = var.migrator_username
+      DB_SCHEMA              = module.interface.schema_name
+      APP_USER               = module.interface.app_username
+      MIGRATOR_USER          = module.interface.migrator_username
       PYTHONPATH             = "vendor"
     }
   }

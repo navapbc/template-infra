@@ -13,6 +13,11 @@ locals {
   engine_major_version = regex("^\\d+", local.engine_version)
 }
 
+module "interface" {
+  source = "../interface"
+  name   = var.name
+}
+
 # Database Configuration
 # ----------------------
 

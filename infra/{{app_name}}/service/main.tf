@@ -81,15 +81,15 @@ module "service" {
   scheduled_jobs   = local.environment_config.scheduled_jobs
 
   db_vars = module.app_config.has_database ? {
-    security_group_ids         = data.aws_rds_cluster.db_cluster[0].vpc_security_group_ids
-    app_access_policy_arn      = data.aws_iam_policy.app_db_access_policy[0].arn
-    migrator_access_policy_arn = data.aws_iam_policy.migrator_db_access_policy[0].arn
+    security_group_ids         = module.database[0].security_group_ids
+    app_access_policy_arn      = module.database[0].app_access_policy_arn
+    migrator_access_policy_arn = module.database[0].migrator_access_policy_arn
     connection_info = {
-      host        = data.aws_rds_cluster.db_cluster[0].endpoint
-      port        = data.aws_rds_cluster.db_cluster[0].port
-      user        = local.database_config.app_username
-      db_name     = data.aws_rds_cluster.db_cluster[0].database_name
-      schema_name = local.database_config.schema_name
+      host        = module.database[0].host
+      port        = module.database[0].port
+      user        = module.database[0].app_username
+      db_name     = module.database[0].db_name
+      schema_name = module.database[0].schema_name
     }
   } : null
 
