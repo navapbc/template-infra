@@ -57,7 +57,7 @@ If you're not sure whether you need to do anything here, you can skip this and c
 Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes. This can take over 5 minutes.
 
 ```bash
-make infra-update-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## 3. Create Postgres users
@@ -65,7 +65,7 @@ make infra-update-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 Trigger the role manager Lambda function that was created in the previous step to create the application and `migrator` Postgres users.
 
 ```bash
-make infra-update-app-database-roles APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-update-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 The Lambda function's response should describe the resulting PostgreSQL roles and groups that are configured in the database. It should look like a minified version of the following:
@@ -110,7 +110,7 @@ Why is this needed? The reason is that the `migrator` role will be used by the m
 ## 4. Check that database roles have been configured properly
 
 ```bash
-make infra-check-app-database-roles APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## Set up application environments

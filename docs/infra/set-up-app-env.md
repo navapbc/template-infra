@@ -26,7 +26,7 @@ Before setting up the application's environments you'll need to have:
 To create the `tfbackend` and `tfvars` files for the new application environment, run
 
 ```bash
-make infra-configure-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-configure-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder.
@@ -44,8 +44,8 @@ There are two ways to do this:
 2. Alternatively, run the following from the root directory. This option can take much longer than the GitHub workflow, depending on your machine's architecture.
 
     ```bash
-    make release-build APP_NAME=app
-    make release-publish APP_NAME=app
+    make release-build APP_NAME=<APP_NAME>
+    make release-publish APP_NAME=<APP_NAME>
     ```
 
 Copy the image tag name that was published. You'll need this in the next step.
@@ -55,10 +55,10 @@ Copy the image tag name that was published. You'll need this in the next step.
 Now run the following commands to create the resources, using the image tag that was published in the previous step. Review the terraform before confirming "yes" to apply the changes.
 
 ```bash
-TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## 4. Configure monitoring alerts
 
-Configure email alerts, external incident management service integration and additional Cloudwatch Alerts.
+Configure email alerts, external incident management service integration and additional CloudWatch Alerts.
 [Configure monitoring module](./set-up-monitoring-alerts.md)

@@ -14,7 +14,7 @@ Before setting up the application's build repository you'll need to have:
 To create the `tfbackend` file for the build repository using the backend configuration values from your current AWS account, run
 
 ```bash
-make infra-configure-app-build-repository APP_NAME=app
+make infra-configure-app-build-repository APP_NAME=<APP_NAME>
 ```
 
 Pass in the name of the app folder within `infra`.
@@ -24,7 +24,7 @@ Pass in the name of the app folder within `infra`.
 Now run the following commands to create the resources, making sure to verify the plan before confirming the apply.
 
 ```bash
-make infra-update-app-build-repository APP_NAME=app
+make infra-update-app-build-repository APP_NAME=<APP_NAME>
 ```
 
 ## 3. Check that the build repository was created properly
@@ -32,7 +32,7 @@ make infra-update-app-build-repository APP_NAME=app
 Run the [Build and publish GitHub Actions workflow](/.github/workflows/build-and-publish.yml) to build your application's image and publish it to the container image registry you just created. If you have the GitHub CLI installed, you can do this using the following command.
 
 ```bash
-gh workflow run build-and-publish.yml --field app_name=app --field ref=main
+gh workflow run build-and-publish.yml --field app_name=<APP_NAME> --field ref=main
 ```
 
 ## Set up application environments
