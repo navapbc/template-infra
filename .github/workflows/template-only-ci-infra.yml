@@ -6,8 +6,8 @@ on:
       - main
   pull_request:
     paths:
-      - bin/**
-      - infra/**
+      - templates/*/bin/**
+      - templates/*/infra/**
       - template-only-bin/**
       - template-only-infra/**
       - template-only-test/**
@@ -40,7 +40,7 @@ jobs:
       - name: Set up Terraform
         uses: ./template-infra/.github/actions/setup-terraform
         with:
-          version-file: ./template-infra/.terraform-version
+          version-file: ./template-infra/templates/base/.terraform-version
 
       - uses: actions/setup-go@v5
         with:

@@ -3,7 +3,7 @@ description: "Set up Terraform with the version stored in the .terraform-version
 inputs:
   version-file:
     description: "File containing the terraform version to use."
-    default: "./templates/base/.terraform-version"
+    default: ".terraform-version"
 runs:
   using: "composite"
   steps:
