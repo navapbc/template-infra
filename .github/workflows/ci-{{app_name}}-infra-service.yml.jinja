@@ -47,8 +47,6 @@ on:
         description: Tag or branch or SHA to test
 
 jobs:
-  # `make infra-test-service` will build and publish the release itself, but
-  #  doing it explicitly with the re-usable workflow helps avoid race conditions
   build-and-publish:
     name: Build
     uses: ./.github/workflows/build-and-publish.yml
