@@ -31,13 +31,13 @@ on:
   #     - infra/{{ app_name }}/service/**
   #     - infra/modules/**
   #     - infra/test/**
-  #     - .github/workflows/ci-{{app_name}}-infra-service.yml
+  #     - .github/workflows/ci-{{ app_name }}-infra-service.yml
   # pull_request:
   #   paths:
   #     - infra/{{ app_name }}/service/**
   #     - infra/modules/**
   #     - infra/test/**
-  #     - .github/workflows/ci-{{app_name}}-infra-service.yml
+  #     - .github/workflows/ci-{{ app_name }}-infra-service.yml
   {% endif %}
   workflow_dispatch:
     inputs:
