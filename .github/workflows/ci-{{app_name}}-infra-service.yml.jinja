@@ -31,20 +31,33 @@ on:
   #     - infra/{{ app_name }}/service/**
   #     - infra/modules/**
   #     - infra/test/**
-  #     - .github/workflows/ci-infra-service.yml
+  #     - .github/workflows/ci-{{ app_name }}-infra-service.yml
   # pull_request:
   #   paths:
   #     - infra/{{ app_name }}/service/**
   #     - infra/modules/**
   #     - infra/test/**
-  #     - .github/workflows/ci-infra-service.yml
+  #     - .github/workflows/ci-{{ app_name }}-infra-service.yml
   {% endif %}
   workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        default: "main"
+        description: Tag or branch or SHA to test
 
 jobs:
+  build-and-publish:
+    name: Build
+    uses: ./.github/workflows/build-and-publish.yml
+    with:
+      app_name: {{ app_name }}
+      ref: ${{'{{'}} inputs.version || github.ref {{'}}'}}
+
   infra-test-e2e:
     name: Test service
     runs-on: ubuntu-latest
+    needs: [build-and-publish]
 
     permissions:
       contents: read
@@ -52,6 +65,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{'{{'}} inputs.version || github.ref {{'}}'}}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
