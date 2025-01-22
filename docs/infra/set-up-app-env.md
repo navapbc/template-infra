@@ -14,7 +14,7 @@ Before setting up the application's environments you'll need to have:
    1. Make sure you update `has_database` to `true` or `false` (defaults to `true`) depending on whether or not your application has a database to integrate with.
    2. Make sure you update `has_external_non_aws_service` to `true` or `false` depending on whether your application utilizes any non-AWS services. Other applications within the same git repo count as external services, so if your application makes API calls to another application service in the same git repo, set `has_external_non_aws_service` to `true`.
    3. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
-   4. Make sure your application environment is using the AWS Account you want to use by checking the `account_name` property in the environment configuration and updating it if necessary.
+   4. Make sure your application environment is using the network/AWS Account you want to use by checking the `network_name` property in the environment configuration and what account it maps to in the project configuration. Update the values if necessary.
 4. [Create a nondefault VPC to be used by the application](./set-up-network.md)
 5. (If the application has external non-AWS services) [Set up network access to the public internet](./set-up-public-internet-access.md)
 6. (If the application has a database) [Set up the database for the application](./set-up-database.md)
