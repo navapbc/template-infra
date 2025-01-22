@@ -40,7 +40,8 @@ jobs:
       - name: Get commit hash
         id: get-commit-hash
         run: |
-          COMMIT_HASH=$(git rev-parse ${{ inputs.ref }})
+          # HEAD should be the same as inputs.ref since we checked out inputs.ref
+          COMMIT_HASH=$(git rev-parse HEAD)
           echo "Commit hash: $COMMIT_HASH"
           echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
   build-and-publish:
