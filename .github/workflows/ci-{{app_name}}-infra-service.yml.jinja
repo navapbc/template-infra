@@ -52,7 +52,7 @@ jobs:
     uses: ./.github/workflows/build-and-publish.yml
     with:
       app_name: {{ app_name }}
-      ref: ${{ inputs.version || github.ref }}
+      ref: ${{'{{'}} inputs.version || github.ref {{'}}'}}
 
   infra-test-e2e:
     name: Test service
@@ -66,7 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.version || github.ref }}
+          ref: ${{'{{'}} inputs.version || github.ref {{'}}'}}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
