@@ -48,7 +48,7 @@ jobs:
     name: Build and publish
     runs-on: ubuntu-latest
     needs: get-commit-hash
-    concurrency: ${{ github.workflow }}-${{ inputs.app_name }}-${{ needs.get-commit-hash.outputs.commit_hash }}
+    concurrency: build-and-publish-${{ inputs.app_name }}-${{ needs.get-commit-hash.outputs.commit_hash }}
 
     permissions:
       contents: read
