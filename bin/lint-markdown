@@ -18,4 +18,5 @@ else
     link_check_cmd="npx markdown-link-check"
 fi
 
+# Run the linter against each markdown file that's tracked in git
 git ls-files -z '*.md' | xargs -0 -I{} sh -c "${link_check_cmd} --quiet --config ${link_check_config} {}"
