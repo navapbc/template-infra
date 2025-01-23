@@ -1,6 +1,6 @@
 # Database Migration Infrastructure and Deployment
 
-- Status: proposed
+- Status: accepted
 - Deciders: @lorenyu, @daphnegold, @chouinar, @Nava-JoshLong, @addywolf-nava, @sawyerh, @acouch, @SammySteiner
 - Date: 2023-06-05
 
@@ -88,5 +88,5 @@ Cons
 
 ## Related ADRS
 
-- [Separate the database infrastructure into a separate layer](./0005-separate-database-infrastructure-into-separate-layer.md)
-- [Provision database users with serverless function](./0006-provision-database-users-with-serverless-function.md)
+- [Separate the database infrastructure into a separate layer](./2023-05-25-separate-database-infrastructure-into-separate-layer.md)
+- [Provision database users with serverless function](./2023-05-25-provision-database-users-with-serverless-function.md)
