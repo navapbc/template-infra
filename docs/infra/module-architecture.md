@@ -11,7 +11,7 @@ The infrastructure code is organized into:
 
 [Root modules](https://www.terraform.io/language/modules#the-root-module) are modules that are deployed separately from each other, whereas child modules are reusable modules that are called from root modules. To deploy all the resources necessary for a given environment, all the root modules must be deployed independently in the correct order.
 
-For a full list of rationale and factors, see [ADR: Separate app infrastructure into layers](/docs/decisions/infra/0009-separate-app-infrastructure-into-layers.md).
+For a full list of rationale and factors, see [ADR: Separate app infrastructure into layers](/docs/decisions/infra/2023-09-11-separate-app-infrastructure-into-layers.md).
 
 ## Module calling structure
 

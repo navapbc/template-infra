@@ -1,7 +1,7 @@
 # Feature flags system design
 
-* Deciders: @aligg @Nava-JoshLong @lorenyu
-* Date: 2023-11-28
+- Deciders: @aligg @Nava-JoshLong @lorenyu
+- Date: 2023-11-28
 
 ## Context
 
@@ -25,8 +25,8 @@ One key design question is how features should be managed once defined. How shou
 
 Define features in app-config (`infra/<APP_NAME>/app-config/`), and use that configuration in the service layer (`infra/<APP_NAME>/service/`) to create and configure the features in AWS Evidently.
 
-* Everything is defined in code and in one place.
-* Feature and feature configurations are updated automatically as part of service deploys or can be done manually via a `terraform apply`.
+- Everything is defined in code and in one place.
+- Feature and feature configurations are updated automatically as part of service deploys or can be done manually via a `terraform apply`.
 
 The configuration in the app-config module might look something like the following:
 
@@ -48,14 +48,14 @@ features = {
 
 Define features in app-config (`infra/<APP_NAME>/app-config/main.tf`). Create the features in the service layer (`infra/<APP_NAME>/service/`) but set things like throttle percentages (for gradual rollouts) in a separate infrastructure layer.
 
-* Allows for separation of permissions. For example, individuals can have permission to update feature launch throttle percentages without having permission to create, edit, or delete the features themselves.
+- Allows for separation of permissions. For example, individuals can have permission to update feature launch throttle percentages without having permission to create, edit, or delete the features themselves.
 
 ### Option 3. Manage features in AWS Console outside of Terraform
 
 Define features in app-config (`infra/<APP_NAME>/app-config/main.tf`) and create them in the service layer (`/infra/<APP_NAME>/service/`), but set things like throttle percentages (for gradual rollouts) outside of Terraform (e.g. via AWS Console). Use `lifecycle { ignore_changes = [entity_overrides] }` in the terraform configuration for the `aws_evidently_feature` resources to ignore settings that are managed via the AWS Console.
 
-* Empowers non-technical roles like business owners and product managers to enable and disable feature flags and adjust feature launch throttle percentages without needing to depend on the development team.
-* A no-code approach using the AWS Console GUI means that it's possible to leverage the full set of functionality offered by AWS CloudWatch Evidently, including things like scheduled launches, with minimal training and without needing to learn how to do it in code.
+- Empowers non-technical roles like business owners and product managers to enable and disable feature flags and adjust feature launch throttle percentages without needing to depend on the development team.
+- A no-code approach using the AWS Console GUI means that it's possible to leverage the full set of functionality offered by AWS CloudWatch Evidently, including things like scheduled launches, with minimal training and without needing to learn how to do it in code.
 
 A reduced configuration in the app-config module that just defines the features might look something like the following:
 
@@ -73,7 +73,6 @@ Chosen option: "Option 3: Manage features in AWS Console outside of terraform". 
 
 The scope of this tech spec is focused on the infrastructure layer, but we'll include some notes on the elements of feature flag management that will need to be handled at the application layer.
 
-
 ### Application layer requirements
 
 1. Client interface with feature flag service — Applications need a client module that captures the feature flag service abstraction. The application code will interface with this module rather than directly with the underlying feature flag service.
@@ -87,7 +86,7 @@ At its core, the feature flag module needs a function `isFeatureEnabled` that de
 
 ```ts
 interface FeatureFlagService {
-  isFeatureEnabled(featureName: string, userId?: string): boolean
+  isFeatureEnabled(featureName: string, userId?: string): boolean;
 }
 ```
 
@@ -116,7 +115,6 @@ class EvidentlyFeatureFlagService implements FeatureFlagService {
 
 ```ts
 class LocalFeatureFlagService implements FeatureFlagService {
-
   isFeatureEnabled(feature: string, userId?: string): boolean {
     // check config files, environment variables, and/or cookies
   }

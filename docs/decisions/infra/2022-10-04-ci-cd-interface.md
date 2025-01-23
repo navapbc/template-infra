@@ -1,8 +1,8 @@
 # CI/CD Interface
 
-* Status: accepted
-* Deciders: @lorenyu @kyeah
-* Date: 2022-10-04
+- Status: accepted
+- Deciders: @lorenyu @kyeah
+- Date: 2022-10-04
 
 Technical Story: Define Makefile interface between infra and application [#105](https://github.com/navapbc/template-infra/issues/105)
 
@@ -12,8 +12,8 @@ In order to reuse CI and CD logic for different tech stacks, we need to establis
 
 ## Decision Drivers
 
-* We want to define most of the release management logic in `template-infra` but allow application specific methods for building the release.
-* The build needs to be able to be run from the CD workflow defined in `template-infra`, but it also needs to be able to be run from the application as part of the CI workflow as one of the CI checks.
+- We want to define most of the release management logic in `template-infra` but allow application specific methods for building the release.
+- The build needs to be able to be run from the CD workflow defined in `template-infra`, but it also needs to be able to be run from the application as part of the CI workflow as one of the CI checks.
 
 ## Proposal
 
@@ -106,8 +106,8 @@ For now, we are assuming there's only one deployable application service per rep
 
 1. Application template repos also have their own release-build command (could use Make, but doesn't have to) that is called as part of the application's ci-app.yml. The application's version of release-build doesn't have to tag the release, since the template-infra version will do that:
 
-    * Cons: build command in two places, and while 99% of the build logic is within Dockerfile and code, there's still a small chance that difference in build command line arguments could produce a different build in CI than what is used for release
+   - Cons: build command in two places, and while 99% of the build logic is within Dockerfile and code, there's still a small chance that difference in build command line arguments could produce a different build in CI than what is used for release
 
 2. We can run release-build as part of template-infra's ci-infra.yml, so we still get CI test coverage of the build process
 
-    * Cons: things like tests and linting in ci-app.yml can't use the docker image to run the tests, which potentially means CI and production are using slightly different environments
+   - Cons: things like tests and linting in ci-app.yml can't use the docker image to run the tests, which potentially means CI and production are using slightly different environments

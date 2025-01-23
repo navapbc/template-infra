@@ -1,8 +1,8 @@
 # Consolidate infra configuration from .tfvars files into config module
 
-* Status: accepted
-* Deciders: @lorenyu @rocketnova @kyeah @acouch
-* Date: 2023-09-07
+- Status: accepted
+- Deciders: @lorenyu @rocketnova @kyeah @acouch
+- Date: 2023-09-07
 
 Technical Story: [Replace configure scripts with project/app config variables #312](https://github.com/navapbc/template-infra/issues/312)
 
@@ -14,17 +14,17 @@ Currently, application infrastructure configuration is split across config modul
 
 This ADR proposes the following:
 
-* Move all environment configuration into `infra/<APP_NAME>/app-config/` modules
-* Remove the need for .tfvars files
-* Remove the configuration scripts that are currently used for configuring each infrastructure layer
+- Move all environment configuration into `infra/<APP_NAME>/app-config/` modules
+- Remove the need for .tfvars files
+- Remove the configuration scripts that are currently used for configuring each infrastructure layer
 
 Benefits:
 
-* All configuration can now be managed in the `infra/<APP_NAME>/app-config/` module.
-* All dependencies between root modules can be managed explicitly via the `infra/<APP_NAME>/app-config/` module.
-* Custom configuration scripts no longer need to be maintained
-* Eliminates the need to specify -var-file option when running terraform apply, which reduces the need for terraform wrapper scripts
+- All configuration can now be managed in the `infra/<APP_NAME>/app-config/` module.
+- All dependencies between root modules can be managed explicitly via the `infra/<APP_NAME>/app-config/` module.
+- Custom configuration scripts no longer need to be maintained
+- Eliminates the need to specify -var-file option when running terraform apply, which reduces the need for terraform wrapper scripts
 
 ## Links
 
-* Builds on [ADR-0004](./0004-separate-terraform-backend-configs-into-separate-config-files.md)
+- Builds on [ADR-2023-05-09](./2023-05-09-separate-terraform-backend-configs-into-separate-config-files.md)

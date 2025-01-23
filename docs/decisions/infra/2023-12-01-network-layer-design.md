@@ -1,7 +1,7 @@
 # Design of network layer
 
-* Deciders: @lorenyu @shawnvanderjagt
-* Date: 2023-12-01
+- Deciders: @lorenyu @shawnvanderjagt
+- Date: 2023-12-01
 
 ## Context and Problem Statement
 
@@ -49,9 +49,9 @@ module "[NETWORK_NAME]_network_config" {
 
 Each network config will have the following properties:
 
-* **account_name** — Name of the AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD
-* Each network will have three subnets, (1) a public subnet, (2) a private subnet for the application layer, and (3) a private subnet for the data layer
-* The network will also have different properties depending on the applications that are using the network (see [Application-specific network configuration](#application-specific-network-configuration))
+- **account_name** — Name of the AWS account that the VPC should be created in. Used to document which AWS account the network lives in and to determine which AWS account to authenticate into when making modifications to the network in scripts such as CI/CD
+- Each network will have three subnets, (1) a public subnet, (2) a private subnet for the application layer, and (3) a private subnet for the data layer
+- The network will also have different properties depending on the applications that are using the network (see [Application-specific network configuration](#application-specific-network-configuration))
 
 ### Add network_name tag to VPC
 
