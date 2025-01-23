@@ -14,7 +14,7 @@ Before setting up the application's environments you'll need to have:
    1. Make sure you update `has_database` to `true` or `false` (defaults to `true`) depending on whether or not your application has a database to integrate with.
    2. Make sure you update `has_external_non_aws_service` to `true` or `false` depending on whether your application utilizes any non-AWS services. Other applications within the same git repo count as external services, so if your application makes API calls to another application service in the same git repo, set `has_external_non_aws_service` to `true`.
    3. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
-   4. Make sure your application environment is using the AWS Account you want to use by checking the `account_name` property in the environment configuration and updating it if necessary.
+   4. Make sure your application environment is using the network/AWS Account you want to use by checking the `network_name` property in the environment configuration and what account it maps to in the project configuration. Update the values if necessary.
 4. [Create a nondefault VPC to be used by the application](./set-up-network.md)
 5. (If the application has external non-AWS services) [Set up network access to the public internet](./set-up-public-internet-access.md)
 6. (If the application has a database) [Set up the database for the application](./set-up-database.md)
@@ -26,7 +26,7 @@ Before setting up the application's environments you'll need to have:
 To create the `tfbackend` and `tfvars` files for the new application environment, run
 
 ```bash
-make infra-configure-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-configure-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 `APP_NAME` needs to be the name of the application folder within the `infra` folder.
@@ -44,8 +44,8 @@ There are two ways to do this:
 2. Alternatively, run the following from the root directory. This option can take much longer than the GitHub workflow, depending on your machine's architecture.
 
     ```bash
-    make release-build APP_NAME=app
-    make release-publish APP_NAME=app
+    make release-build APP_NAME=<APP_NAME>
+    make release-publish APP_NAME=<APP_NAME>
     ```
 
 Copy the image tag name that was published. You'll need this in the next step.
@@ -55,10 +55,10 @@ Copy the image tag name that was published. You'll need this in the next step.
 Now run the following commands to create the resources, using the image tag that was published in the previous step. Review the terraform before confirming "yes" to apply the changes.
 
 ```bash
-TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## 4. Configure monitoring alerts
 
-Configure email alerts, external incident management service integration and additional Cloudwatch Alerts.
+Configure email alerts, external incident management service integration and additional CloudWatch Alerts.
 [Configure monitoring module](./set-up-monitoring-alerts.md)

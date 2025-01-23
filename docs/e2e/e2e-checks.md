@@ -96,7 +96,7 @@ To clean the report folder you can run:
 make e2e-clean-report
 ```
 
->*On CI, the report shows up in the Github Actions artifacts tab
+>*On CI, the report shows up in the GitHub Actions artifacts tab
 
 
 ### PR preview environments

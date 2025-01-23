@@ -56,7 +56,7 @@ nslookup -type=NS <HOSTED_ZONE>
 
 Define the `domain_name` for each of the application environments in the `app-config` module. The `domain_name` must be either the same as the `hosted_zone` or a subdomain of the `hosted_zone`. For example, if your hosted zone is `platform-test.navateam.com`, then `platform-test.navateam.com` and `cdn.platform-test.navateam.com` are both valid values for `domain_name`.
 
-## 5. Create A (address) records to route traffice from the custom domain to your application's load balancer
+## 5. Create A (address) records to route traffic from the custom domain to your application's load balancer
 
 Run the following command to create the A record that routes traffic from the custom domain to the application's load balancer.
 
