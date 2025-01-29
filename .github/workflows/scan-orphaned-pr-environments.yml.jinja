@@ -12,7 +12,7 @@ jobs:
     name: Get app names
     runs-on: ubuntu-latest
     outputs:
-      app_names: ${{ steps.get-app-names.outputs.app_names }}
+      app_names: ${{"{{"}} steps.get-app-names.outputs.app_names {{"}}"}}
     steps:
       - uses: actions/checkout@v4
       - name: Get app names
@@ -22,7 +22,7 @@ jobs:
           app_names="$(get_app_names)"
           # turn app_names into a json list using jq
           app_names="$(echo "${app_names}" | jq -R -s -c 'split("\n")[:-1]')"
-          echo "App names retrieved: ${app_names}"
+          echo "{{ app_name}} names retrieved: ${app_names}"
           echo "app_names=${app_names}" >> "$GITHUB_OUTPUT"
         shell: bash
   scan:
@@ -33,7 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app_name: ${{ fromJson(needs.get-app-names.outputs.app_names) }}
+        app_name: ${{"{{"}} fromJson(needs.get-app-names.outputs.app_names) {{"}}"}}
 
     permissions:
       contents: read
@@ -49,14 +49,14 @@ jobs:
       - name: Configure AWS credentials
         uses: ./.github/actions/configure-aws-credentials
         with:
-          app_name: ${{ matrix.app_name }}
+          app_name: ${{"{{"}} matrix.app_name {{"}}"}}
           environment: dev
 
       - name: List PR workspaces
         run: |
-          ./bin/orphaned-pr-environments ${{ matrix.app_name }}
+          ./bin/orphaned-pr-environments ${{"{{"}} matrix.app_name {{"}}"}}
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{"{{"}} github.token {{"}}"}}
           TF_IN_AUTOMATION: "true"
 
   notify:
@@ -66,5 +66,5 @@ jobs:
     uses: ./.github/workflows/send-system-notification.yml
     with:
       channel: "workflow-failures"
-      message: "🧹 [Orphaned PR environments for ${{ github.repository }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+      message: "🧹 [Orphaned PR environments for ${{"{{"}} github.repository {{"}}"}}](https://github.com/${{"{{"}} github.repository {{"}}"}}/actions/runs/${{"{{"}} github.run_id {{"}}"}})"
     secrets: inherit
