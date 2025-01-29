@@ -1,0 +1,34 @@
+template:
+  type: str
+  choices:
+    - base
+    - app
+
+#
+# App vars
+#
+app_name:
+  type: str
+  help: The name of the app
+  validator: >-
+    {% if not (app_name | regex_search('^[a-z0-9\-_]+$')) %}
+    The app name can not be empty and should only contain lower case letters, digits, dashes, and underscores.
+    {% endif %}
+  when: &app
+    "{{ template == 'app' }}"
+
+_envops:
+  trim_blocks: true
+  lstrip_blocks: true
+
+_skip_if_exists:
+  - "/{{ app_name }}/"
+  - "/{{ app_name }}/Makefile"
+
+_exclude:
+  - /.git
+  - /copier.yml
+  - /CODEOWNERS
+  - /CONTRIBUTING.md
+  - /LICENSE.md
+  - /README.md
