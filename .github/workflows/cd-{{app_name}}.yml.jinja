@@ -1,7 +1,7 @@
-name: Deploy App
+name: Deploy {{ app_name}}
 # Need to set a default value for when the workflow is triggered from a git push
 # which bypasses the default configuration for inputs
-run-name: Deploy ${{ github.ref_name }} to App ${{ inputs.environment || 'dev' }}
+run-name: Deploy ${{"{{"}} github.ref_name {{"}}"}} to {{ app_name}} ${{"{{"}} inputs.environment || 'dev' {{"}}"}}
 
 on:
   # !! Uncomment the following lines once you've set up the dev environment and ready to turn on continuous deployment
@@ -9,7 +9,7 @@ on:
   #   branches:
   #     - "main"
   #   paths:
-  #     - "app/**"
+  #     - "{{ app_name }}/**"
   #     - "bin/**"
   #     - "infra/**"
   workflow_dispatch:
@@ -32,5 +32,5 @@ jobs:
     name: Deploy
     uses: ./.github/workflows/deploy.yml
     with:
-      app_name: ${{ inputs.app_name || 'app' }}
-      environment: ${{ inputs.environment || 'dev' }}
+      app_name: ${{"{{"}} inputs.app_name || 'app' {{"}}"}}
+      environment: ${{"{{"}} inputs.environment || 'dev' {{"}}"}}
