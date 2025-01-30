@@ -9,4 +9,4 @@ release-build:
 		.
 
 update-docker-digest:
-	../template-only-bin/update-docker-digest Dockerfile
+	./bin/update-docker-digest Dockerfile

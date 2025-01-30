@@ -15,6 +15,7 @@ COPY requirements.txt ./
 RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY db-migrate /usr/bin/
+COPY bin/healthcheck-netcat /usr/bin/healthcheck
 COPY migrations.sql /app/
 COPY *.py /app/
 COPY /templates /app/templates
@@ -25,6 +26,8 @@ ENV HOST=0.0.0.0
 
 # Run as non-root user
 USER app
+
+HEALTHCHECK CMD /usr/bin/healthcheck
 
 # Create a basic webserver and run it until the container is stopped
 CMD ["python", "-m", "app"]
