@@ -104,7 +104,7 @@ resource "aws_ecs_task_definition" "app" {
         retries  = 3,
         timeout  = 5,
         command = ["CMD-SHELL",
-          "wget --no-verbose --tries=1 --spider http://localhost:${var.container_port}/health || exit 1"
+          "([ -x \"$(command -v healthcheck)\" ] && healthcheck) || ([ -x \"$(command -v wget)\" ] && wget --quiet --output-document=/dev/null http://127.0.0.1:$PORT/health) || ([ -x \"$(command -v curl)\" ] && curl --fail --silent http://localhost:$PORT/health > /dev/null) || ([ -x \"$(command -v bash)\" ] && bash -c \"exec 3<>/dev/tcp/127.0.0.1/$PORT;echo -e 'GET /health HTTP/1.1\\r\\nHost: http://localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3;grep -q '^HTTP/.* 200 OK' <&3\") || exit 1"
         ]
       },
       environment = local.environment_variables,
