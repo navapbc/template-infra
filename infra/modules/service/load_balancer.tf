@@ -9,7 +9,7 @@ resource "aws_lb" "alb" {
   idle_timeout    = "120"
   internal        = false
   security_groups = [aws_security_group.alb.id]
-  subnets         = var.public_subnet_ids
+  subnets         = module.network.public_subnet_ids
 
   # Use a separate line to support automated terraform destroy commands
   # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
@@ -115,7 +115,7 @@ resource "aws_lb_target_group" "app_tg" {
   name_prefix          = "app-"
   port                 = var.container_port
   protocol             = "HTTP"
-  vpc_id               = var.vpc_id
+  vpc_id               = module.network.vpc_id
   target_type          = "ip"
   deregistration_delay = "30"
 
