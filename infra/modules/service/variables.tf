@@ -1,8 +1,3 @@
-variable "aws_services_security_group_id" {
-  type        = string
-  description = "Security group ID for VPC endpoints that access AWS Services"
-}
-
 variable "certificate_arn" {
   type        = string
   description = "The ARN of the certificate to use for the application"
@@ -129,14 +124,15 @@ variable "memory" {
   description = "Amount (in MiB) of memory used by the task. e.g. 2048"
 }
 
-variable "private_subnet_ids" {
-  type        = list(any)
-  description = "Private subnet ids in VPC"
+variable "network_name" {
+  type        = string
+  description = "The name of the network within which the service will run"
+
 }
 
-variable "public_subnet_ids" {
-  type        = list(any)
-  description = "Public subnet ids in VPC"
+variable "project_name" {
+  type        = string
+  description = "The name of the project"
 }
 
 variable "scheduled_jobs" {
@@ -165,7 +161,19 @@ variable "service_name" {
   }
 }
 
-variable "vpc_id" {
+# Custom Template-diverging variables
+variable "container_read_only" {
+  type        = bool
+  description = "Whether the container root filesystem should be read-only"
+  default     = true
+}
+
+variable "healthcheck_type" {
   type        = string
-  description = "Uniquely identifies the VPC."
+  description = "Whether to configure a curl or wget healthcheck. curl is more common. use wget for alpine-based images"
+  default     = "wget"
+  validation {
+    condition     = contains(["curl", "wget"], var.healthcheck_type)
+    error_message = "choose either: curl or wget"
+  }
 }
