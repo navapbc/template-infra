@@ -63,10 +63,8 @@ module "service" {
 
   image_tag = local.image_tag
 
-  vpc_id                         = module.network.vpc_id
-  public_subnet_ids              = module.network.public_subnet_ids
-  private_subnet_ids             = module.network.private_subnet_ids
-  aws_services_security_group_id = module.network.aws_services_security_group_id
+  network_name = local.environment_config.network_name
+  project_name = module.project_config.project_name
 
   domain_name     = module.domain.domain_name
   hosted_zone_id  = module.domain.hosted_zone_id

@@ -2,6 +2,12 @@
 # Network Configuration
 #-----------------------
 
+module "network" {
+  source       = "../../modules/network/data"
+  name         = var.network_name
+  project_name = var.project_name
+}
+
 resource "aws_security_group" "alb" {
   # Specify name_prefix instead of name because when a change requires creating a new
   # security group, sometimes the change requires the new security group to be created
@@ -17,7 +23,7 @@ resource "aws_security_group" "alb" {
     ignore_changes = [description]
   }
 
-  vpc_id = var.vpc_id
+  vpc_id = module.network.vpc_id
 
   # TODO(https://github.com/navapbc/template-infra/issues/163) Disallow incoming traffic to port 80
   # checkov:skip=CKV_AWS_260:Disallow ingress from 0.0.0.0:0 to port 80 when implementing HTTPS support in issue #163
@@ -53,7 +59,7 @@ resource "aws_security_group" "app" {
   # before the old one is destroyed. In this situation, the new one needs a unique name
   name_prefix = "${var.service_name}-app"
   description = "Allow inbound TCP access to application container port"
-  vpc_id      = var.vpc_id
+  vpc_id      = module.network.vpc_id
   lifecycle {
     create_before_destroy = true
   }
@@ -78,7 +84,7 @@ resource "aws_vpc_security_group_ingress_rule" "service_ingress_from_load_balanc
 }
 
 resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_service" {
-  security_group_id = var.aws_services_security_group_id
+  security_group_id = module.network.aws_services_security_group_id
   description       = "Allow inbound requests to VPC endpoints from role manager"
 
   from_port                    = 443

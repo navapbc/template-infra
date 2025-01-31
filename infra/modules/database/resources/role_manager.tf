@@ -24,7 +24,7 @@ resource "aws_lambda_function" "role_manager" {
   reserved_concurrent_executions = 1
 
   vpc_config {
-    subnet_ids         = var.private_subnet_ids
+    subnet_ids         = module.network.database_subnet_ids
     security_group_ids = [aws_security_group.role_manager.id]
   }
 

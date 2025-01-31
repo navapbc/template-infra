@@ -50,9 +50,7 @@ module "database" {
   source = "../../modules/database/resources"
   name   = "${local.prefix}${local.database_config.cluster_name}"
 
-  vpc_id                         = module.network.vpc_id
-  database_subnet_group_name     = module.network.database_subnet_group_name
-  private_subnet_ids             = module.network.database_subnet_ids
-  aws_services_security_group_id = module.network.aws_services_security_group_id
-  is_temporary                   = local.is_temporary
+  network_name = local.environment_config.network_name
+  project_name = module.project_config.project_name
+  is_temporary = local.is_temporary
 }
