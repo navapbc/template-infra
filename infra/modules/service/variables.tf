@@ -160,20 +160,3 @@ variable "service_name" {
     error_message = "use only lower case letters, numbers, dashes, and underscores"
   }
 }
-
-# Custom Template-diverging variables
-variable "container_read_only" {
-  type        = bool
-  description = "Whether the container root filesystem should be read-only"
-  default     = true
-}
-
-variable "healthcheck_type" {
-  type        = string
-  description = "Whether to configure a curl or wget healthcheck. curl is more common. use wget for alpine-based images"
-  default     = "wget"
-  validation {
-    condition     = contains(["curl", "wget"], var.healthcheck_type)
-    error_message = "choose either: curl or wget"
-  }
-}
