@@ -36,12 +36,12 @@ input -- depends on --> output
 
 **Do not** use [data sources](https://developer.hashicorp.com/terraform/language/data-sources) to reference resource dependencies in the same root module. A data source does not represent a dependency in [terraform's dependency graph](https://developer.hashicorp.com/terraform/internals/graph), and therefore there will potentially be a race condition, as Terraform will not know that it needs to create/update the resource in module A before it creates/updates the resource in module B that depends on it.
 
-## Use config modules and data resources to manage dependencies between root modules
+## Use config modules and data sources to manage dependencies between root modules
 
-If a resource in root module S depends on a resource in root module R, it is not possible to specify the dependency directly since the resources are managed in separate state files. In this situation, use a [data source](https://developer.hashicorp.com/terraform/language/data-sources) in module S to reference the resource in module R, and use a shared configuration module that specifies identifying information that is used both to create the resource in R and to query for the resource in S.
+If a resource in root module B depends on a resource in root module A, it is not possible to specify the dependency directly since the resources are managed in separate state files. In this situation, use a [data source](https://developer.hashicorp.com/terraform/language/data-sources) in module B to reference the resource in module R, and use a shared configuration module that specifies identifying information that is used both to create the resource in R and to query for the resource in B.
 
 ```terraform
-# root module R
+# root module A
 
 module "config" {
   ...
@@ -53,7 +53,7 @@ resource "parent" "p" {
 ```
 
 ```terraform
-# root module S
+# root module B
 
 module "config" {
   ...
@@ -77,11 +77,11 @@ subgraph config[config module]
   config_value[config value]
 end
 
-subgraph R[root module R]
+subgraph A[root module A]
   parent[parent resource]
 end
 
-subgraph S[root module S]
+subgraph B[root module B]
   data.parent[parent data source]
   child[child resource]
 end
@@ -90,3 +90,53 @@ parent -- depends on --> config_value
 data.parent -- depends on --> config_value
 child -- depends on --> data.parent
 ```
+
+### Create "data" modules to reference a group of resources created in another module
+
+Often, a root module B will depend on a group of related resources created in another root module A. Moreover, the resources in A are typically created by calling a reusable module in [infra/modules](/infra/modules/) rather than directly in the root module. In this situation, rather than create a separate config for each dependency, create a data module D that B can call to reference R's resources, and group D and R together in a folder e.g. `/infra/modules/<NAME>/resources` and `/infra/modules/<NAME>/data`. In order to DRY up how related resources are named, create an static `interface` module that both the `resources` module and `data` module can reference.
+
+```mermaid
+flowchart LR
+
+subgraph config[config module]
+  config_value[name]
+end
+
+subgraph A[root module A]
+end
+
+subgraph B[root module B]
+end
+
+subgraph group[module group]
+  direction LR
+  subgraph I[interface module]
+    I.input[name input]
+    I.output1[output 1]
+    I.output2[output 2]
+  end
+
+
+  subgraph R[resources module R]
+    r1[resource 1]
+    r2[resource 2]
+    r3[...]
+  end
+
+  subgraph D[data module D]
+    d1[data source 1]
+    d2[data source 2]
+    d3[...]
+  end
+end
+
+config_value ~~~ A
+A --> config_value
+B --> config_value
+A --> R
+B --> D
+R --> I
+D --> I
+```
+
+Note that the `data` module should only contain data sources, not resources. And the `interface` module should be static, containing only variables and outputs and no resources or data sources.
