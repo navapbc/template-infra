@@ -93,7 +93,85 @@ child -- depends on --> data.parent
 
 ### Create "data" modules to reference a group of resources created in another module
 
-Often, a root module B will depend on a group of related resources created in another root module A. Moreover, the resources in A are typically created by calling a reusable module in [infra/modules](/infra/modules/) rather than directly in the root module. In this situation, rather than create a separate config for each dependency, create a data module D that B can call to reference R's resources, and group D and R together in a folder e.g. `/infra/modules/<NAME>/resources` and `/infra/modules/<NAME>/data`. In order to DRY up how related resources are named, create an static `interface` module that both the `resources` module and `data` module can reference.
+Often, a root module B will depend on a group of related resources created in another root module A. Moreover, the resources in A are typically created by calling a reusable module in [infra/modules](/infra/modules/) rather than directly in the root module. In this situation, rather than create a separate config for each dependency, create a data module D that B can call to reference R's resources, and group D and R together in a folder e.g. `/infra/modules/component/resources` and `/infra/modules/component/data`. In order to DRY up how related resources are named, create an static `interface` module that both the `resources` module and `data` module can reference. The `interface` module should typically have only one variable as input, the `name` of the group of resources, and the outputs should be the names of related resources in the group.
+
+```terraform
+# root module A
+
+module "config" {
+  ...
+}
+
+module "component" {
+  source = "../modules/component/resources"
+  name   = module.config.component_name
+}
+```
+
+```terraform
+# root module B
+
+module "config" {
+  ...
+}
+
+module "component" {
+  source = "../modules/component/data"
+  name   = module.config.component_name
+}
+```
+
+```terraform
+# resources module infra/modules/component/resources
+
+module "interface" {
+  source = "../interface"
+}
+
+resource "r1" "r1" {
+  name = module.interface.r1_name
+}
+
+resource "r2" "r2" {
+  name = module.interface.r2_name
+}
+```
+
+```terraform
+# data module infra/modules/component/data
+
+module "interface" {
+  source = "../interface"
+}
+
+data "d1" "d1" {
+  name = module.interface.r1_name
+}
+
+data "d2" "d2" {
+  name = module.interface.r2_name
+}
+```
+
+```terraform
+# interface module infra/modules/<NAME>/interface
+
+variable "name" {
+  ...
+}
+
+output "r1_name" {
+  value = "${var.name}-r1"
+}
+
+output "r2_name" {
+  value = "${var.name}-r2"
+}
+```
+
+Grouping the data sources into a separate module abstracts away the specific data sources needed by the root module, and allows the root module to reference the group of resources as a single entity. It also reduces the amount of code in the root module itself, making it easier to read and maintain. Note that the `data` module should only contain data sources, not resources.
+
+Generating related resource names via an internal "interface" module ensures that the names of the resources are consistent across the `resources` and `data` modules without exposing them as variables to the modules. This reduces the number of possible configurations and therefore reduces the number of parameters needed in the `project-config` and `app-config` modules. Not that the `interface` module should be static, containing only variables and outputs. It should not contain resources or data sources.
 
 ```mermaid
 flowchart LR
@@ -138,5 +216,3 @@ B --> D
 R --> I
 D --> I
 ```
-
-Note that the `data` module should only contain data sources, not resources. And the `interface` module should be static, containing only variables and outputs and no resources or data sources.
