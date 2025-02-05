@@ -171,7 +171,7 @@ output "r2_name" {
 
 Grouping the data sources into a separate module abstracts away the specific data sources needed by the root module, and allows the root module to reference the group of resources as a single entity. It also reduces the amount of code in the root module itself, making it easier to read and maintain. Note that the `data` module should only contain data sources, not resources.
 
-Generating related resource names via an internal "interface" module ensures that the names of the resources are consistent across the `resources` and `data` modules without exposing them as variables to the modules. This reduces the number of possible configurations and therefore reduces the number of parameters needed in the `project-config` and `app-config` modules. Not that the `interface` module should be static, containing only variables and outputs. It should not contain resources or data sources.
+Generating related resource names via an internal "interface" module ensures that the names of the resources are consistent across the `resources` and `data` modules without exposing them as variables to the modules. This reduces the number of possible configurations and therefore reduces the number of parameters needed in the `project-config` and `app-config` modules. Note that the `interface` module should be static, containing only variables and outputs. It should not contain resources or data sources.
 
 ```mermaid
 flowchart LR
