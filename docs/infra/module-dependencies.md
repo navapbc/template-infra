@@ -102,6 +102,7 @@ module "config" {
   ...
 }
 
+# Create the group of resources that make up "component"
 module "component" {
   source = "../modules/component/resources"
   name   = module.config.component_name
@@ -115,6 +116,7 @@ module "config" {
   ...
 }
 
+# Reference the group of resources that make up "component"
 module "component" {
   source = "../modules/component/data"
   name   = module.config.component_name
