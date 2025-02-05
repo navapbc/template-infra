@@ -154,7 +154,7 @@ data "d2" "d2" {
 ```
 
 ```terraform
-# interface module infra/modules/<NAME>/interface
+# interface module infra/modules/component/interface
 
 variable "name" {
   ...
