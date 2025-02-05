@@ -1,5 +1,5 @@
 # Run `make update-docker-digest` to update the image
-FROM python:3-alpine@sha256:657dbdb20479a6523b46c06114c8fec7db448232f956a429d3cc0606d30c1b59 as release
+FROM python:3-alpine@sha256:657dbdb20479a6523b46c06114c8fec7db448232f956a429d3cc0606d30c1b59 AS release
 
 RUN adduser --system --disabled-password --no-create-home app
 
