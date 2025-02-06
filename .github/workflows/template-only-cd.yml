@@ -22,13 +22,6 @@ jobs:
           - navapbc/platform-test-nextjs
           - navapbc/pfml-starter-kit-app
     steps:
-      - name: Checkout template-infra repo
-        uses: actions/checkout@v4
-        with:
-          path: template-infra
-          # Fetch history because the Platform CLI needs it to do the update
-          fetch-depth: 0
-
       - name: Checkout project repo
         uses: actions/checkout@v4
         with:
@@ -53,7 +46,13 @@ jobs:
 
       - name: Update infra template
         working-directory: project-repo
-        run: nava-platform infra update --template-uri ../template-infra --version HEAD .
+        run: nava-platform infra update --template-uri ${{ github.server_url }}/${{ github.repository }} --version HEAD .
+
+      - name: Checkout template-infra repo (for example app)
+        if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
+        uses: actions/checkout@v4
+        with:
+          path: template-infra
 
       - name: Install example app
         if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
