@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+
+printf 'GET /health HTTP/1.1\r\nHost: http://localhost\r\nConnection: close\r\n\r\n' | nc 127.0.0.1 "${PORT}" | grep '^HTTP/1.1 200 OK'
