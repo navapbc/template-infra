@@ -169,3 +169,9 @@ variable "vpc_id" {
   type        = string
   description = "Uniquely identifies the VPC."
 }
+
+variable "ephemeral_write_volumes" {
+  type        = set(string)
+  description = "A set of absolute paths in the container to be mounted as writable for the life of the task. These need to be declared with `VOLUME` instructions in the container build file."
+  default     = []
+}
