@@ -26,17 +26,13 @@ The goal is to design a notifications infrastructure that simplifies setup for p
 
 ### Consideration 1: Which domain should be used for the sender's email address?
 
-1. **Option 1**: Use the domain of the app.
+1. **Option 1 (Chosen)**: Use the domain of the app.
    - **Pros**:
      - Simplifies the developer experience by allowing reuse of the custom app domain already being set up.
-   - **Cons**:
-     - Requires [BYODKIM (Bring Your Own DKIM)](https://docs.aws.amazon.com/ses/latest/dg/send-email-authentication-dkim-bring-your-own.html), which involves generating public/private key pairs out of band, adding complexity to maintain key pairs securely since the Terraform [tls_private_key](https://registry.terraform.io/providers/hashicorp/tls/latest/docs/resources/private_key) resource is not recommended for production.
 
-2. **Option 2 (Chosen)**: Use the domain of the environment (e.g., hosted zone).
-   - **Pros**:
-     - Leverages Amazon’s Easy DKIM, simplifying setup by automatically managing public/private keys.
+2. **Option 2**: Use the domain of the environment (e.g., hosted zone).
    - **Cons**:
-     - In multi-app repositories, applications that share environments (dev, staging, prod) and hosted zones cannot create their own domain email identity since it would create a naming conflict. Therefore, enabling notifications for a second app requires custom work to allow sharing of the notification resources from the first app.
+     - There may be naming conflicts across environments or across apps in the same environment if they share a hosted zone.
 
 ### Consideration 2: Where should notifications resources be defined?
 
@@ -54,17 +50,10 @@ The goal is to design a notifications infrastructure that simplifies setup for p
      - Adds conceptual complexity to the infrastructure by creating a new separate layer
      - Adds operational complexity by requiring the notifications layer to be separately deployed
 
-3. **Option 3**: Create resources in the service layer for each app needing notifications.
+3. **Option 3 (Chosen)**: Create resources in the service layer for each app needing notifications.
    - **Pros**:
      - Simplest to understand as it mirrors the structure of the rest of the infrastructure
-   - **Cons**:
-     - Only feasible if domains are not shared across multiple applications i.e. we use the domain of the app for sender email notifications, which was not the chosen option due to other factors.
-
-4. **Option 4 (Chosen)**: Create resources in the service layer of one app and require custom work for others to access the notifications service in the app that contains that service.
-   - **Pros**:
-     - As simple as Option 3 for projects where only one app needs to send notifications, which is the common case
-   - **Cons**:
-     - May require custom work in cases where more than one app needs to send notifications
+     - Email identities won't conflict since each application uses their own domain
 
 ### Consideration 3: Which layer should contain DKIM and DMARC DNS Records?
 
@@ -75,11 +64,13 @@ The goal is to design a notifications infrastructure that simplifies setup for p
 2. **Option 2 (Chosen)**: Create records in the service layer.
    - **Pros**:
      - Mirrors design for A records for custom domains which are also in the service layer
+   - **Cons**:
+     - Some agencies do not allow projects to manage their own DNS, even for a subdomain, forcing the project to do custom work to accommodate.
 
 ## Decision Outcome
 
 **Summary of chosen options**:
 
-- Use the domain of the environment (e.g. hosted zone) for the sender's email address.
-- Create resources in the service layer of one app and require custom work for other applications in the same repo to access the notifications service.
-- Create DKIM and DMARC DNS Records in the service layer.
+- Use the domain of the app.
+- Create resources in the service layer for each app needing notifications.
+- Create records in the service layer.
