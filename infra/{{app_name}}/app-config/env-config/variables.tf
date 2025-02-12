@@ -60,6 +60,12 @@ variable "extra_identity_provider_logout_urls" {
   default     = []
 }
 
+variable "feature_flags_override" {
+  type        = map(string)
+  description = "Map of overrides for feature flags"
+  default     = {}
+}
+
 variable "has_database" {
   type = bool
 }
