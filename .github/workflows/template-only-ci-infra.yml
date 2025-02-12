@@ -12,7 +12,7 @@ on:
       - template-only-infra/**
       - template-only-test/**
       - .github/workflows/template-only-ci-infra.yml
-      - app/Dockerfile
+      - template-only-app/Dockerfile
   workflow_dispatch:
 
 # For now, only allow one workflow run at a time, since this provisions an OIDC
@@ -32,14 +32,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout template-infra repo
+        uses: actions/checkout@v4
+        with:
+          path: template-infra
 
       - name: Set up Terraform
-        uses: ./.github/actions/setup-terraform
+        uses: ./template-infra/.github/actions/setup-terraform
+        with:
+          version-file: ./template-infra/.terraform-version
 
       - uses: actions/setup-go@v5
         with:
-          go-version: ">=1.19.0"
+          go-version-file: ./template-infra/template-only-test/go.mod
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install nava-platform CLI
+        run: pipx install --python "$(which python)" git+https://github.com/navapbc/platform-cli
+
+      - name: Install infra template
+        run: |
+          # Note: project_name can't be too long since S3 bucket names have a 63
+          # character max length, $RANDOM has a max value of 32767
+          unique_id=$(printf '%.5d' $((RANDOM)))
+          project_name=plt-tst-act-${unique_id}
+          echo "PROJECT_NAME=${project_name}"
+          echo "PROJECT_NAME=${project_name}" >> "$GITHUB_ENV"
+
+          # TODO: add --data-file support to CLI and have as many of these
+          # settings in more maintainable separate file
+          nava-platform infra install --template-uri ./template-infra --version HEAD \
+          --data base_project_name="${project_name}" \
+          --data base_owner=platform-admins \
+          --data base_code_repository_url=${{ github.repositoryUrl }} \
+          --data base_default_region=us-east-1 \
+          --data app_name=app \
+          --data app_local_port=3000 \
+          --data app_has_dev_env_setup=true \
+          project-dir
+
+      - name: Copy template-only things to project copy of template
+        run: |
+          cp -vr ./template-infra/template-only* ./project-dir
+
+      - name: Install example app for infra tests
+        run: |
+          cp -vfr ./project-dir/template-only-app/* ./project-dir/app
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -47,7 +90,7 @@ jobs:
 
           # Use access key credentials for the template infra test workflow
           # instead of using GitHub OIDC because only one GitHub OIDC provider
-          # can be added to the Platform accoutn, and we want to create a
+          # can be added to the Platform account, and we want to create a
           # GitHub OIDC provider as part of the template test.
           # (see https://docs.aws.amazon.com/cli/latest/reference/iam/create-open-id-connect-provider.html)
           #
@@ -56,7 +99,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
 
       - name: Run Terratest
+        working-directory: project-dir
         run: make -f template-only.mak test
         env:
           # GitHub token needed for GitHub CLI which is used during tests to check GitHub Actions auth
           GH_TOKEN: ${{ secrets.PLATFORM_TESTER_GITHUB_TOKEN }}
+          IMAGE_TAG: ${{ github.sha }}
+          PROJECT_NAME: ${{ env.PROJECT_NAME }}

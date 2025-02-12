@@ -19,13 +19,13 @@ brew install tfenv
 Then install the version of Terraform you need.
 
 ```bash
-tfenv install 1.8.0
+tfenv install 1.10.5
 ```
 
 You may need to set the Terraform version.
 
 ```bash
-tfenv use 1.8.0
+tfenv use 1.10.5
 ```
 
 ### Install AWS CLI

@@ -9,9 +9,7 @@ These steps are a minimal starting point for the changes you'll need to make. As
 
 ## 1. Creating a new DBParameterGroup and upgrading the database
 
-1. Set `allow_major_version_upgrade = true`
-
-Set the `aws_rds_cluster` resource in [infra/modules/database/main.tf#L20](../../infra/modules/database/main.tf).
+1. Set `allow_major_version_upgrade = true` in the `aws_rds_cluster` resource in [infra/modules/database/resources/](../../infra/modules/database/resources/).
 
 2. (if needed) Update the `serverlessv2_scaling_configuration`
 

@@ -10,9 +10,10 @@ The structure for the infrastructure code looks like this:
 infra/                  Infrastructure code
   project-config/       Project-level configuration for account-level resources and resource tags
   accounts/             [Root module] IaC and IAM resources
-  [app_name]/           Application directory: infrastructure for the main application
+  <APP_NAME>/           Application directory(-ies): infrastructure for the application <APP_NAME>
   modules/              Reusable child modules
   networks/             [Root module] Account level network config (shared across all apps, environments, and terraform workspaces)
+  test/                 Infrastructure tests
 ```
 
 Each application directory contains the following:
@@ -55,7 +56,7 @@ This project has the following AWS environments:
 - `staging`
 - `prod`
 
-The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/backend#file) files. Most `.tfbackend` files are named after the environment. For example, the `[app_name]/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
+The environments share the same root modules but will have different configurations. Backend configuration is saved as [`.tfbackend`](https://developer.hashicorp.com/terraform/language/backend#file) files. Most `.tfbackend` files are named after the environment. For example, the `<APP_NAME>/service` infrastructure resources for the `dev` environment are configured via `dev.s3.tfbackend`. Resources for a module that are shared across environments, such as the build-repository, use `shared.s3.tfbackend`. Resources that are shared across the entire account (e.g. /infra/accounts) use `<account name>.<account id>.s3.tfbackend`.
 
 ### 🔀 Project workflow
 
@@ -70,12 +71,12 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
 1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
-2. [Configure the project](/infra/project-config/main.tf) (These values will be used in subsequent infra setup steps to namespace resources and add infrastructure tags.)
-3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-4. [Set up AWS account](/docs/infra/set-up-aws-account.md)
-5. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
-6. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
-7. For each application:
+    1. <!-- markdown-link-check-disable-line --> You may need to tweak the generated [project configuration](/infra/project-config/main.tf) depending on your needs.
+2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
+3. [Set up AWS account](/docs/infra/set-up-aws-account.md)
+4. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
+5. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
+6. For each application:
     1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
     2. [Set up application database](/docs/infra/set-up-database.md)
     3. [Set up application environment](/docs/infra/set-up-app-env.md)

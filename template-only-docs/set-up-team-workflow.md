@@ -45,7 +45,7 @@ In Settings > Code security and analysis, enable the following features:
   - CodeQL analysis - follow GitHub's flow for configuring CodeQL. The "Default" set up option is typically all that's needed for JS and Python codebases.
 - Secret scanning
 
-## Other Github features
+## Other GitHub features
 
 In Settings > General > Features, enable/disable features that you want for your project. For example, turn off the Wiki if your project won't be using it
 

@@ -27,8 +27,8 @@ To create the `tfbackend` file for the new application environment, run
 make infra-configure-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-`APP_NAME` needs to be the name of the application folder within the `infra` folder. By default, this is `app`.
-`ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/app/service` module directory.
+`APP_NAME` needs to be the name of the application folder within the `infra` folder.
+`ENVIRONMENT` needs to be the name of the environment you are creating. This will create a file called `<ENVIRONMENT>.s3.tfbackend` in the `infra/<APP_NAME>/service` module directory.
 
 ### (Optional) Enable any database extensions that require `rds_superuser`
 
@@ -37,7 +37,7 @@ To enable some extensions, such as [pgvector](https://github.com/pgvector/pgvect
 For example, to enable the pgvector extension:
 
 ```terraform
-# infra/app/app-config/env-config/main.tf
+# infra/<APP_NAME>/app-config/env-config/main.tf
 
 database_config = {
   ...
@@ -57,7 +57,7 @@ If you're not sure whether you need to do anything here, you can skip this and c
 Now run the following commands to create the resources. Review the terraform before confirming "yes" to apply the changes. This can take over 5 minutes.
 
 ```bash
-make infra-update-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## 3. Create Postgres users
@@ -65,7 +65,7 @@ make infra-update-app-database APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
 Trigger the role manager Lambda function that was created in the previous step to create the application and `migrator` Postgres users.
 
 ```bash
-make infra-update-app-database-roles APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-update-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 The Lambda function's response should describe the resulting PostgreSQL roles and groups that are configured in the database. It should look like a minified version of the following:
@@ -103,14 +103,14 @@ The role manager executes the following statement as part of database setup:
 ALTER DEFAULT PRIVILEGES IN SCHEMA app GRANT ALL ON TABLES TO app
 ```
 
-This will cause all future tables created by the `migrator` user to automatically be accessible by the `app` user. See the [Postgres docs on ALTER DEFAULT PRIVILEGES](https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html) for more info. As an example see the example app's migrations file [migrations.sql](https://github.com/navapbc/template-infra/blob/main/app/migrations.sql).
+This will cause all future tables created by the `migrator` user to automatically be accessible by the `app` user. See the [Postgres docs on ALTER DEFAULT PRIVILEGES](https://www.postgresql.org/docs/current/sql-alterdefaultprivileges.html) for more info. As an example see the example app's migrations file [migrations.sql](https://github.com/navapbc/template-infra/blob/main/template-only-app/migrations.sql).
 
 Why is this needed? The reason is that the `migrator` role will be used by the migration task to run database migrations (creating tables, altering tables, etc.), while the `app` role will be used by the web service to access the database. Moreover, in Postgres, new tables won't automatically be accessible by roles other than the creator unless specifically granted, even if those other roles have usage access to the schema that the tables are created in. In other words, if the `migrator` user created a new table `foo` in the `app` schema, the `app` user will not automatically be able to access it by default.
 
 ## 4. Check that database roles have been configured properly
 
 ```bash
-make infra-check-app-database-roles APP_NAME=app ENVIRONMENT=<ENVIRONMENT>
+make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
 ## Set up application environments

@@ -4,18 +4,18 @@ This log lists the architectural decisions for [project name].
 
 <!-- adrlog -- Regenerate the content by using "adr-log -i -e template.md". You can install it via "npm install -g adr-log" -->
 
-* [ADR-0000](infra/0000-use-markdown-architectural-decision-records.md) - Use Markdown Architectural Decision Records
-* [ADR-0001](infra/0001-ci-cd-interface.md) - CI/CD Interface
-* [ADR-0002](infra/0002-use-custom-implementation-of-github-oidc.md) - Use custom implementation of GitHub OIDC to authenticate GitHub actions with AWS rather than using module in Terraform Registry
-* [ADR-0003](infra/0003-manage-ecr-in-prod-account-module.md) - Manage ECR in prod account module
-* [ADR-0004](infra/0004-separate-terraform-backend-configs-into-separate-config-files.md) - Separate tfbackend configs into separate files
-* [ADR-0005](infra/0005-separate-database-infrastructure-into-separate-layer.md) - Separate the database infrastructure into a separate layer
-* [ADR-0006](infra/0006-provision-database-users-with-serverless-function.md) - Provision database users with serverless function
-* [ADR-0007](infra/0007-database-migration-architecture.md) - Database Migration Infrastructure and Deployment
-* [ADR-0008](infra/0008-consolidate-infra-config-from-tfvars-files-into-config-module.md) - Consolidate infra configuration from .tfvars files into config module
-* [ADR-0009](infra/0009-separate-app-infrastructure-into-layers.md) - Separate app infrastructure into layers
-* [ADR-0010](infra/0010-feature-flags-system-design.md) - Feature flags system design
-* [ADR-0011](infra/0011-network-layer-design.md) - Design of network layer
+* [ADR-2022-10-01](infra/2022-10-01-use-markdown-architectural-decision-records.md) - Use Markdown Architectural Decision Records
+* [ADR-2022-10-04](infra/2022-10-04-ci-cd-interface.md) - CI/CD Interface
+* [ADR-2022-10-05](infra/2022-10-05-use-custom-implementation-of-github-oidc.md) - Use custom implementation of GitHub OIDC to authenticate GitHub actions with AWS rather than using module in Terraform Registry
+* [ADR-2022-10-07](infra/2022-10-07-manage-ecr-in-prod-account-module.md) - Manage ECR in prod account module
+* [ADR-2023-05-09](infra/2023-05-09-separate-terraform-backend-configs-into-separate-config-files.md) - Separate tfbackend configs into separate files
+* [ADR-2023-05-25](infra/2023-05-25-provision-database-users-with-serverless-function.md) - Provision database users with serverless function
+* [ADR-2023-05-25](infra/2023-05-25-separate-database-infrastructure-into-separate-layer.md) - Separate the database infrastructure into a separate layer
+* [ADR-2023-06-05](infra/2023-06-05-database-migration-architecture.md) - Database Migration Infrastructure and Deployment
+* [ADR-2023-09-07](infra/2023-09-07-consolidate-infra-config-from-tfvars-files-into-config-module.md) - Consolidate infra configuration from .tfvars files into config module
+* [ADR-2023-09-11](infra/2023-09-11-separate-app-infrastructure-into-layers.md) - Separate app infrastructure into layers
+* [ADR-2023-11-28](infra/2023-11-28-feature-flags-system-design.md) - Feature flags system design
+* [ADR-2023-12-01](infra/2023-12-01-network-layer-design.md) - Design of network layer
 * [ADR-2025-01-09](infra/2025-01-09-notifications-architecture.md) - Notifications Architecture
 
 <!-- adrlogstop -->

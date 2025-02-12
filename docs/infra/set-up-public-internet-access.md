@@ -13,7 +13,7 @@ Note: To access services that are provided directly by AWS, you can access them 
 
 ## 1. Configure `has_external_non_aws_service` property in app-config module
 
-In the `infra/<app_name>/app-config` module, set `has_external_non_aws_service` to `true`.
+In the `infra/<APP_NAME>/app-config` module, set `has_external_non_aws_service` to `true`.
 
 ## 2. Create or update the network
 
