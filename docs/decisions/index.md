@@ -16,6 +16,7 @@ This log lists the architectural decisions for [project name].
 * [ADR-2023-09-11](infra/2023-09-11-separate-app-infrastructure-into-layers.md) - Separate app infrastructure into layers
 * [ADR-2023-11-28](infra/2023-11-28-feature-flags-system-design.md) - Feature flags system design
 * [ADR-2023-12-01](infra/2023-12-01-network-layer-design.md) - Design of network layer
+* [ADR-2025-01-09](infra/2025-01-09-notifications-architecture.md) - Notifications Architecture
 
 <!-- adrlogstop -->
 
