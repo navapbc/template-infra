@@ -1,8 +1,3 @@
-variable "aws_services_security_group_id" {
-  type        = string
-  description = "Security group ID for VPC endpoints that access AWS Services"
-}
-
 variable "database_name" {
   description = "the name of the Postgres database. Defaults to 'app'."
   default     = "app"
@@ -10,11 +5,6 @@ variable "database_name" {
     condition     = can(regex("^[_\\da-z]+$", var.database_name))
     error_message = "use only lower case letters, numbers, and underscores (no dashes)"
   }
-}
-
-variable "database_subnet_group_name" {
-  type        = string
-  description = "Name of database subnet group"
 }
 
 variable "is_temporary" {
@@ -32,17 +22,17 @@ variable "name" {
   }
 }
 
+variable "network_name" {
+  description = "The name of the network within which the database will run"
+  type        = string
+}
+
 variable "port" {
   description = "value of the port on which the database accepts connections. Defaults to 5432."
   default     = 5432
 }
 
-variable "private_subnet_ids" {
-  type        = list(any)
-  description = "list of private subnet IDs to put the role provisioner and role checker lambda functions in"
-}
-
-variable "vpc_id" {
+variable "project_name" {
+  description = "The name of the project"
   type        = string
-  description = "Uniquely identifies the VPC."
 }
