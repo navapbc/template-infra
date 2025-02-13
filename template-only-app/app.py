@@ -53,9 +53,9 @@ def migrations():
 
 @app.route("/feature-flags")
 def feature_flags():
-    foo_status = "enabled" if is_feature_enabled("foo") else "disabled"
-    bar_status = "enabled" if is_feature_enabled("bar") else "disabled"
-    return f"<p>Feature foo is {foo_status}</p><p>Feature bar is {bar_status}</p>"
+    foo_status = "enabled" if is_feature_enabled("FOO") else "disabled"
+    bar_status = "enabled" if is_feature_enabled("BAR") else "disabled"
+    return f"<p>Feature FOO is {foo_status}</p><p>Feature BAR is {bar_status}</p>"
 
 
 @app.route("/document-upload")

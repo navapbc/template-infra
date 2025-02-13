@@ -3,7 +3,7 @@ locals {
 
   feature_flags_secrets = [
     for feature_flag in keys(local.feature_flags_config) : {
-      name      = upper("ff_${feature_flag}")
+      name      = "FF_${feature_flag}"
       valueFrom = module.feature_flags.ssm_parameter_arns[feature_flag]
     }
   ]

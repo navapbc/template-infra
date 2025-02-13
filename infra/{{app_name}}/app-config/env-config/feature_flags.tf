@@ -1,8 +1,8 @@
 locals {
   feature_flags_config = merge(
     {
-      foo = false
-      bar = false
+      FOO = false
+      BAR = false
     },
     var.feature_flags_override
   )

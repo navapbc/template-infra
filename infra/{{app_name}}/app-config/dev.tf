@@ -24,6 +24,6 @@ module "dev_config" {
   # enable_command_execution = true
 
   feature_flags_override = {
-    bar = true
+    BAR = true
   }
 }
