@@ -1,16 +1,22 @@
 # Network Configuration
 # ---------------------
 
+module "network" {
+  source       = "../../network/data"
+  name         = var.network_name
+  project_name = var.project_name
+}
+
 resource "aws_security_group" "db" {
   name_prefix = "${var.name}-db"
   description = "Database layer security group"
-  vpc_id      = var.vpc_id
+  vpc_id      = module.network.vpc_id
 }
 
 resource "aws_security_group" "role_manager" {
   name_prefix = "${var.name}-role-manager"
   description = "Database role manager security group"
-  vpc_id      = var.vpc_id
+  vpc_id      = module.network.vpc_id
 }
 
 resource "aws_vpc_security_group_egress_rule" "role_manager_egress_to_db" {
@@ -40,11 +46,11 @@ resource "aws_vpc_security_group_egress_rule" "role_manager_egress_to_vpc_endpoi
   from_port                    = 443
   to_port                      = 443
   ip_protocol                  = "tcp"
-  referenced_security_group_id = var.aws_services_security_group_id
+  referenced_security_group_id = module.network.aws_services_security_group_id
 }
 
 resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_role_manager" {
-  security_group_id = var.aws_services_security_group_id
+  security_group_id = module.network.aws_services_security_group_id
   description       = "Allow inbound requests to VPC endpoints from role manager"
 
   from_port                    = 443
