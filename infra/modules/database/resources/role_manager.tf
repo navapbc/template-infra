@@ -74,18 +74,28 @@ data "aws_secretsmanager_secret" "db_password" {
 resource "aws_iam_role" "role_manager" {
   name               = "${var.name}-manager"
   assume_role_policy = data.aws_iam_policy_document.role_manager_assume_role.json
-  managed_policy_arns = [
-    data.aws_iam_policy.lambda_vpc_access.arn,
-
-    # Grant the role manager access to the DB as app and migrator users
-    # so that it can performance database checks. This is needed by
-    # the infra database tests
-    aws_iam_policy.app_db_access.arn,
-    aws_iam_policy.migrator_db_access.arn
-  ]
 }
 
+resource "aws_iam_role_policy_attachment" "role_manager_vpc_access" {
+  role       = aws_iam_role.role_manager.name
+  policy_arn = data.aws_iam_policy.lambda_vpc_access.arn
+}
 
+resource "aws_iam_role_policy_attachment" "role_manager_app_db_access" {
+  # Grants the role manager access to the DB as app and migrator users
+  # so that it can performance database checks. This is needed by
+  # the infra database tests
+  role       = aws_iam_role.role_manager.name
+  policy_arn = aws_iam_policy.app_db_access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "role_manager_migrator_db_access" {
+  # Grants the role manager access to the DB as app and migrator users
+  # so that it can performance database checks. This is needed by
+  # the infra database tests
+  role       = aws_iam_role.role_manager.name
+  policy_arn = aws_iam_policy.migrator_db_access.arn
+}
 
 resource "aws_iam_role_policy" "role_manager_access_to_db_password" {
   name = "${var.name}-role-manager-ssm-access"
