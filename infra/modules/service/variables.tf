@@ -160,3 +160,9 @@ variable "service_name" {
     error_message = "use only lower case letters, numbers, dashes, and underscores"
   }
 }
+
+variable "ephemeral_write_volumes" {
+  type        = set(string)
+  description = "A set of absolute paths in the container to be mounted as writable for the life of the task. These need to be declared with `VOLUME` instructions in the container build file."
+  default     = []
+}
