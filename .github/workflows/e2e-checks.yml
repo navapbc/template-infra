@@ -37,4 +37,4 @@ jobs:
         run: npm ci
 
       - name: Check formatting
-        run: npm run format:check
+        run: npm run e2e-format:check
