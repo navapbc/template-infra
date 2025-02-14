@@ -34,7 +34,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache-node.outputs.cache-hit != 'true'
-        run: npm ci
+        run: make e2e-install-ci
 
       - name: Check formatting
         run: npm run e2e-format:check
