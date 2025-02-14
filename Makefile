@@ -96,7 +96,7 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 	rm -rf ./e2e/test-results
 
 e2e-format-check-native: ## Check formatting natively
-	cd e2e && npm run format:check
+	cd e2e && npm run e2e-format:check
 
 e2e-install-ci-native: ## Install dependencies natively
 	cd e2e && npm ci
