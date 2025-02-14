@@ -37,4 +37,4 @@ jobs:
         run: make e2e-install-ci-native
 
       - name: Check formatting
-        run: npm run e2e-format:check
+        run: make e2e-format-check-native
