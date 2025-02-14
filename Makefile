@@ -31,6 +31,11 @@ __check_defined = \
 	e2e-clean \
 	e2e-clean-image \
 	e2e-clean-report \
+	e2e-format \
+	e2e-format-check \
+	e2e-format-check-native \
+	e2e-format-native \
+	e2e-install-ci-native \
 	e2e-merge-reports \
 	e2e-setup-ci \
 	e2e-setup-native \
@@ -98,14 +103,14 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 e2e-format: ## Format code with autofix inside Docker
 	docker run --rm -v $(PWD)/e2e:/e2e node:22-alpine sh -c "cd /e2e && npm run e2e-format"
 
-e2e-format-native: ## Format code with autofix natively
-	cd e2e && npm run e2e-format
-
 e2e-format-check: ## Format check without autofix inside Docker
 	docker run --rm -v $(PWD)/e2e:/e2e node:22-alpine sh -c "cd /e2e && npm run e2e-format:check"
 
 e2e-format-check-native: ## Format check without autofix natively
 	cd e2e && npm run e2e-format:check
+
+e2e-format-native: ## Format code with autofix natively
+	cd e2e && npm run e2e-format
 
 e2e-install-ci-native: ## Install dependencies natively
 	cd e2e && npm ci
