@@ -2,13 +2,13 @@
     "name": "e2e",
     "version": "1.0.0",
     "scripts": {
+        "e2e-format": "prettier --write .",
+        "e2e-format:check": "prettier --check .",
         "e2e-merge-reports": "npx playwright merge-reports --reporter html blob-report",
         "e2e-setup": "npx playwright install --with-deps",
         "e2e-show-report": "npx playwright show-report",
         "e2e-test": "./run-e2e-test",
-        "e2e-test:ui": "./run-e2e-test --ui",
-        "e2e-format": "prettier --write .",
-        "e2e-format:check": "prettier --check ."
+        "e2e-test:ui": "./run-e2e-test --ui"
     },
     "devDependencies": {
         "@playwright/test": "^1.49.0",
