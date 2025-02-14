@@ -4,8 +4,12 @@ run-name: E2E Code Quality Checks
 on:
   pull_request:
     branches: [ main ]
+    paths:
+      - 'e2e/**'
   push:
     branches: [ main ]
+    paths:
+      - 'e2e/**'
 
 jobs:
   quality:
