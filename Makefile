@@ -115,7 +115,7 @@ e2e-format-check-native: ## Format check without autofix natively
 e2e-format-native: ## Format code with autofix natively
 	cd e2e && npm run e2e-format
 
-e2e-install-ci-native: ## Install dependencies natively
+e2e-install-ci ## CI install dependencies
 	cd e2e && npm ci
 
 e2e-merge-reports: ## Merge E2E blob reports from multiple shards into an HTML report
