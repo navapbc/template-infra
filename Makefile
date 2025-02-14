@@ -95,7 +95,16 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 	rm -rf ./e2e/blob-report
 	rm -rf ./e2e/test-results
 
-e2e-format-check-native: ## Check formatting natively
+e2e-format: ## Format code with autofix inside Docker
+	docker run --rm -v $(PWD)/e2e:/e2e node:22-alpine sh -c "cd /e2e && npm run e2e-format"
+
+e2e-format-native: ## Format code with autofix natively
+	cd e2e && npm run e2e-format
+
+e2e-format-check: ## Format check without autofix inside Docker
+	docker run --rm -v $(PWD)/e2e:/e2e node:22-alpine sh -c "cd /e2e && npm run e2e-format:check"
+
+e2e-format-check-native: ## Format check without autofix natively
 	cd e2e && npm run e2e-format:check
 
 e2e-install-ci-native: ## Install dependencies natively
