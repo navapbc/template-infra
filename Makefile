@@ -31,6 +31,11 @@ __check_defined = \
 	e2e-clean \
 	e2e-clean-image \
 	e2e-clean-report \
+	e2e-format \
+	e2e-format-check \
+	e2e-format-check-native \
+	e2e-format-native \
+	e2e-install-ci-native \
 	e2e-merge-reports \
 	e2e-setup-ci \
 	e2e-setup-native \
@@ -81,6 +86,9 @@ __check_defined = \
 # The e2e test image includes the test suite for all apps and therefore isn't specific to each app.
 E2E_IMAGE_NAME := $(PROJECT_ROOT)-e2e
 
+# Define Node.js Docker image to use for e2e commands
+E2E_NODE_IMAGE := node:22-alpine
+
 e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dockerfile
 	docker build -t $(E2E_IMAGE_NAME) -f ./e2e/Dockerfile .
 
@@ -94,6 +102,21 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 	rm -rf ./e2e/playwright-report
 	rm -rf ./e2e/blob-report
 	rm -rf ./e2e/test-results
+
+e2e-format: ## Format code with autofix inside Docker
+	docker run --rm -v $(PWD)/e2e:/e2e $(E2E_NODE_IMAGE) sh -c "cd /e2e && npm run e2e-format"
+
+e2e-format-check: ## Format check without autofix inside Docker
+	docker run --rm -v $(PWD)/e2e:/e2e $(E2E_NODE_IMAGE) sh -c "cd /e2e && npm run e2e-format:check"
+
+e2e-format-check-native: ## Format check without autofix natively
+	cd e2e && npm run e2e-format:check
+
+e2e-format-native: ## Format code with autofix natively
+	cd e2e && npm run e2e-format
+
+e2e-install-ci: ## CI install dependencies
+	cd e2e && npm ci
 
 e2e-merge-reports: ## Merge E2E blob reports from multiple shards into an HTML report
 	cd e2e && npm run e2e-merge-reports
