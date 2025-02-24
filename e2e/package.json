@@ -2,8 +2,8 @@
   "name": "e2e",
   "version": "1.0.0",
   "scripts": {
-    "e2e-format": "prettier --cache --cache-location='./.prettier-cache' --write '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
-    "e2e-format:check": "prettier --cache --cache-location='./.prettier-cache' --check '**/*.{js,json,md,mdx,ts,tsx,scss,yaml,yml}'",
+    "e2e-format": "prettier --cache --cache-location='./.prettier-cache' --write .",
+    "e2e-format:check": "prettier --cache --cache-location='./.prettier-cache' --check .",
     "e2e-merge-reports": "npx playwright merge-reports --reporter html blob-report",
     "e2e-setup": "npx playwright install --with-deps",
     "e2e-show-report": "npx playwright show-report",
