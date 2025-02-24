@@ -27,5 +27,4 @@ test.describe('Generic Webpage Tests', () => {
   //   const element = page.locator('h1');
   //   await expect(element).toBeVisible();
   // });
-
 });
