@@ -101,10 +101,11 @@ module "service" {
   )
 
   secrets = concat(
-    [for secret_name in keys(local.service_config.secrets) : {
+    [for secret_name, secret_arn in module.secrets.secret_arns : {
       name      = secret_name
-      valueFrom = module.secrets[secret_name].secret_arn
+      valueFrom = secret_arn
     }],
+    local.feature_flags_secrets,
     module.app_config.enable_identity_provider ? [{
       name      = "COGNITO_CLIENT_SECRET"
       valueFrom = module.identity_provider_client[0].client_secret_arn
