@@ -83,7 +83,7 @@ variable "file_upload_jobs" {
 
       ["python", "etl.py", "<object_key>"]
 
-    Then if an object was uploaded tos3://somebucket/path/to/file.txt, the
+    Then if an object was uploaded to s3://somebucket/path/to/file.txt, the
     task will execute the command:
 
       python etl.py path/to/file.txt
