@@ -86,9 +86,6 @@ __check_defined = \
 # The e2e test image includes the test suite for all apps and therefore isn't specific to each app.
 E2E_IMAGE_NAME := $(PROJECT_ROOT)-e2e
 
-# Define Node.js Docker image to use for e2e commands
-E2E_NODE_IMAGE := node:22-alpine
-
 e2e-build: ## Build the e2e Docker image, if not already built, using ./e2e/Dockerfile
 	docker build -t $(E2E_IMAGE_NAME) -f ./e2e/Dockerfile .
 
@@ -103,8 +100,8 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 	rm -rf ./e2e/blob-report
 	rm -rf ./e2e/test-results
 
-e2e-format: ## Format code with autofix inside Docker
-	docker run --rm -v $(PWD)/e2e:/e2e $(E2E_NODE_IMAGE) sh -c "cd /e2e && npm run e2e-format"
+e2e-format: e2e-build ## Format code with autofix inside Docker
+	docker run --rm -v e2e:/e2e $(E2E_IMAGE_NAME) npm run e2e-format
 
 e2e-format-check: ## Format check without autofix inside Docker
 	docker run --rm -v $(PWD)/e2e:/e2e $(E2E_NODE_IMAGE) sh -c "cd /e2e && npm run e2e-format:check"
@@ -142,10 +139,10 @@ e2e-test: e2e-build
 		-e CURRENT_SHARD=$(CURRENT_SHARD) \
 		-e TOTAL_SHARDS=$(TOTAL_SHARDS) \
 		-e CI=$(CI) \
-		-v $(PWD)/e2e/playwright-report:/e2e/playwright-report \
-		-v $(PWD)/e2e/blob-report:/e2e/blob-report \
+		-v e2e/playwright-report:/e2e/playwright-report \
+		-v e2e/blob-report:/e2e/blob-report \
 		$(E2E_IMAGE_NAME) \
-		$(E2E_ARGS)
+		npm run e2e-test -- $(E2E_ARGS)
 	@echo "Run 'make e2e-show-report' to view the test report"
 
 e2e-test-native: ## Run end-to-end tests natively
