@@ -10,10 +10,8 @@ output "scheduled_jobs" {
   value = local.scheduled_jobs
 }
 
-output "incident_management_service_integration" {
-  value = var.has_incident_management_service ? {
-    integration_url_param_name = "/monitoring/${var.app_name}/${var.environment}/incident-management-integration-url"
-  } : null
+output "monitoring_config" {
+  value = local.monitoring_config
 }
 
 output "network_name" {

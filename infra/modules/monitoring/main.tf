@@ -68,7 +68,7 @@ resource "aws_cloudwatch_metric_alarm" "high_app_response_time" {
 #email integration
 
 resource "aws_sns_topic_subscription" "email_integration" {
-  for_each  = var.email_alerts_subscription_list
+  for_each  = var.email_alert_recipients
   topic_arn = aws_sns_topic.this.arn
   protocol  = "email"
   endpoint  = each.value
