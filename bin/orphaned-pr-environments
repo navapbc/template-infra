@@ -17,6 +17,9 @@ echo "::endgroup::"
 echo "::group::List PRs with PR environments"
 echo terraform -chdir="infra/${app_name}/service" workspace list
 workspaces="$(terraform -chdir="infra/${app_name}/service" workspace list)"
+
+# Search for workspaces that start with "p-" and extract the PR numbers
+# The "|| true" is used to avoid errors if there are no PR environments
 pr_nums="$(echo "${workspaces}" | grep -o 'p-[0-9]\+' || true | sed 's/p-//')"
 echo "PRs"
 echo "${pr_nums}"
