@@ -22,6 +22,6 @@ export const test = base.extend<EmailServiceOptions & EmailServiceFixtures>({
     } else {
       throw new Error(`Unknown email service type: ${emailServiceType}`);
     }
-    use(emailService);
+    await use(emailService);
   }
 });
