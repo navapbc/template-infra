@@ -14,7 +14,7 @@ type EmailServiceFixtures = {
 export const test = base.extend<EmailServiceOptions & EmailServiceFixtures>({
   emailServiceType: ['MessageChecker', { option: true }],
   emailService: async ({ emailServiceType, context }, use) => {
-    let emailService;
+    let emailService: EmailService;
     if (emailServiceType === 'MessageChecker') {
       emailService = new MessageCheckerService(context);
     } else if (emailServiceType === 'Mailinator') {
