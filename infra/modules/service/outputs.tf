@@ -22,5 +22,5 @@ output "migrator_role_arn" {
 
 output "public_endpoint" {
   description = "The public endpoint for the service."
-  value       = "http://${aws_lb.alb.dns_name}"
+  value       = "${var.certificate_arn != null ? "https" : "http"}://${aws_lb.alb.dns_name}"
 }
