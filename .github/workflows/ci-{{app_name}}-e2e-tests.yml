@@ -1,0 +1,28 @@
+name: CI {{app_name}} e2e tests
+
+on:
+  # Note: This workflow doesn't run on pull requests. E2E tests on pull requests are
+  # run in the PR environment checks workflow since those need to run on preview
+  # environments
+  push:
+    branches:
+      - main
+    paths:
+      - infra/{{app_name}}/service/**
+      - infra/modules/**
+      - infra/test/**
+      - .github/workflows/ci-{{app_name}}-infra-service.yml
+  workflow_dispatch:
+    inputs:
+      service_endpoint:
+        required: true
+        type: string
+        description: Base URL of the service
+
+jobs:
+  e2e:
+    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+    uses: ./.github/workflows/e2e-tests.yml
+    with:
+      app_name: "{{app_name}}"
+      service_endpoint: ${{ inputs.service_endpoint }}
