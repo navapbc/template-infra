@@ -1,19 +1,17 @@
-name: E2E Code Quality Checks
-run-name: E2E Code Quality Checks
+name: CI E2E static checks
+run-name: CI E2E static checks
 
 on:
   pull_request:
-    branches: [ main ]
     paths:
-      - 'e2e/**'
+      - "e2e/**"
   push:
-    branches: [ main ]
-    paths:
-      - 'e2e/**'
+    branches:
+      - main
 
 jobs:
-  quality:
-    name: E2E Code Quality
+  format-check:
+    name: Format check
     runs-on: ubuntu-latest
 
     steps:
