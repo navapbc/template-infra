@@ -12,12 +12,8 @@ COPY e2e/package.json e2e/package-lock.json ./
 
 # install deps
 RUN npm ci
-RUN npm run e2e-setup
 
 # Copy entire e2e folder over
 COPY e2e /e2e
 
-ENTRYPOINT ["npm", "run", "e2e-test", "--"]
-
-# Optional additional args
-CMD [""]
+CMD ["npm", "test", "--"]

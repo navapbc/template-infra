@@ -1,20 +1,15 @@
 {
-    "name": "e2e",
-    "version": "1.0.0",
-    "scripts": {
-      "e2e-merge-reports": "npx playwright merge-reports --reporter html blob-report",
-      "e2e-setup": "npx playwright install --with-deps",
-      "e2e-show-report": "npx playwright show-report",
-      "e2e-test": "./run-e2e-test",
-      "e2e-test:ui": "./run-e2e-test --ui"
-    },
-    "devDependencies": {
-      "@playwright/test": "^1.49.0",
-      "@types/node": "^22.10.1"
-    },
-    "dependencies": {
-      "@axe-core/playwright": "^4.10.1",
-      "dotenv": "^16.4.7",
-      "playwright": "^1.49.0"
-    }
+  "name": "e2e",
+  "version": "1.0.0",
+  "scripts": {
+    "merge-reports": "npx playwright merge-reports --reporter html blob-report",
+    "show-report": "npx playwright show-report",
+    "test": "./run-e2e-test",
+    "test:ui": "./run-e2e-test --ui"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@playwright/test": "^1.49.0",
+    "@types/node": "^22.10.1"
   }
+}

@@ -5,7 +5,7 @@
 
 # Ensure APP_NAME is provided
 if [[ -z "${APP_NAME}" ]]; then
-  echo "You must pass in a specific APP_NAME. IE: APP_NAME=app npm run e2e-test" >&2
+  echo "You must pass in a specific APP_NAME. IE: APP_NAME=app npm test" >&2
   exit 1
 fi
 
