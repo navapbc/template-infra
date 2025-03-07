@@ -104,6 +104,7 @@ e2e-format: e2e-build
 	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run format
 
 e2e-format-check: ## Format check without autofix inside Docker
+e2e-format-check: e2e-build
 	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run format:check
 
 e2e-format-check-native: ## Format check without autofix natively
