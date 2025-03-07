@@ -10,14 +10,14 @@ export class MailinatorService extends EmailService {
   }
 
   generateEmailAddress(): EmailAddress {
-    const randomString = this.randomString(10)
+    const randomString = this.randomString(10);
     return `test+${randomString}@mailinator.com`;
   }
 
   // Action functions
   async getInbox(emailAddress: EmailAddress): Promise<EmailHeader[]> {
-    const mailinatorURL = this.buildMailinatorURLToInbox(emailAddress)
-    const mailinatorPage = await this.openNewPage(mailinatorURL)
+    const mailinatorURL = this.buildMailinatorURLToInbox(emailAddress);
+    const mailinatorPage = await this.openNewPage(mailinatorURL);
 
     // Wait for email rows to load
     const rows = mailinatorPage.locator(this.SELECTORS.inbox.emailRow);
@@ -29,60 +29,63 @@ export class MailinatorService extends EmailService {
     const subjectSelector = this.SELECTORS.inbox.cells.subject;
 
     const inboxEntries: EmailHeader[] = await rows.evaluateAll(
-        (rows, { emailAddress, fromSelector, subjectSelector }) => {
-          const entries: EmailHeader[] = [];
-          for (const row of rows) {
-            const fullRowId = row.getAttribute("id") || ""; // e.g., 'row_test+2f4e8guu-1734141721-9052847012'
-            const extractedId = fullRowId.split("-").slice(-2).join("-"); // just the ID portion: 1734141721-9052847012
-            entries.push({
-              id: extractedId,
-              to: emailAddress,
-              from: row.querySelector(fromSelector)?.textContent?.trim() || "",
-              subject: row.querySelector(subjectSelector)?.textContent?.trim() || "",
-            });
-          }
-          return entries;
-        },
-        { emailAddress, fromSelector, subjectSelector }
-      );
+      (rows, { emailAddress, fromSelector, subjectSelector }) => {
+        const entries: EmailHeader[] = [];
+        for (const row of rows) {
+          const fullRowId = row.getAttribute('id') || ''; // e.g., 'row_test+2f4e8guu-1734141721-9052847012'
+          const extractedId = fullRowId.split('-').slice(-2).join('-'); // just the ID portion: 1734141721-9052847012
+          entries.push({
+            id: extractedId,
+            to: emailAddress,
+            from: row.querySelector(fromSelector)?.textContent?.trim() || '',
+            subject: row.querySelector(subjectSelector)?.textContent?.trim() || '',
+          });
+        }
+        return entries;
+      },
+      { emailAddress, fromSelector, subjectSelector }
+    );
 
-    await mailinatorPage.close()
+    await mailinatorPage.close();
     return inboxEntries;
   }
 
   async getEmailContent(emailHeader: EmailHeader): Promise<EmailContent> {
-    const directEmailURL = this.buildMailinatorURLToEmail(emailHeader)
-    const emailPage = await this.openNewPage(directEmailURL)
+    const directEmailURL = this.buildMailinatorURLToEmail(emailHeader);
+    const emailPage = await this.openNewPage(directEmailURL);
 
     await emailPage.waitForSelector(this.SELECTORS.email.iframe);
 
     const iframe = emailPage.frame({ name: this.SELECTORS.email.iframeName });
-    const text = await iframe?.textContent(this.SELECTORS.email.body) || '';
-    const html = await iframe?.evaluate(() => document.body.innerHTML) || '';
+    const text = (await iframe?.textContent(this.SELECTORS.email.body)) || '';
+    const html = (await iframe?.evaluate(() => document.body.innerHTML)) || '';
 
-    await emailPage.close()
+    await emailPage.close();
     return { text, html, emailHeader };
   }
 
-  async waitForEmailWithSubject(emailAddress: EmailAddress, subjectSubstring: string): Promise<EmailContent> {
-    const mailinatorURL = this.buildMailinatorURLToInbox(emailAddress)
-    const mailinatorPage = await this.openNewPage(mailinatorURL)
+  async waitForEmailWithSubject(
+    emailAddress: EmailAddress,
+    subjectSubstring: string
+  ): Promise<EmailContent> {
+    const mailinatorURL = this.buildMailinatorURLToInbox(emailAddress);
+    const mailinatorPage = await this.openNewPage(mailinatorURL);
 
     const matchingEmail = mailinatorPage
-        .locator(this.SELECTORS.inbox.emailRowTR)
-        .filter({ hasText: subjectSubstring })
-        .first();
+      .locator(this.SELECTORS.inbox.emailRowTR)
+      .filter({ hasText: subjectSubstring })
+      .first();
 
     await matchingEmail.waitFor();
-    const idAttribute = await matchingEmail.getAttribute("id");
-    expect(idAttribute, "Email row missing required ID attribute").not.toBeNull();
-    const emailHeaderId = idAttribute!.split("-").slice(-2).join("-");
+    const idAttribute = await matchingEmail.getAttribute('id');
+    expect(idAttribute, 'Email row missing required ID attribute').not.toBeNull();
+    const emailHeaderId = idAttribute!.split('-').slice(-2).join('-');
 
     const emailHeader: EmailHeader = {
       id: emailHeaderId,
       to: emailAddress,
-      from: await matchingEmail.locator("td:nth-of-type(2)").innerText(),
-      subject: await matchingEmail.locator("td:nth-of-type(3)").innerText(),
+      from: await matchingEmail.locator('td:nth-of-type(2)').innerText(),
+      subject: await matchingEmail.locator('td:nth-of-type(3)').innerText(),
     };
 
     return this.getEmailContent(emailHeader);
@@ -92,11 +95,11 @@ export class MailinatorService extends EmailService {
   private readonly SELECTORS = {
     inbox: {
       emailRow: '[ng-repeat="email in emails"]',
-      emailRowTR:  "tr[ng-repeat='email in emails']",
+      emailRowTR: "tr[ng-repeat='email in emails']",
       cells: {
         from: 'td:nth-of-type(2)',
         subject: 'td:nth-of-type(3)',
-      }
+      },
     },
     email: {
       iframe: 'iframe[name="html_msg_body"]',
@@ -125,5 +128,4 @@ export class MailinatorService extends EmailService {
     await page.goto(url);
     return page;
   }
-
 }

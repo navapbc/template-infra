@@ -4,7 +4,7 @@ import { MessageCheckerService } from '../lib/services/email/MessageCheckerServi
 import { MailinatorService } from '../lib/services/email/MailinatorService';
 
 type EmailServiceOptions = {
-  emailServiceType: string
+  emailServiceType: string;
 };
 
 type EmailServiceFixtures = {
@@ -23,5 +23,5 @@ export const test = base.extend<EmailServiceOptions & EmailServiceFixtures>({
       throw new Error(`Unknown email service type: ${emailServiceType}`);
     }
     await use(emailService);
-  }
+  },
 });
