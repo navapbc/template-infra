@@ -99,17 +99,18 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 	rm -rf ./e2e/blob-report
 	rm -rf ./e2e/test-results
 
-e2e-format: e2e-build ## Format code with autofix inside Docker
-	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run e2e-format
+e2e-format: ## Format code with autofix inside Docker
+e2e-format: e2e-build
+	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run format
 
 e2e-format-check: ## Format check without autofix inside Docker
-	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run e2e-format:check
+	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run format:check
 
 e2e-format-check-native: ## Format check without autofix natively
-	cd e2e && npm run e2e-format:check
+	cd e2e && npm run format:check
 
 e2e-format-native: ## Format code with autofix natively
-	cd e2e && npm run e2e-format
+	cd e2e && npm run format
 
 e2e-merge-reports: ## Merge E2E blob reports from multiple shards into an HTML report
 	cd e2e && npm run merge-reports
