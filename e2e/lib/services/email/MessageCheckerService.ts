@@ -1,10 +1,5 @@
-import { BrowserContext, Locator, Page, expect } from "@playwright/test";
-import {
-  EmailAddress,
-  EmailContent,
-  EmailHeader,
-  EmailService,
-} from "./EmailService";
+import { BrowserContext, Locator, Page, expect } from '@playwright/test';
+import { EmailAddress, EmailContent, EmailHeader, EmailService } from './EmailService';
 
 export class MessageCheckerService extends EmailService {
   context: BrowserContext;
@@ -28,13 +23,10 @@ export class MessageCheckerService extends EmailService {
       const inboxEntries: EmailHeader[] = [];
 
       // Get all rows excluding the table header row
-      const rows = (await messageCheckerPage.getByRole("row").all()).slice(1);
+      const rows = (await messageCheckerPage.getByRole('row').all()).slice(1);
 
       for (const row of rows) {
-        const emailHeader = await this.createEmailHeaderFromRow(
-          row,
-          emailAddress,
-        );
+        const emailHeader = await this.createEmailHeaderFromRow(row, emailAddress);
         inboxEntries.push(emailHeader);
       }
       return inboxEntries;
@@ -47,7 +39,7 @@ export class MessageCheckerService extends EmailService {
     const directEmailURL = this.buildMessageCheckerURLToEmail(emailHeader);
     const emailPage = await this.openNewPage(directEmailURL);
     try {
-      const container = emailPage.getByRole("document");
+      const container = emailPage.getByRole('document');
       const text = await container.innerText();
       const html = await container.innerHTML();
 
@@ -59,22 +51,16 @@ export class MessageCheckerService extends EmailService {
 
   async waitForEmailWithSubject(
     emailAddress: EmailAddress,
-    subjectSubstring: string,
+    subjectSubstring: string
   ): Promise<EmailContent> {
     const inboxURL = this.buildMessageCheckerURLToInbox(emailAddress);
     const inboxPage = await this.openNewPage(inboxURL);
     try {
-      const matchingRow = inboxPage
-        .getByRole("row")
-        .filter({ hasText: subjectSubstring })
-        .first();
+      const matchingRow = inboxPage.getByRole('row').filter({ hasText: subjectSubstring }).first();
 
       await matchingRow.waitFor();
 
-      const emailHeader = await this.createEmailHeaderFromRow(
-        matchingRow,
-        emailAddress,
-      );
+      const emailHeader = await this.createEmailHeaderFromRow(matchingRow, emailAddress);
 
       return this.getEmailContent(emailHeader);
     } finally {
@@ -82,8 +68,7 @@ export class MessageCheckerService extends EmailService {
     }
   }
 
-  private static readonly MESSAGE_CHECKER_BASE_URL =
-    "https://message-checker.appspot.com";
+  private static readonly MESSAGE_CHECKER_BASE_URL = 'https://message-checker.appspot.com';
 
   // Helpers
   private buildMessageCheckerURLToEmail(emailHeader: EmailHeader): string {
@@ -92,20 +77,20 @@ export class MessageCheckerService extends EmailService {
 
   private async createEmailHeaderFromRow(
     row: Locator,
-    emailAddress: EmailAddress,
+    emailAddress: EmailAddress
   ): Promise<EmailHeader> {
-    const subjectLink = row.getByRole("cell").first().getByRole("link");
+    const subjectLink = row.getByRole('cell').first().getByRole('link');
     const subject = (await subjectLink.innerText()).trim();
 
     // EmailLink format: /message-body/{email-id}
     // Split by "/" and get item at index 2 to extract email-id
-    const emailLink = (await subjectLink.getAttribute("href")) ?? "";
-    const emailId = emailLink.split("/")[2];
+    const emailLink = (await subjectLink.getAttribute('href')) ?? '';
+    const emailId = emailLink.split('/')[2];
 
     return {
       id: emailId,
       to: emailAddress,
-      from: "", // No sender information in MessageChecker
+      from: '', // No sender information in MessageChecker
       subject,
     };
   }
@@ -116,7 +101,7 @@ export class MessageCheckerService extends EmailService {
   }
 
   private getEncodedEmailPrefix(emailAddress: string): string {
-    return encodeURIComponent(emailAddress.split("@")[0]);
+    return encodeURIComponent(emailAddress.split('@')[0]);
   }
 
   private async openNewPage(url: string): Promise<Page> {

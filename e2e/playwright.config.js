@@ -1,4 +1,4 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -6,7 +6,7 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   // Timeout for each test in milliseconds
   timeout: 20000,
-  testDir: "./tests", // Ensure this points to the correct test directory
+  testDir: './tests', // Ensure this points to the correct test directory
   // Run tests in files in parallel
   fullyParallel: true,
   // Fail the build on CI if you accidentally left test.only in the source code.
@@ -17,19 +17,19 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   // Use 'blob' for CI to allow merging of reports. See https://playwright.dev/docs/test-reporters
   reporter: process.env.CI
-  ? [['blob']]  :
-    // Don't open the HTML report since it hangs when running inside a container.
-    // Use make e2e-show-report for opening the HTML report
-    [['html', { open: 'never' }]],
+    ? [['blob']]
+    : // Don't open the HTML report since it hangs when running inside a container.
+      // Use make e2e-show-report for opening the HTML report
+      [['html', { open: 'never' }]],
   // Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions.
   use: {
     // Base URL to use in actions like `await page.goto('/')`.
     baseURL: process.env.BASE_URL,
 
     // Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer
-    trace: "on-first-retry",
-    screenshot: "on",
-    video: "on-first-retry",
+    trace: 'on-first-retry',
+    screenshot: 'on',
+    video: 'on-first-retry',
   },
   // Splits tests into chunks for distributed parallel execution
   shard: {
@@ -43,15 +43,14 @@ export default defineConfig({
   // Supported browsers: https://playwright.dev/docs/browsers#:~:text=Configure%20Browsers%E2%80%8B,Google%20Chrome%20and%20Microsoft%20Edge.
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
 
     // Test against mobile viewports.
     {
-      name: "Mobile Chrome",
-      use: { ...devices["Pixel 7"] },
+      name: 'Mobile Chrome',
+      use: { ...devices['Pixel 7'] },
     },
   ],
-
 });
