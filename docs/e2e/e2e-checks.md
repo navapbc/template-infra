@@ -48,13 +48,14 @@ First, make sure the application you want to test is running.
 To run end-to-end tests natively, first install Playwright with:
 
 ```bash
-make e2e-setup-native
+make e2e-setup
 ```
 
 Then, run the tests with your app name and base url:
 ```bash
 make e2e-test-native APP_NAME=app
 ```
+
 >* `BASE_URL` is optional for both `e2e-test-native` and `e2e-test-native-ui` targets. It will by default use the app-specific (`/e2e/<APP_NAME>/playwright.config.js`) `baseURL`
 
 ### Run tests in UI mode

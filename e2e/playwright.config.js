@@ -1,9 +1,4 @@
-// Load environment variables from .env file if it exists
-import * as dotenv from 'dotenv';
-
 import { defineConfig, devices } from "@playwright/test";
-
-dotenv.config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.

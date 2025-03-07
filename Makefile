@@ -32,8 +32,8 @@ __check_defined = \
 	e2e-clean-image \
 	e2e-clean-report \
 	e2e-merge-reports \
+	e2e-setup \
 	e2e-setup-ci \
-	e2e-setup-native \
 	e2e-show-report \
 	e2e-test \
 	e2e-test-native \
@@ -96,17 +96,16 @@ e2e-clean-report: ## Remove the local e2e report folders and content
 	rm -rf ./e2e/test-results
 
 e2e-merge-reports: ## Merge E2E blob reports from multiple shards into an HTML report
-	cd e2e && npm run e2e-merge-reports
+	cd e2e && npm run merge-reports
+
+e2e-setup: ## Setup end-to-end tests
+	cd e2e && npm install
 
 e2e-setup-ci: ## Setup end-to-end tests for CI
-	cd e2e && npm run e2e-setup
-
-e2e-setup-native: ## Setup end-to-end tests
-	cd e2e && npm install
-	cd e2e && npm run e2e-setup
+	cd e2e && npm ci
 
 e2e-show-report: ## Show the E2E report
-	cd e2e && npm run e2e-show-report
+	cd e2e && npm run show-report
 
 e2e-test: ## Run E2E tests in a Docker container and copy the report locally
 e2e-test: e2e-build
@@ -122,18 +121,18 @@ e2e-test: e2e-build
 		-v $(PWD)/e2e/playwright-report:/e2e/playwright-report \
 		-v $(PWD)/e2e/blob-report:/e2e/blob-report \
 		$(E2E_IMAGE_NAME) \
-		$(E2E_ARGS)
+		npm test -- $(E2E_ARGS)
 	@echo "Run 'make e2e-show-report' to view the test report"
 
 e2e-test-native: ## Run end-to-end tests natively
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
 	@echo "Running e2e tests with CI=${CI}, APP_NAME=${APP_NAME}, BASE_URL=${BASE_URL}"
-	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm run e2e-test -- $(E2E_ARGS)
+	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm test -- $(E2E_ARGS)
 
 e2e-test-native-ui: ## Run end-to-end tests natively in UI mode
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
 	@echo "Running e2e UI tests natively with APP_NAME=$(APP_NAME), BASE_URL=$(BASE_URL)"
-	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm run e2e-test:ui -- $(E2E_ARGS)
+	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm run test:ui -- $(E2E_ARGS)
 
 ###########
 ## Infra ##
