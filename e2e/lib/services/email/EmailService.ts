@@ -17,7 +17,7 @@ export abstract class EmailService {
   /*
    * Generate a random email address
    */
-  abstract generateEmailAddress(): EmailAddress;
+  abstract generateEmailAddress(username: string): EmailAddress;
 
   /*
    * Get EmailContent associated with an Email
@@ -38,14 +38,15 @@ export abstract class EmailService {
   ): Promise<EmailContent>;
 
   /*
-   * Get a random base 36 alphanumeric string.
-   * Used for creating a test email address.
+   * Generate a random username
    */
-  protected randomString(length: number): string {
-    const numBytes = Math.ceil(length * 2);
-    return Array.from(crypto.getRandomValues(new Uint8Array(numBytes)))
+  generateUsername(): string {
+    const randomStringLength = 10;
+    const numBytes = Math.ceil(randomStringLength * 2);
+    const randomString = Array.from(crypto.getRandomValues(new Uint8Array(numBytes)))
       .map((b) => b.toString(36))
       .join('')
-      .slice(0, length);
+      .slice(0, randomStringLength);
+    return `test-${randomString}`;
   }
 }

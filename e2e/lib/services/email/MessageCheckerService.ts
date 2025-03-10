@@ -9,9 +9,8 @@ export class MessageCheckerService extends EmailService {
     this.context = context;
   }
 
-  generateEmailAddress(): EmailAddress {
-    const randomString = this.randomString(10);
-    return `test+${randomString}@message-checker.appspotmail.com`;
+  generateEmailAddress(username: string): EmailAddress {
+    return `${username}@message-checker.appspotmail.com`;
   }
 
   // Action functions
@@ -58,7 +57,8 @@ export class MessageCheckerService extends EmailService {
     try {
       const matchingRow = inboxPage.getByRole('row').filter({ hasText: subjectSubstring }).first();
 
-      await matchingRow.waitFor();
+      // Email can take a while to be received
+      await matchingRow.waitFor({ timeout: 3 * 60 * 1000 });
 
       const emailHeader = await this.createEmailHeaderFromRow(matchingRow, emailAddress);
 

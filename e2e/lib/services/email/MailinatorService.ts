@@ -9,9 +9,8 @@ export class MailinatorService extends EmailService {
     this.context = context;
   }
 
-  generateEmailAddress(): EmailAddress {
-    const randomString = this.randomString(10);
-    return `test+${randomString}@mailinator.com`;
+  generateEmailAddress(username: string): EmailAddress {
+    return `${username}@mailinator.com`;
   }
 
   // Action functions
