@@ -26,6 +26,12 @@ export default defineConfig({
     // Base URL to use in actions like `await page.goto('/')`.
     baseURL: process.env.BASE_URL,
 
+    // Pull request environments don't have HTTPS certificates
+    ignoreHTTPSErrors: true,
+
+    // Email service provider to use. Options are "MessageChecker" or "Mailinator". Defaults to "MessageChecker"
+    // emailServiceType: "Mailinator",
+
     // Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer
     trace: 'on-first-retry',
     screenshot: 'on',
