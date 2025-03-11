@@ -31,12 +31,15 @@ jobs:
   get-commit-hash:
     name: Get commit hash
     runs-on: ubuntu-latest
+
     outputs:
       commit_hash: ${{ steps.get-commit-hash.outputs.commit_hash }}
+
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+
       - name: Get commit hash
         id: get-commit-hash
         run: |
@@ -44,6 +47,7 @@ jobs:
           COMMIT_HASH=$(git rev-parse HEAD)
           echo "Commit hash: $COMMIT_HASH"
           echo "commit_hash=$COMMIT_HASH" >> "$GITHUB_OUTPUT"
+
   build-and-publish:
     name: Build and publish
     runs-on: ubuntu-latest

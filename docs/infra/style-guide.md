@@ -58,6 +58,7 @@ Here are some exceptions (and additions) to Hashicorp's Terraform style guide.
 ## GitHub Actions style
 
 - Use short job names with at most 3 words to improve readability within the GitHub UI. Long job names get cut off with an ellipsis (…).
+- Use imperative phrases for step names. Examples: "Build and publish", "Run migrations", "Set up Terraform".
 - Use a single whitespace character for job names when calling reusable workflows. This is because in pull requests and in the workflow visualization, GitHub shows the job name as `<job name in calling workflow> / <job name in reusable workflow>` and the calling workflow job name is usually redundant. For example:
 
     ```yaml
@@ -78,7 +79,7 @@ Here are some exceptions (and additions) to Hashicorp's Terraform style guide.
         uses: actions/setup-node@v4
     ```
 
-- Separate job attributes that have nested attributes (i.e. object attributes) with a blank line to improve scannability. For example:
+- Separate job attributes that have nested attributes (i.e. object attributes) with a blank line to improve scannability except for the `with` clause when calling reusable workflows. For example:
 
     ```yaml
     e2e:
@@ -90,6 +91,16 @@ Here are some exceptions (and additions) to Hashicorp's Terraform style guide.
           shard: [1, 2, 3]
 
       steps:
+    ```
+
+    Exception: Do not include whitespace when calling reusable workflows. For example:
+
+    ```yaml
+    build-and-publish:
+      name: " "
+      uses: ./.github/workflows/build-and-publish.yml
+      with:
+        app_name: app
     ```
 
 ## Shell script style

@@ -23,10 +23,13 @@ jobs:
   lint:
     name: Lint template scripts
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Shellcheck
         run: make -f template-only.mak lint-template-scripts
+
   test:
     name: Infra Tests
     runs-on: ubuntu-latest

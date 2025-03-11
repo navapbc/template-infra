@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       # This is the GitHub Actions-friendly port of the linter used in the Makefile.
       - uses: gaurav-nelson/github-action-markdown-link-check@1.0.15
         with:

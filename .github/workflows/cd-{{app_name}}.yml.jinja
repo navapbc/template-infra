@@ -46,7 +46,7 @@ on:
 
 jobs:
   deploy:
-    name: Deploy
+    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
     uses: ./.github/workflows/deploy.yml
     with:
       app_name: "{{ app_name }}"
