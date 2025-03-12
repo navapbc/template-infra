@@ -12,6 +12,7 @@
       - [.gitignore](#gitignore)
       - [Integration and unit testing](#integration-and-unit-testing)
       - [Policy](#policy)
+  - [GitHub Actions style](#github-actions-style)
   - [Shell script style](#shell-script-style)
 
 ## Terraform code style
@@ -53,6 +54,54 @@ Here are some exceptions (and additions) to Hashicorp's Terraform style guide.
 #### Policy
 
 - For policy enforcement and compliance checks, [Tfsec](https://github.com/aquasecurity/tfsec) is used instead of [Terraform's policy enforcement framework](https://developer.hashicorp.com/terraform/cloud-docs/policy-enforcement)
+
+## GitHub Actions style
+
+- Use short job names with at most 3 words to improve readability within the GitHub UI. Long job names get cut off with an ellipsis (…).
+- Use imperative phrases for step names. Examples: "Build and publish", "Run migrations", "Set up Terraform".
+- Use a single whitespace character for job names when calling reusable workflows. This is because in pull requests and in the workflow visualization, GitHub shows the job name as `<job name in calling workflow> / <job name in reusable workflow>` and the calling workflow job name is usually redundant. For example:
+
+    ```yaml
+    build-and-publish:
+      name: " "
+      uses: ./.github/workflows/build-and-publish.yml
+    ```
+
+- Separate jobs with a blank line to improve scannability.
+- Separate steps with a blank line to improve scannability. For example:
+
+    ```yaml
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+    ```
+
+- Separate job attributes that have nested attributes (i.e. object attributes) with a blank line to improve scannability except for the `with` clause when calling reusable workflows. For example:
+
+    ```yaml
+    e2e:
+      name: E2E tests
+      runs-on: ubuntu-latest
+
+      strategy:
+        matrix:
+          shard: [1, 2, 3]
+
+      steps:
+    ```
+
+    Exception: Do not include whitespace when calling reusable workflows. For example:
+
+    ```yaml
+    build-and-publish:
+      name: " "
+      uses: ./.github/workflows/build-and-publish.yml
+      with:
+        app_name: app
+    ```
 
 ## Shell script style
 

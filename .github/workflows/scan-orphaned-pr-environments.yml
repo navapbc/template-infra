@@ -11,10 +11,13 @@ jobs:
   get-app-names:
     name: Get app names
     runs-on: ubuntu-latest
+
     outputs:
       app_names: ${{ steps.get-app-names.outputs.app_names }}
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Get app names
         id: get-app-names
         run: |
@@ -25,6 +28,7 @@ jobs:
           echo "App names retrieved: ${app_names}"
           echo "app_names=${app_names}" >> "$GITHUB_OUTPUT"
         shell: bash
+
   scan:
     name: Scan
     runs-on: ubuntu-latest
@@ -60,7 +64,7 @@ jobs:
           TF_IN_AUTOMATION: "true"
 
   notify:
-    name: Notify
+    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
     needs: scan
     if: failure()
     uses: ./.github/workflows/send-system-notification.yml
