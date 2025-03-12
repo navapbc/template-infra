@@ -11,13 +11,27 @@ A temporary environment is created for each pull request that stays up while the
 
 A pull request environment is created when a pull request is opened or reopened, and destroyed when the pull request is merged or closed. When new commits are pushed up to the pull request, the pull request environment is updated.
 
+## Shared database of pull request environments
+
+Pull request environments share the same database as the dev environment. This has the following benefits:
+
+- Enables testers to leverage existing test accounts and accumulated test data
+- Reduces the need for manual data seeding or migration scripts
+- Better simulates production-like conditions where the application must handle pre-existing data, potentially revealing edge cases and integration issues that might not be apparent with a fresh database
+- Reduces environment provisioning time significantly since creating and destroying database clusters typically takes 20-40 minutes
+
 ## Isolate database migrations into separate pull requests
 
-Database migrations are not reflected in PR environments. In particular, PR environments shares the same database with the dev environment, so database migrations that exist in the pull request are not run on the database to avoid impacting the dev environment.
+Database migrations are not reflected in PR environments. In particular, PR environments share the same database with the dev environment, so database migrations that exist in the pull request are not run on the database to avoid impacting the dev environment.
 
-Therefore, isolate database changes in their own pull request and merge that pull request first before opening pull requests with application changes that depend on those database changes. Note that it is still okay and encouraged to develop database and application changes together during local development.
+Therefore, isolate database changes in their own pull request and merge that pull request first before opening pull requests with application changes that depend on those database changes. This practice has the following benefits:
 
-This guidance is not strict. It is still okay to combine database migrations and application changes in a single pull request. However, when doing so, note that the PR environment may not be fully functional if the application changes rely on the database migrations.
+- Enables PR environments to continue to be fully functional and testable when there are application changes that depend on database changes
+- Enables database changes to be tested and deployed in isolation, which helps ensure that existing deployed application code is backwards compatible with new database changes
+
+This guidance is not strict. It is still okay to combine database migrations and application changes in a single pull request. However, when doing so, note that the PR environment may not be fully functional if the application changes rely on database migrations.
+
+Note also that this guidance pertains to pull requests, not local development. It is still okay and encouraged to develop database and application changes together during local development.
 
 ## Implementing pull request environments for each application
 
