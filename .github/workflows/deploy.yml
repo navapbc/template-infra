@@ -67,6 +67,7 @@ jobs:
 
   e2e:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+    if: inputs.environment != 'prod'
     needs: [deploy]
     uses: ./.github/workflows/e2e-tests.yml
     with:
