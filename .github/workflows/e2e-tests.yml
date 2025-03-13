@@ -23,7 +23,7 @@ on:
 
 jobs:
   e2e:
-    name: Run E2E tests (${{ matrix.shard }} of ${{ matrix.total_shards }})
+    name: E2E tests (${{ matrix.shard }} of ${{ matrix.total_shards }})
     runs-on: ubuntu-latest
 
     strategy:
@@ -62,7 +62,7 @@ jobs:
           retention-days: 1
 
   create-report:
-    name: Create merged test report
+    name: E2E test report
     if: ${{ !cancelled() }}
     needs: e2e
     runs-on: ubuntu-latest
