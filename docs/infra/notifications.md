@@ -39,7 +39,7 @@ bin/terraform-init "infra/<APP_NAME>/service" "<ENVIRONMENT>"
 APPLICATION_ID="$(terraform -chdir=infra/<APP_NAME>/service output -raw pinpoint_app_id)"
 ```
 
-Then run the following command, replacing `<RECIPIENT_EMAIL>` with the email address you want to send to. Note that the sender email will be the email address configured in notifications.tf (defaults to `notifications@<DOMAIN_NAME>`):
+Then run the following command, replacing `<RECIPIENT_EMAIL>` with the email address you want to send to:
 
 ```bash
 aws pinpoint send-messages --application-id "$APPLICATION_ID" --message-request '{
