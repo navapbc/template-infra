@@ -67,6 +67,10 @@ jobs:
 
   e2e:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+
+    # By default, don't run e2e tests on production to avoid generating
+    # junk data that may interfere with production metrics and business operations
+    if: inputs.environment != 'prod'
     needs: [deploy]
     uses: ./.github/workflows/e2e-tests.yml
     with:
