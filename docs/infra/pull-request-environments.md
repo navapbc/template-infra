@@ -15,10 +15,14 @@ A pull request environment is created when a pull request is opened or reopened,
 
 Pull request environments share the same database as the dev environment. This has the following benefits:
 
-- Enables testers to leverage existing test accounts and accumulated test data
+- Enables testers to leverage existing test user accounts and accumulated test data
 - Reduces the need for manual data seeding or migration scripts
 - Better simulates production-like conditions where the application must handle pre-existing data, potentially revealing edge cases and integration issues that might not be apparent with a fresh database
 - Reduces environment provisioning time significantly since creating and destroying database clusters typically takes 20-40 minutes
+
+## Shared identity provider for pull request environments
+
+All pull request environments use the same Cognito user pool as the dev environment to enable the sharing of data between pull request environments and the dev environment. This is necessary because in order to access existing user data, users must authenticate with the same identity that was used to create the data.
 
 ## Isolate database migrations into separate pull requests
 
