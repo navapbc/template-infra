@@ -152,6 +152,12 @@ e2e-test-native-ui: ## Run end-to-end tests natively in UI mode
 	@echo "Running e2e UI tests natively with APP_NAME=$(APP_NAME), BASE_URL=$(BASE_URL)"
 	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm run test:ui -- $(E2E_ARGS)
 
+e2e-type-check: ## Run TypeScript type checking in Docker
+	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run type-check -- $(TYPE_CHECK_ARGS)
+
+e2e-type-check-native: ## Run TypeScript type checking natively
+	cd e2e && npm run type-check -- $(TYPE_CHECK_ARGS)
+
 ###########
 ## Infra ##
 ###########

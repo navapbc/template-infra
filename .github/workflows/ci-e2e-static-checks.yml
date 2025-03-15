@@ -36,3 +36,6 @@ jobs:
 
       - name: Check formatting
         run: make e2e-format-check-native
+
+      - name: Check typing
+        run: make e2e-type-check-native
