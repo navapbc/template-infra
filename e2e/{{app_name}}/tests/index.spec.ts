@@ -3,15 +3,15 @@ import { Page, expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 type PlaywrightTestParams = {
-    page: Page;
-  };
+  page: Page;
+};
 
 test.describe('Generic Webpage Tests', () => {
   test('should load the webpage successfully', async ({ page }: PlaywrightTestParams) => {
     const response = await page.goto('/');
     if (!response) {
-        throw new Error('Failed to navigate');
-     }
+      throw new Error('Failed to navigate');
+    }
 
     const title = await page.title();
     await expect(response.status()).toBe(200);
