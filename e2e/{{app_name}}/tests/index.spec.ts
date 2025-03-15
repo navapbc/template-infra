@@ -2,12 +2,8 @@ import { Page, expect, test } from '@playwright/test';
 
 import AxeBuilder from '@axe-core/playwright';
 
-type PlaywrightTestParams = {
-  page: Page;
-};
-
 test.describe('Generic Webpage Tests', () => {
-  test('should load the webpage successfully', async ({ page }: PlaywrightTestParams) => {
+  test('should load the webpage successfully', async ({ page }) => {
     const response = await page.goto('/');
     if (!response) {
       throw new Error('Failed to navigate');
@@ -17,7 +13,7 @@ test.describe('Generic Webpage Tests', () => {
     await expect(response.status()).toBe(200);
   });
 
-  test('should take a screenshot of the webpage', async ({ page }: PlaywrightTestParams) => {
+  test('should take a screenshot of the webpage', async ({ page }) => {
     await page.goto('/');
     await page.screenshot({ path: 'example-screenshot.png', fullPage: true });
   });
