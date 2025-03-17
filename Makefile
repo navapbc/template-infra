@@ -42,6 +42,8 @@ __check_defined = \
 	e2e-test \
 	e2e-test-native \
 	e2e-test-native-ui \
+	e2e-type-check \
+	e2e-type-check-native \
 	help \
 	infra-check-app-database-roles \
 	infra-check-compliance-checkov \
