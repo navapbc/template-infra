@@ -15,16 +15,7 @@ Update `enable_identity_provider = true` in your application's `app-config` modu
 
 ## 2. Configure identity provider settings
 
-The identity provider configuration is defined in the environment config module in `infra/<APP_NAME>/app-config/env-config/identity_provider.tf`. You can customize the following settings:
-
-- `callback_url_path`: Path fragment for post-login redirect (optional)
-- `logout_url_path`: Path fragment for post-logout redirect (optional)
-- `password_policy`: Customize password requirements
-  - `password_minimum_length`: Minimum password length
-  - `temporary_password_validity_days`: Days until temporary passwords expire
-- `verification_email`: Customize verification email content
-  - `verification_email_message`: Custom message content
-  - `verification_email_subject`: Custom email subject
+The identity provider configuration is defined in the environment config module in `infra/<APP_NAME>/app-config/env-config/identity_provider.tf`.
 
 ## 3. Deploy the identity provider
 
