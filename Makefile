@@ -60,7 +60,7 @@ __check_defined = \
 	infra-lint-scripts \
 	infra-lint-terraform \
 	infra-lint-workflows \
-	infra-module-database-role-manager \
+	infra-module-database-role-manager-archive \
 	infra-set-up-account \
 	infra-test-service \
 	infra-update-app-build-repository \
