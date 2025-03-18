@@ -1,6 +1,6 @@
 # Notifications
 
-Production systems often need to send email notifications to their users. This document describes how to configure notifications. The notification setup process will:
+The application may need to send email notifications to users. This document describes how to configure notifications. The notification setup process will:
 
 1. Create an AWS Pinpoint application for managing notifications
 2. Configure Amazon SES (Simple Email Service) for sending emails
