@@ -1,4 +1,4 @@
-const { test, expect } = require('@playwright/test');
+import { Page, expect, test } from '@playwright/test';
 
 import AxeBuilder from '@axe-core/playwright';
 
@@ -6,7 +6,7 @@ test.describe('Generic Webpage Tests', () => {
   test('should load the webpage successfully', async ({ page }) => {
     const response = await page.goto('/');
     const title = await page.title();
-    await expect(response.status()).toBe(200);
+    expect(response!.status()).toBe(200);
   });
 
   test('should take a screenshot of the webpage', async ({ page }) => {

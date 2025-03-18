@@ -7,12 +7,14 @@
     "merge-reports": "npx playwright merge-reports --reporter html blob-report",
     "show-report": "npx playwright show-report",
     "test": "./run-e2e-test",
-    "test:ui": "./run-e2e-test --ui"
+    "test:ui": "./run-e2e-test --ui",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.1",
     "@playwright/test": "^1.49.0",
     "@types/node": "^22.10.1",
-    "prettier": "^3.5.3"
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2"
   }
 }

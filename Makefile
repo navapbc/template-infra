@@ -42,6 +42,8 @@ __check_defined = \
 	e2e-test \
 	e2e-test-native \
 	e2e-test-native-ui \
+	e2e-type-check \
+	e2e-type-check-native \
 	help \
 	infra-check-app-database-roles \
 	infra-check-compliance-checkov \
@@ -58,7 +60,7 @@ __check_defined = \
 	infra-lint-scripts \
 	infra-lint-terraform \
 	infra-lint-workflows \
-	infra-module-database-role-manager \
+	infra-module-database-role-manager-archive \
 	infra-set-up-account \
 	infra-test-service \
 	infra-update-app-build-repository \
@@ -151,6 +153,12 @@ e2e-test-native-ui: ## Run end-to-end tests natively in UI mode
 	@:$(call check_defined, APP_NAME, You must pass in a specific APP_NAME)
 	@echo "Running e2e UI tests natively with APP_NAME=$(APP_NAME), BASE_URL=$(BASE_URL)"
 	cd e2e && APP_NAME=$(APP_NAME) BASE_URL=$(BASE_URL) npm run test:ui -- $(E2E_ARGS)
+
+e2e-type-check: ## Run TypeScript type checking in Docker
+	docker run --rm -v $(CURDIR)/e2e:/e2e $(E2E_IMAGE_NAME) npm run type-check -- $(TYPE_CHECK_ARGS)
+
+e2e-type-check-native: ## Run TypeScript type checking natively
+	cd e2e && npm run type-check -- $(TYPE_CHECK_ARGS)
 
 ###########
 ## Infra ##
