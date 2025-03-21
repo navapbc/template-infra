@@ -6,6 +6,7 @@ test.describe('Generic Webpage Tests', () => {
   test('should load the webpage successfully', async ({ page }) => {
     const response = await page.goto('/');
     const title = await page.title();
+    
     expect(response!.status()).toBe(200);
   });
 

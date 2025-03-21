@@ -11,9 +11,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  format:
-    name: Format
+  static-checks:
+    name: ${{ matrix.check.name }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        check:
+          - name: Format
+            command: make e2e-format-check-native
+          - name: Typecheck
+            command: make e2e-type-check-native
 
     steps:
       - name: Checkout code
@@ -35,32 +42,5 @@ jobs:
         if: steps.cache-node.outputs.cache-hit != 'true'
         run: make e2e-setup-ci
 
-      - name: Check formatting
-        run: make e2e-format-check-native
-
-  typecheck:
-    name: Typecheck
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
-
-      - name: Cache Node.js dependencies
-        id: cache-node
-        uses: actions/cache@v4
-        with:
-          path: e2e/node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-
-      - name: Install dependencies
-        if: steps.cache-node.outputs.cache-hit != 'true'
-        run: make e2e-setup-ci
-
-      - name: Check typing
-        run: make e2e-type-check-native
+      - name: ${{ matrix.check.name }}
+        run: ${{ matrix.check.command }}
