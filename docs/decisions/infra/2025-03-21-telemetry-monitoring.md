@@ -12,7 +12,7 @@ OpenTelemetry is an open-source, vendor-neutral framework for collecting and exp
 
 It acts as a bridge between your applications and monitoring platforms, allowing you to instrument once and export data to any supported backend (e.g., Datadog, New Relic, Prometheus) without vendor lock-in or rework.
  
-### Option 2: Vendor-Specific Library
+### Option 2: 3rd Party Vendor-Specific Library
 
 Many vendors (Datadog, New Relic) ship a vendor-specific library or sidecar that you can use to collect telemetry. In this option, the template would defer the decision about the monitoring system to the implementing team.
 
