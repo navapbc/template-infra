@@ -52,3 +52,4 @@ jobs:
       app_name: "{{ app_name }}"
       environment: ${{'{{'}} inputs.environment || 'dev' {{'}}'}}
       version: ${{'{{'}} inputs.version || 'main' {{'}}'}}
+    secrets: inherit
