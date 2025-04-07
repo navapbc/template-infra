@@ -10,9 +10,6 @@ locals {
     # AWS services used by ECS Fargate: ECR to fetch images, S3 for image layers, and CloudWatch for logs
     ["ecr.api", "ecr.dkr", "s3", "logs"],
 
-    # Feature flags with AWS Evidently
-    ["evidently", "evidently-dataplane"],
-
     # AWS services used by the database's role manager
     var.has_database ? ["ssm", "kms", "secretsmanager"] : [],
 
