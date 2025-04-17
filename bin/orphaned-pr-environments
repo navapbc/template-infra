@@ -40,10 +40,10 @@ echo "::endgroup::"
 
 # if closed_prs is not empty exit with 1 otherwise exit with 0
 if [ ${#closed_prs[@]} -gt 0 ]; then
-  echo "Found orphaned PR environments for the following PRs: ${closed_prs[*]}"
-  echo "Found orphaned PR environments for the following PRs: ${closed_prs[*]}" >> "${GITHUB_STEP_SUMMARY}"
+  echo "🧹 Found orphaned PR environments for the following PRs: **${closed_prs[*]}**"
+  echo "🧹 Found orphaned PR environments for the following PRs: **${closed_prs[*]}**" >> "${GITHUB_STEP_SUMMARY}"
   exit 1
 fi
 
-echo "No orphaned PR environments"
-echo "No orphaned PR environments" >> "${GITHUB_STEP_SUMMARY}"
+echo "✅ No orphaned PR environments"
+echo "✅ No orphaned PR environments" >> "${GITHUB_STEP_SUMMARY}"

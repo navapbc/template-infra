@@ -54,10 +54,10 @@ echo "::endgroup::"
 
 # if stale_tests is not empty exit with 1 otherwise exit with 0
 if [ ${#stale_tests[@]} -gt 0 ]; then
-  echo "Found stale test environments for the following test IDs: ${stale_tests[*]}"
-  echo "Found stale test environments for the following test IDs: ${stale_tests[*]}" >> "${GITHUB_STEP_SUMMARY}"
+  echo "🧹 Found stale test environments for the following test IDs: **${stale_tests[*]}**"
+  echo "🧹 Found stale test environments for the following test IDs: **${stale_tests[*]}**" >> "${GITHUB_STEP_SUMMARY}"
   exit 1
 fi
 
-echo "No stale test environments"
-echo "No stale test environments" >> "${GITHUB_STEP_SUMMARY}"
+echo "✅ No stale test environments"
+echo "✅ No stale test environments" >> "${GITHUB_STEP_SUMMARY}"
