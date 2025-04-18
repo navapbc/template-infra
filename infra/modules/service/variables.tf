@@ -51,6 +51,12 @@ variable "enable_command_execution" {
   description = "Whether the service should enable ECS Exec, such as for debugging"
 }
 
+variable "enable_waf" {
+  type        = bool
+  description = "Whether to enable WAF protection for the load balancer"
+  default     = false
+}
+
 variable "extra_environment_variables" {
   type        = map(string)
   description = "Additional environment variables to pass to the service container. Map from environment variable name to the value."
