@@ -45,7 +45,26 @@ After the WAF is created in the network layer, run the following command to asso
 make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
 
-## 4. View WAF logs
+## 4. Verify WAF protection
+
+You can verify that the WAF is working correctly by testing it with requests that should trigger the WAF's XSS protection. The following curl commands should return a 403 Forbidden response if the WAF is properly configured:
+
+```bash
+service_endpoint="$(terraform -chdir="infra/${APP_NAME}/service" output -raw service_endpoint)"
+curl -k "${service_endpoint}?search=<script>alert(1)</script>"
+```
+
+Or alternatively:
+
+```bash
+curl -k -X POST "${service_endpoint}" \
+  -H "Content-Type: application/json" \
+  -d '{"bad_input": "<script>alert(1)</script>"}'
+```
+
+Both commands should return a 403 Forbidden response, indicating that the WAF is blocking the malicious input.
+
+## 5. View WAF logs
 
 WAF logs are sent to CloudWatch. You can view these logs in the AWS CloudWatch console under the log group named `aws-waf-logs-<NETWORK_NAME>`.
 
