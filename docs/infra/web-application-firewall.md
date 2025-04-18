@@ -24,9 +24,6 @@ There are no specific prerequisites for enabling WAF.
 WAF is enabled by default in the template. You can find and modify this setting in your application's `app-config` module (`infra/<APP_NAME>/app-config/main.tf`):
 
 ```terraform
-# Whether or not the application should enable WAF for the load balancer.
-# If enabled:
-# 1. Creates an AWS WAF web ACL with AWSManagedRulesCommonRuleSet
 enable_waf = true
 ```
 
@@ -34,7 +31,7 @@ Set `enable_waf = false` if you want to disable WAF protection.
 
 ## 2. Deploy the WAF in the network layer
 
-The WAF must be created in the network layer before it can be associated with load balancers in the service layer. Run the following command to deploy the WAF:
+The WAF must be created in the network layer before it can be associated with load balancers in the service layer. Note that the WAF may already have been deployed as part of the [network setup process](./set-up-network.md). If not, run the following command to deploy the WAF:
 
 ```bash
 make infra-update-network NETWORK_NAME=<NETWORK_NAME>
