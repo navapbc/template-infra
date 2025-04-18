@@ -70,6 +70,8 @@ module "service" {
   hosted_zone_id  = module.domain.hosted_zone_id
   certificate_arn = module.domain.certificate_arn
 
+  enable_waf = module.app_config.enable_waf
+
   cpu                      = local.service_config.cpu
   memory                   = local.service_config.memory
   desired_instance_count   = local.service_config.desired_instance_count

@@ -17,3 +17,7 @@ output "private_subnet_tags" {
 output "public_subnet_tags" {
   value = { subnet_type = "public" }
 }
+
+output "waf_acl_name" {
+  value = var.name
+}
