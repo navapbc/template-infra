@@ -119,7 +119,6 @@ resource "aws_lb_listener" "alb_listener_https" {
   }
 }
 
-
 resource "aws_lb_listener_rule" "app_https_forward" {
   count = var.certificate_arn != null ? 1 : 0
 
