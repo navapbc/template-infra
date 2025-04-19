@@ -66,31 +66,89 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 
 ## 💻 Development
 
-### 1️⃣ First time initialization
+### 1️⃣ Getting started
 
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
-1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements). 
     1. You may need to tweak the generated [project configuration](/infra/project-config/main.tf) depending on your needs. <!-- markdown-link-check-disable-line -->
-2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-3. [Set up AWS account](/docs/infra/set-up-aws-account.md)
-4. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
-5. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
-6. For each application:
-    1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
-    2. [Set up application database](/docs/infra/set-up-database.md)
-    3. [Set up application environment](/docs/infra/set-up-app-env.md)
-    4. [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
-    5. [Set up background jobs](/docs/infra/background-jobs.md)
+2. [Set up infrastructure developer tools](/docs/infra/getting-started/set-up-infrastructure-tools.md)
+3. [Set up AWS account](/docs/infra/getting-started/set-up-aws-account.md)
+4. [Set up the virtual network (VPC)](/docs/infra/getting-started/set-up-network.md)
+5. [Set up application build repository](/docs/infra/getting-started/set-up-app-build-repository.md)
+6. [Set up application database](/docs/infra/getting-started/set-up-database.md)
+7. [Set up application environment](/docs/infra/getting-started/set-up-app-env.md)
 
 ### 🆕 New developer
 
 To get set up as a new developer on a project that has already been deployed to the target AWS account:
 
-1. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
-2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
-3. [Review how to develop and test infrastructure changes](/docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
-4. [Review the infrastructure style guide](/docs/infra/style-guide.md)
+1. [Set up infrastructure developer tools](/docs/infra/getting-started/set-up-infrastructure-tools.md)
+2. [Review how to make changes to infrastructure](/docs/infra/operations/making-infra-changes.md)
+3. [Review how to develop and test infrastructure changes](/docs/infra/operations/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
+4. [Review the infrastructure style guide](/docs/infra/operations/style-guide.md)
+
+### Preparing for production launch
+
+Set up the following before launching to end users in production:
+
+- [HTTPS support](../docs/infra/preparing-for-production/https-support.md)
+- [Custom domains](../docs/infra/preparing-for-production/set-up-custom-domains.md)
+- [Monitoring alerts](../docs/infra/preparing-for-production/set-up-monitoring-alerts.md)
+- [Web application firewall (WAF)](../docs/infra/preparing-for-production/web-application-firewall.md)
+- [Staging and production environments](../docs/infra/production-preparations/staging-and-production-environments.md)
+
+### Setting up additional capabilities
+
+- [Additional applications](../docs/infra/additional-capabilities/add-application.md)
+- [Background jobs](../docs/infra/additional-capabilities/background-jobs.md)
+- [Custom environment variables and secrets](../docs/infra/additional-capabilities/environment-variables-and-secrets.md)
+- [Identity provider](../docs/infra/additional-capabilities/identity-provider.md)
+- [User notifications](../docs/infra/additional-capabilities/notifications.md)
+- [Pull request (preview) environments](../docs/infra/additional-capabilities/pull-request-environments.md)
+- [Service command execution](../docs/infra/additional-capabilities/service-command-execution.md)
+- [Outbound public internet access](../docs/infra/additional-capabilities/set-up-public-internet-access.md)
+- [CI/CD system notifications](../docs/infra/additional-capabilities/system-notifications.md)
+
+### Day to day operations
+
+- [Destroy infrastructure](../docs/infra/operations/destroy-infrastructure.md)
+- [Develop and test infrastructure in isolation using workspaces](../docs/infra/operations/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
+- [Making infrastructure changes](../docs/infra/operations/making-infra-changes.md)
+- [Upgrade database](../docs/infra/operations/upgrade-database.md)
+
+### Reference
+
+### Architecture
+
+- [Module architecture](../docs/infra/reference/module-architecture.md)
+- [Infrastructure configuration](../docs/infra/reference/infrastructure-configuration.md)
+- [Module dependencies](../docs/infra/reference/module-dependencies.md)
+
+### Style guide
+
+- [Infrastructure style guide](../docs/infra/reference/style-guide.md)
+
+### Security
+
+- [Cloud access control](../docs/infra/reference/cloud-access-control.md)
+- [Database access control](../docs/infra/reference/database-access-control.md)
+- [Vulnerability management](../docs/infra/reference/vulnerability-management.md)
+
+### Troubleshooting
+
+1. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
+2.  [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
+3.  [Set up background jobs](/docs/infra/background-jobs.md)
+
+(/docs/additional-capabilities/web-application-firewall.md
+(/docs/additional-capabilities/notifications.md
+(/docs/additional-capabilities/https-support.md
+(/docs/additional-capabilities/identity-provider.md
+
+## Set up additional AWS accounts and application environments
+
+To set up additional AWS accounts, virtual networks, and application environments, repeat the relevant steps above.
 
 ## 📇 Additional reading
 
