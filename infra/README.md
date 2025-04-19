@@ -139,10 +139,6 @@ Set up the following before launching to end users in production:
 
 // TODO
 
-## Set up additional AWS accounts and application environments
-
-To set up additional AWS accounts, virtual networks, and application environments, repeat the relevant steps above.
-
 ## 📇 Additional reading
 
 Additional documentation can be found in the [documentation directory](/docs/infra).
