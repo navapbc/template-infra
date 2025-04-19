@@ -137,14 +137,7 @@ Set up the following before launching to end users in production:
 
 ### Troubleshooting
 
-1. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
-2.  [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
-3.  [Set up background jobs](/docs/infra/background-jobs.md)
-
-(/docs/additional-capabilities/web-application-firewall.md
-(/docs/additional-capabilities/notifications.md
-(/docs/additional-capabilities/https-support.md
-(/docs/additional-capabilities/identity-provider.md
+// TODO
 
 ## Set up additional AWS accounts and application environments
 
