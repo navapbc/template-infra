@@ -135,10 +135,6 @@ Set up the following before launching to end users in production:
 - [Database access control](../docs/infra/reference/database-access-control.md)
 - [Vulnerability management](../docs/infra/reference/vulnerability-management.md)
 
-### Troubleshooting
-
-// TODO
-
 ## 📇 Additional reading
 
 Additional documentation can be found in the [documentation directory](/docs/infra).
