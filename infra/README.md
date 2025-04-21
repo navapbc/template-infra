@@ -119,17 +119,17 @@ Set up the following before launching to end users in production:
 
 ### Reference
 
-### Architecture
+#### Architecture
 
 - [Module architecture](../docs/infra/reference/module-architecture.md)
 - [Infrastructure configuration](../docs/infra/reference/infrastructure-configuration.md)
 - [Module dependencies](../docs/infra/reference/module-dependencies.md)
 
-### Style guide
+#### Style guide
 
 - [Infrastructure style guide](../docs/infra/reference/style-guide.md)
 
-### Security
+#### Security
 
 - [Cloud access control](../docs/infra/reference/cloud-access-control.md)
 - [Database access control](../docs/infra/reference/database-access-control.md)
