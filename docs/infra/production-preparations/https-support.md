@@ -29,7 +29,7 @@ aws acm describe-certificate --certificate-arn <CERTIFICATE_ARN> --query Certifi
 
 ## 4. Update `enable_https = true` in `app-config`
 
-Update `enable_https = true` in your application's `app-config` module. You should have already set `domain_name` as part of [setting up custom domain names](/docs/infra/set-up-custom-domains.md).
+Update `enable_https = true` in your application's `app-config` module. You should have already set `domain_name` as part of [setting up custom domain names](/docs/infra/production-preparations/set-up-custom-domains.md).
 
 ## 5. Attach certificate to load balancer
 
