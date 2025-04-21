@@ -25,7 +25,7 @@ Each application directory contains the following:
   service/            [Root module] Configuration for containers, such as load balancer, application service (different config for different environments)
 ```
 
-Details about terraform root modules and child modules are documented in [module-architecture](/docs/infra/module-architecture.md).
+Details about terraform root modules and child modules are documented in [module-architecture](/docs/infra/reference/module-architecture.md).
 
 ## 🏗️ Project architecture
 
@@ -36,7 +36,7 @@ The infrastructure derives all of its configuration from static configuration mo
 - Project config
 - App config (per application)
 
-The configuration modules contain only statically known information and do not have any side effects such as creating infrastructure resources. As such, they are used as both (a) root modules by shell scripts and CI/CD workflows and (b) child modules called by root modules across the infrastructure layers. See [infrastructure configuration](/docs/infra/infrastructure-configuration.md) for more info.
+The configuration modules contain only statically known information and do not have any side effects such as creating infrastructure resources. As such, they are used as both (a) root modules by shell scripts and CI/CD workflows and (b) child modules called by root modules across the infrastructure layers. See [infrastructure configuration](/docs/infra/reference/infrastructure-configuration.md) for more info.
 
 ### 🧅 Infrastructure layers
 
@@ -62,7 +62,7 @@ The environments share the same root modules but will have different configurati
 
 This project relies on Make targets in the [root Makefile](/Makefile), which in turn call shell scripts in [./bin](/bin). The shell scripts call `terraform` commands. Many of the shell scripts are also called by the [Github Actions CI/CD](/.github/workflows).
 
-Generally, you should use the Make targets or the underlying bin scripts, but you can call the underlying terraform commands if needed. See [making-infra-changes](/docs/infra/making-infra-changes.md) for more details.
+Generally, you should use the Make targets or the underlying bin scripts, but you can call the underlying terraform commands if needed. See [making-infra-changes](/docs/infra/operations/making-infra-changes.md) for more details.
 
 ## 💻 Development
 
@@ -86,16 +86,16 @@ To get set up as a new developer on a project that has already been deployed to 
 1. [Set up infrastructure developer tools](/docs/infra/getting-started/set-up-infrastructure-tools.md)
 2. [Review how to make changes to infrastructure](/docs/infra/operations/making-infra-changes.md)
 3. [Review how to develop and test infrastructure changes](/docs/infra/operations/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
-4. [Review the infrastructure style guide](/docs/infra/operations/style-guide.md)
+4. [Review the infrastructure style guide](/docs/infra/reference/style-guide.md)
 
 ### Preparing for production launch
 
 Set up the following before launching to end users in production:
 
-- [HTTPS support](../docs/infra/preparing-for-production/https-support.md)
-- [Custom domains](../docs/infra/preparing-for-production/set-up-custom-domains.md)
-- [Monitoring alerts](../docs/infra/preparing-for-production/set-up-monitoring-alerts.md)
-- [Web application firewall (WAF)](../docs/infra/preparing-for-production/web-application-firewall.md)
+- [HTTPS support](/docs/infra/production-preparations/https-support.md)
+- [Custom domains](/docs/infra/production-preparations/set-up-custom-domains.md)
+- [Monitoring alerts](/docs/infra/production-preparations/set-up-monitoring-alerts.md)
+- [Web application firewall (WAF)](/docs/infra/production-preparations/web-application-firewall.md)
 - [Staging and production environments](../docs/infra/production-preparations/staging-and-production-environments.md)
 
 ### Setting up additional capabilities

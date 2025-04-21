@@ -7,7 +7,7 @@ Production systems will want to use HTTPS rather than HTTP to prevent man-in-the
 
 ## Requirements
 
-In order to set up HTTPS support you'll also need to have [set up custom domains](/docs/infra/set-up-custom-domains.md). This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
+In order to set up HTTPS support you'll also need to have [set up custom domains](/docs/infra/production-preparations/set-up-custom-domains.md). This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
 
 ## 1. Set desired certificates in domain configuration
 
