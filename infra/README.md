@@ -93,8 +93,8 @@ To get set up as a new developer on a project that has already been deployed to 
 Set up the following before launching to end users in production:
 
 - [HTTPS support](/docs/infra/production-preparations/https-support.md)
-- [Custom domains](/docs/infra/production-preparations/set-up-custom-domains.md)
-- [Monitoring alerts](/docs/infra/production-preparations/set-up-monitoring-alerts.md)
+- [Custom domains](/docs/infra/production-preparations/custom-domains.md)
+- [Monitoring alerts](/docs/infra/production-preparations/monitoring-alerts.md)
 - [Web application firewall (WAF)](/docs/infra/production-preparations/web-application-firewall.md)
 - [Staging and production environments](../docs/infra/production-preparations/staging-and-production-environments.md)
 

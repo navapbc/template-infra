@@ -12,7 +12,7 @@ Before setting up the network you'll need to have:
 
 1. [Set up the AWS account](./set-up-aws-account.md)
 2. Optionally adjust the configuration for the networks you want to have on your project in the [project-config module](/infra/project-config/networks.tf). By default, there are three networks defined, one for each application environment. If you have multiple apps and want your applications in separate networks, you may want to give the networks differentiating names (e.g. "foo-dev", "foo-prod", "bar-dev", "bar-prod", instead of just "dev", "prod").
-   1. Optionally, [configure custom domains](/docs/infra/production-preparations/set-up-custom-domains.md). You can also come back to setting up custom domains at a later time.
+   1. Optionally, [configure custom domains](/docs/infra/production-preparations/custom-domains.md). You can also come back to setting up custom domains at a later time.
    2. Optionally, [configure HTTPS support](/docs/infra/production-preparations/https-support.md). You can also come back to setting up HTTPS support at a later time.
 3. Configure the app in `infra/<APP_NAME>/app-config/main.tf`.
    1. Update `has_database` to `true` or `false` depending on whether or not your application has a database to integrate with. This setting determines whether or not to create VPC endpoints needed by the database layer.

@@ -18,7 +18,7 @@ Before setting up the application's environments you'll need to have:
 4. [Create a nondefault VPC to be used by the application](./set-up-network.md)
 5. (If the application has external non-AWS services) [Set up network access to the public internet](/docs/infra/additional-capabilities/set-up-public-internet-access.md)
 6. (If the application has a database) [Set up the database for the application](./set-up-database.md)
-7. (If you have an incident management service) [Set up monitoring alerts](/docs/infra/production-preparations/set-up-monitoring-alerts.md)
+7. (If you have an incident management service) [Set up monitoring alerts](/docs/infra/production-preparations/monitoring-alerts.md)
 8. [Set up the application build repository](./set-up-app-build-repository.md)
 
 ## 1. Configure backend
@@ -61,4 +61,4 @@ TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP
 ## 4. Configure monitoring alerts
 
 Configure email alerts, external incident management service integration and additional CloudWatch Alerts.
-[Configure monitoring module](/docs/infra/production-preparations/set-up-monitoring-alerts.md)
+[Configure monitoring module](/docs/infra/production-preparations/monitoring-alerts.md)
