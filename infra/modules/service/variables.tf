@@ -13,7 +13,7 @@ variable "container_port" {
 variable "cpu" {
   type        = number
   default     = 256
-  description = "Number of cpu units used by the task, expessed as an integer value, e.g 512 "
+  description = "Number of cpu units used by the task, expressed as an integer value, e.g 512"
 }
 
 variable "db_vars" {
