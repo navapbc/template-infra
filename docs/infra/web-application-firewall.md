@@ -21,13 +21,11 @@ There are no specific prerequisites for enabling WAF.
 
 ## 1. Enable WAF in application config
 
-WAF is enabled by default in the template. You can find and modify this setting in your application's `app-config` module (`infra/<APP_NAME>/app-config/main.tf`):
+WAF is disabled by default in the template. You can find and modify this setting in your application's `app-config` module (`infra/<APP_NAME>/app-config/main.tf`):
 
 ```terraform
 enable_waf = true
 ```
-
-Set `enable_waf = false` if you want to disable WAF protection.
 
 ## 2. Deploy the WAF in the network layer
 
