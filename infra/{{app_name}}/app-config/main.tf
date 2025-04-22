@@ -46,7 +46,7 @@ locals {
   # Whether or not the application should enable WAF for the load balancer.
   # If enabled:
   # 1. Creates an AWS WAF web ACL with AWSManagedRulesCommonRuleSet
-  enable_waf = true
+  enable_waf = false
 
   environment_configs = {
     dev     = module.dev_config
