@@ -10,10 +10,16 @@ variable "container_port" {
   default     = 8000
 }
 
-variable "cpu" {
+variable "app_cpu" {
   type        = number
   default     = 256
-  description = "Number of cpu units used by the task, expessed as an integer value, e.g 512 "
+  description = "Number of cpu units used by the primary application container, expessed as an integer value, e.g 512 "
+}
+
+variable "task_cpu" {
+  type        = number
+  default     = 256
+  description = "Number of cpu units used by the task definition, expessed as an integer value, e.g 512. Identical to app_cpu if you are not running any sidecar containers."
 }
 
 variable "db_vars" {
@@ -124,10 +130,16 @@ variable "is_temporary" {
   default     = false
 }
 
-variable "memory" {
+variable "app_memory" {
   type        = number
   default     = 512
-  description = "Amount (in MiB) of memory used by the task. e.g. 2048"
+  description = "Amount (in MiB) of memory used by the primary application container. e.g. 2048"
+}
+
+variable "task_memory" {
+  type        = number
+  default     = 512
+  description = "Amount (in MiB) of memory used by the task definition. e.g. 2048. Identical to app_cpu if you are not running any sidecar containers."
 }
 
 variable "network_name" {
