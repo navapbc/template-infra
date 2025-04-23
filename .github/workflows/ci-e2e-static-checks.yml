@@ -8,11 +8,20 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
-  format-check:
-    name: Format check
+  static-checks:
+    name: ${{ matrix.check.name }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        check:
+          - name: Format
+            command: make e2e-format-check-native
+          - name: Typecheck
+            command: make e2e-type-check-native
 
     steps:
       - name: Checkout code
@@ -34,8 +43,5 @@ jobs:
         if: steps.cache-node.outputs.cache-hit != 'true'
         run: make e2e-setup-ci
 
-      - name: Check formatting
-        run: make e2e-format-check-native
-
-      - name: Check typing
-        run: make e2e-type-check-native
+      - name: ${{ matrix.check.name }}
+        run: ${{ matrix.check.command }}
