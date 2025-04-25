@@ -15,8 +15,13 @@ module "prod_config" {
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs
   # https://conchchow.medium.com/aws-ecs-fargate-compute-capacity-planning-a5025cb40bd0
-  service_cpu                    = 1024
-  service_memory                 = 4096
+  #
+  # See the following link for a description of the cpu and memory constraints.
+  # https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task_definition_parameters.html#task_size
+  app_cpu                        = 1024
+  task_cpu                       = 1024
+  app_memory                     = 4096
+  task_memory                    = 4096
   service_desired_instance_count = 3
 
   # Enables ECS Exec access for debugging or jump access.
