@@ -31,7 +31,7 @@ Questions that need to be addressed:
 
 ## Decision Outcome
 
-Run migrations from an ECS task using the same container image that is used for running the web service. Require a `db-migrate` script in the application container image that performs the migration. When running the migration task using [AWS CLI's run-task command](https://docs.aws.amazon.com/cli/latest/ecs/run-task.html), use the `--overrides` option to override the command to the `db-migrate` command.
+Run migrations from an ECS task using the same container image that is used for running the web service. Require a `db-migrate` script in the application container image that performs the migration. When running the migration task using [AWS CLI's run-task command](https://docs.aws.amazon.com/cli/latest/reference/ecs/run-task.html), use the `--overrides` option to override the command to the `db-migrate` command.
 
 Default to rolling forward instead of rolling back when issues arise (See [Pitfalls with SQL rollbacks and automated database deployments](https://octopus.com/blog/database-rollbacks-pitfalls)). Do not support rolling back out of the box, but still project teams to easily implement database rollbacks through the mechanism of running an application-specific database rollback script through a general purpose `run-command` script.
 
