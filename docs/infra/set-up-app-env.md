@@ -16,9 +16,9 @@ Before setting up the application's environments you'll need to have:
    3. If you're configuring your production environment, make sure to update the `service_cpu`, `service_memory`, and `service_desired_instance_count` settings based on the project's needs. If your application is sensitive to performance, consider doing a load test.
    4. Make sure your application environment is using the network/AWS Account you want to use by checking the `network_name` property in the environment configuration and what account it maps to in the project configuration. Update the values if necessary.
 4. [Create a nondefault VPC to be used by the application](./set-up-network.md)
-5. (If the application has external non-AWS services) [Set up network access to the public internet](./set-up-public-internet-access.md)
+5. (If the application has external non-AWS services) [Set up network access to the public internet](/docs/infra/set-up-public-internet-access.md)
 6. (If the application has a database) [Set up the database for the application](./set-up-database.md)
-7. (If you have an incident management service) [Set up monitoring](./set-up-monitoring-alerts.md)
+7. (If you have an incident management service) [Set up monitoring alerts](/docs/infra/monitoring-alerts.md)
 8. [Set up the application build repository](./set-up-app-build-repository.md)
 
 ## 1. Configure backend
@@ -61,4 +61,4 @@ TF_CLI_ARGS_apply="-var=image_tag=<IMAGE_TAG>" make infra-update-app-service APP
 ## 4. Configure monitoring alerts
 
 Configure email alerts, external incident management service integration and additional CloudWatch Alerts.
-[Configure monitoring module](./set-up-monitoring-alerts.md)
+[Configure monitoring module](/docs/infra/monitoring-alerts.md)

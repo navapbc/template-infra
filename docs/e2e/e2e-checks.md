@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repository uses [Playwright](https://playwright.dev/) to perform end-to-end (E2E) tests. The tests can be run locally (natively or within Docker), but they also run on [Pull Request preview environments](../infra/pull-request-environments.md). This ensures that any new code changes are validated through E2E tests before being merged.
+This repository uses [Playwright](https://playwright.dev/) to perform end-to-end (E2E) tests. The tests can be run locally (natively or within Docker), but they also run on [Pull Request preview environments](/docs/infra/pull-request-environments.md). This ensures that any new code changes are validated through E2E tests before being merged.
 
 By default in CI, tests are sharded across 3 concurrent runs to reduce total runtime. As the test suite grows, consider increasing the shard count to further optimize execution time. This is set in the [workflow file](../../.github/workflows/e2e-tests.yml#L22).
 
@@ -102,7 +102,7 @@ make e2e-clean-report
 
 ### PR preview environments
 
-The E2E tests are triggered in PR preview environments on each PR update. For more information on how PR environments work, please refer to [PR Environments Documentation](../infra/pull-request-environments.md).
+The E2E tests are triggered in PR preview environments on each PR update. For more information on how PR environments work, please refer to [PR Environments Documentation](/docs/infra/pull-request-environments.md).
 
 ### Workflows
 

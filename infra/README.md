@@ -66,22 +66,18 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 
 ## 💻 Development
 
-### 1️⃣ First time initialization
+### 1️⃣ Getting started
 
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
-1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements)
+1. [Install this template](/README.md#installation) into an application that meets the [Application Requirements](/README.md#application-requirements). 
     1. You may need to tweak the generated [project configuration](/infra/project-config/main.tf) depending on your needs. <!-- markdown-link-check-disable-line -->
 2. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 3. [Set up AWS account](/docs/infra/set-up-aws-account.md)
 4. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
-5. Optionally [set up system notifications for CI/CD workflows](/docs/infra/system-notifications.md)
-6. For each application:
-    1. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
-    2. [Set up application database](/docs/infra/set-up-database.md)
-    3. [Set up application environment](/docs/infra/set-up-app-env.md)
-    4. [Configure environment variables and secrets](/docs/infra/environment-variables-and-secrets.md)
-    5. [Set up background jobs](/docs/infra/background-jobs.md)
+5. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
+6. [Set up application database](/docs/infra/set-up-database.md)
+7. [Set up application environment](/docs/infra/set-up-app-env.md)
 
 ### 🆕 New developer
 
@@ -91,6 +87,53 @@ To get set up as a new developer on a project that has already been deployed to 
 2. [Review how to make changes to infrastructure](/docs/infra/making-infra-changes.md)
 3. [Review how to develop and test infrastructure changes](/docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
 4. [Review the infrastructure style guide](/docs/infra/style-guide.md)
+
+### Preparing for production launch
+
+Set up the following before launching to end users in production:
+
+- [HTTPS support](/docs/infra/https-support.md)
+- [Custom domains](/docs/infra/custom-domains.md)
+- [Monitoring alerts](/docs/infra/monitoring-alerts.md)
+- [Web application firewall (WAF)](/docs/infra/web-application-firewall.md)
+- [Staging and production environments](../docs/infra/staging-and-production-environments.md)
+
+### Setting up additional capabilities
+
+- [Additional applications](../docs/infra/add-application.md)
+- [Background jobs](../docs/infra/background-jobs.md)
+- [Custom environment variables and secrets](../docs/infra/environment-variables-and-secrets.md)
+- [Identity provider](../docs/infra/identity-provider.md)
+- [User notifications](../docs/infra/notifications.md)
+- [Pull request (preview) environments](../docs/infra/pull-request-environments.md)
+- [Service command execution](../docs/infra/service-command-execution.md)
+- [Outbound public internet access](../docs/infra/set-up-public-internet-access.md)
+- [CI/CD system notifications](../docs/infra/system-notifications.md)
+
+### Day to day operations
+
+- [Destroy infrastructure](../docs/infra/destroy-infrastructure.md)
+- [Develop and test infrastructure in isolation using workspaces](../docs/infra/develop-and-test-infrastructure-in-isolation-using-workspaces.md)
+- [Making infrastructure changes](../docs/infra/making-infra-changes.md)
+- [Upgrade database](../docs/infra/upgrade-database.md)
+
+### Reference
+
+#### Architecture
+
+- [Module architecture](../docs/infra/module-architecture.md)
+- [Infrastructure configuration](../docs/infra/infrastructure-configuration.md)
+- [Module dependencies](../docs/infra/module-dependencies.md)
+
+#### Style guide
+
+- [Infrastructure style guide](../docs/infra/style-guide.md)
+
+#### Security
+
+- [Cloud access control](../docs/infra/cloud-access-control.md)
+- [Database access control](../docs/infra/database-access-control.md)
+- [Vulnerability management](../docs/infra/vulnerability-management.md)
 
 ## 📇 Additional reading
 

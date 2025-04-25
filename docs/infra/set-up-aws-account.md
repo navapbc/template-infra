@@ -56,4 +56,4 @@ make infra-update-current-account
 
 ## Destroying infrastructure
 
-To undeploy and destroy infrastructure, see [instructions on destroying infrastructure](./destroy-infrastructure.md).
+To undeploy and destroy infrastructure, see [instructions on destroying infrastructure](/docs/infra/destroy-infrastructure.md).

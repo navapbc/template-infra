@@ -93,7 +93,7 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 
 ### Updating the role manager
 
-To make changes to the role manager such as updating dependencies or adding functionality, see [database access control](./database-access-control.md#update-the-role-manager)
+To make changes to the role manager such as updating dependencies or adding functionality, see [database access control](/docs/infra/database-access-control.md#update-the-role-manager)
 
 ### Note on Postgres table permissions
 

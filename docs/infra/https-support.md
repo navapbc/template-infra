@@ -7,7 +7,7 @@ Production systems will want to use HTTPS rather than HTTP to prevent man-in-the
 
 ## Requirements
 
-In order to set up HTTPS support you'll also need to have [set up custom domains](/docs/infra/set-up-custom-domains.md). This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
+In order to set up HTTPS support you'll also need to have [set up custom domains](/docs/infra/custom-domains.md). This is because SSL/TLS certificates must be properly configured for the specific domain to support establishing secure connections.
 
 ## 1. Set desired certificates in domain configuration
 
@@ -29,7 +29,7 @@ aws acm describe-certificate --certificate-arn <CERTIFICATE_ARN> --query Certifi
 
 ## 4. Update `enable_https = true` in `app-config`
 
-Update `enable_https = true` in your application's `app-config` module. You should have already set `domain_name` as part of [setting up custom domain names](/docs/infra/set-up-custom-domains.md).
+Update `enable_https = true` in your application's `app-config` module. You should have already set `domain_name` as part of [setting up custom domain names](/docs/infra/custom-domains.md).
 
 ## 5. Attach certificate to load balancer
 

@@ -89,4 +89,4 @@ When deciding which layer to put an infrastructure resource in, follow the follo
 
 ## Making changes to infrastructure
 
-Now that you understand how the modules are structured, see [making changes to infrastructure](./making-infra-changes.md).
+Now that you understand how the modules are structured, see [making changes to infrastructure](/docs/infra/making-infra-changes.md).

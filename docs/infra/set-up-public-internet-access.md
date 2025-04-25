@@ -17,7 +17,7 @@ In the `infra/<APP_NAME>/app-config` module, set `has_external_non_aws_service` 
 
 ## 2. Create or update the network
 
-If you are creating new network(s), follow the instructions in [set up network](./set-up-network.md)
+If you are creating new network(s), follow the instructions in [set up network](/docs/infra/set-up-network.md)
 
 If you are updating existing networks, run the following command for each network used by your application's environments (look at `network_name` for each environment in your application's `app-config` module).
 

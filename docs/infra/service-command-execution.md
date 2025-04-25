@@ -6,8 +6,8 @@ The infrastructure supports developer access to a running application's service 
 
 ## Prerequisites
 
-* You'll need to have [set up infrastructure tools](./set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication
-* You'll need to have set up the [app environments](./set-up-app-env.md)
+* You'll need to have [set up infrastructure tools](/docs/infra/set-up-infrastructure-tools.md), like Terraform, AWS CLI, and AWS authentication
+* You'll need to have set up the [app environments](/docs/infra/set-up-app-env.md)
 * You'll need to have [installed the Session Manager plugin for the AWS CLI](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)
 
 ## Instructions
