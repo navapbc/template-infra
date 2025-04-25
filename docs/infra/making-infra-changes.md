@@ -2,7 +2,7 @@
 
 ## Requirements
 
-First read [Module Architecture](/docs/infra/reference/module-architecture.md) to understand how the terraform modules are structured.
+First read [Module Architecture](/docs/infra/module-architecture.md) to understand how the terraform modules are structured.
 
 ## Using make targets (recommended)
 
