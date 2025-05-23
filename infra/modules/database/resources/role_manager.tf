@@ -20,7 +20,6 @@ resource "aws_lambda_function" "role_manager" {
   role             = aws_iam_role.role_manager.arn
   kms_key_arn      = aws_kms_key.role_manager.arn
 
-  # Only allow 1 concurrent execution at a time
   reserved_concurrent_executions = 1
 
   vpc_config {
