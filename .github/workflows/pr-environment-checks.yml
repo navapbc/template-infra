@@ -15,6 +15,9 @@ on:
       commit_hash:
         required: true
         type: string
+
+concurrency: pr-environment-${{ inputs.app_name }}-${{ inputs.pr_number }}
+
 jobs:
   build-and-publish:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
@@ -33,8 +36,6 @@ jobs:
       id-token: write
       pull-requests: write # Needed to comment on PR
       repository-projects: read # Workaround for GitHub CLI bug https://github.com/cli/cli/issues/6274
-
-    concurrency: pr-environment-${{ inputs.app_name }}-${{ inputs.pr_number }}
 
     outputs:
       service_endpoint: ${{ steps.update-environment.outputs.service_endpoint }}

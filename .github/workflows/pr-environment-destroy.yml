@@ -12,6 +12,9 @@ on:
       pr_number:
         required: true
         type: string
+
+concurrency: pr-environment-${{ inputs.app_name }}-${{ inputs.pr_number }}
+
 jobs:
   destroy:
     name: Destroy environment
@@ -22,8 +25,6 @@ jobs:
       id-token: write
       pull-requests: write # Needed to comment on PR
       repository-projects: read # Workaround for GitHub CLI bug https://github.com/cli/cli/issues/6274
-
-    concurrency: pr-environment-${{ inputs.app_name }}-${{ inputs.pr_number }}
 
     steps:
       - uses: actions/checkout@v4
