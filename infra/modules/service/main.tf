@@ -90,8 +90,8 @@ resource "aws_ecs_task_definition" "app" {
     {
       name                   = local.container_name,
       image                  = local.image_url,
-      memory                 = var.memory,
-      cpu                    = var.cpu,
+      memory                 = var.app_memory,
+      cpu                    = var.app_cpu,
       networkMode            = "awsvpc",
       essential              = true,
       readonlyRootFilesystem = !var.enable_command_execution,
@@ -147,8 +147,8 @@ resource "aws_ecs_task_definition" "app" {
     }
   }
 
-  cpu    = var.cpu
-  memory = var.memory
+  cpu    = var.task_cpu
+  memory = var.task_memory
 
   requires_compatibilities = ["FARGATE"]
 

@@ -72,8 +72,10 @@ module "service" {
 
   enable_waf = module.app_config.enable_waf
 
-  cpu                      = local.service_config.cpu
-  memory                   = local.service_config.memory
+  app_cpu                  = local.service_config.app_cpu
+  task_cpu                 = local.service_config.task_cpu
+  app_memory               = local.service_config.app_memory
+  task_memory              = local.service_config.task_memory
   desired_instance_count   = local.service_config.desired_instance_count
   enable_command_execution = local.service_config.enable_command_execution
 
