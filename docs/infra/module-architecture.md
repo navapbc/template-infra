@@ -40,7 +40,7 @@ flowchart TB
       container-image-repository:::child-module
       network:::child-module
       database:::child-module
-      web-app:::child-module
+      service:::child-module
     end
 
     account --> terraform-backend-s3
@@ -48,7 +48,7 @@ flowchart TB
     app/network --> network
     app/build-repository --> container-image-repository
     app/database --> database
-    app/service --> web-app
+    app/service --> service
 
   end
 ```
