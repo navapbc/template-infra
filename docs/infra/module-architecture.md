@@ -30,8 +30,10 @@ flowchart TB
 
     subgraph app
       app/build-repository[build-repository]:::root-module
-      app/database[database]:::root-module
-      app/service[service]:::root-module
+      subgraph environment
+        app/database[database]:::root-module
+        app/service[service]:::root-module
+      end
     end
 
     subgraph modules
