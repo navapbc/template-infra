@@ -19,12 +19,24 @@ re-usable modules under `infra/modules/`](/docs/infra/module-architecture.md).
 Everything else largely exists to call that re-usable code with the correct
 parameters at the correct time, [in a well structured
 way](/docs/infra/module-dependencies.md). That "everything else" can be broken
-down into three broad layers.
+down into three broad "slices".
+
+One last bit of exposition, as yet more new terminology has been introduced with
+"slice". If you've read other documentation already you'll have likely seen
+references to infrastructure "layers", but there are some conceptual
+psuedo-layers that for clarity that this document calls a "slice". Some slices
+directly correspond to a layer, other slices correspond to multiple layers. In
+summary:
+
+- Slice: Conceptual or organizational grouping, it does not directly correspond
+  to infrastructure resources itself, though may be expressed in the file
+  structure.
+- Layer: Corresponds to root modules.
 
 ![Vizualization of infra code
 layers](https://lucid.app/publicSegments/view/623affad-8b51-4482-86e2-f1a3ad1bd623/image.png)
 
-## Account Layer
+## Account Layer/Slice
 
 After initial set up of an account, you'll likely rarely need to deal with this.
 
@@ -41,7 +53,7 @@ Common make targets to interact with it:
 
 Set up docs: [/docs/infra/set-up-aws-account.md](/docs/infra/set-up-aws-account.md)
 
-## Network Layer
+## Network Layer/Slice
 
 After initial set up, you'll less frequently need to deal with this, only when
 there are network/cross-application resource changes.
@@ -62,44 +74,39 @@ TODO or separate commands?
 
 Set up docs: [/docs/infra/set-up-network.md](/docs/infra/set-up-network.md)
 
-## App "Layer"
+## App Slice
 
 This is where you'll spend most of your time as a developer.
 
-Now "layer" is in quotes because this a conceptual or organizational grouping,
-it does not directly correspond to infrastructure resources itself. Rather this
-"layer" is composed of multiple root modules for different "sub-layers" of
-actual resources:
+This slice is composed of a layer, a build repository, and another slice, the
+application environment.
 
-- `service` for the application code, storage, monitoring, etc. **This is likely
-  where you'll be doing the most work.**
-- `database` for the application's database
-- `build-repository` for AWS, holds resources for the container build of the
-  application code. After initial setup, you probably won't deal with this.
+- `build-repository` layer for AWS, holds resources for the container build of
+  the application code. After initial setup, you probably won't deal with this.
+- Application Environments
 
-The layer's source code is under `infra/<APP_NAME>/`. And primary config at
-`infra/<APP_NAME>/app-config/`.
-  
-Of these, `build-repository` is they only one that exists at the bare app
-"layer", the others exist in an environment, discussed next. This is because the
+Of these, `build-repository` is they only one that exists at the bare app slice,
+the others exist in an environment, discussed next. This is because the
 applications build repo is shared across all environments and accounts that run
 the application.
+
+The slice's "source code" is under `infra/<APP_NAME>/`. And primary config at
+`infra/<APP_NAME>/app-config/`.
 
 Common make targets to interact with it:
 - `infra-configure-app-build-repository APP_NAME=<APP_NAME>`
 - `infra-update-app-build-repository APP_NAME=<APP_NAME>`
 
-### Environment "Layer"
+### Environment Slice
 
-Like the "app layer", the "app environment layer" is a conceptual organization
-tool, it does not correspond directly to infrastructure resources.
+The environment slice encompasses a couple layers:
 
 - `service` for the application code, storage, monitoring, etc. **This is likely
   where you'll be doing the most work.**
 - `database` for the application's database
 
-The layer's source code is under `infra/<APP_NAME>/(service,database)`. And primary config at
-`infra/<APP_NAME>/app-config/<ENV_NAME>.tf`.
+These layer's source code is under `infra/<APP_NAME>/(service,database)`. And
+primary config at `infra/<APP_NAME>/app-config/<ENV_NAME>.tf`.
 
 For each environment for the app, there will be an `<ENV_NAME>.<terraform
 backend type>.tfbackend` file under `infra/<APP_NAME>/(service,database)`.
