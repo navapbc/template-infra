@@ -98,6 +98,10 @@ To set up this project for the first time (i.e., it has never been deployed to t
 > [!TIP]
 > If you don't yet have an application meeting [the application requirements for using this infrastructure](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md), you can copy [this example app](https://github.com/navapbc/template-infra/tree/main/template-only-app) to your repository to have something that will run for testing the infrastructure, and swap in your actual application code later.
 
+### Add an application to an existing repo
+
+[Use the Platform CLI to add another application to an existing repo](https://navapbc.github.io/platform-cli/adding-an-app/)
+
 ### 🆕 New developer
 
 To get set up as a new developer on a project that has already been deployed to the target AWS account:
