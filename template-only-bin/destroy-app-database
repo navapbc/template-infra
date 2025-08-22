@@ -16,13 +16,19 @@ app_name=${1:-"app"}
 environment=${2:-"dev"}
 backend_config_file="${environment}.s3.tfbackend"
 
-sed -i.bak 's/deletion_protection = !var.is_temporary/deletion_protection = false/g' infra/modules/database/main.tf
-sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/database/backups.tf
+sed -i.bak 's/deletion_protection = !var.is_temporary/deletion_protection = false/g' infra/modules/database/resources/main.tf
+sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/modules/database/resources/backups.tf
 
-cd "infra/${app_name}/database"
+pushd "infra/${app_name}/database"
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
 terraform apply -auto-approve -target="module.database.aws_backup_vault.backup_vault" -target="module.database.aws_rds_cluster.db" -var="environment_name=${environment}"
 
 terraform destroy -auto-approve -var="environment_name=${environment}"
+
+popd
+
+# restore re-usable module code
+mv -f infra/modules/database/resources/main.tf{.bak,}
+mv -f infra/modules/database/resources/backups.tf{.bak,}

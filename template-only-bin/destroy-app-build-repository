@@ -13,7 +13,7 @@ set -euxo pipefail
 app_name=${1:-"app"}
 backend_config_file="shared.s3.tfbackend"
 
-cd "infra/${app_name}/build-repository"
+pushd "infra/${app_name}/build-repository"
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
