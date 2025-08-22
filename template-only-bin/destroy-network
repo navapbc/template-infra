@@ -13,7 +13,7 @@ set -euxo pipefail
 network_name=${1:-"dev"}
 backend_config_file="${network_name}.s3.tfbackend"
 
-cd infra/networks
+pushd infra/networks
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 

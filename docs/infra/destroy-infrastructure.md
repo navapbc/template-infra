@@ -1,59 +1,40 @@
 # Destroy infrastructure
 
-To destroy everything you'll need to undeploy all the infrastructure in reverse order that they were created. In particular, the account root module(s) need to be destroyed last.
+Whether you just want to destroy a single application or tear everything down,
+you'll need to undeploy all the infrastructure in reverse order that things were
+created (see /infra/README.md#Getting-started). In particular, the account root
+module(s) need to be destroyed last if you are going that far.
 
-## Instructions
+## Utilities
 
-1. First, destroy all your environments. Within `/infra/<APP_NAME>/service` run the following, replacing `dev` with the environment you're destroying.
+In the upstream [template-infra/template-only/bin/
+directory](https://github.com/navapbc/template-infra/tree/main/template-only-bin)
+there are `destroy-*` scripts for each layer that automate most of the
+trickiness of the process.
 
-   ```bash
-   $ terraform init --backend-config=dev.s3.tfbackend
-   $ terraform destroy -var-file=dev.tfvars
-   ```
+> [!WARNING]
+> These scripts auto-approve the terraform changes, you will not have a chance
+> to review!
 
-2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply` from within the `infra/accounts` directory. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in-depth explanation.
+See the next section for some of what makes it "tricky". If you'd rather have
+more control over the destruction, you'll want to review and probably copy-paste
+commands out of the scripts regardless.
 
-   ```terraform
-   # infra/modules/modules/terraform-backend-s3/main.tf
+## Considerations
 
-   resource "aws_s3_bucket" "tf_state" {
-     bucket = var.state_bucket_name
+### Delete protection
 
-     force_destroy = true
+A variety of resources have delete protection enabled, so you can't just run a
+`terraform destroy`/`terrafom apply -destroy` on them.
 
-     # Prevent accidental destruction a developer executing terraform destory in the wrong directory. Contains terraform state files.
-     lifecycle {
-       prevent_destroy = false
-     }
-   }
+### Remote state
 
-   ...
+A consideration applicable only to the account root module really.
 
-   resource "aws_s3_bucket" "tf_log" {
-     bucket = var.tf_logging_bucket_name
-     force_destroy = true
-   }
-   ```
+TODO
 
-3. Then since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration:
+### Multiple instances
 
-   ```terraform
-   # infra/accounts/main.tf
-
-   # Comment out or delete the backend block
-   backend "s3" {
-     ...
-   }
-   ```
-
-4. Then run the following from within the `infra/accounts` directory to copy the `tfstate` back to a local `tfstate` file:
-
-   ```bash
-   terraform init -force-copy
-   ```
-
-5. Finally, you can run `terraform destroy` within the `infra/accounts` directory.
-
-   ```bash
-   terraform destroy
-   ```
+The project may have many application environments and multiple networks, each
+of which will need to be torn down separately. You'll likely want to automate
+the process for repeatability.
