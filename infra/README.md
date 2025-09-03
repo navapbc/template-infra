@@ -70,33 +70,29 @@ Generally, you should use the Make targets or the underlying bin scripts, but yo
 
 To set up this project for the first time (i.e., it has never been deployed to the target AWS account):
 
-#### 1. Make sure you have an application that meets [the application requirements for using this infrastructure](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md).
+1. Make sure you have an application that meets [the application requirements for using this infrastructure](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md).
 
-> [!TIP]
-> You don't need an actual application to deploy until you want to set up the application environment (the last step).
+   **Tip:** You don't need an actual application to deploy until you want to set up the application environment (the last step).
 
-#### 2. Review and optionally update [your project configuration](/infra/project-config/main.tf) <!-- markdown-link-check-disable-line -->
+2. Review and optionally update [your project configuration](/infra/project-config/main.tf) <!-- markdown-link-check-disable-line -->
 
-> [!IMPORTANT]
-> Make sure you review and understand /infra/project-config/main.tf. Configuration here can have broad impact that is hard to change later, so be reasonably confident things are right initially.
+   **Important:** Make sure you review and understand /infra/project-config/main.tf. Configuration here can have broad impact that is hard to change later, so be reasonably confident things are right initially.
 
-> [!NOTE]
-> Some application config impacts other layers besides the application environment. So if you want to minimize back and forth during set up, you should [read the requirements for setting up an application environment](/docs/infra/set-up-app-env.md#requirements) and configure #### your application infrastructure with what you currently know you need (e.g. a database, external service access).
+   **Note:** Some application config impacts other layers besides the application environment. So if you want to minimize back and forth during set up, you should [read the requirements for setting up an application environment](/docs/infra/set-up-app-env.md#requirements) and configure #### your application infrastructure with what you currently know you need (e.g. a database, external service access).
 
-#### [3. Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
+3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 
-#### [4. Set up AWS account](/docs/infra/set-up-aws-account.md)
+4. [Set up AWS account](/docs/infra/set-up-aws-account.md)
 
-#### [5. Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
+5. [Set up the virtual network (VPC)](/docs/infra/set-up-network.md)
 
-#### [6. Set up application build repository](/docs/infra/set-up-app-build-repository.md)
+6. [Set up application build repository](/docs/infra/set-up-app-build-repository.md)
 
-#### [7. Set up application database](/docs/infra/set-up-database.md)
+7. [Set up application database](/docs/infra/set-up-database.md)
 
-#### [8. Set up application environment](/docs/infra/set-up-app-env.md)
+8. [Set up application environment](/docs/infra/set-up-app-env.md)
 
-> [!TIP]
-> If you don't yet have an application meeting [the application requirements for using this infrastructure](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md), you can copy [this example app](https://github.com/navapbc/template-infra/tree/main/template-only-app) to your repository to have something that will run for testing the infrastructure, and swap in your actual application code later.
+   **Tip:** If you don't yet have an application meeting [the application requirements for using this infrastructure](https://github.com/navapbc/template-infra/blob/main/template-only-docs/application-requirements.md), you can copy [this example app](https://github.com/navapbc/template-infra/tree/main/template-only-app) to your repository to have something that will run for testing the infrastructure, and swap in your actual application code later.
 
 ### Add an application to an existing repo
 
