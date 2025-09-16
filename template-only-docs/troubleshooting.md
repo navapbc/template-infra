@@ -10,8 +10,10 @@ If you notice Template CI Infra Checks failing on main, tell people to pause on 
 
 Things that trigger Template CI Infra Checks runs include:
 
-* Pushes to main branch  
-* Opening PRs or updating PRs with new commits on template-infra
+* Pushes to `main` branch
+* Opening PRs (or updating PRs with new commits) that touch infrastructure/test code
+
+See [Template CI Infra Checks workflow](/.github/workflows/template-only-ci-infra.yml) for full list of triggers.
 
 ### Diagnosing the immediate problem
 
