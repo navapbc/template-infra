@@ -23,7 +23,7 @@ Each PR should only touch one of [the infrastructure layers](/infra/README.md#in
 For example, if you want to change the name of the ECR image repository, you should break the change down into the following steps involving three PRs.
 
 1. Create PR #1 that adds a new image repository with a new name (This PR only modifies the build repository layer).
-2. After merging the PR #1, manually apply the changes to the platform test repos (platform-test, platform-test-nextjs, platform-test-flask) since changes to the build-repository layer aren't automatically applied as part of the CD workflow.
+2. After merging the PR #1, manually apply the changes to the platform's test repos (see [Template Deploy workflow for the list of repos that receive template changes](/.github/workflows/template-only-cd.yml)) since changes to the build-repository layer aren't automatically applied as part of the CD workflow.
 3. Create PR #2 that updates the publish-release.sh script to use the new image repository and modifies the task definition to pull from the new image repository (This PR only modifies the service layer). After merging PR #2, deploys should automatically be publishing builds to the new build repository and the service tasks should be using images from the new build repository
 4. Create PR #3 that removes the old build repository(This PR only modifies the build repository layer)
 When creating a release that includes a breaking change such as this one, include migration instructions on how to apply the changes without incurring downtime. In this example, the migration notes will look something like:

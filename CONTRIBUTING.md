@@ -22,7 +22,7 @@ In what ways could things be working differently as intended under the hood but 
 
 Sometimes template changes do not propagate cleanly to the platform test repos. See Platform test repo(s) do not have the latest changes from template-infra.
 
-Also, unlike application changes, infrastructure changes aren't always automatically applied. Make sure to think about how the changes will be applied before merging and make sure the changes get applied after merge. Double check by making sure the latest deploys (including in platform-test-nextjs and platform-test-flask test repos) completed successfully and that the terraform plans on main show no configuration changes.
+Also, unlike application changes, infrastructure changes aren't always automatically applied. Make sure to think about how the changes will be applied before merging and make sure the changes get applied after merge. Double check by making sure [the latest deploys](https://github.com/navapbc/template-infra/actions/workflows/template-only-cd.yml) completed successfully and that the terraform plans on main show no configuration changes.
 
 ```bash
 platform-test$ git pull
