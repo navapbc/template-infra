@@ -2,7 +2,7 @@
 
 ## Template CI Infra Checks fails on main
 
-If the [Template CI Infra Checks (template-only-ci-infra.yml)](https://github.com/navapbc/template-infra/actions/workflows/template-only-ci-infra.yml) workflow fails on the main branch and there isn’t a bug in the code, it may mean that a prior run of the workflow did not properly clean up account resources.
+If the [Template CI Infra Checks (template-only-ci-infra.yml)](https://github.com/navapbc/template-infra/actions/workflows/template-only-ci-infra.yml) workflow fails on the main branch and there isn't a bug in the code, it may mean that a prior run of the workflow did not properly clean up account resources.
 
 ### Preventing the problem from getting worse
 
@@ -19,13 +19,13 @@ Look in the GitHub logs for the Template CI Infra check that failed. The logs ar
 
 Errors that may indicate a problem with cleanup include:
 
-* “OIDC provider already exists” during the SetUpAccount step  
-* “IAM role already exists” during the SetUpDevEnvironment step  
-* “SNS topic already exists” during the SetUpDevEnvironment step
+* "OIDC provider already exists" during the SetUpAccount step  
+* "IAM role already exists" during the SetUpDevEnvironment step  
+* "SNS topic already exists" during the SetUpDevEnvironment step
 
 ### Diagnosing the root cause
 
-If you have good reason to believe this is a one time thing, then you can skip this step and proceed to clean up the AWS account to unblock the Template CI Infra Checks workflow. Otherwise, it is important to find out what caused the test to not properly clean up and fix that first so that you don’t end up repeating the problem.
+If you have good reason to believe this is a one time thing, then you can skip this step and proceed to clean up the AWS account to unblock the Template CI Infra Checks workflow. Otherwise, it is important to find out what caused the test to not properly clean up and fix that first so that you don't end up repeating the problem.
 
 Look at the GitHub logs for previous runs of the Template CI Infra Checks workflow that also failed, starting from the one you were initially looking into.
 

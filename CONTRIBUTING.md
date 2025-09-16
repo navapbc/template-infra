@@ -22,7 +22,7 @@ In what ways could things be working differently as intended under the hood but 
 
 Sometimes template changes do not propagate cleanly to the platform test repos. See Platform test repo(s) do not have the latest changes from template-infra.
 
-Also, unlike application changes, infrastructure changes aren’t always automatically applied. Make sure to think about how the changes will be applied before merging and make sure the changes get applied after merge. Double check by making sure the latest deploys (including in platform-test-nextjs and platform-test-flask test repos) completed successfully and that the terraform plans on main show no configuration changes.
+Also, unlike application changes, infrastructure changes aren't always automatically applied. Make sure to think about how the changes will be applied before merging and make sure the changes get applied after merge. Double check by making sure the latest deploys (including in platform-test-nextjs and platform-test-flask test repos) completed successfully and that the terraform plans on main show no configuration changes.
 
 ```bash
 platform-test$ git pull
@@ -35,7 +35,7 @@ platform-test$ make infra-update-app-service APP_NAME=app ENVIRONMENT=dev # shou
 If your PR will introduce a breaking change, then after the PR is approved, but before you merge it into main:
 
 1. Prefix the commit title with ⚠️. This indicates to the Platform Admins who will make the next release that there is a breaking change included in the release.
-2. Add a section in the commit description for “Release notes” and indicate what needs to be included in the release notes on how to handle the breaking change.
+2. Add a section in the commit description for "Release notes" and indicate what needs to be included in the release notes on how to handle the breaking change.
 
 ## Troubleshooting
 
