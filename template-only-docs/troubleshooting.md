@@ -6,7 +6,7 @@ If the [Template CI Infra Checks (template-only-ci-infra.yml)](https://github.co
 
 ### Preventing the problem from getting worse
 
-If you notice Template CI Infra Checks failing on main, tell people to pause on doing anything that would trigger a Template CI Infra Check run, since further runs will just create more issues you have to look into and more things you have to clean up.
+If you notice Template CI Infra Checks failing on main, tell people to pause on doing anything that would trigger a Template CI Infra Checks run, since further runs will just create more issues you have to look into and more things you have to clean up.
 
 Things that trigger Template CI Infra Checks runs include:
 
