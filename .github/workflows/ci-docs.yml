@@ -18,3 +18,5 @@ jobs:
         with:
           use-quiet-mode: "yes" # errors only.
           config-file: ".github/workflows/markdownlint-config.json"
+          check-modified-files-only: ${{ github.event_name == 'pull_request' && 'yes' || 'no' }}
+          base-branch: "main"
