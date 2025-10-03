@@ -25,7 +25,7 @@ set -euo pipefail
 account_name="$1"
 
 account_id=$(./bin/current-account-id)
-region=$(./bin/current-region)
+region=$(aws configure get region)
 
 # Get project name
 terraform -chdir="infra/project-config" apply -auto-approve > /dev/null
