@@ -14,7 +14,7 @@ image_tag=$(git rev-parse "${git_ref}")
 terraform -chdir="infra/${app_name}/app-config" init > /dev/null
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null
 image_repository_name="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".name")"
-region=$(./bin/current-region)
+region="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".region")"
 
 result=""
 result=$(aws ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" --region "${region}" 2> /dev/null ) || true
