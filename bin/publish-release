@@ -20,7 +20,7 @@ terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null
 image_repository_name="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".name")"
 region="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".region")"
 
-read -r image_registry_id image_repository_url <<< "$(aws --region "${region}" ecr describe-repositories --repository-names "${image_repository_name}" --query "repositories[0].[registryId,repositoryUri]" --output text)"
+read -r image_registry_id image_repository_url <<< "$(aws ecr describe-repositories --region "${region}" --repository-names "${image_repository_name}" --query "repositories[0].[registryId,repositoryUri]" --output text)"
 image_registry="${image_registry_id}.dkr.ecr.${region}.amazonaws.com"
 
 echo "Build repository info:"
@@ -30,12 +30,12 @@ echo "  image_repository_name=${image_repository_name}"
 echo "  image_repository_url=${image_repository_url}"
 echo
 echo "Authenticating Docker with ECR"
-aws --region "${region}" ecr get-login-password --region "${region}" \
+aws ecr get-login-password --region "${region}" \
   | docker login --username AWS --password-stdin "${image_registry}"
 echo
 echo "Check if tag has already been published..."
 result=""
-result=$(aws --region "${region}" ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" --region "${region}" 2> /dev/null ) || true
+result=$(aws ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" --region "${region}" 2> /dev/null ) || true
 if [ -n "${result}" ];then
   echo "Image with tag ${image_tag} already published"
   exit 0

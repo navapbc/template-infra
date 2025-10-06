@@ -17,7 +17,7 @@ image_repository_name="$(terraform -chdir="infra/${app_name}/app-config" output 
 region="$(terraform -chdir="infra/${app_name}/app-config" output -json build_repository_config | jq -r ".region")"
 
 result=""
-result=$(aws --region "${region}" ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" --region "${region}" 2> /dev/null ) || true
+result=$(aws ecr describe-images --repository-name "${image_repository_name}" --image-ids "imageTag=${image_tag}" --region "${region}" 2> /dev/null ) || true
 if [ -n "${result}" ];then
   echo "true"
 else
