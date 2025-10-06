@@ -1,4 +1,4 @@
 #!/bin/bash
 # Print the current AWS region
 set -euo pipefail
-echo -n "$(aws configure list | grep region | awk '{print $2}')"
+echo -n "$(aws configure list | grep region | sed 's/://g' | awk '{print $2}')"
