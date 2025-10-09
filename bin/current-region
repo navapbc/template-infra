@@ -20,4 +20,4 @@ set -euo pipefail
 # from calling it altogether.
 #
 # [1] https://github.com/aws/aws-cli/issues/7373
-echo -n "$(aws configure list | grep region | awk -F '[ \t\n:]+' '{print $2}')"
+echo -n "$(aws configure list | grep region | xargs | awk -F '[ \t\n:]+' '{print $2}')"
