@@ -79,9 +79,12 @@ jobs:
           echo "Is image published: $is_image_published"
           echo "is_image_published=$is_image_published" >> "$GITHUB_OUTPUT"
 
-      - name: Build release
+      - uses: ./.github/actions/build-release-image
         if: steps.check-image-published.outputs.is_image_published == 'false'
-        run: make APP_NAME=${{ inputs.app_name }} release-build
+        id: build-release-image
+        with:
+          app_name: ${{ inputs.app_name }}
+          commit_hash: ${{ needs.get-commit-hash.outputs.commit_hash }}
 
       - name: Publish release
         if: steps.check-image-published.outputs.is_image_published == 'false'
