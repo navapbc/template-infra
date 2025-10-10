@@ -13,11 +13,14 @@ set -euo pipefail
 #   region     : us-west-2                : env              : AWS_DEFAULT_REGION
 #
 # So tell Awk to use either whitespace OR `:` as the separator and grab the
-# second field.
+# second field. Also explicitly strip leading/trailing whitespace (as well as
+# collapsing all whitespace in general) with an initial call to Awk, as when
+# specifying a non-default field separator Awk will no longer do that
+# internally.
 #
 # Until such a time that `aws configure list` respects the `--output`/`--query`
 # flag[1] and we can more robustly fetch just the value needed or we move away
 # from calling it altogether.
 #
 # [1] https://github.com/aws/aws-cli/issues/7373
-echo -n "$(aws configure list | grep region | awk -F '[ \t\n:]+' '{print $2}')"
+echo -n "$(aws configure list | grep region | awk '{$1=$1;print}' | awk -F '[ \t\n:]+' '{print $2}')"
