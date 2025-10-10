@@ -87,7 +87,12 @@ variable "project_name" {
   type = string
 }
 
-variable "service_cpu" {
+variable "app_cpu" {
+  type    = number
+  default = 256
+}
+
+variable "task_cpu" {
   type    = number
   default = 256
 }
@@ -97,7 +102,12 @@ variable "service_desired_instance_count" {
   default = 1
 }
 
-variable "service_memory" {
+variable "app_memory" {
+  type    = number
+  default = 512
+}
+
+variable "task_memory" {
   type    = number
   default = 512
 }
