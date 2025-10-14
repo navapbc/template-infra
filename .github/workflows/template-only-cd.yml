@@ -19,8 +19,6 @@ jobs:
       matrix:
         project_repo:
           - navapbc/platform-test
-          - navapbc/platform-test-flask
-          - navapbc/platform-test-nextjs
           - navapbc/pfml-starter-kit-app
 
     steps:
