@@ -1,15 +1,44 @@
 # Upgrade database
 
-Upgrading the database between major versions (e.g., from Postgres 15 to 16) is a two-step process.
+These steps are a minimal starting point for the changes you'll need to make. As
+with any major change to your codebase, you should carefully test the impact of
+upgrading the database before applying it to a production environment. See also
+the AWS documentation for [Upgrading the PostgreSQL DB engine for Amazon
+RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.html#USER_UpgradeDBInstance.PostgreSQL.MajorVersion.Process).
+
+## Immediately
+
+If you want more manual control over when the upgrade happens.
+
+1. Apply any pending maintenance items to the cluster via the AWS console.
+2. Prep update settings in
+   [/infra/modules/database/resources/main.tf](/infra/modules/database/resources/main.tf).
+  1. Set `allow_major_version_upgrade = true` in the `aws_rds_cluster` resource
+  2. Set `apply_immediately = true` for both `aws_rds_cluster` and `aws_rds_cluster_instance`
+  3. (if needed) Update the `serverlessv2_scaling_configuration`
+
+    Set the `min_capacity` to 4.0 (and adjust the `max_capacity` accordingly).
+
+    If your minimum is lower than this, the upgrade will fail with `FATAL: shared
+    memory segment sizes are configured too large`.
+
+4. Run `make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENV_NAME>`
+5. Set the `engine_version` to your new desired version.
+6. Run `make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENV_NAME>`
+7. Undo changes from step 2.
+6. Run `make infra-update-app-database APP_NAME=<APP_NAME> ENVIRONMENT=<ENV_NAME>`
+
+## During RDS maintenance window
+
+Upgrading the database between major versions (e.g., from Postgres 15 to 16)
+asynchronously is a two-step process.
 
 1. Create a new DBParameterGroup for the new engine version and upgrade the database.
 2. Remove the old DBParamaterGroup for the prior engine version.
 
-These steps are a minimal starting point for the changes you'll need to make. As with any major change to your codebase, you should carefully test the impact of upgrading the database before applying it to a production environment. See also the AWS documentation for [Upgrading the PostgreSQL DB engine for Amazon RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.PostgreSQL.html#USER_UpgradeDBInstance.PostgreSQL.MajorVersion.Process).
+### 1. Creating a new DBParameterGroup and upgrading the database
 
-## 1. Creating a new DBParameterGroup and upgrading the database
-
-1. Set `allow_major_version_upgrade = true` in the `aws_rds_cluster` resource in [/infra/modules/database/resources/](/infra/modules/database/resources/).
+1. Set `allow_major_version_upgrade = true` in the `aws_rds_cluster` resource in [/infra/modules/database/resources/main.tf](/infra/modules/database/resources/main.tf).
 
 2. (if needed) Update the `serverlessv2_scaling_configuration`
 
@@ -64,7 +93,7 @@ If you wish to apply the upgrade immediately, you can manually change the engine
  - https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Overview.DBInstance.Modifying.html
 
 
-## 2. Removing the old DBParameter group
+### 2. Removing the old DBParameter group
 
 Once the upgrade has been applied, you can remove the old parameter group.
 
