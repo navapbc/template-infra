@@ -11,7 +11,7 @@ Remember to highlight things that you like and appreciate while reading through 
 and to make any other feedback clearly actionable by indicating if it is an optional preference, an important consideration, or an error.
 
 Don't be afraid to comment with a question, or to ask for clarification, or provide a suggestion,
-whenever you don’t understand what is going on at first glance — or if you think an approach or decision can be improved.
+whenever you don't understand what is going on at first glance — or if you think an approach or decision can be improved.
 Suggestions on how to split a large PR into smaller chunks can also help move things along.
 Code reviews give us a chance to learn from one another, and to reflect, iterate on, and document why certain decisions are made.
 
