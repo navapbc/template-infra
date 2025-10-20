@@ -17,7 +17,7 @@ locals {
     var.enable_command_execution ? ["ssmmessages"] : [],
 
     # AWS services used by notifications
-    var.enable_notifications ? ["pinpoint", "email-smtp"] : [],
+    var.enable_notifications ? ["email-smtp"] : [],
   )
 
   # S3 and DynamoDB use Gateway VPC endpoints. All other services use Interface VPC endpoints

@@ -1,7 +1,7 @@
 # Notifications configuration
 locals {
   notifications_config = var.enable_notifications && var.domain_name != null && local.network_config.domain_config.hosted_zone != null ? {
-    # Pinpoint app name.
+    # Notification configuration name.
     name = "${var.app_name}-${var.environment}"
 
     # Configure the name that users see in the "From" section of their inbox,
