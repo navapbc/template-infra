@@ -39,8 +39,8 @@ locals {
   # If either (domain name or hosted zone) is not set in an environment, notifications will not actually be enabled.
   #
   # If enabled:
-  # 1. Creates an AWS Pinpoint application
-  # 2. Configures email notifications using AWS SES
+  # 1. Configures AWS SES for sending email notifications
+  # 2. Sets up IAM permissions for the application to send emails
   enable_notifications = false
 
   # Whether or not the application should enable WAF for the load balancer.
