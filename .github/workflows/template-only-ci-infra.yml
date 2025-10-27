@@ -101,27 +101,27 @@ jobs:
           aws-access-key-id: ${{ secrets.TESTER_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
 
-      - name: Import orphaned test resources
-        working-directory: project-dir
+      - name: Clean up orphaned test resources
         run: |
-          # Import existing CloudWatch Log Groups and WAF resources to prevent conflicts
-          bin/terraform-init infra/networks dev || true
-          cd infra/networks
+          # Delete orphaned resources from previous failed test runs to prevent conflicts
 
-          # Import DNS query logging CloudWatch Log Group
-          terraform import 'module.domain.aws_cloudwatch_log_group.dns_query_logging[0]' \
-            /dns/hosted.zone.for.dev.network.com 2>/dev/null || echo "DNS log group not found or already in state"
+          # Delete CloudWatch Log Groups
+          aws logs delete-log-group --log-group-name /dns/hosted.zone.for.dev.network.com 2>/dev/null || \
+            echo "DNS query log group not found or already deleted"
 
-          # Import WAF CloudWatch Log Group
-          terraform import 'module.network.aws_cloudwatch_log_group.waf_logs' \
-            aws-waf-logs-dev 2>/dev/null || echo "WAF log group not found or already in state"
+          aws logs delete-log-group --log-group-name aws-waf-logs-dev 2>/dev/null || \
+            echo "WAF log group not found or already deleted"
 
-          # Import WAF WebACL (requires getting ID and lock token)
+          # Delete WAF WebACL (requires getting ID and lock token)
           WAF_ID=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
             --query "WebACLs[?Name=='dev'].Id" --output text 2>/dev/null || echo "")
-          if [ -n "$WAF_ID" ]; then
-            terraform import 'module.network.aws_wafv2_web_acl.main' "$WAF_ID" 2>/dev/null || \
-              echo "WAF WebACL not found or already in state"
+          WAF_LOCK=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
+            --query "WebACLs[?Name=='dev'].LockToken" --output text 2>/dev/null || echo "")
+
+          if [ -n "$WAF_ID" ] && [ -n "$WAF_LOCK" ]; then
+            aws wafv2 delete-web-acl --scope REGIONAL --region us-east-1 \
+              --id "$WAF_ID" --lock-token "$WAF_LOCK" 2>/dev/null || \
+              echo "WAF WebACL not found or already deleted"
           fi
         continue-on-error: true
 
