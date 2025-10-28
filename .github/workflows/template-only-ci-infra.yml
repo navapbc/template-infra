@@ -112,16 +112,40 @@ jobs:
           aws logs delete-log-group --log-group-name aws-waf-logs-dev 2>/dev/null || \
             echo "WAF log group not found or already deleted"
 
-          # Delete WAF WebACL (requires getting ID and lock token)
-          WAF_ID=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
-            --query "WebACLs[?Name=='dev'].Id" --output text 2>/dev/null || echo "")
-          WAF_LOCK=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
-            --query "WebACLs[?Name=='dev'].LockToken" --output text 2>/dev/null || echo "")
+          # Delete WAF WebACL
+          WAF_ARN=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
+            --query "WebACLs[?Name=='dev'].ARN" --output text 2>/dev/null || echo "")
 
-          if [ -n "$WAF_ID" ] && [ -n "$WAF_LOCK" ]; then
-            aws wafv2 delete-web-acl --scope REGIONAL --region us-east-1 \
-              --id "$WAF_ID" --lock-token "$WAF_LOCK" 2>/dev/null || \
-              echo "WAF WebACL not found or already deleted"
+          if [ -n "$WAF_ARN" ]; then
+            echo "Found WAF WebACL: $WAF_ARN"
+
+            # Disassociate from any load balancers first
+            ASSOC_RESOURCES=$(aws wafv2 list-resources-for-web-acl --web-acl-arn "$WAF_ARN" \
+              --resource-type APPLICATION_LOAD_BALANCER --region us-east-1 \
+              --query "ResourceArns" --output text 2>/dev/null || echo "")
+
+            for RESOURCE_ARN in $ASSOC_RESOURCES; do
+              echo "Disassociating WAF from $RESOURCE_ARN"
+              aws wafv2 disassociate-web-acl --resource-arn "$RESOURCE_ARN" --region us-east-1 2>/dev/null || true
+            done
+
+            # Wait a bit for disassociation to complete
+            sleep 5
+
+            # Now delete the WAF
+            WAF_ID=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
+              --query "WebACLs[?Name=='dev'].Id" --output text 2>/dev/null || echo "")
+            WAF_LOCK=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
+              --query "WebACLs[?Name=='dev'].LockToken" --output text 2>/dev/null || echo "")
+
+            if [ -n "$WAF_ID" ] && [ -n "$WAF_LOCK" ]; then
+              echo "Deleting WAF WebACL"
+              aws wafv2 delete-web-acl --scope REGIONAL --region us-east-1 \
+                --id "$WAF_ID" --lock-token "$WAF_LOCK" 2>&1 || \
+                echo "Failed to delete WAF, may still have associations"
+            fi
+          else
+            echo "No WAF WebACL named 'dev' found"
           fi
         continue-on-error: true
 
