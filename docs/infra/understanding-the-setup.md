@@ -8,11 +8,13 @@ concepts and the concrete things you'll interact with.
 
 If you want deeper background rational for the current setup:
 
-- /docs/decisions/infra/2023-09-07-consolidate-infra-config-from-tfvars-files-into-config-module.md
 - /docs/decisions/infra/2023-05-09-separate-terraform-backend-configs-into-separate-config-files.md
+- /docs/decisions/infra/2023-09-07-consolidate-infra-config-from-tfvars-files-into-config-module.md
+- /docs/decisions/infra/2023-09-11-separate-app-infrastructure-into-layers.md
 
-TL;DR for the why: reduce code duplication and drift between environments, help
-streamline receiving updates from upstream
+TL;DR for the why: group resources with a similar lifecycle and scope, reduce
+code duplication and drift between environments, help streamline receiving
+updates from upstream
 
 It's important to understand most of the actual resource code [lives in
 re-usable modules under `infra/modules/`](/docs/infra/module-architecture.md).
