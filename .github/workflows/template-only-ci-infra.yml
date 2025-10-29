@@ -141,12 +141,28 @@ jobs:
             if [ -n "$WAF_ID" ] && [ -n "$WAF_LOCK" ]; then
               echo "Deleting WAF WebACL"
               aws wafv2 delete-web-acl --scope REGIONAL --region us-east-1 \
-                --id "$WAF_ID" --lock-token "$WAF_LOCK" 2>&1 || \
+                --name dev --id "$WAF_ID" --lock-token "$WAF_LOCK" 2>&1 || \
                 echo "Failed to delete WAF, may still have associations"
             fi
           else
             echo "No WAF WebACL named 'dev' found"
           fi
+
+          # Delete orphaned VPCs to avoid VPC limit errors
+          # List all VPCs and delete those not tagged with current project
+          echo "Cleaning up orphaned VPCs..."
+          VPC_IDS=$(aws ec2 describe-vpcs --region us-east-1 \
+            --filters "Name=tag:project,Values=plt-tst-act-*" \
+            --query "Vpcs[?Tags[?Key=='project' && Value!='$PROJECT_NAME']].VpcId" \
+            --output text 2>/dev/null || echo "")
+
+          for VPC_ID in $VPC_IDS; do
+            echo "Found orphaned VPC: $VPC_ID, attempting cleanup..."
+            # Delete VPC dependencies first (subnets, internet gateways, etc.)
+            # This is a simplified cleanup - full cleanup would require more steps
+            aws ec2 delete-vpc --vpc-id "$VPC_ID" --region us-east-1 2>&1 || \
+              echo "Could not delete VPC $VPC_ID (may have dependencies)"
+          done
         continue-on-error: true
 
       - name: Run Terratest
