@@ -148,20 +148,27 @@ jobs:
             echo "No WAF WebACL named 'dev' found"
           fi
 
-          # Delete orphaned VPCs to avoid VPC limit errors
-          # List all VPCs and delete those not tagged with current project
-          echo "Cleaning up orphaned VPCs..."
-          VPC_IDS=$(aws ec2 describe-vpcs --region us-east-1 \
-            --filters "Name=tag:project,Values=plt-tst-act-*" \
-            --query "Vpcs[?Tags[?Key=='project' && Value!='$PROJECT_NAME']].VpcId" \
-            --output text 2>/dev/null || echo "")
+          # Clean up old terraform workspaces to free VPCs
+          echo "Cleaning up old terraform workspaces..."
+          cd project-dir/infra/networks || exit 0
 
-          for VPC_ID in $VPC_IDS; do
-            echo "Found orphaned VPC: $VPC_ID, attempting cleanup..."
-            # Delete VPC dependencies first (subnets, internet gateways, etc.)
-            # This is a simplified cleanup - full cleanup would require more steps
-            aws ec2 delete-vpc --vpc-id "$VPC_ID" --region us-east-1 2>&1 || \
-              echo "Could not delete VPC $VPC_ID (may have dependencies)"
+          # Initialize terraform
+          terraform init -backend-config=dev.s3.tfbackend -reconfigure 2>/dev/null || true
+
+          # List and destroy old workspaces (not current one)
+          WORKSPACES=$(terraform workspace list 2>/dev/null | grep -v "^\*" | grep -v "default" | tr -d ' ' || echo "")
+
+          for WORKSPACE in $WORKSPACES; do
+            echo "Found old workspace: $WORKSPACE"
+            # Only destroy if it's an old test workspace (starts with t-)
+            if [[ "$WORKSPACE" == t-* ]]; then
+              echo "Destroying old workspace: $WORKSPACE"
+              terraform workspace select "$WORKSPACE" 2>/dev/null || continue
+              terraform destroy -auto-approve -var="network_name=dev" 2>&1 | head -50 || \
+                echo "Could not destroy workspace $WORKSPACE"
+              terraform workspace select default 2>/dev/null || true
+              terraform workspace delete "$WORKSPACE" 2>/dev/null || true
+            fi
           done
         continue-on-error: true
 
