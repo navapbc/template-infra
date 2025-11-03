@@ -18,12 +18,19 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - id: set-image-tag
+      shell: bash
+      run: |
+        # not strictly required as long as the calling workflow has checked out
+        # the repo with the correct ref, but for good measure and making this
+        # composite action not have a hard requirement on the git repo, we can
+        # set the tag to the specified commit hash
+        echo "IMAGE_TAG=${{ inputs.commit_hash }}" >> "$GITHUB_ENV"
 
     - id: get-image-identifier
       shell: bash
       run: |
         IMAGE_NAME=$(make APP_NAME=${{ inputs.app_name }} release-image-name)
-        IMAGE_TAG=$(make release-image-tag)
         echo "image=$IMAGE_NAME:$IMAGE_TAG" >> "$GITHUB_OUTPUT"
 
     - name: Set up Docker Buildx

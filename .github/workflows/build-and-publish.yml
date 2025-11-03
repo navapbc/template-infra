@@ -61,7 +61,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref }}
+          ref: ${{ needs.get-commit-hash.outputs.commit_hash }}
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
