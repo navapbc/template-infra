@@ -101,75 +101,28 @@ jobs:
           aws-access-key-id: ${{ secrets.TESTER_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
 
-      - name: Clean up orphaned test resources
+      - name: Import orphaned test resources
+        working-directory: project-dir
         run: |
-          # Delete orphaned resources from previous failed test runs to prevent conflicts
+          # Import existing CloudWatch Log Groups and WAF resources to prevent conflicts
+          bin/terraform-init infra/networks dev || true
+          cd infra/networks
 
-          # Delete CloudWatch Log Groups
-          aws logs delete-log-group --log-group-name /dns/hosted.zone.for.dev.network.com 2>/dev/null || \
-            echo "DNS query log group not found or already deleted"
+          # Import DNS query logging CloudWatch Log Group
+          terraform import 'module.domain.aws_cloudwatch_log_group.dns_query_logging[0]' \
+            /dns/hosted.zone.for.dev.network.com 2>/dev/null || echo "DNS log group not found or already in state"
 
-          aws logs delete-log-group --log-group-name aws-waf-logs-dev 2>/dev/null || \
-            echo "WAF log group not found or already deleted"
+          # Import WAF CloudWatch Log Group
+          terraform import 'module.network.aws_cloudwatch_log_group.waf_logs' \
+            aws-waf-logs-dev 2>/dev/null || echo "WAF log group not found or already in state"
 
-          # Delete WAF WebACL
-          WAF_ARN=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
-            --query "WebACLs[?Name=='dev'].ARN" --output text 2>/dev/null || echo "")
-
-          if [ -n "$WAF_ARN" ]; then
-            echo "Found WAF WebACL: $WAF_ARN"
-
-            # Disassociate from any load balancers first
-            ASSOC_RESOURCES=$(aws wafv2 list-resources-for-web-acl --web-acl-arn "$WAF_ARN" \
-              --resource-type APPLICATION_LOAD_BALANCER --region us-east-1 \
-              --query "ResourceArns" --output text 2>/dev/null || echo "")
-
-            for RESOURCE_ARN in $ASSOC_RESOURCES; do
-              echo "Disassociating WAF from $RESOURCE_ARN"
-              aws wafv2 disassociate-web-acl --resource-arn "$RESOURCE_ARN" --region us-east-1 2>/dev/null || true
-            done
-
-            # Wait a bit for disassociation to complete
-            sleep 5
-
-            # Now delete the WAF
-            WAF_ID=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
-              --query "WebACLs[?Name=='dev'].Id" --output text 2>/dev/null || echo "")
-            WAF_LOCK=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
-              --query "WebACLs[?Name=='dev'].LockToken" --output text 2>/dev/null || echo "")
-
-            if [ -n "$WAF_ID" ] && [ -n "$WAF_LOCK" ]; then
-              echo "Deleting WAF WebACL"
-              aws wafv2 delete-web-acl --scope REGIONAL --region us-east-1 \
-                --name dev --id "$WAF_ID" --lock-token "$WAF_LOCK" 2>&1 || \
-                echo "Failed to delete WAF, may still have associations"
-            fi
-          else
-            echo "No WAF WebACL named 'dev' found"
+          # Import WAF WebACL (requires getting ID and lock token)
+          WAF_ID=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
+            --query "WebACLs[?Name=='dev'].Id" --output text 2>/dev/null || echo "")
+          if [ -n "$WAF_ID" ]; then
+            terraform import 'module.network.aws_wafv2_web_acl.main' "$WAF_ID" 2>/dev/null || \
+              echo "WAF WebACL not found or already in state"
           fi
-
-          # Clean up old terraform workspaces to free VPCs
-          echo "Cleaning up old terraform workspaces..."
-          cd project-dir/infra/networks || exit 0
-
-          # Initialize terraform
-          terraform init -backend-config=dev.s3.tfbackend -reconfigure 2>/dev/null || true
-
-          # List and destroy old workspaces (not current one)
-          WORKSPACES=$(terraform workspace list 2>/dev/null | grep -v "^\*" | grep -v "default" | tr -d ' ' || echo "")
-
-          for WORKSPACE in $WORKSPACES; do
-            echo "Found old workspace: $WORKSPACE"
-            # Only destroy if it's an old test workspace (starts with t-)
-            if [[ "$WORKSPACE" == t-* ]]; then
-              echo "Destroying old workspace: $WORKSPACE"
-              terraform workspace select "$WORKSPACE" 2>/dev/null || continue
-              terraform destroy -auto-approve -var="network_name=dev" 2>&1 | head -50 || \
-                echo "Could not destroy workspace $WORKSPACE"
-              terraform workspace select default 2>/dev/null || true
-              terraform workspace delete "$WORKSPACE" 2>/dev/null || true
-            fi
-          done
         continue-on-error: true
 
       - name: Run Terratest
