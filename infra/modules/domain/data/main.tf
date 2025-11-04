@@ -8,7 +8,6 @@ data "aws_acm_certificate" "certificate" {
 }
 
 data "aws_route53_zone" "zone" {
-  count        = var.hosted_zone != null ? 1 : 0
-  name         = var.hosted_zone
-  private_zone = false
+  count = var.hosted_zone != null ? 1 : 0
+  name  = var.hosted_zone
 }

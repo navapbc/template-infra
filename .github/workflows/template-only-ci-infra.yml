@@ -101,30 +101,6 @@ jobs:
           aws-access-key-id: ${{ secrets.TESTER_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
 
-      # - name: Import orphaned test resources
-      #   working-directory: project-dir
-      #   run: |
-      #     # Import existing CloudWatch Log Groups and WAF resources to prevent conflicts
-      #     bin/terraform-init infra/networks dev || true
-      #     cd infra/networks
-
-      #     # Import DNS query logging CloudWatch Log Group
-      #     terraform import 'module.domain.aws_cloudwatch_log_group.dns_query_logging[0]' \
-      #       /dns/hosted.zone.for.dev.network.com 2>/dev/null || echo "DNS log group not found or already in state"
-
-      #     # Import WAF CloudWatch Log Group
-      #     terraform import 'module.network.aws_cloudwatch_log_group.waf_logs' \
-      #       aws-waf-logs-dev 2>/dev/null || echo "WAF log group not found or already in state"
-
-      #     # Import WAF WebACL (requires getting ID and lock token)
-      #     WAF_ID=$(aws wafv2 list-web-acls --scope REGIONAL --region us-east-1 \
-      #       --query "WebACLs[?Name=='dev'].Id" --output text 2>/dev/null || echo "")
-      #     if [ -n "$WAF_ID" ]; then
-      #       terraform import 'module.network.aws_wafv2_web_acl.main' "$WAF_ID" 2>/dev/null || \
-      #         echo "WAF WebACL not found or already in state"
-      #     fi
-      #   continue-on-error: true
-
       - name: Run Terratest
         working-directory: project-dir
         run: make -f template-only.mak test
