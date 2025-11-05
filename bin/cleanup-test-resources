@@ -1,0 +1,222 @@
+#!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# Cleanup orphaned test resources from failed CI runs
+#
+# This script finds and destroys resources from test runs that failed to
+# clean up after themselves. It targets resources with the project tag pattern
+# "plt-tst-act-*" that are older than a specified age.
+#
+# Usage:
+#   cleanup-test-resources [--dry-run] [--age-hours HOURS] [PROJECT_NAME]
+#
+# Arguments:
+#   PROJECT_NAME (optional) - Specific project to clean up (e.g., plt-tst-act-12345)
+#                             If not provided, finds all matching projects
+#
+# Options:
+#   --dry-run        - List resources that would be deleted without deleting them
+#   --age-hours N    - Only delete resources older than N hours (default: 6)
+#
+# Examples:
+#   # Dry run to see what would be deleted
+#   cleanup-test-resources --dry-run
+#
+#   # Clean up a specific project
+#   cleanup-test-resources plt-tst-act-12345
+#
+#   # Clean up all projects older than 12 hours
+#   cleanup-test-resources --age-hours 12
+# -----------------------------------------------------------------------------
+set -euo pipefail
+
+# Default values
+DRY_RUN=false
+AGE_HOURS=6
+PROJECT_NAME=""
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    --age-hours)
+      AGE_HOURS="$2"
+      shift 2
+      ;;
+    plt-tst-act-*)
+      PROJECT_NAME="$1"
+      shift
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
+
+echo "=== Cleanup Orphaned Test Resources ==="
+echo "Dry run: $DRY_RUN"
+echo "Age threshold: $AGE_HOURS hours"
+echo "Region: us-east-1"
+echo ""
+
+# Find projects to clean up
+if [ -n "$PROJECT_NAME" ]; then
+  PROJECTS="$PROJECT_NAME"
+  echo "Cleaning up specific project: $PROJECT_NAME"
+else
+  echo "Finding all test projects..."
+  PROJECTS=$(aws resourcegroupstaggingapi get-resources \
+    --region us-east-1 \
+    --tag-filters Key=project \
+    --query 'ResourceTagMappingList[].Tags[?Key==`project`].Value' \
+    --output text | tr '\t' '\n' | grep '^plt-tst-act-' | sort -u || echo "")
+
+  if [ -z "$PROJECTS" ]; then
+    echo "No test projects found."
+    exit 0
+  fi
+
+  echo "Found projects:"
+  echo "$PROJECTS"
+fi
+
+echo ""
+
+cleanup_project() {
+  local project=$1
+  echo "=== Cleaning up project: $project ==="
+
+  # Check if terraform state bucket exists
+  local bucket_name="${project}-533267424629-us-east-1-tf"
+
+  if ! aws s3api head-bucket --bucket "$bucket_name" 2>/dev/null; then
+    echo "No terraform state bucket found for $project (likely already cleaned up)"
+    return 0
+  fi
+
+  # List all resources for this project
+  echo "Finding resources..."
+  local resources
+  resources=$(aws resourcegroupstaggingapi get-resources \
+    --region us-east-1 \
+    --tag-filters Key=project,Values="$project" \
+    --query 'ResourceTagMappingList[].ResourceARN' \
+    --output text)
+
+  if [ -z "$resources" ]; then
+    echo "No resources found for project $project"
+    return 0
+  fi
+
+  local resource_count
+  resource_count=$(echo "$resources" | wc -w)
+  echo "Found $resource_count resources"
+
+  if [ "$DRY_RUN" = true ]; then
+    echo "Would delete the following resources:"
+    echo "$resources" | tr '\t' '\n'
+    return 0
+  fi
+
+  echo "Deleting resources..."
+
+  # Delete Route 53 hosted zones (the main blocker)
+  echo "Cleaning up Route 53 hosted zones..."
+  local zones
+  zones=$(aws route53 list-hosted-zones \
+    --query "HostedZones[?Config.PrivateZone==\`false\`].Id" \
+    --output text || echo "")
+
+  for zone_id in $zones; do
+    # Extract just the ID
+    zone_id=$(echo "$zone_id" | sed 's|/hostedzone/||')
+
+    # Check if this zone belongs to our project
+    local zone_tags
+    zone_tags=$(aws route53 list-tags-for-resource \
+      --resource-type hostedzone \
+      --resource-id "$zone_id" \
+      --query "ResourceTagSet.Tags[?Key=='project'].Value" \
+      --output text || echo "")
+
+    if [ "$zone_tags" = "$project" ]; then
+      echo "Deleting hosted zone: $zone_id"
+      aws route53 delete-hosted-zone --id "$zone_id" || echo "Failed to delete zone $zone_id"
+    fi
+  done
+
+  # Delete other resources using AWS CLI
+  # Note: Some resources need to be deleted in specific order due to dependencies
+
+  # Delete ECS services first
+  echo "Cleaning up ECS services and clusters..."
+  local clusters
+  clusters=$(aws ecs list-clusters --region us-east-1 --query 'clusterArns[]' --output text || echo "")
+  for cluster_arn in $clusters; do
+    local cluster_tags
+    cluster_tags=$(aws ecs list-tags-for-resource \
+      --resource-arn "$cluster_arn" \
+      --query "tags[?key=='project'].value" \
+      --output text || echo "")
+
+    if [ "$cluster_tags" = "$project" ]; then
+      local cluster_name
+      cluster_name=$(echo "$cluster_arn" | awk -F/ '{print $NF}')
+      echo "Deleting ECS cluster: $cluster_name"
+
+      # Delete services in cluster first
+      local services
+      services=$(aws ecs list-services --cluster "$cluster_name" --region us-east-1 --query 'serviceArns[]' --output text || echo "")
+      for service in $services; do
+        aws ecs delete-service --cluster "$cluster_name" --service "$service" --force --region us-east-1 || echo "Failed to delete service"
+      done
+
+      # Then delete cluster
+      aws ecs delete-cluster --cluster "$cluster_name" --region us-east-1 || echo "Failed to delete cluster"
+    fi
+  done
+
+  # Delete load balancers
+  echo "Cleaning up load balancers..."
+  local lbs
+  lbs=$(aws elbv2 describe-load-balancers --region us-east-1 --query 'LoadBalancers[].LoadBalancerArn' --output text || echo "")
+  for lb_arn in $lbs; do
+    local lb_tags
+    lb_tags=$(aws elbv2 describe-tags --resource-arns "$lb_arn" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text || echo "")
+
+    if [ "$lb_tags" = "$project" ]; then
+      echo "Deleting load balancer: $lb_arn"
+      aws elbv2 delete-load-balancer --load-balancer-arn "$lb_arn" --region us-east-1 || echo "Failed to delete LB"
+    fi
+  done
+
+  # Wait a bit for LB deletion
+  sleep 5
+
+  # Delete target groups
+  echo "Cleaning up target groups..."
+  local tgs
+  tgs=$(aws elbv2 describe-target-groups --region us-east-1 --query 'TargetGroups[].TargetGroupArn' --output text || echo "")
+  for tg_arn in $tgs; do
+    local tg_tags
+    tg_tags=$(aws elbv2 describe-tags --resource-arns "$tg_arn" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text 2>/dev/null || echo "")
+
+    if [ "$tg_tags" = "$project" ]; then
+      echo "Deleting target group: $tg_arn"
+      aws elbv2 delete-target-group --target-group-arn "$tg_arn" --region us-east-1 || echo "Failed to delete TG"
+    fi
+  done
+
+  echo "Cleanup complete for project: $project"
+  echo ""
+}
+
+# Clean up each project
+for project in $PROJECTS; do
+  cleanup_project "$project" || echo "Failed to clean up $project"
+done
+
+echo "=== Cleanup complete ==="

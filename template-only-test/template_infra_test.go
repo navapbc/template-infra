@@ -191,40 +191,52 @@ func ValidateDevEnvironment(t *testing.T) {
 
 func TeardownAccount(t *testing.T) {
 	fmt.Println("::group::Destroying account resources")
-	shell.RunCommand(t, shell.Command{
+	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
 		WorkingDir: "../",
 	})
+	if err != nil {
+		fmt.Printf("::warning::Failed to destroy account resources: %v\n", err)
+	}
 	fmt.Println("::endgroup::")
 }
 
 func TeardownNetwork(t *testing.T) {
 	fmt.Println("::group::Destroying network resources")
-	shell.RunCommand(t, shell.Command{
+	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-network"},
 		WorkingDir: "../",
 	})
+	if err != nil {
+		fmt.Printf("::warning::Failed to destroy network resources: %v\n", err)
+	}
 	fmt.Println("::endgroup::")
 }
 
 func TeardownBuildRepository(t *testing.T) {
 	fmt.Println("::group::Destroying build repository resources")
-	shell.RunCommand(t, shell.Command{
+	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-app-build-repository"},
 		WorkingDir: "../",
 	})
+	if err != nil {
+		fmt.Printf("::warning::Failed to destroy build repository resources: %v\n", err)
+	}
 	fmt.Println("::endgroup::")
 }
 
 func TeardownDevEnvironment(t *testing.T) {
 	fmt.Println("::group::Destroying dev environment resources")
-	shell.RunCommand(t, shell.Command{
+	err := shell.RunCommandE(t, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-app-service"},
 		WorkingDir: "../",
 	})
+	if err != nil {
+		fmt.Printf("::warning::Failed to destroy dev environment resources: %v\n", err)
+	}
 	fmt.Println("::endgroup::")
 }

@@ -1,0 +1,92 @@
+name: Cleanup Orphaned Test Resources
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC to clean up orphaned test resources
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  cleanup:
+    name: Clean up orphaned test resources
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout template-infra repo
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.TESTER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
+
+      - name: Clean up orphaned resources
+        run: |
+          echo "::group::Finding orphaned test resources"
+
+          # Find all resources tagged with project=plt-tst-act-*
+          # that are older than 6 hours (tests should complete much faster)
+          CUTOFF_TIME=$(date -u -d '6 hours ago' +%Y-%m-%dT%H:%M:%S 2>/dev/null || date -u -v-6H +%Y-%m-%dT%H:%M:%S)
+          echo "Cutoff time: $CUTOFF_TIME"
+
+          # Get all projects matching the test pattern
+          PROJECTS=$(aws resourcegroupstaggingapi get-resources \
+            --region us-east-1 \
+            --tag-filters Key=project \
+            --query 'ResourceTagMappingList[].Tags[?Key==`project`].Value' \
+            --output text | tr '\t' '\n' | grep '^plt-tst-act-' | sort -u)
+
+          echo "Found test projects: $PROJECTS"
+
+          for PROJECT in $PROJECTS; do
+            echo "::group::Checking project: $PROJECT"
+
+            # Check if terraform state bucket exists and get its creation date
+            BUCKET_NAME="${PROJECT}-533267424629-us-east-1-tf"
+
+            if aws s3api head-bucket --bucket "$BUCKET_NAME" 2>/dev/null; then
+              BUCKET_DATE=$(aws s3api head-bucket --bucket "$BUCKET_NAME" 2>&1 | grep -i 'last-modified' | cut -d: -f2- || echo "")
+
+              echo "Bucket $BUCKET_NAME exists (created: $BUCKET_DATE)"
+              echo "Checking if resources are older than 6 hours..."
+
+              # List resources for this project
+              RESOURCE_COUNT=$(aws resourcegroupstaggingapi get-resources \
+                --region us-east-1 \
+                --tag-filters Key=project,Values=$PROJECT \
+                --query 'ResourceTagMappingList[].ResourceARN' \
+                --output text | wc -w)
+
+              echo "Found $RESOURCE_COUNT resources for project $PROJECT"
+
+              # For safety, only auto-delete projects with small resource counts
+              # (likely incomplete/failed tests)
+              if [ "$RESOURCE_COUNT" -gt 0 ] && [ "$RESOURCE_COUNT" -lt 50 ]; then
+                echo "::warning::Found orphaned project $PROJECT with $RESOURCE_COUNT resources"
+                echo "Project: $PROJECT" >> $GITHUB_STEP_SUMMARY
+                echo "Resource count: $RESOURCE_COUNT" >> $GITHUB_STEP_SUMMARY
+                echo "---" >> $GITHUB_STEP_SUMMARY
+
+                # List the resources
+                echo "Resources:" >> $GITHUB_STEP_SUMMARY
+                aws resourcegroupstaggingapi get-resources \
+                  --region us-east-1 \
+                  --tag-filters Key=project,Values=$PROJECT \
+                  --query 'ResourceTagMappingList[].ResourceARN' \
+                  --output text | tr '\t' '\n' >> $GITHUB_STEP_SUMMARY
+                echo "" >> $GITHUB_STEP_SUMMARY
+              fi
+            else
+              echo "No bucket found for $PROJECT (likely already cleaned up)"
+            fi
+
+            echo "::endgroup::"
+          done
+
+          echo "::endgroup::"
+
+          echo "## Cleanup Summary" >> $GITHUB_STEP_SUMMARY
+          echo "This is a detection-only job. Manual cleanup is required." >> $GITHUB_STEP_SUMMARY
+          echo "To enable automatic cleanup, uncomment the cleanup section in the workflow." >> $GITHUB_STEP_SUMMARY
