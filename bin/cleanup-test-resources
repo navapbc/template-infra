@@ -68,6 +68,7 @@ if [ -n "$PROJECT_NAME" ]; then
   echo "Cleaning up specific project: $PROJECT_NAME"
 else
   echo "Finding all test projects..."
+  # shellcheck disable=SC2016  # Backticks are JMESPath syntax, not bash
   PROJECTS=$(aws resourcegroupstaggingapi get-resources \
     --region us-east-1 \
     --tag-filters Key=project \
@@ -132,7 +133,7 @@ cleanup_project() {
 
   for zone_id in $zones; do
     # Extract just the ID
-    zone_id=$(echo "$zone_id" | sed 's|/hostedzone/||')
+    zone_id="${zone_id#/hostedzone/}"
 
     # Check if this zone belongs to our project
     local zone_tags
