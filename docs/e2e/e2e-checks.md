@@ -60,7 +60,7 @@ make e2e-test-native APP_NAME=app
 
 ### Run tests in UI mode
 
-When developing or debugging tests, it’s often helpful to see them running in real-time. You can achieve this by running the e2e tests in UI mode:
+When developing or debugging tests, it's often helpful to see them running in real-time. You can achieve this by running the e2e tests in UI mode:
 
 ```
 make e2e-test-native-ui APP_NAME=app
