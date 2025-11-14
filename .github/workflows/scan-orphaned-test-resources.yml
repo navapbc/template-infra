@@ -1,0 +1,56 @@
+name: Scan Orphaned Test Resources
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run every day at 08:00 UTC (4:00am ET, 1:00am PT)
+    - cron: "0 8 * * *"
+
+jobs:
+  scan:
+    name: Scan for orphaned test resources
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          aws-access-key-id: ${{ secrets.TESTER_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TESTER_AWS_SECRET_ACCESS_KEY }}
+
+      - name: Scan for orphaned resources
+        id: scan
+        run: |
+          chmod +x ./template-only-bin/cleanup-test-resources
+
+          # Run in dry-run mode to see what would be deleted
+          output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
+          echo "$output"
+
+          # Check if any resources were found (look for "Found X resources" in output)
+          if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
+            echo "found=true" >> "$GITHUB_OUTPUT"
+            # Extract resource count and project names for notification
+            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20)
+            echo "resource_info<<EOF" >> "$GITHUB_OUTPUT"
+            echo "$resource_info" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            exit 1
+          else
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            echo "No orphaned resources found"
+          fi
+
+  notify:
+    name: " "
+    needs: scan
+    if: failure()
+    uses: ./.github/workflows/send-system-notification.yml
+    with:
+      channel: "workflow-failures"
+      message: "🧹 [Orphaned test resources detected in template-infra](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})\n\nRun the [cleanup workflow](https://github.com/${{ github.repository }}/actions/workflows/cleanup-orphaned-test-resources.yml) to remove them."
+    secrets: inherit
