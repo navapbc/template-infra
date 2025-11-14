@@ -33,6 +33,8 @@ set -euo pipefail
 DRY_RUN=false
 AGE_HOURS=6
 PROJECT_NAME=""
+AWS_ACCOUNT_ID="533267424629"
+AWS_REGION="us-east-1"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
@@ -57,44 +59,44 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "=== Cleanup Orphaned Test Resources ==="
-echo "Dry run: $DRY_RUN"
-echo "Age threshold: $AGE_HOURS hours"
-echo "Region: us-east-1"
+echo "Dry run: ${DRY_RUN}"
+echo "Age threshold: ${AGE_HOURS} hours"
+echo "Region: ${AWS_REGION}"
 echo ""
 
 # Find projects to clean up
-if [ -n "$PROJECT_NAME" ]; then
-  PROJECTS="$PROJECT_NAME"
-  echo "Cleaning up specific project: $PROJECT_NAME"
+if [ -n "${PROJECT_NAME}" ]; then
+  PROJECTS="${PROJECT_NAME}"
+  echo "Cleaning up specific project: ${PROJECT_NAME}"
 else
   echo "Finding all test projects..."
   # shellcheck disable=SC2016  # Backticks are JMESPath syntax, not bash
   PROJECTS=$(aws resourcegroupstaggingapi get-resources \
-    --region us-east-1 \
+    --region "${AWS_REGION}" \
     --tag-filters Key=project \
     --query 'ResourceTagMappingList[].Tags[?Key==`project`].Value' \
     --output text | tr '\t' '\n' | grep '^plt-tst-act-' | sort -u || echo "")
 
-  if [ -z "$PROJECTS" ]; then
+  if [ -z "${PROJECTS}" ]; then
     echo "No test projects found."
     exit 0
   fi
 
   echo "Found projects:"
-  echo "$PROJECTS"
+  echo "${PROJECTS}"
 fi
 
 echo ""
 
 cleanup_project() {
-  local project=$1
-  echo "=== Cleaning up project: $project ==="
+  local project=${1}
+  echo "=== Cleaning up project: ${project} ==="
 
   # Check if terraform state bucket exists
-  local bucket_name="${project}-533267424629-us-east-1-tf"
+  local bucket_name="${project}-${AWS_ACCOUNT_ID}-${AWS_REGION}-tf"
 
-  if ! aws s3api head-bucket --bucket "$bucket_name" 2>/dev/null; then
-    echo "No terraform state bucket found for $project (likely already cleaned up)"
+  if ! aws s3api head-bucket --bucket "${bucket_name}" 2>/dev/null; then
+    echo "No terraform state bucket found for ${project} (likely already cleaned up)"
     return 0
   fi
 
@@ -102,23 +104,23 @@ cleanup_project() {
   echo "Finding resources..."
   local resources
   resources=$(aws resourcegroupstaggingapi get-resources \
-    --region us-east-1 \
-    --tag-filters Key=project,Values="$project" \
+    --region "${AWS_REGION}" \
+    --tag-filters Key=project,Values="${project}" \
     --query 'ResourceTagMappingList[].ResourceARN' \
     --output text)
 
-  if [ -z "$resources" ]; then
-    echo "No resources found for project $project"
+  if [ -z "${resources}" ]; then
+    echo "No resources found for project ${project}"
     return 0
   fi
 
   local resource_count
-  resource_count=$(echo "$resources" | wc -w)
-  echo "Found $resource_count resources"
+  resource_count=$(echo "${resources}" | wc -w)
+  echo "Found ${resource_count} resources"
 
-  if [ "$DRY_RUN" = true ]; then
+  if [ "${DRY_RUN}" = true ]; then
     echo "Would delete the following resources:"
-    echo "$resources" | tr '\t' '\n'
+    echo "${resources}" | tr '\t' '\n'
     return 0
   fi
 
@@ -131,7 +133,7 @@ cleanup_project() {
     --query "HostedZones[?Config.PrivateZone==\`false\`].Id" \
     --output text || echo "")
 
-  for zone_id in $zones; do
+  for zone_id in ${zones}; do
     # Extract just the ID
     zone_id="${zone_id#/hostedzone/}"
 
@@ -139,13 +141,13 @@ cleanup_project() {
     local zone_tags
     zone_tags=$(aws route53 list-tags-for-resource \
       --resource-type hostedzone \
-      --resource-id "$zone_id" \
+      --resource-id "${zone_id}" \
       --query "ResourceTagSet.Tags[?Key=='project'].Value" \
       --output text || echo "")
 
-    if [ "$zone_tags" = "$project" ]; then
-      echo "Deleting hosted zone: $zone_id"
-      aws route53 delete-hosted-zone --id "$zone_id" || echo "Failed to delete zone $zone_id"
+    if [ "${zone_tags}" = "${project}" ]; then
+      echo "Deleting hosted zone: ${zone_id}"
+      aws route53 delete-hosted-zone --id "${zone_id}" || echo "Failed to delete zone ${zone_id}"
     fi
   done
 
@@ -155,42 +157,42 @@ cleanup_project() {
   # Delete ECS services first
   echo "Cleaning up ECS services and clusters..."
   local clusters
-  clusters=$(aws ecs list-clusters --region us-east-1 --query 'clusterArns[]' --output text || echo "")
-  for cluster_arn in $clusters; do
+  clusters=$(aws ecs list-clusters --region "${AWS_REGION}" --query 'clusterArns[]' --output text || echo "")
+  for cluster_arn in ${clusters}; do
     local cluster_tags
     cluster_tags=$(aws ecs list-tags-for-resource \
-      --resource-arn "$cluster_arn" \
+      --resource-arn "${cluster_arn}" \
       --query "tags[?key=='project'].value" \
       --output text || echo "")
 
-    if [ "$cluster_tags" = "$project" ]; then
+    if [ "${cluster_tags}" = "${project}" ]; then
       local cluster_name
-      cluster_name=$(echo "$cluster_arn" | awk -F/ '{print $NF}')
-      echo "Deleting ECS cluster: $cluster_name"
+      cluster_name=$(echo "${cluster_arn}" | awk -F/ '{print $NF}')
+      echo "Deleting ECS cluster: ${cluster_name}"
 
       # Delete services in cluster first
       local services
-      services=$(aws ecs list-services --cluster "$cluster_name" --region us-east-1 --query 'serviceArns[]' --output text || echo "")
-      for service in $services; do
-        aws ecs delete-service --cluster "$cluster_name" --service "$service" --force --region us-east-1 || echo "Failed to delete service"
+      services=$(aws ecs list-services --cluster "${cluster_name}" --region "${AWS_REGION}" --query 'serviceArns[]' --output text || echo "")
+      for service in ${services}; do
+        aws ecs delete-service --cluster "${cluster_name}" --service "${service}" --force --region "${AWS_REGION}" || echo "Failed to delete service"
       done
 
       # Then delete cluster
-      aws ecs delete-cluster --cluster "$cluster_name" --region us-east-1 || echo "Failed to delete cluster"
+      aws ecs delete-cluster --cluster "${cluster_name}" --region "${AWS_REGION}" || echo "Failed to delete cluster"
     fi
   done
 
   # Delete load balancers
   echo "Cleaning up load balancers..."
   local lbs
-  lbs=$(aws elbv2 describe-load-balancers --region us-east-1 --query 'LoadBalancers[].LoadBalancerArn' --output text || echo "")
-  for lb_arn in $lbs; do
+  lbs=$(aws elbv2 describe-load-balancers --region "${AWS_REGION}" --query 'LoadBalancers[].LoadBalancerArn' --output text || echo "")
+  for lb_arn in ${lbs}; do
     local lb_tags
-    lb_tags=$(aws elbv2 describe-tags --resource-arns "$lb_arn" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text || echo "")
+    lb_tags=$(aws elbv2 describe-tags --resource-arns "${lb_arn}" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text || echo "")
 
-    if [ "$lb_tags" = "$project" ]; then
-      echo "Deleting load balancer: $lb_arn"
-      aws elbv2 delete-load-balancer --load-balancer-arn "$lb_arn" --region us-east-1 || echo "Failed to delete LB"
+    if [ "${lb_tags}" = "${project}" ]; then
+      echo "Deleting load balancer: ${lb_arn}"
+      aws elbv2 delete-load-balancer --load-balancer-arn "${lb_arn}" --region "${AWS_REGION}" || echo "Failed to delete LB"
     fi
   done
 
@@ -200,24 +202,24 @@ cleanup_project() {
   # Delete target groups
   echo "Cleaning up target groups..."
   local tgs
-  tgs=$(aws elbv2 describe-target-groups --region us-east-1 --query 'TargetGroups[].TargetGroupArn' --output text || echo "")
-  for tg_arn in $tgs; do
+  tgs=$(aws elbv2 describe-target-groups --region "${AWS_REGION}" --query 'TargetGroups[].TargetGroupArn' --output text || echo "")
+  for tg_arn in ${tgs}; do
     local tg_tags
-    tg_tags=$(aws elbv2 describe-tags --resource-arns "$tg_arn" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text 2>/dev/null || echo "")
+    tg_tags=$(aws elbv2 describe-tags --resource-arns "${tg_arn}" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text 2>/dev/null || echo "")
 
-    if [ "$tg_tags" = "$project" ]; then
-      echo "Deleting target group: $tg_arn"
-      aws elbv2 delete-target-group --target-group-arn "$tg_arn" --region us-east-1 || echo "Failed to delete TG"
+    if [ "${tg_tags}" = "${project}" ]; then
+      echo "Deleting target group: ${tg_arn}"
+      aws elbv2 delete-target-group --target-group-arn "${tg_arn}" --region "${AWS_REGION}" || echo "Failed to delete TG"
     fi
   done
 
-  echo "Cleanup complete for project: $project"
+  echo "Cleanup complete for project: ${project}"
   echo ""
 }
 
 # Clean up each project
-for project in $PROJECTS; do
-  cleanup_project "$project" || echo "Failed to clean up $project"
+for project in ${PROJECTS}; do
+  cleanup_project "${project}" || echo "Failed to clean up ${project}"
 done
 
 echo "=== Cleanup complete ==="
