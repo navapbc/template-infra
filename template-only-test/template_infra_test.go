@@ -8,6 +8,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
+	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
@@ -15,6 +16,9 @@ import (
 
 var projectName = os.Getenv("PROJECT_NAME")
 var imageTag = os.Getenv("IMAGE_TAG")
+
+const maxRetries = 3
+const sleepBetweenRetries = 5 * time.Second
 
 func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
@@ -191,52 +195,60 @@ func ValidateDevEnvironment(t *testing.T) {
 
 func TeardownAccount(t *testing.T) {
 	fmt.Println("::group::Destroying account resources")
-	err := shell.RunCommandE(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "destroy-account"},
-		WorkingDir: "../",
+	_, err := retry.DoWithRetryE(t, "Destroy account resources", maxRetries, sleepBetweenRetries, func() (string, error) {
+		return "", shell.RunCommandE(t, shell.Command{
+			Command:    "make",
+			Args:       []string{"-f", "template-only.mak", "destroy-account"},
+			WorkingDir: "../",
+		})
 	})
 	if err != nil {
-		fmt.Printf("::warning::Failed to destroy account resources: %v\n", err)
+		fmt.Printf("::warning::Failed to destroy account resources after %d attempts: %v\n", maxRetries, err)
 	}
 	fmt.Println("::endgroup::")
 }
 
 func TeardownNetwork(t *testing.T) {
 	fmt.Println("::group::Destroying network resources")
-	err := shell.RunCommandE(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "destroy-network"},
-		WorkingDir: "../",
+	_, err := retry.DoWithRetryE(t, "Destroy network resources", maxRetries, sleepBetweenRetries, func() (string, error) {
+		return "", shell.RunCommandE(t, shell.Command{
+			Command:    "make",
+			Args:       []string{"-f", "template-only.mak", "destroy-network"},
+			WorkingDir: "../",
+		})
 	})
 	if err != nil {
-		fmt.Printf("::warning::Failed to destroy network resources: %v\n", err)
+		fmt.Printf("::warning::Failed to destroy network resources after %d attempts: %v\n", maxRetries, err)
 	}
 	fmt.Println("::endgroup::")
 }
 
 func TeardownBuildRepository(t *testing.T) {
 	fmt.Println("::group::Destroying build repository resources")
-	err := shell.RunCommandE(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "destroy-app-build-repository"},
-		WorkingDir: "../",
+	_, err := retry.DoWithRetryE(t, "Destroy build repository resources", maxRetries, sleepBetweenRetries, func() (string, error) {
+		return "", shell.RunCommandE(t, shell.Command{
+			Command:    "make",
+			Args:       []string{"-f", "template-only.mak", "destroy-app-build-repository"},
+			WorkingDir: "../",
+		})
 	})
 	if err != nil {
-		fmt.Printf("::warning::Failed to destroy build repository resources: %v\n", err)
+		fmt.Printf("::warning::Failed to destroy build repository resources after %d attempts: %v\n", maxRetries, err)
 	}
 	fmt.Println("::endgroup::")
 }
 
 func TeardownDevEnvironment(t *testing.T) {
 	fmt.Println("::group::Destroying dev environment resources")
-	err := shell.RunCommandE(t, shell.Command{
-		Command:    "make",
-		Args:       []string{"-f", "template-only.mak", "destroy-app-service"},
-		WorkingDir: "../",
+	_, err := retry.DoWithRetryE(t, "Destroy dev environment resources", maxRetries, sleepBetweenRetries, func() (string, error) {
+		return "", shell.RunCommandE(t, shell.Command{
+			Command:    "make",
+			Args:       []string{"-f", "template-only.mak", "destroy-app-service"},
+			WorkingDir: "../",
+		})
 	})
 	if err != nil {
-		fmt.Printf("::warning::Failed to destroy dev environment resources: %v\n", err)
+		fmt.Printf("::warning::Failed to destroy dev environment resources after %d attempts: %v\n", maxRetries, err)
 	}
 	fmt.Println("::endgroup::")
 }
