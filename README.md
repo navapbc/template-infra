@@ -44,7 +44,7 @@ The infrastructure creates a robust, scalable system architecture:
 
 > See the [system architecture documentation](/docs/system-architecture.md) for detailed information.
 
-## 📋 Prerequisites
+## Prerequisites
 
 Before using this template, you need an application ready to deploy.
 
@@ -59,15 +59,18 @@ Before using this template, you need an application ready to deploy.
 
 Install the template into your project using the Nava Platform CLI:
 
-1. **Install the nava-platform tool**: Follow the instructions at [github.com/navapbc/platform-cli](https://github.com/navapbc/platform-cli)
+1. **Install the nava-platform tool**: 
+Follow the instructions at [github.com/navapbc/platform-cli](https://github.com/navapbc/platform-cli)
 
-2. **Run the installation command** in your project's root directory:
+2. **Run the installation command** 
+in your project's root directory:
 
    ```sh
    nava-platform infra install .
    ```
 
-3. **You're ready to go!** Proceed to the setup steps below.
+3. **You're ready to go!** 
+Proceed to the setup steps below.
 
 ### Setup Guide
 
