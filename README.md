@@ -23,58 +23,97 @@
 
 ## Overview
 
-This is a template repository to set up foundational infrastructure for your application in AWS. It is part of a collection of interoperable [Platform templates](https://github.com/navapbc/strata).
+This template repository provides **foundational AWS infrastructure** for deploying modern web applications. It is part of the interoperable [Nava Strata](https://github.com/navapbc/strata) suite of open source tools.
 
-This template includes setup for:
+### What's Included
 
-- **Team workflows** - templates for pull requests (PRs), architecture decision records (ADRs), and Makefiles.
-- **Account level foundational infrastructure** - infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
-- **Application infrastructure** - the infrastructure you need to set up a basic web app, such as a image container repository, load balancer, web service, and database.
-- **CI for infra** - GitHub action that performs infra code checks, including linting, validation, and security compliance checks.
-- **CD / Deployments** - infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
-- **Documentation** - technical documentation for the decisions that went into all the defaults that come with the template.
+This template provides everything you need to deploy a production-ready web application:
 
-The system architecture will look like this (see [system architecture documentation](/docs/system-architecture.md) for more information):
+- **Team Workflows** – Pull request templates, architecture decision records (ADRs), and Makefiles for streamlined development
+-  **Account Level Foundational Infrastructure** – Infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
+- **Application Infrastructure** – Container registry, load balancers, web services, and databases for your web app
+- **Continuous Integration** – GitHub Actions for automated linting, validation, and security compliance checks
+- **Continuous Deployment** – infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
+- **Comprehensive Documentation** – Technical documentation explaining all architectural decisions and defaults
+
+### System Architecture
+
+The infrastructure creates a robust, scalable system architecture:
+
 ![System architecture](https://lucid.app/publicSegments/view/e5a36152-200d-4d95-888e-4cdbdab80d1b/image.png)
 
-## Application Requirements
+> See the [system architecture documentation](/docs/system-architecture.md) for detailed information.
 
-This template assumes that you have an application to deploy. See [application requirements](./template-only-docs/application-requirements.md) for more information on what is needed to use the infrastructure template. If you're using one of the [Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates), these requirements are already met.
+## 📋 Prerequisites
 
-## Installation
+Before using this template, you need an application ready to deploy.
 
-To get started, [install the nava-platform
-tool](https://github.com/navapbc/platform-cli), and then run the following
-command in your project's root directory:
+- **Have an existing application?** Review the [application requirements](./template-only-docs/application-requirements.md) to ensure compatibility
+- **Starting from scratch?** Use one of the [Platform application templates](https://github.com/navapbc/platform?tab=readme-ov-file#platform-templates) – they're pre-configured to work with this infrastructure template
 
-```sh
-nava-platform infra install .
-```
+---
 
-Now you're ready to set up the various pieces of your infrastructure.
+## Getting Started
 
-## Setup
+### Installation
 
-After downloading and installing the template into your project:
+Install the template into your project using the Nava Platform CLI:
 
-1. Follow the steps in [infra/README.md](/infra/README.md) to setup the infrastructure for your application.
-2. After setting up AWS resources, you can [set up GitHub Actions workflows](./template-only-docs/set-up-ci.md).
-3. After configuring GitHub Actions, you can [set up continuous deployment](./template-only-docs/set-up-cd.md).
-4. After setting up continuous deployment, you can optionally [set up pull request environments](./template-only-docs/set-up-pr-environments.md)
-5. At any point, [set up your team workflow](./template-only-docs/set-up-team-workflow.md).
+1. **Install the nava-platform tool**: Follow the instructions at [github.com/navapbc/platform-cli](https://github.com/navapbc/platform-cli)
 
-## Updates
+2. **Run the installation command** in your project's root directory:
 
-With the [nava-platform tool
-installed](https://github.com/navapbc/platform-cli), run the following in your
-project's root directory:
+   ```sh
+   nava-platform infra install .
+   ```
+
+3. **You're ready to go!** Proceed to the setup steps below.
+
+### Setup Guide
+
+Follow these steps in order to set up your complete infrastructure:
+
+#### Step 1: Infrastructure Setup
+Follow the instructions in [infra/README.md](/infra/README.md) to setup the infrastructure for your application.
+
+#### Step 2: Configure CI
+After setting up AWS resources, [set up GitHub Actions workflows](./template-only-docs/set-up-ci.md) for automated testing and validation
+
+#### Step 3: Enable Continuous Deployment
+After configuring GitHub Actions, [set up continuous deployment](./template-only-docs/set-up-cd.md) for automated deployments from the main branch
+
+#### Step 4: Pull Request Environments (Optional)
+After setting up continuous deployment, you can optionally [set up pull request environments](./template-only-docs/set-up-pr-environments.md) for testing changes in isolation
+
+#### Step 5: Team Workflow
+[Set up your team workflow](./template-only-docs/set-up-team-workflow.md) – this can be done at any point in the process
+
+## Keeping Your Infrastructure Up to Date
+With the [nava-platform tool installed](https://github.com/navapbc/platform-cli), run the following in your project's root directory:
 
 ```sh
 nava-platform infra update .
 ```
 
+### Handling Update Conflicts
 If the update fails, the tool will provide some guidance, but effectively the
 next step will be apply the updates in smaller pieces with manual merge conflict
 resolution.
 
-**Remember:** Make sure to read the release notes in case there are breaking changes you need to address.
+> **Important:** Always read the [release notes](https://github.com/navapbc/template-infra/releases) before updating to check for breaking changes that may affect your infrastructure.
+
+---
+
+## Additional Resources
+
+- **[Documentation](/docs/)** – Comprehensive guides and architectural decisions
+- **[Contributing](CONTRIBUTING.md)** – How to contribute to this project
+- **[License](LICENSE.md)** – Apache 2.0 License
+- **[Security](SECURITY.MD)** – Security policies and vulnerability reporting
+
+---
+
+## Community
+
+- **Found a bug?** Submit an [issue](https://github.com/navapbc/template-infra/issues)
+- **Want to contribute?** Check out our [contributing guide](CONTRIBUTING.md)
