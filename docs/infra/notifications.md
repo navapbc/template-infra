@@ -31,7 +31,7 @@ make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 
 ## 4. Send a test email
 
-To send a test notification using the AWS CLI, first get the sender email address for the environment you want to test.
+To send a test notification using the AWS CLI, first get the "from" line for the environment you want to test.
 
 ```bash
 bin/terraform-init "infra/<APP_NAME>/service" "<ENVIRONMENT>"
