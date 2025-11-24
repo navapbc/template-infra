@@ -4,11 +4,9 @@ description: Builds a docker image and leverages the build cache to re-use cache
 inputs:
   app_name:
     required: true
-    type: string
     description: "name of application folder under infra directory"
   commit_hash:
     required: false
-    type: string
     description: 'The commit hash'
     default: ${{ github.sha }}
 outputs:

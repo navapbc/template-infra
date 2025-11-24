@@ -23,24 +23,21 @@ import (
 var uniqueId = strings.ToLower(generateTestId())
 var workspaceName = fmt.Sprintf("t-%s", uniqueId)
 var testAppName = os.Getenv("APP_NAME")
+var imageTag = os.Getenv("IMAGE_TAG")
+var environmentName = "dev"
 
 func TestService(t *testing.T) {
-	imageTag := shell.RunCommandAndGetOutput(t, shell.Command{
-		Command:    "git",
-		Args:       []string{"rev-parse", "HEAD"},
-		WorkingDir: "./",
-	})
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{
 		Reconfigure:  true,
 		TerraformDir: fmt.Sprintf("../%s/service/", testAppName),
 		Vars: map[string]interface{}{
-			"environment_name": "dev",
+			"environment_name": environmentName,
 			"image_tag":        imageTag,
 		},
 	})
 
 	fmt.Println("::group::Initialize service module")
-	TerraformInit(t, terraformOptions, "dev.s3.tfbackend")
+	TerraformInit(t, terraformOptions, fmt.Sprintf("%s.s3.tfbackend", environmentName))
 	fmt.Println("::endgroup::")
 
 	defer terraform.WorkspaceDelete(t, terraformOptions, workspaceName)
@@ -60,7 +57,6 @@ func TestService(t *testing.T) {
 func WaitForServiceToBeStable(t *testing.T, workspaceName string) {
 	fmt.Println("::group::Wait for service to be stable")
 	appName := testAppName
-	environmentName := "dev"
 	serviceName := fmt.Sprintf("%s-%s-%s", workspaceName, appName, environmentName)
 	shell.RunCommand(t, shell.Command{
 		Command:    "aws",

@@ -56,7 +56,7 @@ aws sesv2 send-email \
           "Charset": "UTF-8"
         },
         "Html": {
-          "Data": "This is a message from the future",
+          "Data": "<p>This is a message from the future</p>",
           "Charset": "UTF-8"
         }
       }
