@@ -1,5 +1,5 @@
 <p>
-  <img src="docs/assets/Nava-Strata-Logo-V02.svg" alt="Nava Strata" width="400">
+  <img src="template-only-docs/assets/Nava-Strata-Logo-V02.svg" alt="Nava Strata" width="400">
 </p>
 <p><i>Open source tools for every layer of government service delivery.</i></p>
 <p><b>Strata is a gold-standard target architecture and suite of open-source tools that gives government agencies everything they need to run a modern service.</b></p>
