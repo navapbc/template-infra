@@ -1,0 +1,46 @@
+name: Template CI Test PRs
+run-name: ${{ github.workflow }} - ${{ inputs.action || github.event.pull_request.state }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch_name:
+        required: true
+        type: string
+      action:
+        type: choice
+        options:
+          - update
+          - close
+        default: update
+  pull_request:
+    paths:
+      - "**"
+      - "copier.yml"
+  pull_request_target:
+    types: [closed]
+
+# all access is via `PLATFORM_BOT_GITHUB_TOKEN`
+permissions: {}
+
+jobs:
+  update:
+    name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
+    uses: ./.github/workflows/template-only-create-or-update-test-pr.yml
+    if: (github.event_name == 'workflow_dispatch' && inputs.action == 'update') || github.event.pull_request.state == 'open'
+    with:
+      branch_name: ${{ inputs.branch_name || github.head_ref }}
+      project_repo: navapbc/platform-test
+    secrets:
+      access_token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+
+  close:
+    if: (github.event_name == 'workflow_dispatch' && inputs.action == 'close') || github.event.pull_request.state == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close test PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ inputs.branch_name || github.head_ref }}
+        run: |
+          gh pr close "${BRANCH_NAME}" --delete-branch --repo navapbc/platform-test
