@@ -109,20 +109,3 @@ jobs:
           GH_TOKEN: ${{ secrets.PLATFORM_TESTER_GITHUB_TOKEN }}
           IMAGE_TAG: ${{ github.sha }}
           PROJECT_NAME: ${{ env.PROJECT_NAME }}
-
-      # Cleanup step that runs even if tests fail, timeout, or are cancelled
-      # This ensures we don't leave orphaned AWS resources
-      - name: Cleanup test resources
-        if: always()
-        working-directory: project-dir
-        run: |
-          echo "::group::Cleanup - Destroying all test resources"
-          # Run all cleanup commands with || true to ensure all are attempted
-          # even if one fails. Cleanup runs in reverse order of creation.
-          make -f template-only.mak destroy-app-service || echo "::warning::Failed to destroy app service"
-          make -f template-only.mak destroy-app-build-repository || echo "::warning::Failed to destroy build repository"
-          make -f template-only.mak destroy-network || echo "::warning::Failed to destroy network"
-          make -f template-only.mak destroy-account || echo "::warning::Failed to destroy account"
-          echo "::endgroup::"
-        env:
-          PROJECT_NAME: ${{ env.PROJECT_NAME }}

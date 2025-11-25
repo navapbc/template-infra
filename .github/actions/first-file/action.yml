@@ -4,7 +4,6 @@ description: Check given list of files in order and return first one that exists
 inputs:
   files:
     required: true
-    type: string
     description: |
       The list of files to check, in the order to check for them.
 

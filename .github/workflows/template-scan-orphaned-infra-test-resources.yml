@@ -1,4 +1,4 @@
-name: Scan Orphaned Test Resources
+name: Template Scan Orphaned Infra Test Resources
 
 on:
   workflow_dispatch:
