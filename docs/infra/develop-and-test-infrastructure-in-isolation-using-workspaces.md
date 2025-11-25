@@ -64,5 +64,5 @@ terraform -chdir=infra/<APP_NAME>/service destroy -var=environment_name=dev
 # Select default workspace so that you can delete your workspace, since you can't delete the selected workspace
 terraform -chdir=infra/<APP_NAME>/service workspace select default
 # Delete your workspace
-terraform -chdir=infra/<APP_NAME>/service delete <WORKSPACE_NAME>
+terraform -chdir=infra/<APP_NAME>/service workspace delete <WORKSPACE_NAME>
 ```
