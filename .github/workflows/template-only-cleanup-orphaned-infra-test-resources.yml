@@ -49,4 +49,4 @@ jobs:
             args+=("${{ inputs.project_name }}")
           fi
 
-          ./template-only-bin/cleanup-test-resources "${args[@]}"
+          ./template-only-bin/template-only-cleanup-test-resources "${args[@]}"

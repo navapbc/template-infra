@@ -29,7 +29,7 @@ jobs:
         id: scan
         run: |
           # Run in dry-run mode to see what would be deleted
-          output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
+          output=$(./template-only-bin/template-only-cleanup-test-resources --dry-run --age-hours 6 2>&1)
           echo "$output"
 
           # Check if any resources were found (look for "Found X resources" in output)
