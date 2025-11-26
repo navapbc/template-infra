@@ -38,8 +38,6 @@ jobs:
 
       - name: Run cleanup script
         run: |
-          chmod +x ./template-only-bin/cleanup-test-resources
-
           args=()
           if [ "${{ inputs.dry_run }}" = "true" ]; then
             args+=(--dry-run)

@@ -28,8 +28,6 @@ jobs:
       - name: Scan for orphaned resources
         id: scan
         run: |
-          chmod +x ./template-only-bin/cleanup-test-resources
-
           # Run in dry-run mode to see what would be deleted
           output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
           echo "$output"
