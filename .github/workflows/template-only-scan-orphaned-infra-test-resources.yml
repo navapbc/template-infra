@@ -34,12 +34,14 @@ jobs:
 
           # Check if any resources were found (look for "Found X resources" in output)
           if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
-            echo "found=true" >> "$GITHUB_OUTPUT"
             # Extract resource count and project names for notification
             resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20)
-            echo "resource_info<<EOF" >> "$GITHUB_OUTPUT"
-            echo "$resource_info" >> "$GITHUB_OUTPUT"
-            echo "EOF" >> "$GITHUB_OUTPUT"
+            {
+              echo "found=true"
+              echo "resource_info<<EOF"
+              echo "$resource_info"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
             exit 1
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
