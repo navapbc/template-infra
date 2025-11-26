@@ -8,6 +8,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
+	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
@@ -18,6 +19,13 @@ var imageTag = os.Getenv("IMAGE_TAG")
 
 const maxRetries = 3
 const sleepBetweenRetries = 5 * time.Second
+
+// runCommandWithRetry runs a shell command with retry logic
+func runCommandWithRetry(t *testing.T, description string, maxRetries int, sleepBetweenRetries time.Duration, command shell.Command) {
+	retry.DoWithRetry(t, description, maxRetries, sleepBetweenRetries, func() (string, error) {
+		return "", shell.RunCommandE(t, command)
+	})
+}
 
 func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
