@@ -181,6 +181,30 @@ cleanup_project() {
     fi
   done
 
+  # Delete ECS task definitions
+  # Task definitions don't support tagging, so we match by naming pattern
+  echo "Cleaning up ECS task definitions..."
+  local task_families
+  task_families=$(aws ecs list-task-definition-families --region "${AWS_REGION}" --status ALL --query 'families[]' --output text || echo "")
+  for family in ${task_families}; do
+    # Check if family name matches our project pattern
+    if [[ "${family}" == *"${project}"* ]]; then
+      echo "Deregistering task definition family: ${family}"
+      # Get all revisions for this family
+      local task_definitions
+      task_definitions=$(aws ecs list-task-definitions --region "${AWS_REGION}" --family-prefix "${family}" --status ACTIVE --query 'taskDefinitionArns[]' --output text || echo "")
+      for task_def_arn in ${task_definitions}; do
+        aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+      done
+
+      # Also deregister inactive revisions
+      task_definitions=$(aws ecs list-task-definitions --region "${AWS_REGION}" --family-prefix "${family}" --status INACTIVE --query 'taskDefinitionArns[]' --output text || echo "")
+      for task_def_arn in ${task_definitions}; do
+        aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+      done
+    fi
+  done
+
   # Delete load balancers
   echo "Cleaning up load balancers..."
   local lbs
