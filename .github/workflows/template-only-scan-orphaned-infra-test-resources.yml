@@ -1,4 +1,4 @@
-name: template-only-scan-orphaned-infra-test-resources
+name: Template Scan Orphaned Infra Test Resources
 
 on:
   workflow_dispatch:
@@ -29,13 +29,13 @@ jobs:
         id: scan
         run: |
           # Run in dry-run mode to see what would be deleted
-          output=$(./template-only-bin/template-only-cleanup-test-resources --dry-run --age-hours 6 2>&1)
+          output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
           echo "$output"
 
           # Check if any resources were found (look for "Found X resources" in output)
           if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
             # Extract resource count and project names for notification
-            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20)
+            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" 2>/dev/null | head -20)
             {
               echo "found=true"
               echo "resource_info<<EOF"
