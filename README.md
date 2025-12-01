@@ -112,7 +112,7 @@ resolution.
 - **[Documentation](/docs/)** – Comprehensive guides and architectural decisions
 - **[Contributing](CONTRIBUTING.md)** – How to contribute to this project
 - **[License](LICENSE.md)** – Apache 2.0 License
-- **[Security](SECURITY.MD)** – Security policies and vulnerability reporting
+- **[Security](SECURITY.md)** – Security policies and vulnerability reporting
 
 ---
 
