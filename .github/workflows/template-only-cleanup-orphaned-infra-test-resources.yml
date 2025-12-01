@@ -1,4 +1,4 @@
-name: template-only-cleanup-orphaned-infra-test-resources
+name: Template CI Infra Checks Cleanup
 
 on:
   # Manual trigger only - cleanup is intentionally not automatic
