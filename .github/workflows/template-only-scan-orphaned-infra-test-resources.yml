@@ -33,7 +33,7 @@ jobs:
           echo "$output"
 
           # Check if any resources were found (look for "Found X resources" in output)
-          if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
+          if echo "$output" | grep -q "Found [1-9][0-9]* resources" 2>/dev/null; then
             # Extract resource count and project names for notification
             resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" 2>/dev/null | head -20)
             {
