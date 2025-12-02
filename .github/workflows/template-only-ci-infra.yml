@@ -72,7 +72,7 @@ jobs:
           --data base_project_name="${project_name}" \
           --data base_owner=platform-admins \
           --data base_code_repository_url=${{ github.repositoryUrl }} \
-          --data base_default_region=us-east-1 \
+          --data base_default_region=us-east-2 \
           --data app_name=app \
           --data app_local_port=3000 \
           --data app_has_dev_env_setup=true \

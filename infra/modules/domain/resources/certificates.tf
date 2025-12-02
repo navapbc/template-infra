@@ -28,6 +28,8 @@ locals {
 
 # ACM certificate that will be used by the load balancer.
 resource "aws_acm_certificate" "issued" {
+  provider = aws.us-east-1
+
   for_each = local.issued_certificate_configs
 
   domain_name       = each.key
@@ -40,6 +42,8 @@ resource "aws_acm_certificate" "issued" {
 
 # DNS records for certificate validation.
 resource "aws_route53_record" "validation" {
+  provider = aws.us-east-1
+
   for_each = local.domain_validation_options
 
   allow_overwrite = true
@@ -52,6 +56,8 @@ resource "aws_route53_record" "validation" {
 
 # Representation of successful validation of the ACM certificate.
 resource "aws_acm_certificate_validation" "validation" {
+  provider = aws.us-east-1
+
   for_each = local.imported_certificate_configs
 
   certificate_arn         = aws_acm_certificate.issued[each.key].arn
