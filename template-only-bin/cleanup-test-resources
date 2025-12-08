@@ -188,12 +188,28 @@ cleanup_project() {
   task_def_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'task-definition' || echo "")
 
   for task_def_arn in ${task_def_arns}; do
-    echo "Deregistering task definition: ${task_def_arn}"
-    aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+    # Check current status
+    local status
+    status=$(aws ecs describe-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" --query 'taskDefinition.status' --output text 2>/dev/null || echo "")
 
-    # Delete the task definition after deregistering (requires it to be INACTIVE)
-    sleep 2
-    aws ecs delete-task-definitions --region "${AWS_REGION}" --task-definitions "${task_def_arn}" 2>/dev/null || echo "Note: Task definition ${task_def_arn} deregistered but not yet eligible for deletion"
+    if [ "${status}" = "DELETE_IN_PROGRESS" ]; then
+      echo "Task definition already being deleted: ${task_def_arn}"
+      continue
+    fi
+
+    if [ "${status}" = "ACTIVE" ]; then
+      echo "Deregistering task definition: ${task_def_arn}"
+      aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+      sleep 2
+    elif [ "${status}" = "INACTIVE" ]; then
+      echo "Task definition already inactive: ${task_def_arn}"
+    fi
+
+    # Delete the task definition (works for INACTIVE status)
+    if [ "${status}" = "ACTIVE" ] || [ "${status}" = "INACTIVE" ]; then
+      echo "Deleting task definition: ${task_def_arn}"
+      aws ecs delete-task-definitions --region "${AWS_REGION}" --task-definitions "${task_def_arn}" || echo "Failed to delete ${task_def_arn}"
+    fi
   done
 
   # Delete load balancers
