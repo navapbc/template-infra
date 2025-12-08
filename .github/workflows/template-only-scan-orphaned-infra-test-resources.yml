@@ -33,10 +33,10 @@ jobs:
           echo "$output"
 
           # Check if any resources were found (look for "Found X resources" in output)
-          # Suppress broken pipe errors from early pipe termination
-          if (echo "$output" | grep -q "Found [1-9][0-9]* resources") 2>/dev/null; then
+          if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
             # Extract resource count and project names for notification
-            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20) 2>/dev/null
+            # Use || true to suppress broken pipe errors from head terminating early
+            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20 || true)
             {
               echo "found=true"
               echo "resource_info<<EOF"
