@@ -182,27 +182,18 @@ cleanup_project() {
   done
 
   # Delete ECS task definitions
-  # Task definitions don't support tagging, so we match by naming pattern
+  # Task definitions are tagged by the Resource Groups Tagging API
   echo "Cleaning up ECS task definitions..."
-  local task_families
-  task_families=$(aws ecs list-task-definition-families --region "${AWS_REGION}" --status ALL --query 'families[]' --output text || echo "")
-  for family in ${task_families}; do
-    # Check if family name matches our project pattern
-    if [[ "${family}" == *"${project}"* ]]; then
-      echo "Deregistering task definition family: ${family}"
-      # Get all revisions for this family
-      local task_definitions
-      task_definitions=$(aws ecs list-task-definitions --region "${AWS_REGION}" --family-prefix "${family}" --status ACTIVE --query 'taskDefinitionArns[]' --output text || echo "")
-      for task_def_arn in ${task_definitions}; do
-        aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
-      done
+  local task_def_arns
+  task_def_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'task-definition' || echo "")
 
-      # Also deregister inactive revisions
-      task_definitions=$(aws ecs list-task-definitions --region "${AWS_REGION}" --family-prefix "${family}" --status INACTIVE --query 'taskDefinitionArns[]' --output text || echo "")
-      for task_def_arn in ${task_definitions}; do
-        aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
-      done
-    fi
+  for task_def_arn in ${task_def_arns}; do
+    echo "Deregistering task definition: ${task_def_arn}"
+    aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+
+    # Delete the task definition after deregistering (requires it to be INACTIVE)
+    sleep 2
+    aws ecs delete-task-definitions --region "${AWS_REGION}" --task-definitions "${task_def_arn}" 2>/dev/null || echo "Note: Task definition ${task_def_arn} deregistered but not yet eligible for deletion"
   done
 
   # Delete load balancers
@@ -224,16 +215,53 @@ cleanup_project() {
 
   # Delete target groups
   echo "Cleaning up target groups..."
-  local tgs
-  tgs=$(aws elbv2 describe-target-groups --region "${AWS_REGION}" --query 'TargetGroups[].TargetGroupArn' --output text || echo "")
-  for tg_arn in ${tgs}; do
-    local tg_tags
-    tg_tags=$(aws elbv2 describe-tags --resource-arns "${tg_arn}" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text 2>/dev/null || echo "")
+  local tg_arns
+  tg_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'targetgroup' || echo "")
 
-    if [ "${tg_tags}" = "${project}" ]; then
-      echo "Deleting target group: ${tg_arn}"
-      aws elbv2 delete-target-group --target-group-arn "${tg_arn}" --region "${AWS_REGION}" || echo "Failed to delete TG"
-    fi
+  for tg_arn in ${tg_arns}; do
+    echo "Deleting target group: ${tg_arn}"
+    aws elbv2 delete-target-group --target-group-arn "${tg_arn}" --region "${AWS_REGION}" 2>&1 | grep -v "TargetGroupInUse" || echo "Skipping in-use target group"
+  done
+
+  # Delete S3 buckets
+  echo "Cleaning up S3 buckets..."
+  local s3_arns
+  s3_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'arn:aws:s3:::' || echo "")
+
+  for s3_arn in ${s3_arns}; do
+    local bucket_name
+    bucket_name=$(echo "${s3_arn}" | sed 's/arn:aws:s3::://')
+    echo "Deleting S3 bucket: ${bucket_name}"
+
+    # Empty bucket first (required before deletion)
+    aws s3 rm "s3://${bucket_name}" --recursive --region "${AWS_REGION}" 2>/dev/null || echo "Bucket already empty or inaccessible"
+
+    # Delete bucket
+    aws s3api delete-bucket --bucket "${bucket_name}" --region "${AWS_REGION}" || echo "Failed to delete bucket ${bucket_name}"
+  done
+
+  # Delete DynamoDB tables
+  echo "Cleaning up DynamoDB tables..."
+  local dynamodb_arns
+  dynamodb_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'dynamodb' || echo "")
+
+  for table_arn in ${dynamodb_arns}; do
+    local table_name
+    table_name=$(echo "${table_arn}" | awk -F'/' '{print $NF}')
+    echo "Deleting DynamoDB table: ${table_name}"
+    aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
+  done
+
+  # Schedule KMS keys for deletion (minimum 7 days waiting period)
+  echo "Scheduling KMS keys for deletion..."
+  local kms_arns
+  kms_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'arn:aws:kms:' || echo "")
+
+  for key_arn in ${kms_arns}; do
+    local key_id
+    key_id=$(echo "${key_arn}" | awk -F'/' '{print $NF}')
+    echo "Scheduling KMS key for deletion: ${key_id}"
+    aws kms schedule-key-deletion --key-id "${key_id}" --pending-window-in-days 7 --region "${AWS_REGION}" || echo "Failed to schedule deletion for key ${key_id}"
   done
 
   echo "Cleanup complete for project: ${project}"
