@@ -129,7 +129,7 @@ cleanup_project() {
   echo "Cleaning up Route 53 hosted zones..."
   local zones
   zones=$(aws route53 list-hosted-zones \
-    --query "HostedZones[?Config.PrivateZone==\`false\`].Id" \
+    --query "HostedZones[].Id" \
     --output text || echo "")
 
   for zone_id in ${zones}; do
