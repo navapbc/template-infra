@@ -246,7 +246,7 @@ cleanup_project() {
 
   for s3_arn in ${s3_arns}; do
     local bucket_name
-    bucket_name=$(echo "${s3_arn}" | sed 's/arn:aws:s3::://')
+    bucket_name="${s3_arn#arn:aws:s3:::}"
     echo "Deleting S3 bucket: ${bucket_name}"
 
     # Empty bucket first (required before deletion)
