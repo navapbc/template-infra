@@ -28,9 +28,11 @@ jobs:
       - name: Scan for orphaned resources
         id: scan
         run: |
+          set -o pipefail
           # Run in dry-run mode to see what would be deleted
           output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
-          echo "$output"
+          # Print summary only (full output is too large and causes broken pipe errors)
+          echo "$output" | head -50 || true
 
           # Check if any resources were found (look for "Found X resources" in output)
           if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
@@ -40,7 +42,7 @@ jobs:
             {
               echo "found=true"
               echo "resource_info<<EOF"
-              echo "$resource_info"
+              echo "$resource_info" || true
               echo "EOF"
             } >> "$GITHUB_OUTPUT"
             exit 1
