@@ -31,18 +31,25 @@ jobs:
           set -o pipefail
           # Run in dry-run mode to see what would be deleted
           output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
+
           # Print summary only (full output is too large and causes broken pipe errors)
+          # Disable pipefail temporarily to avoid broken pipe errors from head
+          set +o pipefail
           echo "$output" | head -50 || true
+          set -o pipefail
 
           # Check if any resources were found (look for "Found X resources" in output)
           if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
             # Extract resource count and project names for notification
-            # Use || true to suppress broken pipe errors from head terminating early
-            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20 || true)
+            # Disable pipefail to suppress broken pipe errors from head terminating early
+            set +o pipefail
+            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20)
+            set -o pipefail
+
             {
               echo "found=true"
               echo "resource_info<<EOF"
-              echo "$resource_info" || true
+              echo "$resource_info"
               echo "EOF"
             } >> "$GITHUB_OUTPUT"
             exit 1
