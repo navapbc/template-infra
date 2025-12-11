@@ -29,19 +29,16 @@ jobs:
         id: scan
         shell: bash
         run: |
-          # Trap SIGPIPE to avoid broken pipe errors when head terminates early
-          trap '' PIPE
-
           # Run in dry-run mode to see what would be deleted
           output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
 
-          # Print summary only
-          echo "$output" | head -50 || true
+          # Print summary only - redirect stderr to suppress broken pipe messages
+          { echo "$output" | head -50 || true; } 2>/dev/null
 
           # Check if any resources were found (look for "Found X resources" in output)
-          if echo "$output" | grep -q "Found [1-9][0-9]* resources"; then
+          if echo "$output" | grep -q "Found [1-9][0-9]* resources" 2>/dev/null; then
             # Extract resource count and project names for notification
-            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20 || true)
+            resource_info=$({ echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20 || true; } 2>/dev/null)
 
             {
               echo "found=true"
