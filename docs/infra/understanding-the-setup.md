@@ -6,7 +6,7 @@ It can be overwhelming at first to fit how it's all connected in your head. The
 doc aims to provide a little better connective tissue between the architectural
 concepts and the concrete things you'll interact with.
 
-If you want deeper background rational for the current setup:
+If you want deeper background rationale for the current setup:
 
 - [/docs/decisions/infra/2023-05-09-separate-terraform-backend-configs-into-separate-config-files.md](/docs/decisions/infra/2023-05-09-separate-terraform-backend-configs-into-separate-config-files.md)
 - [/docs/decisions/infra/2023-09-07-consolidate-infra-config-from-tfvars-files-into-config-module.md](/docs/decisions/infra/2023-09-07-consolidate-infra-config-from-tfvars-files-into-config-module.md)
@@ -26,7 +26,7 @@ down into three high-level "slices" (some with further internal divisions).
 One last bit of exposition, as yet more new terminology has been introduced with
 "slice". If you've read other documentation already you'll have likely seen
 references to infrastructure "layers", but there are some conceptual
-psuedo-layers that for clarity that this document calls a "slice". Some slices
+pseudo-layers that, for clarity, that this document calls a "slice". Some slices
 directly correspond to a layer, other slices correspond to multiple layers. In
 summary:
 
@@ -95,7 +95,7 @@ application environment.
   the application code. After initial setup, you probably won't deal with this.
 - Application Environments
 
-Of these, `build-repository` is they only one that exists at the bare app slice,
+Of these, `build-repository` is the only one that exists at the bare app slice,
 the others exist in an environment, discussed next. This is because the
 applications build repo is shared across all environments and accounts that run
 the application.
