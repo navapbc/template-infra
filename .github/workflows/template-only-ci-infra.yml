@@ -9,7 +9,6 @@ on:
       - bin/**
       - infra/**
       - template-only-bin/**
-      - template-only-infra/**
       - template-only-test/**
       - .github/workflows/template-only-ci-infra.yml
       - template-only-app/Dockerfile
