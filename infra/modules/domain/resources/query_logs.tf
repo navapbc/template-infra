@@ -1,6 +1,8 @@
 # DNS query logging
 
 resource "aws_cloudwatch_log_group" "dns_query_logging" {
+  provider = aws.us-east-1
+
   count = var.manage_dns ? 1 : 0
 
   name              = "/dns/${var.name}"
