@@ -1,4 +1,4 @@
-variable "name_prefix" {
+variable "name" {
   description = "Prefix to use for resource names"
   type        = string
 }
@@ -8,25 +8,25 @@ variable "bucket_policy_arns" {
   type        = map(string)
 }
 
-variable "bda_project_description" {
+variable "project_description" {
   description = "The description of the Bedrock data automation project."
   type        = string
   default     = null
 }
 
-variable "bda_kms_encryption_context" {
+variable "kms_encryption_context" {
   description = "The KMS encryption context for the Bedrock data automation project."
   type        = map(string)
   default     = null
 }
 
-variable "bda_kms_key_id" {
+variable "kms_key_id" {
   description = "The KMS key ID for the Bedrock data automation project."
   type        = string
   default     = null
 }
 
-variable "bda_custom_output_config" {
+variable "custom_output_config" {
   description = "A list of the BDA custom output configuartion blueprint(s)."
   type = list(object({
     blueprint_arn     = optional(string)
@@ -36,7 +36,7 @@ variable "bda_custom_output_config" {
   default = null
 }
 
-variable "bda_standard_output_configuration" {
+variable "standard_output_configuration" {
   description = "Standard output is pre-defined extraction managed by Bedrock. It can extract information from documents, images, videos, and audio."
   type = object({
     audio = optional(object({
@@ -106,13 +106,13 @@ variable "bda_standard_output_configuration" {
   default = null
 }
 
-variable "bda_override_config_state" {
+variable "override_config_state" {
   description = "Configuration state for the BDA override."
   type        = string
   default     = null
 }
 
-variable "bda_tags" {
+variable "tags" {
   description = "A list of tag keys and values for the Bedrock data automation project."
   type = list(object({
     key   = string

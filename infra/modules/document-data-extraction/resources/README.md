@@ -45,9 +45,9 @@ module "bedrock_data_automation" {
     }
   }
   
-  bda_project_description = "Production data automation for invoice processing"
+  project_description = "Production data automation for invoice processing"
   
-  bda_standard_output_configuration = {
+  standard_output_configuration = {
     document = {
       extraction = {
         granularity = {
@@ -57,7 +57,7 @@ module "bedrock_data_automation" {
     }
   }
   
-  bda_tags = [
+  tags = [
     {
       key   = "Environment"
       value = "production"
@@ -114,7 +114,7 @@ list(object({
 }))
 ```
 
-#### `bda_standard_output_configuration` Object Structure
+#### `standard_output_configuration` Object Structure
 
 Complex nested object supporting extraction configuration for audio, document, image, and video content types. Each content type supports:
 - **extraction** - Category, bounding box, and granularity configuration
@@ -188,7 +188,7 @@ module "bedrock_data_automation" {
   bucket_policy_arns = { /* ... */ }
   blueprints_map     = { /* ... */ }
   
-  bda_standard_output_configuration = {
+  standard_output_configuration = {
     document = {
       extraction = {
         bounding_box = {
