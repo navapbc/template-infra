@@ -291,36 +291,42 @@ done
 
 # Clean up orphaned inactive task definitions
 # These aren't returned by the Resource Groups Tagging API, so we query ECS directly
+# Task definitions are named like "app-dev" but tagged with project=plt-tst-act-*
 echo "=== Cleaning up orphaned inactive task definitions ==="
 cleanup_inactive_task_definitions() {
-  echo "Finding inactive task definitions matching plt-tst-act-*..."
+  echo "Finding inactive task definitions tagged with plt-tst-act-* projects..."
 
-  # Get all task definition families
+  # Get all task definition families (we can't filter by tag, so get all and check tags)
   local families
   families=$(aws ecs list-task-definition-families \
     --region "${AWS_REGION}" \
-    --family-prefix "plt-tst-act-" \
     --status INACTIVE \
     --query 'families[]' \
     --output text 2>/dev/null || echo "")
 
-  if [ -z "${families}" ]; then
-    # Also check for active families that may have inactive revisions
-    families=$(aws ecs list-task-definition-families \
-      --region "${AWS_REGION}" \
-      --family-prefix "plt-tst-act-" \
-      --status ACTIVE \
-      --query 'families[]' \
-      --output text 2>/dev/null || echo "")
-  fi
+  # Also check active families that may have inactive revisions
+  local active_families
+  active_families=$(aws ecs list-task-definition-families \
+    --region "${AWS_REGION}" \
+    --status ACTIVE \
+    --query 'families[]' \
+    --output text 2>/dev/null || echo "")
 
-  if [ -z "${families}" ]; then
-    echo "No plt-tst-act-* task definition families found"
+  # Combine both lists
+  families="${families} ${active_families}"
+  families=$(echo "${families}" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+
+  if [ -z "$(echo "${families}" | tr -d ' ')" ]; then
+    echo "No task definition families found"
     return 0
   fi
 
   local inactive_count=0
+  local checked_families=0
   for family in ${families}; do
+    [ -z "${family}" ] && continue
+    checked_families=$((checked_families + 1))
+
     # Get all inactive task definitions for this family
     local inactive_arns
     inactive_arns=$(aws ecs list-task-definitions \
@@ -332,20 +338,33 @@ cleanup_inactive_task_definitions() {
 
     if [ -n "${inactive_arns}" ]; then
       for task_arn in ${inactive_arns}; do
-        inactive_count=$((inactive_count + 1))
-        if [ "${DRY_RUN}" = true ]; then
-          echo "Would delete inactive task definition: ${task_arn}"
-        else
-          echo "Deleting inactive task definition: ${task_arn}"
-          aws ecs delete-task-definitions \
-            --region "${AWS_REGION}" \
-            --task-definitions "${task_arn}" 2>/dev/null || echo "Failed to delete ${task_arn}"
+        [ -z "${task_arn}" ] && continue
+
+        # Check if this task definition is tagged with a plt-tst-act-* project
+        local project_tag
+        project_tag=$(aws ecs list-tags-for-resource \
+          --resource-arn "${task_arn}" \
+          --query "tags[?key=='project'].value" \
+          --output text 2>/dev/null || echo "")
+
+        # Only process if tagged with a test project
+        if [[ "${project_tag}" == plt-tst-act-* ]]; then
+          inactive_count=$((inactive_count + 1))
+          if [ "${DRY_RUN}" = true ]; then
+            echo "Would delete inactive task definition: ${task_arn} (project: ${project_tag})"
+          else
+            echo "Deleting inactive task definition: ${task_arn} (project: ${project_tag})"
+            aws ecs delete-task-definitions \
+              --region "${AWS_REGION}" \
+              --task-definitions "${task_arn}" 2>/dev/null || echo "Failed to delete ${task_arn}"
+          fi
         fi
       done
     fi
   done
 
-  echo "Found ${inactive_count} inactive task definitions"
+  echo "Checked ${checked_families} task definition families"
+  echo "Found ${inactive_count} inactive task definitions tagged with plt-tst-act-* projects"
 }
 
 cleanup_inactive_task_definitions
