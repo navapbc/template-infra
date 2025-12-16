@@ -30,16 +30,17 @@ jobs:
         shell: bash
         run: |
           # Run in dry-run mode to see what would be deleted
-          output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
+          # Write to temp file to avoid broken pipe errors from piping large output
+          tmpfile=$(mktemp)
+          ./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 > "$tmpfile" 2>&1 || true
 
           # Print full output for debugging
-          echo "$output"
+          cat "$tmpfile"
 
           # Check if any resources were found (look for "Found X resources" in output)
-          # Use > /dev/null instead of -q to avoid broken pipe error
-          if echo "$output" | grep "Found [1-9][0-9]* resources" > /dev/null 2>&1; then
+          if grep -q "Found [1-9][0-9]* resources" "$tmpfile"; then
             # Extract resource count and project names for notification
-            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|Would delete)" | head -30)
+            resource_info=$(grep -E "(Found [0-9]+ resources|Cleaning up project:|Would delete)" "$tmpfile" | head -30 || true)
 
             {
               echo "found=true"
@@ -47,6 +48,7 @@ jobs:
               echo "$resource_info"
               echo "EOF"
             } >> "$GITHUB_OUTPUT"
+            rm -f "$tmpfile"
             exit 1
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
@@ -54,6 +56,7 @@ jobs:
             echo "=== Summary ==="
             echo "No orphaned resources found that need cleanup."
             # Show how many projects were checked
-            project_count=$(echo "$output" | grep -c "^=== Cleaning up project:" || echo "0")
+            project_count=$(grep -c "^=== Cleaning up project:" "$tmpfile" || echo "0")
             echo "Checked ${project_count} projects."
+            rm -f "$tmpfile"
           fi
