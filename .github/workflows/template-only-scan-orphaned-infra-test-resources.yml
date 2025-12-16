@@ -32,13 +32,14 @@ jobs:
           # Run in dry-run mode to see what would be deleted
           output=$(./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 2>&1)
 
-          # Print summary only - redirect stderr to suppress broken pipe messages
-          { echo "$output" | head -50 || true; } 2>/dev/null
+          # Print full output for debugging
+          echo "$output"
 
           # Check if any resources were found (look for "Found X resources" in output)
-          if echo "$output" | grep -q "Found [1-9][0-9]* resources" 2>/dev/null; then
+          # Use > /dev/null instead of -q to avoid broken pipe error
+          if echo "$output" | grep "Found [1-9][0-9]* resources" > /dev/null 2>&1; then
             # Extract resource count and project names for notification
-            resource_info=$({ echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|plt-tst-act-)" | head -20 || true; } 2>/dev/null)
+            resource_info=$(echo "$output" | grep -E "(Found [0-9]+ resources|Cleaning up project:|Would delete)" | head -30)
 
             {
               echo "found=true"
@@ -49,5 +50,10 @@ jobs:
             exit 1
           else
             echo "found=false" >> "$GITHUB_OUTPUT"
-            echo "No orphaned resources found"
+            echo ""
+            echo "=== Summary ==="
+            echo "No orphaned resources found that need cleanup."
+            # Show how many projects were checked
+            project_count=$(echo "$output" | grep -c "^=== Cleaning up project:" || echo "0")
+            echo "Checked ${project_count} projects."
           fi
