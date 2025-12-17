@@ -88,10 +88,26 @@ variable "standard_output_configuration" {
   default = null
 }
 
-variable "override_config_state" {
+# override_configuration allows customizing extraction behavior beyond standard 
+# settings:
+#  - enabling document splitting
+#  - skipping certain modalities (audio, video, text)
+#  - adjusting routing rules (e.g. whether JPEG files are routed to document or image processing)
+#  - etc.
+#
+# the base configuration is sufficient for most use cases, hence the null default
+# documentation: https://docs.aws.amazon.com/bedrock/latest/APIReference/API_data-automation_OverrideConfiguration.html
+variable "override_configuration" {
   description = "Configuration state for the BDA override."
-  type        = string
-  default     = null
+  type = object({
+    document = optional(object({
+      splitter = optional(object({
+        state = optional(string)
+      }))
+    }))
+    # add image, video, audio later if needed
+  })
+  default = null
 }
 
 variable "tags" {

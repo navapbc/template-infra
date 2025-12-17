@@ -25,13 +25,7 @@ resource "awscc_bedrock_data_automation_project" "bda_project" {
       blueprint_stage = v.blueprint_stage
     }]
   }
-  override_configuration = {
-    document = {
-      splitter = {
-        state = var.override_config_state
-      }
-    }
-  }
+  override_configuration = var.override_configuration
 }
 
 resource "awscc_bedrock_blueprint" "bda_blueprint" {
