@@ -11,7 +11,7 @@ The module creates:
 
 ## Features
 - Creates resources required for Bedrock Data Automation workflows
-- Uses a `name_prefix` variable to prefix all resource names for uniqueness and consistency
+- Uses a `name` variable to prefix all resource names for uniqueness and consistency
 - Supports both standard and custom output configurations
 - Flexible blueprint creation through a map of blueprint definitions
 - Complies with Checkov recommendations for security and compliance
@@ -21,9 +21,9 @@ The module creates:
 
 ```hcl
 module "bedrock_data_automation" {
-  source = "../../modules/document-data-extraction/resources/bedrock-data-automation"
+  source = "../../modules/document-data-extraction/resources"
   
-  name_prefix = "my-app-prod"
+  name  = "my-app-prod"
   
   bucket_policy_arns = {
     input_bucket  = aws_iam_policy.input_bucket_policy.arn
@@ -32,20 +32,14 @@ module "bedrock_data_automation" {
   
   blueprints_map = {
     invoice = {
-      schema                 = file("${path.module}/schemas/invoice.json")
-      type                   = "DOCUMENT"
-      kms_encryption_context = {}
-      kms_key_id             = aws_kms_key.bda_key.id
-      tags = [
-        {
-          key   = "Environment"
-          value = "production"
-        }
-      ]
+      schema = file("${path.module}/schemas/invoice.json")
+      type   = "DOCUMENT"
+      tags   = {
+          Environment = "production"
+          ManagedBy   = "terraform"
+      }
     }
   }
-  
-  project_description = "Production data automation for invoice processing"
   
   standard_output_configuration = {
     document = {
@@ -57,16 +51,10 @@ module "bedrock_data_automation" {
     }
   }
   
-  tags = [
-    {
-      key   = "Environment"
-      value = "production"
-    },
-    {
-      key   = "ManagedBy"
-      value = "terraform"
-    }
-  ]
+  tags = {
+          Environment = "production"
+          ManagedBy   = "terraform"
+  }
 }
 ```
 
@@ -76,21 +64,16 @@ module "bedrock_data_automation" {
 
 | Name  | Description | Type | Required |
 |-------|-------------|------|----------|
-| `name_prefix` | Prefix to use for resource names (e.g., "my-app-prod") | `string` | yes |
+| `name` | Prefix to use for resource names (e.g., "my-app-prod") | `string` | yes |
 | `bucket_policy_arns` | Map of policy ARNs for input and output buckets to attach to the BDA role | `map(string)` | yes |
 | `blueprints_map` | Map of unique blueprints with keys as blueprint identifiers and values as blueprint objects | `map(object)` | yes |
 
 #### `blueprints_map` Object Structure
 ```hcl
 {
-  schema                 = string              # JSON schema defining the extraction structure
-  type                   = string              # Blueprint type (e.g., "DOCUMENT")
-  kms_encryption_context = map(string)         # KMS encryption context
-  kms_key_id             = string              # KMS key ID for encryption
-  tags = list(object({                         # Resource tags
-    key   = string
-    value = string
-  }))
+  schema = string              # JSON schema defining the extraction structure
+  type   = string              # Blueprint type (e.g., "DOCUMENT")
+  tags   = map(string)         # Resource tags as key-value pairs
 }
 ```
 
@@ -98,21 +81,10 @@ module "bedrock_data_automation" {
 
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
-| `bda_project_description` | The description of the Bedrock data automation project | `string` | `null` |
-| `bda_kms_encryption_context` | The KMS encryption context for the Bedrock data automation project | `map(string)` | `null` |
-| `bda_kms_key_id` | The KMS key ID for the Bedrock data automation project | `string` | `null` |
-| `bda_custom_output_config` | List of BDA custom output configuration blueprint(s) | `list(object)` | `null` |
-| `bda_override_config_state` | Configuration state for the BDA override | `string` | `null` |
-| `bda_tags` | List of tag keys and values for the Bedrock data automation project | `list(object)` | `null` |
+| `standard_output_configuration` | Standard output configuration for extraction | `object` | `null` |
+| `override_config_state` | Configuration state for the BDA override | `string` | `null` |
+| `tags` | Resource tags as key-value pairs | `map(string)` | `{}` |
 
-#### `bda_custom_output_config` Object Structure
-```hcl
-list(object({
-  blueprint_arn     = optional(string)
-  blueprint_stage   = optional(string)
-  blueprint_version = optional(string)
-}))
-```
 
 #### `standard_output_configuration` Object Structure
 
@@ -123,14 +95,6 @@ Complex nested object supporting extraction configuration for audio, document, i
 
 See `variables.tf` for complete structure details.
 
-#### `bda_tags` Object Structure
-```hcl
-list(object({
-  key   = string
-  value = string
-}))
-```
-
 ## Outputs
 
 | Name | Description |
@@ -138,6 +102,8 @@ list(object({
 | `bda_project_arn` | The ARN of the Bedrock Data Automation project |
 | `bda_role_name` | The name of the IAM role used by Bedrock Data Automation |
 | `bda_role_arn` | The ARN of the IAM role used by Bedrock Data Automation |
+| `access_policy_arn` | The ARN of the IAM policy for accessing the Bedrock Data Automation project |
+
 
 ## Resources Created
 
@@ -148,7 +114,7 @@ list(object({
 
 ## Project Conventions
 
-- All resource names are prefixed with `var.name_prefix`
+- All resource names are prefixed with `var.name`
 - For cross-layer modules, use the interface/data/resources pattern as described in project documentation
 - Write code that complies with Checkov recommendations
 - Follow Terraform best practices for naming and organization
@@ -166,9 +132,9 @@ list(object({
 ### Minimal Configuration
 ```hcl
 module "bedrock_data_automation" {
-  source = "../../modules/document-data-extraction/resources/bedrock-data-automation"
+  source = "../../modules/document-data-extraction/resources"
   
-  name_prefix = "my-app"
+  name = "my-app"
   
   bucket_policy_arns = {
     input  = aws_iam_policy.input.arn
@@ -182,9 +148,9 @@ module "bedrock_data_automation" {
 ### With Standard Output Configuration
 ```hcl
 module "bedrock_data_automation" {
-  source = "../../modules/document-data-extraction/resources/bedrock-data-automation"
+  source = "../../modules/document-data-extraction/resources"
   
-  name_prefix        = "my-app"
+  name               = "my-app"
   bucket_policy_arns = { /* ... */ }
   blueprints_map     = { /* ... */ }
   

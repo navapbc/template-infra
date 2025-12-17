@@ -8,24 +8,6 @@ variable "bucket_policy_arns" {
   type        = map(string)
 }
 
-variable "project_description" {
-  description = "The description of the Bedrock data automation project."
-  type        = string
-  default     = null
-}
-
-variable "kms_encryption_context" {
-  description = "The KMS encryption context for the Bedrock data automation project."
-  type        = map(string)
-  default     = null
-}
-
-variable "kms_key_id" {
-  description = "The KMS key ID for the Bedrock data automation project."
-  type        = string
-  default     = null
-}
-
 variable "custom_output_config" {
   description = "A list of the BDA custom output configuartion blueprint(s)."
   type = list(object({
@@ -114,24 +96,16 @@ variable "override_config_state" {
 
 variable "tags" {
   description = "A list of tag keys and values for the Bedrock data automation project."
-  type = list(object({
-    key   = string
-    value = string
-  }))
-  default = null
+  type        = map(string)
+  default     = {}
 
 }
 
 variable "blueprints_map" {
   description = "the map of unique blueprints with keys as blueprint identifiers and values as blueprint objects"
   type = map(object({
-    schema                 = string
-    type                   = string
-    kms_encryption_context = map(string)
-    kms_key_id             = string
-    tags = list(object({
-      key   = string
-      value = string
-    }))
+    schema = string
+    type   = string
+    tags   = map(string)
   }))
 }

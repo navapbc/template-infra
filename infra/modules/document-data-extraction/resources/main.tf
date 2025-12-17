@@ -1,9 +1,23 @@
+locals {
+  # convert standard terraform tags to bedrock data automation format
+  bda_tags = [
+    for key, value in var.tags : {
+      key   = key
+      value = value
+    }
+  ]
+
+  kms_encryption_context = {
+    Environment = lookup(var.tags, "environment", "unknown")
+  }
+}
+
 resource "awscc_bedrock_data_automation_project" "bda_project" {
   project_name                  = "${var.name}-project"
-  project_description           = var.project_description
-  kms_encryption_context        = var.kms_encryption_context
-  kms_key_id                    = var.kms_key_id
-  tags                          = var.tags
+  project_description           = "Project for ${var.name}"
+  kms_encryption_context        = local.kms_encryption_context
+  kms_key_id                    = aws_kms_key.bedrock_data_automation.arn
+  tags                          = local.bda_tags
   standard_output_configuration = var.standard_output_configuration
   custom_output_configuration = {
     blueprints = [for k, v in awscc_bedrock_blueprint.bda_blueprint : {
@@ -19,15 +33,16 @@ resource "awscc_bedrock_data_automation_project" "bda_project" {
     }
   }
 }
+
 resource "awscc_bedrock_blueprint" "bda_blueprint" {
   for_each = var.blueprints_map
 
   blueprint_name         = "${var.name}-${each.key}"
   schema                 = each.value.schema
   type                   = each.value.type
-  kms_encryption_context = each.value.kms_encryption_context
-  kms_key_id             = each.value.kms_key_id
-  tags                   = each.value.tags
+  kms_encryption_context = local.kms_encryption_context
+  kms_key_id             = aws_kms_key.bedrock_data_automation.arn
+  tags                   = local.bda_tags
 }
 
 resource "aws_iam_role" "bda_role" {
