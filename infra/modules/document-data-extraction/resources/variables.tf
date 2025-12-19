@@ -111,7 +111,7 @@ variable "override_configuration" {
 }
 
 variable "tags" {
-  description = "A list of tag keys and values for the Bedrock data automation project."
+  description = "A map of tags for associated resources."
   type        = map(string)
   default     = {}
 
