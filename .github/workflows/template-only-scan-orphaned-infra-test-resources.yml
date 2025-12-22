@@ -2,9 +2,6 @@ name: Template Scan Orphaned Infra Test Resources
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - fix/improve-test-cleanup-process  # Temporary: for testing this PR
   schedule:
     # Run every day at 08:00 UTC (4:00am ET, 1:00am PT)
     - cron: "0 8 * * *"
