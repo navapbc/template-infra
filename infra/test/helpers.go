@@ -4,10 +4,7 @@ package test
 import (
 	"fmt"
 	"testing"
-	"time"
 
-	"github.com/gruntwork-io/terratest/modules/retry"
-	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
@@ -20,11 +17,4 @@ import (
 // and replace the call to terraform.RunTerraformCommand with terraform.Init
 func TerraformInit(t *testing.T, terraformOptions *terraform.Options, backendConfig string) {
 	terraform.RunTerraformCommand(t, terraformOptions, "init", fmt.Sprintf("-backend-config=%s", backendConfig))
-}
-
-// runCommandWithRetry runs a shell command with retry logic
-func runCommandWithRetry(t *testing.T, description string, maxRetries int, sleepBetweenRetries time.Duration, command shell.Command) {
-	retry.DoWithRetry(t, description, maxRetries, sleepBetweenRetries, func() (string, error) {
-		return "", shell.RunCommandE(t, command)
-	})
 }
