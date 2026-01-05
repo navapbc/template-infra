@@ -4,10 +4,10 @@
 #
 # This script finds and destroys resources from test runs that failed to
 # clean up after themselves. It targets resources with the project tag pattern
-# "plt-tst-act-*" that are older than a specified age.
+# "plt-tst-act-*".
 #
 # Usage:
-#   cleanup-test-resources [--dry-run] [--age-hours HOURS] [PROJECT_NAME]
+#   cleanup-test-resources [--dry-run] [PROJECT_NAME]
 #
 # Arguments:
 #   PROJECT_NAME (optional) - Specific project to clean up (e.g., plt-tst-act-12345)
@@ -15,7 +15,6 @@
 #
 # Options:
 #   --dry-run        - List resources that would be deleted without deleting them
-#   --age-hours N    - Only delete resources older than N hours (default: 6)
 #
 # Examples:
 #   # Dry run to see what would be deleted
@@ -23,15 +22,11 @@
 #
 #   # Clean up a specific project
 #   cleanup-test-resources plt-tst-act-12345
-#
-#   # Clean up all projects older than 12 hours
-#   cleanup-test-resources --age-hours 12
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
 # Default values
 DRY_RUN=false
-AGE_HOURS=6
 PROJECT_NAME=""
 AWS_ACCOUNT_ID="533267424629"
 AWS_REGION="us-east-1"
@@ -42,10 +37,6 @@ while [[ $# -gt 0 ]]; do
     --dry-run)
       DRY_RUN=true
       shift
-      ;;
-    --age-hours)
-      AGE_HOURS="$2"
-      shift 2
       ;;
     plt-tst-act-*)
       PROJECT_NAME="$1"
@@ -60,7 +51,6 @@ done
 
 echo "=== Cleanup Orphaned Test Resources ==="
 echo "Dry run: ${DRY_RUN}"
-echo "Age threshold: ${AGE_HOURS} hours"
 echo "Region: ${AWS_REGION}"
 echo ""
 
