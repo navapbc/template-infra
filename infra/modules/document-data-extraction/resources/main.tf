@@ -57,7 +57,7 @@ resource "aws_iam_role" "bda_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "role_policy_attachments" {
-  for_each = var.bucket_policy_arns
+  for_each = var.data_access_policy_arns
 
   role       = aws_iam_role.bda_role.name
   policy_arn = each.value

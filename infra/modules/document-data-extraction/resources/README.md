@@ -25,7 +25,7 @@ module "bedrock_data_automation" {
   
   name  = "my-app-prod"
   
-  bucket_policy_arns = {
+  data_access_policy_arns = {
     input_bucket  = aws_iam_policy.input_bucket_policy.arn
     output_bucket = aws_iam_policy.output_bucket_policy.arn
   }
@@ -65,7 +65,7 @@ module "bedrock_data_automation" {
 | Name  | Description | Type | Required |
 |-------|-------------|------|----------|
 | `name` | Prefix to use for resource names (e.g., "my-app-prod") | `string` | yes |
-| `bucket_policy_arns` | Map of policy ARNs for input and output buckets to attach to the BDA role | `map(string)` | yes |
+| `data_access_policy_arns` | Map of policy ARNs for input and output locations to attach to the BDA role | `map(string)` | yes |
 | `blueprints_map` | Map of unique blueprints with keys as blueprint identifiers and values as blueprint objects | `map(object)` | yes |
 
 #### `blueprints_map` Object Structure
@@ -136,7 +136,7 @@ module "bedrock_data_automation" {
   
   name = "my-app"
   
-  bucket_policy_arns = {
+  data_access_policy_arns = {
     input  = aws_iam_policy.input.arn
     output = aws_iam_policy.output.arn
   }
@@ -151,7 +151,7 @@ module "bedrock_data_automation" {
   source = "../../modules/document-data-extraction/resources"
   
   name               = "my-app"
-  bucket_policy_arns = { /* ... */ }
+  data_access_policy_arns = { /* ... */ }
   blueprints_map     = { /* ... */ }
   
   standard_output_configuration = {

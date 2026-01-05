@@ -3,8 +3,8 @@ variable "name" {
   type        = string
 }
 
-variable "bucket_policy_arns" {
-  description = "The set of policy ARNs for the input and output buckets to attach to the BDA role."
+variable "data_access_policy_arns" {
+  description = "The set of policy ARNs for the input and output locations to attach to the BDA role."
   type        = map(string)
 }
 
