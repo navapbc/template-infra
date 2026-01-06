@@ -29,7 +29,7 @@ jobs:
           # Run in dry-run mode to see what would be deleted
           # Write to temp file to avoid broken pipe errors from piping large output
           tmpfile=$(mktemp)
-          ./template-only-bin/cleanup-test-resources --dry-run --age-hours 6 > "$tmpfile" 2>&1 || true
+          ./template-only-bin/cleanup-test-resources --dry-run > "$tmpfile" 2>&1 || true
 
           # Print full output for debugging
           cat "$tmpfile"
