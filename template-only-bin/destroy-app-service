@@ -20,7 +20,7 @@ sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/mod
 sed -i.bak 's/enable_deletion_protection = !var.is_temporary/enable_deletion_protection = false/g' infra/modules/service/load_balancer.tf
 sed -i.bak 's/deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"/deletion_protection = "INACTIVE"/g' infra/modules/identity-provider/resources/main.tf
 
-cd "infra/${app_name}/service"
+pushd "infra/${app_name}/service" > /dev/null
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
@@ -30,11 +30,13 @@ terraform destroy -auto-approve -var="environment_name=${environment}"
 
 # -----------------------------------------------------------------------------
 # Clean up ECS task definitions that were created during the test run
-# Task definitions are not managed by Terraform, so they need manual cleanup
+# Task definitions are managed by Terraform, but the AWS provider doesn't yet
+# support automatic deletion of task definitions on destroy.
+# See: https://github.com/hashicorp/terraform-provider-aws/issues/5919
 # -----------------------------------------------------------------------------
-cd ../../..
+popd > /dev/null
 
-# Get the project name from the current directory or AWS resources
+# Get the project name from the current directory for AWS resources
 project_name=$(basename "$(pwd)")
 aws_region=$(aws configure get region || echo "us-east-1")
 

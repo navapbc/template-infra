@@ -280,8 +280,10 @@ for project in ${PROJECTS}; do
 done
 
 # Clean up orphaned inactive task definitions
-# These aren't returned by the Resource Groups Tagging API, so we query ECS directly
-# Task definitions are named like "app-dev" but tagged with project=plt-tst-act-*
+# The Resource Groups Tagging API may not return INACTIVE task definitions,
+# and some task definitions may remain if a previous cleanup was interrupted.
+# This function scans ECS directly to find any remaining task definitions
+# tagged with plt-tst-act-* projects.
 echo "=== Cleaning up orphaned inactive task definitions ==="
 cleanup_inactive_task_definitions() {
   echo "Finding inactive task definitions tagged with plt-tst-act-* projects..."
