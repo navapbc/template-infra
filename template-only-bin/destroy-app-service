@@ -36,9 +36,9 @@ terraform destroy -auto-approve -var="environment_name=${environment}"
 # -----------------------------------------------------------------------------
 popd > /dev/null
 
-# Get the project name from the current directory for AWS resources
-project_name=$(basename "$(pwd)")
-aws_region=$(aws configure get region || echo "us-east-1")
+# Get project config from terraform
+project_name=$(terraform -chdir="infra/project-config" output --raw project_name)
+aws_region=$(terraform -chdir="infra/project-config" output --raw default_region)
 
 echo "Cleaning up task definitions for project: ${project_name}"
 
