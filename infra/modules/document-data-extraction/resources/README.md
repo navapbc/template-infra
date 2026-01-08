@@ -82,7 +82,7 @@ module "bedrock_data_automation" {
 | Name | Description | Type | Default |
 |------|-------------|------|---------|
 | `standard_output_configuration` | Standard output configuration for extraction | `object` | `null` |
-| `override_config_state` | Configuration state for the BDA override | `string` | `null` |
+| `override_configuration` | Override configuration for standard BDA behavior | `string` | `null` |
 | `tags` | Resource tags as key-value pairs | `map(string)` | `{}` |
 
 
