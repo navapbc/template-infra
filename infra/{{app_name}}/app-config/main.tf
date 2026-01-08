@@ -23,6 +23,11 @@ locals {
 
   has_incident_management_service = false
 
+  # Whether or not the application should include documentation data extraction
+  # If enabled:
+  # 1. Configures an AWS Bedrock Data Automation project with associated custom blueprints
+  enable_document_data_extraction = true
+
   # Whether or not the application should deploy an identity provider
   # If enabled:
   # 1. Creates a Cognito user pool
