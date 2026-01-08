@@ -32,7 +32,7 @@ terraform destroy -auto-approve -var="environment_name=${environment}"
 # Clean up ECS task definitions that were created during the test run
 # Task definitions are managed by Terraform, but the AWS provider doesn't yet
 # support automatic deletion of task definitions on destroy.
-# See: https://github.com/hashicorp/terraform-provider-aws/issues/5919
+# See: https://github.com/hashicorp/terraform-provider-aws/issues/29682
 # -----------------------------------------------------------------------------
 popd > /dev/null
 
