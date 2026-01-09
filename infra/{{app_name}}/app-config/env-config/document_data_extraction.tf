@@ -5,6 +5,9 @@ locals {
     output_bucket_name = "${var.app_name}-${var.environment}-bda-output"
     blueprints_path    = "./document-data-extraction-blueprints/"
 
+    # BDA can only be deployed to us-east-1, us-west-2, and us-gov-west-1
+    bda_region = "us-east-1"
+
     standard_output_configuration = {
       image = {
         extraction = {

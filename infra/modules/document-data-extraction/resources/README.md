@@ -17,47 +17,6 @@ The module creates:
 - Complies with Checkov recommendations for security and compliance
 - Designed for cross-layer usage (see project module conventions)
 
-## Usage
-
-```hcl
-module "bedrock_data_automation" {
-  source = "../../modules/document-data-extraction/resources"
-  
-  name  = "my-app-prod"
-  
-  data_access_policy_arns = {
-    input_bucket  = aws_iam_policy.input_bucket_policy.arn
-    output_bucket = aws_iam_policy.output_bucket_policy.arn
-  }
-  
-  blueprints_map = {
-    invoice = {
-      schema = file("${path.module}/schemas/invoice.json")
-      type   = "DOCUMENT"
-      tags   = {
-          Environment = "production"
-          ManagedBy   = "terraform"
-      }
-    }
-  }
-  
-  standard_output_configuration = {
-    document = {
-      extraction = {
-        granularity = {
-          types = ["PAGE", "ELEMENT"]
-        }
-      }
-    }
-  }
-  
-  tags = {
-          Environment = "production"
-          ManagedBy   = "terraform"
-  }
-}
-```
-
 ## Inputs
 
 ### Required Variables
@@ -190,7 +149,7 @@ module "bedrock_data_automation" {
 - AWS provider configured
 - AWS Cloud Control provider (awscc) configured
 - Appropriate AWS permissions to create Bedrock and IAM resources
-- KMS keys (if using encryption)
+- KMS keys
 - S3 bucket policies defined for input/output buckets
 
 ## References
