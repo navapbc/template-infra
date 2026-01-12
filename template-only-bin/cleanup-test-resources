@@ -25,6 +25,8 @@
 # -----------------------------------------------------------------------------
 set -euo pipefail
 
+export AWS_PAGER=""
+
 # Default values
 DRY_RUN=false
 PROJECT_NAME=""
