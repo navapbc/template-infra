@@ -87,7 +87,7 @@ cleanup_project() {
   # Check if terraform state bucket exists (informational only)
   local bucket_name="${project}-${AWS_ACCOUNT_ID}-${AWS_REGION}-tf"
 
-  if ! aws s3api head-bucket --bucket "${bucket_name}" 2>/dev/null; then
+  if ! aws s3api head-bucket --bucket "${bucket_name}" &>/dev/null; then
     echo "Note: No terraform state bucket found for ${project}, but checking for remaining resources..."
   fi
 
