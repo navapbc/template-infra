@@ -268,6 +268,16 @@ cleanup_project() {
   for key_arn in ${kms_arns}; do
     local key_id
     key_id=$(echo "${key_arn}" | awk -F'/' '{print $NF}')
+
+    local key_state
+    key_state=$(aws kms describe-key --key-id "${key_id}" --query 'KeyMetadata.KeyState' --output text)
+    if [[ "${key_state}" = "PendingDeletion" ]]; then
+      local key_delete_time
+      key_delete_time=$(aws kms describe-key --key-id "${key_id}" --query 'KeyMetadata.DeletionDate' --output text)
+      echo "KMS key already scheduled for deletion: ${key_id} at ${key_delete_time}"
+      continue
+    fi
+
     echo "Scheduling KMS key for deletion: ${key_id}"
     aws kms schedule-key-deletion --key-id "${key_id}" --pending-window-in-days 7 --region "${AWS_REGION}" || echo "Failed to schedule deletion for key ${key_id}"
   done
