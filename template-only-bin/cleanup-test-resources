@@ -98,7 +98,7 @@ cleanup_project() {
     --region "${AWS_REGION}" \
     --tag-filters Key=project,Values="${project}" \
     --query 'ResourceTagMappingList[].ResourceARN' \
-    --output text)
+    --output text | tr '\t' '\n')
 
   if [ -z "${resources}" ]; then
     echo "No resources found for project ${project}"
@@ -106,12 +106,12 @@ cleanup_project() {
   fi
 
   local resource_count
-  resource_count=$(echo "${resources}" | wc -w)
+  resource_count=$(echo "${resources}" | wc -l)
   echo "Found ${resource_count} resources"
 
   if [ "${DRY_RUN}" = true ]; then
     echo "Would delete the following resources:"
-    echo "${resources}" | tr '\t' '\n'
+    echo "${resources}"
     return 0
   fi
 
@@ -177,7 +177,7 @@ cleanup_project() {
   # Task definitions are tagged by the Resource Groups Tagging API
   echo "Cleaning up ECS task definitions..."
   local task_def_arns
-  task_def_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'task-definition' || echo "")
+  task_def_arns=$(echo "${resources}" | grep 'task-definition' || echo "")
 
   for task_def_arn in ${task_def_arns}; do
     # Check current status
@@ -224,7 +224,7 @@ cleanup_project() {
   # Delete target groups
   echo "Cleaning up target groups..."
   local tg_arns
-  tg_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'targetgroup' || echo "")
+  tg_arns=$(echo "${resources}" | grep 'targetgroup' || echo "")
 
   for tg_arn in ${tg_arns}; do
     echo "Deleting target group: ${tg_arn}"
@@ -234,7 +234,7 @@ cleanup_project() {
   # Delete S3 buckets
   echo "Cleaning up S3 buckets..."
   local s3_arns
-  s3_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'arn:aws:s3:::' || echo "")
+  s3_arns=$(echo "${resources}" | grep 'arn:aws:s3:::' || echo "")
 
   for s3_arn in ${s3_arns}; do
     local bucket_name
@@ -251,7 +251,7 @@ cleanup_project() {
   # Delete DynamoDB tables
   echo "Cleaning up DynamoDB tables..."
   local dynamodb_arns
-  dynamodb_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'dynamodb' || echo "")
+  dynamodb_arns=$(echo "${resources}" | grep 'dynamodb' || echo "")
 
   for table_arn in ${dynamodb_arns}; do
     local table_name
@@ -263,7 +263,7 @@ cleanup_project() {
   # Schedule KMS keys for deletion (minimum 7 days waiting period)
   echo "Scheduling KMS keys for deletion..."
   local kms_arns
-  kms_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'arn:aws:kms:' || echo "")
+  kms_arns=$(echo "${resources}" | grep 'arn:aws:kms:' || echo "")
 
   for key_arn in ${kms_arns}; do
     local key_id
