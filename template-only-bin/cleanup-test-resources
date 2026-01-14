@@ -364,6 +364,44 @@ cleanup_project() {
     aws kms schedule-key-deletion --key-id "${key_id}" --pending-window-in-days 7 --region "${AWS_REGION}" || echo "Failed to schedule deletion for key ${key_id}"
   done
 
+  echo "Cleaning up IAM..."
+  # Policies are returned via the Resource Groups Tagging API, Roles/Users are
+  # not, so get at things via the Policy
+  local iam_policy_arns
+  iam_policy_arns=$(echo "${resources}" | grep 'arn:aws:iam:.*:policy/' || echo "")
+  # Track the roles the project policies are attached to for later deletion
+  # without having to loop through _all_ roles in the account, may do this
+  # different in the future
+  iam_role_names=()
+
+  for iam_policy_arn in ${iam_policy_arns}; do
+    local attached_role_names
+    attached_role_names=$(aws iam list-entities-for-policy --policy-arn "${iam_policy_arn}" --entity-filter Role --query 'PolicyRoles[*].RoleName' --output text | tr '\t' '\n')
+
+    for role_name in ${attached_role_names}; do
+      iam_role_names+=("${role_name}")
+      echo "Detaching policy from IAM Role: ${role_name}"
+      aws iam detach-role-policy --policy-arn "${iam_policy_arn}" --role-name "${role_name}" || echo "Failed to detach IAM policy from role: ${iam_policy_arn} from ${role_name}"
+    done
+
+    echo "Deleting IAM Policy: ${iam_policy_arn}"
+    aws iam delete-policy --policy-arn "${iam_policy_arn}" --region "${AWS_REGION}" || echo "Failed to delete IAM Policy ${iam_policy_arn}"
+  done
+
+  unique_iam_role_names=$(printf "%s\n" "${iam_role_names[@]}" | sort -u)
+  for role_name in ${unique_iam_role_names}; do
+    # confirm the role is indeed for the project
+    role_project_tag=$(aws iam list-role-tags \
+        --role-name "${role_name}" \
+        --query "tags[?key=='project'].value" \
+        --output text 2>/dev/null || echo "")
+
+    if [[ "${role_project_tag}" == "${project}" ]]; then
+      echo "Deleting IAM Role: ${role_name}"
+      delete-iam-role "${role_name}" || echo "Failed to delete IAM Role ${role_name}"
+    fi
+  done
+
   echo "Cleanup complete for project: ${project}"
   echo ""
 }
