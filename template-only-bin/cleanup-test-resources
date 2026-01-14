@@ -120,69 +120,46 @@ cleanup_project() {
     return 0
   fi
 
+  # Note: Some resources need to be deleted in specific order due to dependencies
   echo "Deleting resources..."
 
-  # Delete Route 53 hosted zones (the main blocker)
+  # Delete Route 53 hosted zones
   echo "Cleaning up Route 53 hosted zones..."
-  local zones
-  zones=$(aws route53 list-hosted-zones \
-    --query "HostedZones[].Id" \
-    --output text || echo "")
+  local hosted_zone_arns
+  hosted_zone_arns=$(echo "${resources}" | grep 'arn:aws:route53:.*:hostedzone/' || echo "")
 
-  for zone_id in ${zones}; do
-    # Extract just the ID
-    zone_id="${zone_id#/hostedzone/}"
+  for hosted_zone_arn in ${hosted_zone_arns}; do
+    hosted_zone_id=$(echo "${hosted_zone_arn}" | awk -F'/' '{print $NF}')
 
-    # Check if this zone belongs to our project
-    local zone_tags
-    zone_tags=$(aws route53 list-tags-for-resource \
-      --resource-type hostedzone \
-      --resource-id "${zone_id}" \
-      --query "ResourceTagSet.Tags[?Key=='project'].Value" \
-      --output text || echo "")
-
-    if [ "${zone_tags}" = "${project}" ]; then
-      echo "Deleting hosted zone: ${zone_id}"
-      aws route53 delete-hosted-zone --id "${zone_id}" || echo "Failed to delete zone ${zone_id}"
-    fi
+    aws route53 delete-hosted-zone --id "${hosted_zone_id}" || echo "Failed to delete hosted zone ${hosted_zone_id}"
   done
-
-  # Delete other resources using AWS CLI
-  # Note: Some resources need to be deleted in specific order due to dependencies
 
   # Delete ECS services first
   echo "Cleaning up ECS services and clusters..."
-  local clusters
-  clusters=$(aws ecs list-clusters --region "${AWS_REGION}" --query 'clusterArns[]' --output text || echo "")
-  for cluster_arn in ${clusters}; do
-    local cluster_tags
-    cluster_tags=$(aws ecs list-tags-for-resource \
-      --resource-arn "${cluster_arn}" \
-      --query "tags[?key=='project'].value" \
-      --output text || echo "")
+  local cluster_arns
+  cluster_arns=$(echo "${resources}" | grep 'arn:aws:ecs:.*:cluster/' || echo "")
 
-    if [ "${cluster_tags}" = "${project}" ]; then
-      local cluster_name
-      cluster_name=$(echo "${cluster_arn}" | awk -F/ '{print $NF}')
-      echo "Deleting ECS cluster: ${cluster_name}"
+  for cluster_arn in ${cluster_arns}; do
+    local cluster_name
+    cluster_name=$(echo "${cluster_arn}" | awk -F/ '{print $NF}')
+    echo "Deleting ECS cluster: ${cluster_name}"
 
-      # Delete services in cluster first
-      local services
-      services=$(aws ecs list-services --cluster "${cluster_name}" --region "${AWS_REGION}" --query 'serviceArns[]' --output text || echo "")
-      for service in ${services}; do
-        aws ecs delete-service --cluster "${cluster_name}" --service "${service}" --force --region "${AWS_REGION}" || echo "Failed to delete service"
-      done
+    # Delete services in cluster first
+    local services
+    services=$(aws ecs list-services --cluster "${cluster_name}" --region "${AWS_REGION}" --query 'serviceArns[]' --output text || echo "")
+    for service in ${services}; do
+      aws ecs delete-service --cluster "${cluster_name}" --service "${service}" --force --region "${AWS_REGION}" || echo "Failed to delete service"
+    done
 
-      # Then delete cluster
-      aws ecs delete-cluster --cluster "${cluster_name}" --region "${AWS_REGION}" || echo "Failed to delete cluster"
-    fi
+    # Then delete cluster
+    aws ecs delete-cluster --cluster "${cluster_name}" --region "${AWS_REGION}" || echo "Failed to delete cluster"
   done
 
   # Delete ECS task definitions
   # Task definitions are tagged by the Resource Groups Tagging API
   echo "Cleaning up ECS task definitions..."
   local task_def_arns
-  task_def_arns=$(echo "${resources}" | grep 'task-definition' || echo "")
+  task_def_arns=$(echo "${resources}" | grep 'arn:aws:ecs:.*:task-definition/' || echo "")
 
   for task_def_arn in ${task_def_arns}; do
     # Check current status
@@ -211,16 +188,11 @@ cleanup_project() {
 
   # Delete load balancers
   echo "Cleaning up load balancers..."
-  local lbs
-  lbs=$(aws elbv2 describe-load-balancers --region "${AWS_REGION}" --query 'LoadBalancers[].LoadBalancerArn' --output text || echo "")
-  for lb_arn in ${lbs}; do
-    local lb_tags
-    lb_tags=$(aws elbv2 describe-tags --resource-arns "${lb_arn}" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text || echo "")
-
-    if [ "${lb_tags}" = "${project}" ]; then
-      echo "Deleting load balancer: ${lb_arn}"
-      aws elbv2 delete-load-balancer --load-balancer-arn "${lb_arn}" --region "${AWS_REGION}" || echo "Failed to delete LB"
-    fi
+  local lb_arns
+  lb_arns=$(echo "${resources}" | grep 'arn:aws:elasticloadbalancing:.*:loadbalancer/' || echo "")
+  for lb_arn in ${lb_arns}; do
+    echo "Deleting load balancer: ${lb_arn}"
+    aws elbv2 delete-load-balancer --load-balancer-arn "${lb_arn}" --region "${AWS_REGION}" || echo "Failed to delete LB"
   done
 
   # Wait a bit for LB deletion
@@ -229,7 +201,7 @@ cleanup_project() {
   # Delete target groups
   echo "Cleaning up target groups..."
   local tg_arns
-  tg_arns=$(echo "${resources}" | grep 'targetgroup' || echo "")
+  tg_arns=$(echo "${resources}" | grep 'arn:aws:elasticloadbalancing:.*:targetgroup/' || echo "")
 
   for tg_arn in ${tg_arns}; do
     echo "Deleting target group: ${tg_arn}"
