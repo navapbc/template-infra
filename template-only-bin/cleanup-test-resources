@@ -27,6 +27,11 @@ set -euo pipefail
 
 export AWS_PAGER=""
 
+# add any executables next to this script to the PATH for easy calling
+SCRIPT_PATH=$(dirname "$(realpath -s "$0")")
+PATH=${SCRIPT_PATH}:${PATH}
+export PATH
+
 # Default values
 DRY_RUN=false
 PROJECT_NAME=""
@@ -242,7 +247,7 @@ cleanup_project() {
     echo "Deleting S3 bucket: ${bucket_name}"
 
     # Empty bucket first (required before deletion)
-    aws s3 rm "s3://${bucket_name}" --recursive --region "${AWS_REGION}" 2>/dev/null || echo "Bucket already empty or inaccessible"
+    empty-s3-bucket "${bucket_name}" "${AWS_REGION}"
 
     # Delete bucket
     aws s3api delete-bucket --bucket "${bucket_name}" --region "${AWS_REGION}" || echo "Failed to delete bucket ${bucket_name}"
