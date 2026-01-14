@@ -331,6 +331,17 @@ cleanup_project() {
     aws ec2 delete-vpc --vpc-id "${vpc_id}" --region "${AWS_REGION}" || echo "Failed to delete VPC ${vpc_id}"
   done
 
+  echo "Cleaning up logs..."
+  local log_group_arns
+  log_group_arns=$(echo "${resources}" | grep 'arn:aws:logs:.*:log-group:' || echo "")
+
+  for log_group_arn in ${log_group_arns}; do
+    local log_group_name
+    log_group_name=$(echo "${log_group_arn}" | awk -F'log-group:' '{print $NF}')
+    echo "Deleting Log Group: ${log_group_name}"
+    aws logs delete-log-group --log-group-name "${log_group_name}" --region "${AWS_REGION}" || echo "Failed to delete Log Group ${log_group_name}"
+  done
+
   # Schedule KMS keys for deletion (minimum 7 days waiting period)
   echo "Scheduling KMS keys for deletion..."
   local kms_arns
