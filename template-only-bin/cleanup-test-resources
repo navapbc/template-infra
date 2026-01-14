@@ -237,6 +237,23 @@ cleanup_project() {
     aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
   done
 
+  echo "Cleaning up Bedrock Data Automation..."
+  local bedrock_da_arns
+  bedrock_da_arns=$(echo "${resources}" | grep 'arn:aws:bedrock:.*:data-automation-project/' || echo "")
+
+  for dba_project_arn in ${bedrock_da_arns}; do
+    echo "Deleting Bedrock Data Automation project: ${dba_project_arn}"
+    aws bedrock-data-automation delete-data-automation-project --project-arn "${dba_project_arn}" --region "${AWS_REGION}" || echo "Failed to delete BDA ${dba_project_arn}"
+  done
+
+  local bedrock_blueprint_arns
+  bedrock_blueprint_arns=$(echo "${resources}" | grep 'arn:aws:bedrock:.*:blueprint/' || echo "")
+
+  for bedrock_blueprint_arn in ${bedrock_blueprint_arns}; do
+    echo "Deleting BDA Blueprint: ${bedrock_blueprint_arn}"
+    aws bedrock-data-automation delete-blueprint --blueprint-arn "${bedrock_blueprint_arn}" --region "${AWS_REGION}" || echo "Failed to delete BDA Blueprint ${bedrock_blueprint_arn}"
+  done
+
   # Security Groups need to be deleted before the associated VPC can be deleted
   echo "Cleaning up Security Groups..."
   local security_group_arns
