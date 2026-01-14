@@ -265,6 +265,83 @@ cleanup_project() {
     aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
   done
 
+  # Security Groups need to be deleted before the associated VPC can be deleted
+  echo "Cleaning up Security Groups..."
+  local security_group_arns
+  security_group_arns=$(echo "${resources}" | grep 'arn:aws:ec2:.*:security-group/' || echo "")
+
+  for security_group_arn in ${security_group_arns}; do
+    local security_group_id
+    security_group_id=$(echo "${security_group_arn}" | awk -F'/' '{print $NF}')
+
+    # Check if this is a default security group, which we can't delete
+    # separately, will be removed with the VPC itself
+    local security_group_description
+    security_group_description=$(aws ec2 describe-security-groups --group-ids "${security_group_id}" --query='SecurityGroups[0].Description' --output text 2>&1)
+    if [[ "${security_group_description}" = "default VPC security group" ]]; then
+      echo "Default security group, can't delete individually: ${security_group_id}"
+      continue
+    fi
+
+    if [[ "${security_group_description}" = *InvalidGroup.NotFound* ]]; then
+      echo "Security group not found/already queued for deletion: ${security_group_id}"
+      continue
+    fi
+
+    echo "Deleting Security Group: ${security_group_id}"
+    aws ec2 delete-security-group --group-id "${security_group_id}" --region "${AWS_REGION}" || echo "Failed to delete Security Group ${security_group_id}"
+  done
+
+  # Subnets need to be deleted before the associated VPC can be deleted
+  echo "Cleaning up Subnets..."
+  local subnet_arns
+  subnet_arns=$(echo "${resources}" | grep 'arn:aws:ec2:.*:subnet/' || echo "")
+
+  for subnet_arn in ${subnet_arns}; do
+    local subnet_id
+    subnet_id=$(echo "${subnet_arn}" | awk -F'/' '{print $NF}')
+
+    echo "Deleting Subnet: ${subnet_id}"
+    aws ec2 delete-subnet --subnet-id "${subnet_id}" --region "${AWS_REGION}" || echo "Failed to delete Subnet ${subnet_id}"
+
+    # Give it a second to delete before proceeding
+    sleep 1
+  done
+
+  # Internet Gateways need to be deleted before the associated VPC can be deleted
+  echo "Cleaning up Internet Gateways..."
+  local igw_arns
+  igw_arns=$(echo "${resources}" | grep 'arn:aws:ec2:.*:internet-gateway/' || echo "")
+
+  for igw_arn in ${igw_arns}; do
+    local igw_id
+    igw_id=$(echo "${igw_arn}" | awk -F'/' '{print $NF}')
+
+    # Need to detach the gateway before deleting
+    igw_vpc_ids=$(aws ec2 describe-internet-gateways --internet-gateway-ids "${igw_id}" --query 'InternetGateways[0].Attachments[*].VpcId' --output text | tr '\t' '\n')
+    for igw_vpc_id in ${igw_vpc_ids}; do
+      echo "Detaching Internet Gateway ${igw_id} from VPC ${igw_vpc_id}"
+      aws ec2 detach-internet-gateway --internet-gateway-id "${igw_id}" --vpc-id "${igw_vpc_id}" --region "${AWS_REGION}" || echo "Failed to detach Internet Gateway ${igw_id}"
+    done
+
+    echo "Deleting Internet Gateway: ${igw_id}"
+    aws ec2 delete-internet-gateway --internet-gateway-id "${igw_id}" --region "${AWS_REGION}" || echo "Failed to delete Internet Gateway ${igw_id}"
+
+    # Give it a second to delete before proceeding
+    sleep 1
+  done
+
+  echo "Cleaning up VPCs..."
+  local vpc_arns
+  vpc_arns=$(echo "${resources}" | grep 'arn:aws:ec2:.*:vpc/' || echo "")
+
+  for vpc_arn in ${vpc_arns}; do
+    local vpc_id
+    vpc_id=$(echo "${vpc_arn}" | awk -F'/' '{print $NF}')
+    echo "Deleting VPC: ${vpc_id}"
+    aws ec2 delete-vpc --vpc-id "${vpc_id}" --region "${AWS_REGION}" || echo "Failed to delete VPC ${vpc_id}"
+  done
+
   # Schedule KMS keys for deletion (minimum 7 days waiting period)
   echo "Scheduling KMS keys for deletion..."
   local kms_arns
