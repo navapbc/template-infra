@@ -331,6 +331,15 @@ cleanup_project() {
     aws ec2 delete-vpc --vpc-id "${vpc_id}" --region "${AWS_REGION}" || echo "Failed to delete VPC ${vpc_id}"
   done
 
+  echo "Cleaning up SNS..."
+  local sns_topic_arns
+  sns_topic_arns=$(echo "${resources}" | grep 'arn:aws:sns:.*' || echo "")
+
+  for sns_topic_arn in ${sns_topic_arns}; do
+    echo "Deleting SNS Topic: ${sns_topic_arn}"
+    aws sns delete-topic --topic-arn "${sns_topic_arn}" --region "${AWS_REGION}" || echo "Failed to delete SNS Topic ${sns_topic_arn}"
+  done
+
   echo "Cleaning up logs..."
   local log_group_arns
   log_group_arns=$(echo "${resources}" | grep 'arn:aws:logs:.*:log-group:' || echo "")
