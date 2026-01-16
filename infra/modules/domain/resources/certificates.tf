@@ -27,6 +27,7 @@ locals {
 }
 
 # ACM certificate that will be used by the load balancer.
+# This must be in the same region as the ALB.
 resource "aws_acm_certificate" "issued" {
   for_each = local.issued_certificate_configs
 
@@ -39,6 +40,7 @@ resource "aws_acm_certificate" "issued" {
 }
 
 # DNS records for certificate validation.
+# Route53 is a global service, no region-specific provider needed.
 resource "aws_route53_record" "validation" {
   for_each = local.domain_validation_options
 
