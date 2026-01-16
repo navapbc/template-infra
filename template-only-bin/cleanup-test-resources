@@ -1,0 +1,364 @@
+#!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# Cleanup orphaned test resources from failed CI runs
+#
+# This script finds and destroys resources from test runs that failed to
+# clean up after themselves. It targets resources with the project tag pattern
+# "plt-tst-act-*".
+#
+# Usage:
+#   cleanup-test-resources [--dry-run] [PROJECT_NAME]
+#
+# Arguments:
+#   PROJECT_NAME (optional) - Specific project to clean up (e.g., plt-tst-act-12345)
+#                             If not provided, finds all matching projects
+#
+# Options:
+#   --dry-run        - List resources that would be deleted without deleting them
+#
+# Examples:
+#   # Dry run to see what would be deleted
+#   cleanup-test-resources --dry-run
+#
+#   # Clean up a specific project
+#   cleanup-test-resources plt-tst-act-12345
+# -----------------------------------------------------------------------------
+set -euo pipefail
+
+# Default values
+DRY_RUN=false
+PROJECT_NAME=""
+AWS_ACCOUNT_ID="533267424629"
+AWS_REGION="us-east-1"
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+  case $1 in
+    --dry-run)
+      DRY_RUN=true
+      shift
+      ;;
+    plt-tst-act-*)
+      PROJECT_NAME="$1"
+      shift
+      ;;
+    *)
+      echo "Unknown argument: $1"
+      exit 1
+      ;;
+  esac
+done
+
+echo "=== Cleanup Orphaned Test Resources ==="
+echo "Dry run: ${DRY_RUN}"
+echo "Region: ${AWS_REGION}"
+echo ""
+
+# Find projects to clean up
+if [ -n "${PROJECT_NAME}" ]; then
+  PROJECTS="${PROJECT_NAME}"
+  echo "Cleaning up specific project: ${PROJECT_NAME}"
+else
+  echo "Finding all test projects..."
+  # shellcheck disable=SC2016  # Backticks are JMESPath syntax, not bash
+  PROJECTS=$(aws resourcegroupstaggingapi get-resources \
+    --region "${AWS_REGION}" \
+    --tag-filters Key=project \
+    --query 'ResourceTagMappingList[].Tags[?Key==`project`].Value' \
+    --output text | tr '\t' '\n' | grep '^plt-tst-act-' | sort -u || echo "")
+
+  if [ -z "${PROJECTS}" ]; then
+    echo "No test projects found."
+    exit 0
+  fi
+
+  echo "Found projects:"
+  echo "${PROJECTS}"
+fi
+
+echo ""
+
+cleanup_project() {
+  local project=${1}
+  echo "=== Cleaning up project: ${project} ==="
+
+  # Check if terraform state bucket exists (informational only)
+  local bucket_name="${project}-${AWS_ACCOUNT_ID}-${AWS_REGION}-tf"
+
+  if ! aws s3api head-bucket --bucket "${bucket_name}" 2>/dev/null; then
+    echo "Note: No terraform state bucket found for ${project}, but checking for remaining resources..."
+  fi
+
+  # List all resources for this project
+  echo "Finding resources..."
+  local resources
+  resources=$(aws resourcegroupstaggingapi get-resources \
+    --region "${AWS_REGION}" \
+    --tag-filters Key=project,Values="${project}" \
+    --query 'ResourceTagMappingList[].ResourceARN' \
+    --output text)
+
+  if [ -z "${resources}" ]; then
+    echo "No resources found for project ${project}"
+    return 0
+  fi
+
+  local resource_count
+  resource_count=$(echo "${resources}" | wc -w)
+  echo "Found ${resource_count} resources"
+
+  if [ "${DRY_RUN}" = true ]; then
+    echo "Would delete the following resources:"
+    echo "${resources}" | tr '\t' '\n'
+    return 0
+  fi
+
+  echo "Deleting resources..."
+
+  # Delete Route 53 hosted zones (the main blocker)
+  echo "Cleaning up Route 53 hosted zones..."
+  local zones
+  zones=$(aws route53 list-hosted-zones \
+    --query "HostedZones[].Id" \
+    --output text || echo "")
+
+  for zone_id in ${zones}; do
+    # Extract just the ID
+    zone_id="${zone_id#/hostedzone/}"
+
+    # Check if this zone belongs to our project
+    local zone_tags
+    zone_tags=$(aws route53 list-tags-for-resource \
+      --resource-type hostedzone \
+      --resource-id "${zone_id}" \
+      --query "ResourceTagSet.Tags[?Key=='project'].Value" \
+      --output text || echo "")
+
+    if [ "${zone_tags}" = "${project}" ]; then
+      echo "Deleting hosted zone: ${zone_id}"
+      aws route53 delete-hosted-zone --id "${zone_id}" || echo "Failed to delete zone ${zone_id}"
+    fi
+  done
+
+  # Delete other resources using AWS CLI
+  # Note: Some resources need to be deleted in specific order due to dependencies
+
+  # Delete ECS services first
+  echo "Cleaning up ECS services and clusters..."
+  local clusters
+  clusters=$(aws ecs list-clusters --region "${AWS_REGION}" --query 'clusterArns[]' --output text || echo "")
+  for cluster_arn in ${clusters}; do
+    local cluster_tags
+    cluster_tags=$(aws ecs list-tags-for-resource \
+      --resource-arn "${cluster_arn}" \
+      --query "tags[?key=='project'].value" \
+      --output text || echo "")
+
+    if [ "${cluster_tags}" = "${project}" ]; then
+      local cluster_name
+      cluster_name=$(echo "${cluster_arn}" | awk -F/ '{print $NF}')
+      echo "Deleting ECS cluster: ${cluster_name}"
+
+      # Delete services in cluster first
+      local services
+      services=$(aws ecs list-services --cluster "${cluster_name}" --region "${AWS_REGION}" --query 'serviceArns[]' --output text || echo "")
+      for service in ${services}; do
+        aws ecs delete-service --cluster "${cluster_name}" --service "${service}" --force --region "${AWS_REGION}" || echo "Failed to delete service"
+      done
+
+      # Then delete cluster
+      aws ecs delete-cluster --cluster "${cluster_name}" --region "${AWS_REGION}" || echo "Failed to delete cluster"
+    fi
+  done
+
+  # Delete ECS task definitions
+  # Task definitions are tagged by the Resource Groups Tagging API
+  echo "Cleaning up ECS task definitions..."
+  local task_def_arns
+  task_def_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'task-definition' || echo "")
+
+  for task_def_arn in ${task_def_arns}; do
+    # Check current status
+    local status
+    status=$(aws ecs describe-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" --query 'taskDefinition.status' --output text 2>/dev/null || echo "")
+
+    if [ "${status}" = "DELETE_IN_PROGRESS" ]; then
+      echo "Task definition already being deleted: ${task_def_arn}"
+      continue
+    fi
+
+    if [ "${status}" = "ACTIVE" ]; then
+      echo "Deregistering task definition: ${task_def_arn}"
+      aws ecs deregister-task-definition --region "${AWS_REGION}" --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+      sleep 2
+    elif [ "${status}" = "INACTIVE" ]; then
+      echo "Task definition already inactive: ${task_def_arn}"
+    fi
+
+    # Delete the task definition (works for INACTIVE status)
+    if [ "${status}" = "ACTIVE" ] || [ "${status}" = "INACTIVE" ]; then
+      echo "Deleting task definition: ${task_def_arn}"
+      aws ecs delete-task-definitions --region "${AWS_REGION}" --task-definitions "${task_def_arn}" || echo "Failed to delete ${task_def_arn}"
+    fi
+  done
+
+  # Delete load balancers
+  echo "Cleaning up load balancers..."
+  local lbs
+  lbs=$(aws elbv2 describe-load-balancers --region "${AWS_REGION}" --query 'LoadBalancers[].LoadBalancerArn' --output text || echo "")
+  for lb_arn in ${lbs}; do
+    local lb_tags
+    lb_tags=$(aws elbv2 describe-tags --resource-arns "${lb_arn}" --query "TagDescriptions[0].Tags[?Key=='project'].Value" --output text || echo "")
+
+    if [ "${lb_tags}" = "${project}" ]; then
+      echo "Deleting load balancer: ${lb_arn}"
+      aws elbv2 delete-load-balancer --load-balancer-arn "${lb_arn}" --region "${AWS_REGION}" || echo "Failed to delete LB"
+    fi
+  done
+
+  # Wait a bit for LB deletion
+  sleep 5
+
+  # Delete target groups
+  echo "Cleaning up target groups..."
+  local tg_arns
+  tg_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'targetgroup' || echo "")
+
+  for tg_arn in ${tg_arns}; do
+    echo "Deleting target group: ${tg_arn}"
+    aws elbv2 delete-target-group --target-group-arn "${tg_arn}" --region "${AWS_REGION}" 2>&1 | grep -v "TargetGroupInUse" || echo "Skipping in-use target group"
+  done
+
+  # Delete S3 buckets
+  echo "Cleaning up S3 buckets..."
+  local s3_arns
+  s3_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'arn:aws:s3:::' || echo "")
+
+  for s3_arn in ${s3_arns}; do
+    local bucket_name
+    bucket_name="${s3_arn#arn:aws:s3:::}"
+    echo "Deleting S3 bucket: ${bucket_name}"
+
+    # Empty bucket first (required before deletion)
+    aws s3 rm "s3://${bucket_name}" --recursive --region "${AWS_REGION}" 2>/dev/null || echo "Bucket already empty or inaccessible"
+
+    # Delete bucket
+    aws s3api delete-bucket --bucket "${bucket_name}" --region "${AWS_REGION}" || echo "Failed to delete bucket ${bucket_name}"
+  done
+
+  # Delete DynamoDB tables
+  echo "Cleaning up DynamoDB tables..."
+  local dynamodb_arns
+  dynamodb_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'dynamodb' || echo "")
+
+  for table_arn in ${dynamodb_arns}; do
+    local table_name
+    table_name=$(echo "${table_arn}" | awk -F'/' '{print $NF}')
+    echo "Deleting DynamoDB table: ${table_name}"
+    aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
+  done
+
+  # Schedule KMS keys for deletion (minimum 7 days waiting period)
+  echo "Scheduling KMS keys for deletion..."
+  local kms_arns
+  kms_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'arn:aws:kms:' || echo "")
+
+  for key_arn in ${kms_arns}; do
+    local key_id
+    key_id=$(echo "${key_arn}" | awk -F'/' '{print $NF}')
+    echo "Scheduling KMS key for deletion: ${key_id}"
+    aws kms schedule-key-deletion --key-id "${key_id}" --pending-window-in-days 7 --region "${AWS_REGION}" || echo "Failed to schedule deletion for key ${key_id}"
+  done
+
+  echo "Cleanup complete for project: ${project}"
+  echo ""
+}
+
+# Clean up each project
+for project in ${PROJECTS}; do
+  cleanup_project "${project}" || echo "Failed to clean up ${project}"
+done
+
+# Clean up orphaned inactive task definitions
+# The Resource Groups Tagging API may not return INACTIVE task definitions,
+# and some task definitions may remain if a previous cleanup was interrupted.
+# This function scans ECS directly to find any remaining task definitions
+# tagged with plt-tst-act-* projects.
+echo "=== Cleaning up orphaned inactive task definitions ==="
+cleanup_inactive_task_definitions() {
+  echo "Finding inactive task definitions tagged with plt-tst-act-* projects..."
+
+  # Get all task definition families (we can't filter by tag, so get all and check tags)
+  local families
+  families=$(aws ecs list-task-definition-families \
+    --region "${AWS_REGION}" \
+    --status INACTIVE \
+    --query 'families[]' \
+    --output text 2>/dev/null || echo "")
+
+  # Also check active families that may have inactive revisions
+  local active_families
+  active_families=$(aws ecs list-task-definition-families \
+    --region "${AWS_REGION}" \
+    --status ACTIVE \
+    --query 'families[]' \
+    --output text 2>/dev/null || echo "")
+
+  # Combine both lists
+  families="${families} ${active_families}"
+  families=$(echo "${families}" | tr ' ' '\n' | sort -u | tr '\n' ' ')
+
+  if [ -z "$(echo "${families}" | tr -d ' ')" ]; then
+    echo "No task definition families found"
+    return 0
+  fi
+
+  local inactive_count=0
+  local checked_families=0
+  for family in ${families}; do
+    [ -z "${family}" ] && continue
+    checked_families=$((checked_families + 1))
+
+    # Get all inactive task definitions for this family
+    local inactive_arns
+    inactive_arns=$(aws ecs list-task-definitions \
+      --region "${AWS_REGION}" \
+      --family-prefix "${family}" \
+      --status INACTIVE \
+      --query 'taskDefinitionArns[]' \
+      --output text 2>/dev/null || echo "")
+
+    if [ -n "${inactive_arns}" ]; then
+      for task_arn in ${inactive_arns}; do
+        [ -z "${task_arn}" ] && continue
+
+        # Check if this task definition is tagged with a plt-tst-act-* project
+        local project_tag
+        project_tag=$(aws ecs list-tags-for-resource \
+          --resource-arn "${task_arn}" \
+          --query "tags[?key=='project'].value" \
+          --output text 2>/dev/null || echo "")
+
+        # Only process if tagged with a test project
+        if [[ "${project_tag}" == plt-tst-act-* ]]; then
+          inactive_count=$((inactive_count + 1))
+          if [ "${DRY_RUN}" = true ]; then
+            echo "Would delete inactive task definition: ${task_arn} (project: ${project_tag})"
+          else
+            echo "Deleting inactive task definition: ${task_arn} (project: ${project_tag})"
+            aws ecs delete-task-definitions \
+              --region "${AWS_REGION}" \
+              --task-definitions "${task_arn}" 2>/dev/null || echo "Failed to delete ${task_arn}"
+          fi
+        fi
+      done
+    fi
+  done
+
+  echo "Checked ${checked_families} task definition families"
+  echo "Found ${inactive_count} inactive task definitions tagged with plt-tst-act-* projects"
+}
+
+cleanup_inactive_task_definitions
+
+echo "=== Cleanup complete ==="
