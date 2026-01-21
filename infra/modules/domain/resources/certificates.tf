@@ -40,7 +40,6 @@ resource "aws_acm_certificate" "issued" {
 }
 
 # DNS records for certificate validation.
-# Route53 is a global service, no region-specific provider needed.
 resource "aws_route53_record" "validation" {
   for_each = local.domain_validation_options
 

@@ -11,7 +11,6 @@ terraform {
 # Individual address records will be created in the service layer by the services that
 # need them (e.g. the load balancer or CDN).
 # If DNS is managed elsewhere then this resource will not be created.
-# Route53 is a global service, no region-specific provider needed.
 resource "aws_route53_zone" "zone" {
   count = var.manage_dns ? 1 : 0
   name  = var.name
