@@ -1,4 +1,3 @@
-
 locals {
   document_data_extraction_config = local.environment_config.document_data_extraction_config
 

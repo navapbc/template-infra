@@ -15,6 +15,7 @@ output "bda_project_arn" {
 # when processing files. the following like the profile ARNs for different inference
 # profiles
 # https://docs.aws.amazon.com/bedrock/latest/userguide/bda-cris.html
+# TODO(https://github.com/navapbc/template-infra/issues/993) Add GovCloud Support
 output "bda_profile_arn" {
   description = "The profile ARN associated with the BDA project"
   value       = "arn:aws:bedrock:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:data-automation-profile/us.data-automation-v1"
