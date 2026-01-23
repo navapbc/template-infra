@@ -16,6 +16,7 @@ import (
 
 var projectName = os.Getenv("PROJECT_NAME")
 var imageTag = os.Getenv("IMAGE_TAG")
+var region = "us-east-2"
 
 const maxRetries = 3
 const sleepBetweenRetries = 5 * time.Second
@@ -38,7 +39,6 @@ func TestEndToEnd(t *testing.T) {
 func ValidateAccount(t *testing.T) {
 	projectName := projectName
 	accountId := "533267424629"
-	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
 }
@@ -182,7 +182,7 @@ func ValidateDevEnvironment(t *testing.T) {
 	serviceName := fmt.Sprintf("%s-%s", appName, environmentName)
 	shell.RunCommand(t, shell.Command{
 		Command:    "aws",
-		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName},
+		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName, "--region", region},
 		WorkingDir: "../../",
 	})
 
