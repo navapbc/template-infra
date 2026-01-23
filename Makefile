@@ -2,9 +2,8 @@ PROJECT_ROOT ?= $(notdir $(PWD))
 
 # Use `=` instead of `:=` so that we only execute `./bin/current-account-alias` when needed
 # See https://www.gnu.org/software/make/manual/html_node/Flavors.html#Flavors
-CURRENT_ACCOUNT_ALIAS = `./bin/current-account-alias`
-
-CURRENT_ACCOUNT_ID = $(./bin/current-account-id)
+CURRENT_ACCOUNT_ALIAS = $(shell ./bin/current-account-alias)
+CURRENT_ACCOUNT_ID = $(shell ./bin/current-account-id)
 
 # Get the list of reusable terraform modules by getting out all the modules
 # in infra/modules and then stripping out the "infra/modules/" prefix
@@ -193,7 +192,7 @@ infra-configure-app-service: ## Configure infra/$APP_NAME/service module's tfbac
 	./bin/create-tfbackend "infra/$(APP_NAME)/service" "$(ENVIRONMENT)"
 
 infra-update-current-account: ## Update infra resources for current AWS profile
-	./bin/terraform-init-and-apply infra/accounts `./bin/current-account-config-name`
+	./bin/terraform-init-and-apply infra/accounts $$(./bin/current-account-config-name)
 
 infra-update-network: ## Update network
 	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
