@@ -3,9 +3,10 @@ variable "name" {
   type        = string
 }
 
-variable "data_access_policy_arns" {
-  description = "The set of policy ARNs for the input and output locations to attach to the BDA role."
-  type        = map(string)
+variable "aws_managed_blueprints" {
+  description = "List of AWS managed blueprint ARNs (stage defaults to LIVE)"
+  type        = list(string)
+  default     = null
 }
 
 variable "custom_output_config" {

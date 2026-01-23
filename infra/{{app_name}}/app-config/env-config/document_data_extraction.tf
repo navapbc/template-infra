@@ -7,7 +7,10 @@ locals {
     # Blueprints path is relative to infra/{{app_name}}/service/ directory
     # Contains JSON schema files for custom Bedrock Data Automation blueprints
     # (e.g., not AWS-managed blueprints)
-    blueprints_path    = "./document-data-extraction-blueprints/"
+    blueprints_path = "./document-data-extraction-blueprints/"
+
+    # Optional: List of AWS-managed blueprint ARNs to use for document extraction
+    aws_managed_blueprints = null
 
     # BDA can only be deployed to us-east-1, us-west-2, and us-gov-west-1
     # TODO(https://github.com/navapbc/template-infra/issues/993) Add GovCloud Support

@@ -1,13 +1,20 @@
 # Bedrock Data Automation Terraform Module
 
-This module provisions AWS Bedrock Data Automation resources, including the data automation project, blueprints, and associated IAM role for accessing S3 buckets.
+This module provisions AWS Bedrock Data Automation resources, including the data automation project and blueprints.
+
 
 ## Overview
 
 The module creates:
 - **Bedrock Data Automation Project** - Main project resource for data automation workflows
 - **Bedrock Blueprints** - Custom extraction blueprints configured via a map
-- **IAM Role** - Role for Bedrock service to assume with access to input/output S3 buckets
+
+## Important Notes
+
+- **BDA uses its own internal service role** - This module does not create a custom IAM role for BDA. Bedrock Data Automation uses an AWS-managed internal service role for S3 access.
+- **S3 bucket encryption** - S3 buckets used with BDA should use AWS-managed encryption (AES256), not customer-managed KMS keys.
+- **Lambda permissions** - Any Lambda function invoking BDA must have S3 permissions for both input and output buckets directly attached to its execution role.
+- **No bucket policies needed** - BDA does not require bucket policies allowing the `bedrock.amazonaws.com` service principal.
 
 ## Features
 - Creates resources required for Bedrock Data Automation workflows
@@ -17,6 +24,42 @@ The module creates:
 - Complies with Checkov recommendations for security and compliance
 - Designed for cross-layer usage (see project module conventions)
 
+## Usage
+
+```hcl
+module "bedrock_data_automation" {
+  source = "../../modules/document-data-extraction/resources"
+  
+  name  = "my-app-prod"
+  
+  blueprints_map = {
+    invoice = {
+      schema = file("${path.module}/schemas/invoice.json")
+      type   = "DOCUMENT"
+      tags   = {
+          Environment = "production"
+          ManagedBy   = "terraform"
+      }
+    }
+  }
+  
+  standard_output_configuration = {
+    document = {
+      extraction = {
+        granularity = {
+          types = ["PAGE", "ELEMENT"]
+        }
+      }
+    }
+  }
+  
+  tags = {
+          Environment = "production"
+          ManagedBy   = "terraform"
+  }
+}
+```
+
 ## Inputs
 
 ### Required Variables
@@ -24,7 +67,6 @@ The module creates:
 | Name  | Description | Type | Required |
 |-------|-------------|------|----------|
 | `name` | Prefix to use for resource names (e.g., "my-app-prod") | `string` | yes |
-| `data_access_policy_arns` | Map of policy ARNs for input and output locations to attach to the BDA role | `map(string)` | yes |
 | `blueprints_map` | Map of unique blueprints with keys as blueprint identifiers and values as blueprint objects | `map(object)` | yes |
 
 #### `blueprints_map` Object Structure
@@ -59,17 +101,16 @@ See `variables.tf` for complete structure details.
 | Name | Description |
 |------|-------------|
 | `bda_project_arn` | The ARN of the Bedrock Data Automation project |
-| `bda_role_name` | The name of the IAM role used by Bedrock Data Automation |
-| `bda_role_arn` | The ARN of the IAM role used by Bedrock Data Automation |
 | `access_policy_arn` | The ARN of the IAM policy for accessing the Bedrock Data Automation project |
-
+| `bda_profile_arn` | The profile ARN for cross-region inference |
+| `bda_blueprint_arns` | List of created blueprint ARNs |
+| `bda_blueprint_names` | List of created blueprint names |
+| `bda_blueprint_arn_to_name` | Map of blueprint ARNs to names |
 
 ## Resources Created
 
 - `awscc_bedrock_data_automation_project.bda_project` - Main BDA project
 - `awscc_bedrock_blueprint.bda_blueprint` - One or more blueprints (created from `blueprints_map`)
-- `aws_iam_role.bda_role` - IAM role for Bedrock service
-- `aws_iam_role_policy_attachment.role_policy_attachments` - Policy attachments for S3 access
 
 ## Project Conventions
 
@@ -95,11 +136,6 @@ module "bedrock_data_automation" {
   
   name = "my-app"
   
-  data_access_policy_arns = {
-    input  = aws_iam_policy.input.arn
-    output = aws_iam_policy.output.arn
-  }
-  
   blueprints_map = {}  # No custom blueprints
 }
 ```
@@ -110,7 +146,6 @@ module "bedrock_data_automation" {
   source = "../../modules/document-data-extraction/resources"
   
   name               = "my-app"
-  data_access_policy_arns = { /* ... */ }
   blueprints_map     = { /* ... */ }
   
   standard_output_configuration = {
@@ -149,8 +184,6 @@ module "bedrock_data_automation" {
 - AWS provider configured
 - AWS Cloud Control provider (awscc) configured
 - Appropriate AWS permissions to create Bedrock and IAM resources
-- KMS keys
-- S3 bucket policies defined for input/output buckets
 
 ## References
 
