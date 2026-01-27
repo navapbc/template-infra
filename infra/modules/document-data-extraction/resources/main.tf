@@ -7,6 +7,26 @@ locals {
     }
   ]
 
+  blueprint_arns = [
+    for bp in var.blueprints : bp
+    if startswith(bp, "arn:")
+  ]
+
+  blueprint_files = [
+    for bp in var.blueprints : bp
+    if !startswith(bp, "arn:")
+  ]
+
+  # create map of custom blueprints from files
+  custom_blueprints_map = {
+    for file_path in local.blueprint_files :
+    replace(basename(file_path), ".json", "") => {
+      schema = file(file_path)
+      type   = "DOCUMENT"
+      tags   = var.tags
+    }
+  }
+
   all_blueprints = concat(
     # custom blueprints created from json schemas
     [for k, v in awscc_bedrock_blueprint.bda_blueprint : {
@@ -14,8 +34,8 @@ locals {
       blueprint_stage = v.blueprint_stage
     }],
     # aws managed blueprints referenced by arn
-    var.aws_managed_blueprints != null ? [
-      for arn in var.aws_managed_blueprints : {
+    length(local.blueprint_arns) > 0 ? [
+      for arn in local.blueprint_arns : {
         blueprint_arn   = arn
         blueprint_stage = "LIVE"
       }
@@ -35,7 +55,7 @@ resource "awscc_bedrock_data_automation_project" "bda_project" {
 }
 
 resource "awscc_bedrock_blueprint" "bda_blueprint" {
-  for_each = var.blueprints_map
+  for_each = local.custom_blueprints_map
 
   blueprint_name = "${var.name}-${each.key}"
   schema         = each.value.schema

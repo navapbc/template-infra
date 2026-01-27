@@ -6,8 +6,6 @@ resource "aws_iam_policy" "bedrock_access" {
 data "aws_iam_policy_document" "bedrock_access" {
   statement {
     actions = [
-      "bedrock:InvokeModel",
-      "bedrock:InvokeModelWithResponseStream",
       "bedrock:InvokeDataAutomationAsync",
       "bedrock:GetDataAutomationProject",
       "bedrock:GetBlueprint",

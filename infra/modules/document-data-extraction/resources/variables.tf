@@ -3,7 +3,7 @@ variable "name" {
   type        = string
 }
 
-variable "aws_managed_blueprints" {
+variable "blueprints" {
   description = "List of AWS managed blueprint ARNs (stage defaults to LIVE)"
   type        = list(string)
   default     = null
@@ -116,13 +116,4 @@ variable "tags" {
   type        = map(string)
   default     = {}
 
-}
-
-variable "blueprints_map" {
-  description = "the map of unique blueprints with keys as blueprint identifiers and values as blueprint objects"
-  type = map(object({
-    schema = string
-    type   = string
-    tags   = map(string)
-  }))
 }
