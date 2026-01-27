@@ -11,6 +11,7 @@ module "prod_config" {
   has_incident_management_service = local.has_incident_management_service
   enable_identity_provider        = local.enable_identity_provider
   enable_notifications            = local.enable_notifications
+  enable_document_data_extraction = local.enable_document_data_extraction
 
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs
