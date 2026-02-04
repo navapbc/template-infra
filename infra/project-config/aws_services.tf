@@ -15,6 +15,12 @@ locals {
     // AWS Backup – Centralized service for automating backups across AWS resources.
     "backup",
 
+    // AWS Bedrock – Provides access to large language models and generative AI services.
+    "bedrock",
+
+    // AWS CloudFormation – Infrastructure as Code (IaC) service for provisioning and managing AWS resources.
+    "cloudformation",
+
     // Amazon CloudWatch – Monitors and logs AWS resources and applications.
     "cloudwatch",
 

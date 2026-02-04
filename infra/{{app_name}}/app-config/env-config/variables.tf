@@ -25,6 +25,12 @@ variable "enable_command_execution" {
   default     = false
 }
 
+variable "enable_document_data_extraction" {
+  type        = bool
+  description = "Enables documentation data extraction"
+  default     = false
+}
+
 variable "enable_https" {
   type        = bool
   description = "Whether to enable HTTPS for the application"

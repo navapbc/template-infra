@@ -40,3 +40,7 @@ output "storage_config" {
     bucket_name = local.bucket_name
   }
 }
+
+output "document_data_extraction_config" {
+  value = local.document_data_extraction_config
+}
