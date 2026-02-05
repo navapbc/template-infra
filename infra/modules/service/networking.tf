@@ -85,7 +85,7 @@ resource "aws_vpc_security_group_ingress_rule" "service_ingress_from_load_balanc
 
 resource "aws_vpc_security_group_ingress_rule" "vpc_endpoints_ingress_from_service" {
   security_group_id = module.network.aws_services_security_group_id
-  description       = "Allow inbound requests to VPC endpoints from role manager"
+  description       = "Allow inbound requests to VPC endpoints from service ${var.service_name}"
 
   from_port                    = 443
   to_port                      = 443
