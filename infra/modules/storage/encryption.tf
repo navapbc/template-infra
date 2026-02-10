@@ -3,11 +3,10 @@ data "aws_caller_identity" "current" {}
 data "aws_region" "current" {}
 
 data "aws_iam_policy_document" "kms_key_policy" {
-  # checkov:skip=CKV_AWS_109:Root account admin access is required for KMS key management per AWS best practices
+  # checkov:skip=CKV_AWS_109:Root account requires full KMS permissions to enable IAM-based access control
   # checkov:skip=CKV_AWS_111:Root account requires full KMS permissions to enable IAM-based access control
-  # checkov:skip=CKV_AWS_356:KMS key policy requires wildcard resource per AWS KMS policy requirements
+  # checkov:skip=CKV_AWS_356:In a key policy, the wildcard character in the Resource element represents the KMS key to which the key policy is attached.
 
-  # Root account admin access.
   # This gives the AWS account that owns the KMS key full access to the KMS key,
   # deferring specific access rules to IAM roles.
   # See: https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-root-enable-iam
@@ -22,7 +21,8 @@ data "aws_iam_policy_document" "kms_key_policy" {
     resources = ["*"]
   }
 
-  # Optional: Allow additional AWS services (eg. bedrock.amazonaws.com)
+  # Optional: Allow the given AWS service principals to use the key via S3, for situations
+  # where the service can't use more explicitly configured IAM roles
   dynamic "statement" {
     for_each = length(var.service_principals_with_access) > 0 ? [1] : []
     content {
