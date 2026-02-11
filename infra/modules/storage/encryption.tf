@@ -9,7 +9,9 @@ data "aws_iam_policy_document" "kms_key_policy" {
 
   # This gives the AWS account that owns the KMS key full access to the KMS key,
   # deferring specific access rules to IAM roles.
-  # See: https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-root-enable-iam
+  #
+  # This is the default key policy for programmatically generated KMS keys in 
+  # general, see: https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-root-enable-iam
   statement {
     sid    = "Enable IAM User Permissions"
     effect = "Allow"
