@@ -20,6 +20,5 @@ This diagram shows the system architecture. [🔒 Make a copy of this Lucid temp
 * **Service** — Amazon ECS service running the application.
 * **SES** — Amazon Simple Email Service (SES) used for sending email notifications.
 * **Terraform Backend Bucket** — Amazon S3 bucket used to store terraform state files.
-* **Terraform State Locks DynamoDB Table** — Amazon DynamoDB table used to manage concurrent access to terraform state files.
 * **VPC Endpoints** — VPC endpoints are used by the Database Role Manager to access Amazon Services without traffic leaving the VPC.
 * **VPC Network** — Amazon VPC network.

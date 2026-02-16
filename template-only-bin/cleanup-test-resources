@@ -246,18 +246,6 @@ cleanup_project() {
     aws s3api delete-bucket --bucket "${bucket_name}" --region "${AWS_REGION}" || echo "Failed to delete bucket ${bucket_name}"
   done
 
-  # Delete DynamoDB tables
-  echo "Cleaning up DynamoDB tables..."
-  local dynamodb_arns
-  dynamodb_arns=$(echo "${resources}" | tr '\t' '\n' | grep 'dynamodb' || echo "")
-
-  for table_arn in ${dynamodb_arns}; do
-    local table_name
-    table_name=$(echo "${table_arn}" | awk -F'/' '{print $NF}')
-    echo "Deleting DynamoDB table: ${table_name}"
-    aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
-  done
-
   # Schedule KMS keys for deletion (minimum 7 days waiting period)
   echo "Scheduling KMS keys for deletion..."
   local kms_arns

@@ -21,7 +21,7 @@ locals {
     // Amazon Cognito Identity Provider – Manages authentication and authorization for applications.
     "cognito-idp",
 
-    // Amazon DynamoDB – A NoSQL database for key-value and document storage. Used for Terraform state locks.
+    // Amazon DynamoDB – A NoSQL database for key-value and document storage.
     "dynamodb",
 
     // Amazon EC2 – Provides compute capacity in the cloud with virtual servers.
