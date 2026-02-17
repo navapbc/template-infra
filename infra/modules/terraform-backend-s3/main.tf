@@ -159,7 +159,6 @@ resource "aws_s3_bucket_lifecycle_configuration" "tf_log" {
     id     = "move-s3-to-ia"
     status = "Enabled"
 
-
     abort_incomplete_multipart_upload {
       days_after_initiation = 15
     }
