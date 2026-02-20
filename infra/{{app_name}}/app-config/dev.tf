@@ -10,6 +10,7 @@ module "dev_config" {
   has_database                    = local.has_database
   has_incident_management_service = local.has_incident_management_service
   enable_notifications            = local.enable_notifications
+  enable_document_data_extraction = local.enable_document_data_extraction
 
   # Enable and configure identity provider.
   enable_identity_provider = local.enable_identity_provider
