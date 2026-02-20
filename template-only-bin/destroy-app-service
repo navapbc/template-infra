@@ -20,10 +20,69 @@ sed -i.bak 's/force_destroy = var.is_temporary/force_destroy = true/g' infra/mod
 sed -i.bak 's/enable_deletion_protection = !var.is_temporary/enable_deletion_protection = false/g' infra/modules/service/load_balancer.tf
 sed -i.bak 's/deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"/deletion_protection = "INACTIVE"/g' infra/modules/identity-provider/resources/main.tf
 
-cd "infra/${app_name}/service"
+pushd "infra/${app_name}/service" > /dev/null
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
 terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -target="module.identity_provider.aws_cognito_user_pool.main" -var="environment_name=${environment}"
 
 terraform destroy -auto-approve -var="environment_name=${environment}"
+
+# -----------------------------------------------------------------------------
+# Clean up ECS task definitions that were created during the test run
+# Task definitions are managed by Terraform, but the AWS provider doesn't yet
+# support automatic deletion of task definitions on destroy.
+# See: https://github.com/hashicorp/terraform-provider-aws/issues/29682
+# -----------------------------------------------------------------------------
+popd > /dev/null
+
+# Get project config from terraform
+project_name=$(terraform -chdir="infra/project-config" output --raw project_name)
+aws_region=$(terraform -chdir="infra/project-config" output --raw default_region)
+
+echo "Cleaning up task definitions for project: ${project_name}"
+
+# Find all task definitions tagged with this project using Resource Groups Tagging API
+task_def_arns=$(aws resourcegroupstaggingapi get-resources \
+  --region "${aws_region}" \
+  --tag-filters Key=project,Values="${project_name}" \
+  --resource-type-filters ecs:task-definition \
+  --query 'ResourceTagMappingList[].ResourceARN' \
+  --output text || echo "")
+
+if [ -n "${task_def_arns}" ]; then
+  for task_def_arn in ${task_def_arns}; do
+    # Check current status
+    status=$(aws ecs describe-task-definition \
+      --region "${aws_region}" \
+      --task-definition "${task_def_arn}" \
+      --query 'taskDefinition.status' \
+      --output text 2>/dev/null || echo "")
+
+    if [ "${status}" = "DELETE_IN_PROGRESS" ]; then
+      echo "Task definition already being deleted: ${task_def_arn}"
+      continue
+    fi
+
+    if [ "${status}" = "ACTIVE" ]; then
+      echo "Deregistering task definition: ${task_def_arn}"
+      aws ecs deregister-task-definition \
+        --region "${aws_region}" \
+        --task-definition "${task_def_arn}" || echo "Failed to deregister ${task_def_arn}"
+      sleep 2
+    elif [ "${status}" = "INACTIVE" ]; then
+      echo "Task definition already inactive: ${task_def_arn}"
+    fi
+
+    # Delete the task definition (works for INACTIVE status)
+    if [ "${status}" = "ACTIVE" ] || [ "${status}" = "INACTIVE" ]; then
+      echo "Deleting task definition: ${task_def_arn}"
+      aws ecs delete-task-definitions \
+        --region "${aws_region}" \
+        --task-definitions "${task_def_arn}" || echo "Failed to delete ${task_def_arn}"
+    fi
+  done
+  echo "Task definition cleanup complete"
+else
+  echo "No task definitions found for project ${project_name}"
+fi

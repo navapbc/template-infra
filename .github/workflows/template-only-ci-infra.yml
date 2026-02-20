@@ -71,7 +71,7 @@ jobs:
           --data base_project_name="${project_name}" \
           --data base_owner=platform-admins \
           --data base_code_repository_url=${{ github.repositoryUrl }} \
-          --data base_default_region=us-east-1 \
+          --data base_default_region=us-east-2 \
           --data app_name=app \
           --data app_local_port=3000 \
           --data app_has_dev_env_setup=true \
@@ -88,7 +88,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-region: us-east-1
+          aws-region: us-east-2
 
           # Use access key credentials for the template infra test workflow
           # instead of using GitHub OIDC because only one GitHub OIDC provider
