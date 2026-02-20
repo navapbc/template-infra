@@ -33,11 +33,11 @@ module "dde_input_bucket" {
     aws = aws.dde
   }
 
-  count                      = local.document_data_extraction_config != null ? 1 : 0
-  source                     = "../../modules/storage"
-  name                       = "${local.prefix}${local.document_data_extraction_config.input_bucket_name}"
-  is_temporary               = local.is_temporary
-  use_aws_managed_encryption = true
+  count                          = local.document_data_extraction_config != null ? 1 : 0
+  source                         = "../../modules/storage"
+  name                           = "${local.prefix}${local.document_data_extraction_config.input_bucket_name}"
+  is_temporary                   = local.is_temporary
+  service_principals_with_access = ["bedrock.amazonaws.com"]
 }
 
 module "dde_output_bucket" {
@@ -45,11 +45,11 @@ module "dde_output_bucket" {
     aws = aws.dde
   }
 
-  count                      = local.document_data_extraction_config != null ? 1 : 0
-  source                     = "../../modules/storage"
-  name                       = "${local.prefix}${local.document_data_extraction_config.output_bucket_name}"
-  is_temporary               = local.is_temporary
-  use_aws_managed_encryption = true
+  count                          = local.document_data_extraction_config != null ? 1 : 0
+  source                         = "../../modules/storage"
+  name                           = "${local.prefix}${local.document_data_extraction_config.output_bucket_name}"
+  is_temporary                   = local.is_temporary
+  service_principals_with_access = ["bedrock.amazonaws.com"]
 }
 
 module "dde" {
