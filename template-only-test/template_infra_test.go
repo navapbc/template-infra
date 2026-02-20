@@ -8,6 +8,7 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/aws"
 	http_helper "github.com/gruntwork-io/terratest/modules/http-helper"
+	"github.com/gruntwork-io/terratest/modules/retry"
 	"github.com/gruntwork-io/terratest/modules/shell"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/stretchr/testify/assert"
@@ -15,6 +16,17 @@ import (
 
 var projectName = os.Getenv("PROJECT_NAME")
 var imageTag = os.Getenv("IMAGE_TAG")
+var region = "us-east-2"
+
+const maxRetries = 3
+const sleepBetweenRetries = 5 * time.Second
+
+// runCommandWithRetry runs a shell command with retry logic
+func runCommandWithRetry(t *testing.T, description string, maxRetries int, sleepBetweenRetries time.Duration, command shell.Command) {
+	retry.DoWithRetry(t, description, maxRetries, sleepBetweenRetries, func() (string, error) {
+		return "", shell.RunCommandE(t, command)
+	})
+}
 
 func TestEndToEnd(t *testing.T) {
 	defer TeardownAccount(t)
@@ -27,7 +39,6 @@ func TestEndToEnd(t *testing.T) {
 func ValidateAccount(t *testing.T) {
 	projectName := projectName
 	accountId := "533267424629"
-	region := "us-east-1"
 	ValidateAccountBackend(t, region, projectName)
 	ValidateGithubActionsAuth(t, accountId, projectName)
 }
@@ -171,7 +182,7 @@ func ValidateDevEnvironment(t *testing.T) {
 	serviceName := fmt.Sprintf("%s-%s", appName, environmentName)
 	shell.RunCommand(t, shell.Command{
 		Command:    "aws",
-		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName},
+		Args:       []string{"ecs", "wait", "services-stable", "--cluster", serviceName, "--services", serviceName, "--region", region},
 		WorkingDir: "../../",
 	})
 
@@ -191,7 +202,7 @@ func ValidateDevEnvironment(t *testing.T) {
 
 func TeardownAccount(t *testing.T) {
 	fmt.Println("::group::Destroying account resources")
-	shell.RunCommand(t, shell.Command{
+	runCommandWithRetry(t, "Destroy account resources", maxRetries, sleepBetweenRetries, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-account"},
 		WorkingDir: "../",
@@ -201,7 +212,7 @@ func TeardownAccount(t *testing.T) {
 
 func TeardownNetwork(t *testing.T) {
 	fmt.Println("::group::Destroying network resources")
-	shell.RunCommand(t, shell.Command{
+	runCommandWithRetry(t, "Destroy network resources", maxRetries, sleepBetweenRetries, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-network"},
 		WorkingDir: "../",
@@ -211,7 +222,7 @@ func TeardownNetwork(t *testing.T) {
 
 func TeardownBuildRepository(t *testing.T) {
 	fmt.Println("::group::Destroying build repository resources")
-	shell.RunCommand(t, shell.Command{
+	runCommandWithRetry(t, "Destroy build repository resources", maxRetries, sleepBetweenRetries, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-app-build-repository"},
 		WorkingDir: "../",
@@ -221,7 +232,7 @@ func TeardownBuildRepository(t *testing.T) {
 
 func TeardownDevEnvironment(t *testing.T) {
 	fmt.Println("::group::Destroying dev environment resources")
-	shell.RunCommand(t, shell.Command{
+	runCommandWithRetry(t, "Destroy dev environment resources", maxRetries, sleepBetweenRetries, shell.Command{
 		Command:    "make",
 		Args:       []string{"-f", "template-only.mak", "destroy-app-service"},
 		WorkingDir: "../",

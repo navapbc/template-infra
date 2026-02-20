@@ -57,12 +57,10 @@ data "aws_iam_policy_document" "storage_access" {
       "arn:aws:s3:::${var.name}/*"
     ]
   }
-  dynamic "statement" {
-    for_each = var.use_aws_managed_encryption ? [] : [1]
-    content {
-      actions   = ["kms:GenerateDataKey", "kms:Decrypt"]
-      effect    = "Allow"
-      resources = [aws_kms_key.storage[0].arn]
-    }
+
+  statement {
+    actions   = ["kms:GenerateDataKey", "kms:Decrypt"]
+    effect    = "Allow"
+    resources = [aws_kms_key.storage.arn]
   }
 }

@@ -104,7 +104,7 @@ _exclude:
   - /.git
   - /copier.yml
   - /code.json
-  - /CODEOWNERS
+  - /.github/CODEOWNERS
   - /CODE_OF_CONDUCT.md
   - /CONTRIBUTING.md
   - /LICENSE.md
