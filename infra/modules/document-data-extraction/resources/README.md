@@ -12,9 +12,8 @@ The module creates:
 ## Important Notes
 
 - **BDA uses its own internal service role** - This module does not create a custom IAM role for BDA. Bedrock Data Automation uses an AWS-managed internal service role for S3 access.
-- **S3 bucket encryption** - S3 buckets used with BDA should use AWS-managed encryption (AES256), not customer-managed KMS keys.
+- **S3 bucket encryption** - S3 buckets used with BDA should use the KMS encryption key provided by the storage module.
 - **Lambda permissions** - Any Lambda function invoking BDA must have S3 permissions for both input and output buckets directly attached to its execution role.
-- **No bucket policies needed** - BDA does not require bucket policies allowing the `bedrock.amazonaws.com` service principal.
 
 ## Features
 - Creates resources required for Bedrock Data Automation workflows
@@ -48,8 +47,8 @@ module "bedrock_data_automation" {
   }
   
   tags = {
-          Environment = "production"
-          ManagedBy   = "terraform"
+    Environment = "production"
+    ManagedBy   = "terraform"
   }
 }
 ```
