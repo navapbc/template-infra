@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 # Script to run Playwright tests with a specified app name.
 # APP_NAME is required to be set, while BASE_URL is optional.
