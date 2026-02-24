@@ -20,12 +20,12 @@ locals {
 
 provider "aws" {
   alias  = "dde"
-  region = local.document_data_extraction_config.bda_region
+  region = local.document_data_extraction_config != null ? local.document_data_extraction_config.bda_region : local.service_config.region
 }
 
 provider "awscc" {
   alias  = "dde"
-  region = local.document_data_extraction_config.bda_region
+  region = local.document_data_extraction_config != null ? local.document_data_extraction_config.bda_region : local.service_config.region
 }
 
 module "dde_input_bucket" {
