@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # This script configures the database module for the specified application
 # and environment by creating the .tfvars file and .tfbackend file for the module.

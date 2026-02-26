@@ -48,6 +48,11 @@ locals {
   # 1. Creates an AWS WAF web ACL with AWSManagedRulesCommonRuleSet
   enable_waf = false
 
+  # Whether or not the application should include documentation data extraction
+  # If enabled:
+  # 1. Configures an AWS Bedrock Data Automation project with associated custom blueprints
+  enable_document_data_extraction = false
+
   environment_configs = {
     dev     = module.dev_config
     staging = module.staging_config

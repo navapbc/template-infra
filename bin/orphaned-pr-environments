@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # This script checks for orphaned PR environments by listing all PR workspaces
 # and checking if the associated PR is closed. If the PR is closed the

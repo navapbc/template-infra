@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Utility functions
 
 # Retrieve the names of the applications in the repo by listing the directories in the "infra" directory

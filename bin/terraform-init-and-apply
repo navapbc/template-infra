@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # Convenience script for running terraform init followed by terraform apply
 # See ./bin/terraform-init and ./bin/terraform-apply for more details.

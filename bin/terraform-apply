@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # Convenience script for running terraform apply for the specified module and configuration name.
 # The configuration name is used to determine which .tfvars file to use for the -var-file

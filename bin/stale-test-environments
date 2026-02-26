@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # -----------------------------------------------------------------------------
 # This script checks for orphaned environments created by infra service tests
 # by checking if the environment is older than a certain threshold.
