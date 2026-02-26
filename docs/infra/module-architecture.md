@@ -57,7 +57,7 @@ flowchart TB
 
 The following diagram illustrates the dependency structure of the root modules.
 
-1. Account root modules need to be deployed first to create the S3 bucket and DynamoDB tables that are needed to configure the Terraform backends in the rest of the root modules.
+1. Account root modules need to be deployed first to create the S3 bucket needed to configure the Terraform backends in the rest of the root modules.
 2. The application's build repository needs to be deployed next to create the resources needed to store the built release-candidates that are deployed to the application environments.
 3. The individual application environment root modules are deployed last once everything else is set up. These root modules are the ones that are deployed regularly as part of application deployments.
 

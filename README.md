@@ -30,7 +30,7 @@ This template repository provides **foundational AWS infrastructure** for deploy
 This template provides everything you need to deploy a production-ready web application:
 
 - **Team Workflows** – Pull request templates, architecture decision records (ADRs), and Makefiles for streamlined development
--  **Account Level Foundational Infrastructure** – Infrastructure for terraform backends, including an S3 bucket and DynamoDB table for storing and managing terraform state files.
+-  **Account Level Foundational Infrastructure** – Infrastructure for terraform backends, including an S3 bucket for storing and managing terraform state files.
 - **Application Infrastructure** – Container registry, load balancers, web services, and databases for your web app
 - **Continuous Integration** – GitHub Actions for automated linting, validation, and security compliance checks
 - **Continuous Deployment** – infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
