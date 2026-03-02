@@ -119,11 +119,11 @@ cleanup_project() {
     return 0
   fi
 
-  echo "Found ${#resources[@]} resources"
+  echo "Found ${#resources[@]} resources:"
+  printf "%s\n" "${resources[@]}"
 
   if [ "${DRY_RUN}" = true ]; then
-    echo "Would delete the following resources:"
-    printf "%s\n" "${resources[@]}"
+    echo "Dry run. Not proceeding to delete resources."
     return 0
   fi
 
