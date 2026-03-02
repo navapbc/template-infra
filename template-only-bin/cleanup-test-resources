@@ -401,9 +401,9 @@ cleanup_project() {
   for role_name in ${unique_iam_role_names}; do
     # confirm the role is indeed for the project
     role_project_tag=$(aws iam list-role-tags \
-        --role-name "${role_name}" \
-        --query "tags[?key=='project'].value" \
-        --output text 2>/dev/null || echo "")
+      --role-name "${role_name}" \
+      --query "tags[?key=='project'].value" \
+      --output text 2>/dev/null || echo "")
 
     if [[ "${role_project_tag}" == "${project}" ]]; then
       echo "Deleting IAM Role: ${role_name}"
