@@ -7,31 +7,36 @@ function aws::ecs::arn_regex() {
 function aws::ecs::cleanup() {
   local arns=("$@")
 
-  echo "Cleaning up ECS services and clusters..."
   local cluster_arns
   readarray -t cluster_arns < <(printf "%s\n" "${arns[@]}" | grep "^$(aws::ecs::cluster::arn_regex)")
 
-  aws::ecs::cluster::delete_multiple "${cluster_arns[@]}"
+  if [ "${#cluster_arns[@]}" -ne 0 ]; then
+    echo "Cleaning up ECS services and clusters..."
+    aws::ecs::cluster::delete "${cluster_arns[@]}"
+  fi
 
-  echo "Cleaning up ECS task definitions..."
   local task_def_arns
   readarray -t task_def_arns < <(printf "%s\n" "${arns[@]}" | grep "^$(aws::ecs::task_definition::arn_regex)")
-  aws::ecs::task_definition::delete_multiple "${task_def_arns[@]}"
+
+  if [ "${#task_def_arns[@]}" -ne 0 ]; then
+    echo "Cleaning up ECS task definitions..."
+    aws::ecs::task_definition::delete "${task_def_arns[@]}"
+  fi
 }
 
 function aws::ecs::cluster::arn_regex() {
   echo "$(aws::ecs::arn_regex).*:cluster/"
 }
 
-function aws::ecs::cluster::delete_multiple() {
+function aws::ecs::cluster::delete() {
   local cluster_arns=("$@")
 
   for cluster_arn in "${cluster_arns[@]}"; do
-    aws::ecs::cluster::delete "${cluster_arn}"
+    aws::ecs::cluster::_delete "${cluster_arn}"
   done
 }
 
-function aws::ecs::cluster::delete() {
+function aws::ecs::cluster::_delete() {
   local cluster_arn=$1
   local cluster_name
   cluster_name=$(echo "${cluster_arn}" | awk -F/ '{print $NF}')
@@ -55,15 +60,15 @@ function aws::ecs::task_definition::arn_regex() {
   echo "$(aws::ecs::arn_regex).*:task-definition/"
 }
 
-function aws::ecs::task_definition::delete_multiple() {
+function aws::ecs::task_definition::delete() {
   local task_def_arns=("$@")
 
   for task_def_arn in "${task_def_arns[@]}"; do
-    aws::ecs::task_definition::delete "${task_def_arn}"
+    aws::ecs::task_definition::_delete "${task_def_arn}"
   done
 }
 
-function aws::ecs::task_definition::delete() {
+function aws::ecs::task_definition::_delete() {
   local task_def_arn=$1
   local task_region
   task_region=$(aws::extract_region_from_arn "${task_def_arn}")

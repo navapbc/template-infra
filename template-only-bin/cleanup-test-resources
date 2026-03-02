@@ -142,191 +142,24 @@ cleanup_project() {
   # Delete S3 buckets
   aws::s3::cleanup "${resources[@]}"
 
-  # # Delete DynamoDB tables
-  # echo "Cleaning up DynamoDB tables..."
-  # local dynamodb_arns
-  # dynamodb_arns=$(printf "%s\n" "${resources[@]}" | grep 'dynamodb' || echo "")
+  # Delete DynamoDB tables
+  aws::dynamodb::cleanup "${resources[@]}"
 
-  # for table_arn in ${dynamodb_arns}; do
-  #   local table_name
-  #   table_name=$(echo "${table_arn}" | awk -F'/' '{print $NF}')
-  #   echo "Deleting DynamoDB table: ${table_name}"
-  #   aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
-  # done
+  # Delete Bedrock resources
+  aws::bedrock::cleanup "${resources[@]}"
 
-  # echo "Cleaning up Bedrock Data Automation..."
-  # local bedrock_da_arns
-  # bedrock_da_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:bedrock:.*:data-automation-project/' || echo "")
+  # Delete networking resources
+  aws::vpc::cleanup "${resources[@]}"
 
-  # for dba_project_arn in ${bedrock_da_arns}; do
-  #   echo "Deleting Bedrock Data Automation project: ${dba_project_arn}"
-  #   aws bedrock-data-automation delete-data-automation-project --project-arn "${dba_project_arn}" --region "${AWS_REGION}" || echo "Failed to delete BDA ${dba_project_arn}"
-  # done
+  # Delete SNS resources
+  aws::sns::cleanup "${resources[@]}"
 
-  # local bedrock_blueprint_arns
-  # bedrock_blueprint_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:bedrock:.*:blueprint/' || echo "")
+  aws::logs::cleanup "${resources[@]}"
 
-  # for bedrock_blueprint_arn in ${bedrock_blueprint_arns}; do
-  #   echo "Deleting BDA Blueprint: ${bedrock_blueprint_arn}"
-  #   aws bedrock-data-automation delete-blueprint --blueprint-arn "${bedrock_blueprint_arn}" --region "${AWS_REGION}" || echo "Failed to delete BDA Blueprint ${bedrock_blueprint_arn}"
-  # done
+  # Schedule KMS keys for deletion (minimum 7 days waiting period)
+  aws::kms::cleanup "${resources[@]}"
 
-  # # Security Groups need to be deleted before the associated VPC can be deleted
-  # echo "Cleaning up Security Groups..."
-  # local security_group_arns
-  # security_group_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:ec2:.*:security-group/' || echo "")
-
-  # for security_group_arn in ${security_group_arns}; do
-  #   local security_group_id
-  #   security_group_id=$(echo "${security_group_arn}" | awk -F'/' '{print $NF}')
-
-  #   # Check if this is a default security group, which we can't delete
-  #   # separately, will be removed with the VPC itself
-  #   local security_group_description
-  #   security_group_description=$(aws ec2 describe-security-groups --group-ids "${security_group_id}" --query='SecurityGroups[0].Description' --output text 2>&1)
-  #   if [[ "${security_group_description}" = "default VPC security group" ]]; then
-  #     echo "Default security group, can't delete individually: ${security_group_id}"
-  #     continue
-  #   fi
-
-  #   if [[ "${security_group_description}" = *InvalidGroup.NotFound* ]]; then
-  #     echo "Security group not found/already queued for deletion: ${security_group_id}"
-  #     continue
-  #   fi
-
-  #   echo "Deleting Security Group: ${security_group_id}"
-  #   aws ec2 delete-security-group --group-id "${security_group_id}" --region "${AWS_REGION}" || echo "Failed to delete Security Group ${security_group_id}"
-  # done
-
-  # # Subnets need to be deleted before the associated VPC can be deleted
-  # echo "Cleaning up Subnets..."
-  # local subnet_arns
-  # subnet_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:ec2:.*:subnet/' || echo "")
-
-  # for subnet_arn in ${subnet_arns}; do
-  #   local subnet_id
-  #   subnet_id=$(echo "${subnet_arn}" | awk -F'/' '{print $NF}')
-
-  #   echo "Deleting Subnet: ${subnet_id}"
-  #   aws ec2 delete-subnet --subnet-id "${subnet_id}" --region "${AWS_REGION}" || echo "Failed to delete Subnet ${subnet_id}"
-
-  #   # Give it a second to delete before proceeding
-  #   sleep 1
-  # done
-
-  # # Internet Gateways need to be deleted before the associated VPC can be deleted
-  # echo "Cleaning up Internet Gateways..."
-  # local igw_arns
-  # igw_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:ec2:.*:internet-gateway/' || echo "")
-
-  # for igw_arn in ${igw_arns}; do
-  #   local igw_id
-  #   igw_id=$(echo "${igw_arn}" | awk -F'/' '{print $NF}')
-
-  #   # Need to detach the gateway before deleting
-  #   igw_vpc_ids=$(aws ec2 describe-internet-gateways --internet-gateway-ids "${igw_id}" --query 'InternetGateways[0].Attachments[*].VpcId' --output text | tr '\t' '\n')
-  #   for igw_vpc_id in ${igw_vpc_ids}; do
-  #     echo "Detaching Internet Gateway ${igw_id} from VPC ${igw_vpc_id}"
-  #     aws ec2 detach-internet-gateway --internet-gateway-id "${igw_id}" --vpc-id "${igw_vpc_id}" --region "${AWS_REGION}" || echo "Failed to detach Internet Gateway ${igw_id}"
-  #   done
-
-  #   echo "Deleting Internet Gateway: ${igw_id}"
-  #   aws ec2 delete-internet-gateway --internet-gateway-id "${igw_id}" --region "${AWS_REGION}" || echo "Failed to delete Internet Gateway ${igw_id}"
-
-  #   # Give it a second to delete before proceeding
-  #   sleep 1
-  # done
-
-  # echo "Cleaning up VPCs..."
-  # local vpc_arns
-  # vpc_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:ec2:.*:vpc/' || echo "")
-
-  # for vpc_arn in ${vpc_arns}; do
-  #   local vpc_id
-  #   vpc_id=$(echo "${vpc_arn}" | awk -F'/' '{print $NF}')
-  #   echo "Deleting VPC: ${vpc_id}"
-  #   aws ec2 delete-vpc --vpc-id "${vpc_id}" --region "${AWS_REGION}" || echo "Failed to delete VPC ${vpc_id}"
-  # done
-
-  # echo "Cleaning up SNS..."
-  # local sns_topic_arns
-  # sns_topic_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:sns:.*' || echo "")
-
-  # for sns_topic_arn in ${sns_topic_arns}; do
-  #   echo "Deleting SNS Topic: ${sns_topic_arn}"
-  #   aws sns delete-topic --topic-arn "${sns_topic_arn}" --region "${AWS_REGION}" || echo "Failed to delete SNS Topic ${sns_topic_arn}"
-  # done
-
-  # echo "Cleaning up logs..."
-  # local log_group_arns
-  # log_group_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:logs:.*:log-group:' || echo "")
-
-  # for log_group_arn in ${log_group_arns}; do
-  #   local log_group_name
-  #   log_group_name=$(echo "${log_group_arn}" | awk -F'log-group:' '{print $NF}')
-  #   echo "Deleting Log Group: ${log_group_name}"
-  #   aws logs delete-log-group --log-group-name "${log_group_name}" --region "${AWS_REGION}" || echo "Failed to delete Log Group ${log_group_name}"
-  # done
-
-  # # Schedule KMS keys for deletion (minimum 7 days waiting period)
-  # echo "Scheduling KMS keys for deletion..."
-  # local kms_arns
-  # kms_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:kms:' || echo "")
-
-  # for key_arn in ${kms_arns}; do
-  #   local key_id
-  #   key_id=$(echo "${key_arn}" | awk -F'/' '{print $NF}')
-
-  #   local key_state
-  #   key_state=$(aws kms describe-key --key-id "${key_id}" --query 'KeyMetadata.KeyState' --output text)
-  #   if [[ "${key_state}" = "PendingDeletion" ]]; then
-  #     local key_delete_time
-  #     key_delete_time=$(aws kms describe-key --key-id "${key_id}" --query 'KeyMetadata.DeletionDate' --output text)
-  #     echo "KMS key already scheduled for deletion: ${key_id} at ${key_delete_time}"
-  #     continue
-  #   fi
-
-  #   echo "Scheduling KMS key for deletion: ${key_id}"
-  #   aws kms schedule-key-deletion --key-id "${key_id}" --pending-window-in-days 7 --region "${AWS_REGION}" || echo "Failed to schedule deletion for key ${key_id}"
-  # done
-
-  # echo "Cleaning up IAM..."
-  # # Policies are returned via the Resource Groups Tagging API, Roles/Users are
-  # # not, so get at things via the Policy
-  # local iam_policy_arns
-  # iam_policy_arns=$(printf "%s\n" "${resources[@]}" | grep '^arn:aws:iam:.*:policy/' || echo "")
-  # # Track the roles the project policies are attached to for later deletion
-  # # without having to loop through _all_ roles in the account, may do this
-  # # different in the future
-  # iam_role_names=()
-
-  # for iam_policy_arn in ${iam_policy_arns}; do
-  #   local attached_role_names
-  #   attached_role_names=$(aws iam list-entities-for-policy --policy-arn "${iam_policy_arn}" --entity-filter Role --query 'PolicyRoles[*].RoleName' --output text | tr '\t' '\n')
-
-  #   for role_name in ${attached_role_names}; do
-  #     iam_role_names+=("${role_name}")
-  #     echo "Detaching policy from IAM Role: ${role_name}"
-  #     aws iam detach-role-policy --policy-arn "${iam_policy_arn}" --role-name "${role_name}" || echo "Failed to detach IAM policy from role: ${iam_policy_arn} from ${role_name}"
-  #   done
-
-  #   echo "Deleting IAM Policy: ${iam_policy_arn}"
-  #   aws iam delete-policy --policy-arn "${iam_policy_arn}" --region "${AWS_REGION}" || echo "Failed to delete IAM Policy ${iam_policy_arn}"
-  # done
-
-  # unique_iam_role_names=$(printf "%s\n" "${iam_role_names[@]}" | sort -u)
-  # for role_name in ${unique_iam_role_names}; do
-  #   # confirm the role is indeed for the project
-  #   role_project_tag=$(aws iam list-role-tags \
-  #     --role-name "${role_name}" \
-  #     --query "tags[?key=='project'].value" \
-  #     --output text 2>/dev/null || echo "")
-
-  #   if [[ "${role_project_tag}" == "${project}" ]]; then
-  #     echo "Deleting IAM Role: ${role_name}"
-  #     delete-iam-role "${role_name}" || echo "Failed to delete IAM Role ${role_name}"
-  #   fi
-  # done
+  aws::iam::cleanup "${resources[@]}"
 
   echo "Cleanup complete for project: ${project}"
   echo ""

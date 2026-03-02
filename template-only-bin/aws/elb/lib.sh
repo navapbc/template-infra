@@ -5,7 +5,7 @@ function aws::elb::arn_regex() {
 }
 
 function aws::elb::cleanup() {
-  local arns=("@")
+  local arns=("$@")
 
   # Delete load balancers
   local lb_arns
@@ -25,17 +25,16 @@ function aws::elb::cleanup() {
 
   if [ "${#tg_arns[@]}" -ne 0 ]; then
     echo "Cleaning up load balancer target groups..."
-    aws::elb::target_group::delete "${lb_arns[@]}"
+    aws::elb::target_group::delete "${tg_arns[@]}"
   fi
 }
 
 function aws::elb::load_balancer::arn_regex() {
-  echo "$(aws::ecs::arn_regex).*:loadbalancer/"
+  echo "$(aws::elb::arn_regex).*:loadbalancer/"
 }
 
 function aws::elb::load_balancer::delete() {
   local lb_arns=("$@")
-
 
   for lb_arn in "${lb_arns[@]}"; do
     echo "Deleting load balancer: ${lb_arn}"
@@ -48,7 +47,7 @@ function aws::elb::load_balancer::delete() {
 }
 
 function aws::elb::target_group::arn_regex() {
-  echo "$(aws::ecs::arn_regex).*:targetgroup/"
+  echo "$(aws::elb::arn_regex).*:targetgroup/"
 }
 
 function aws::elb::target_group::delete() {
