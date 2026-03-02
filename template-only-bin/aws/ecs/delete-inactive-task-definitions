@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+
+SCRIPT_PATH=$(dirname "$(realpath -s "$0")")
+
+source "${SCRIPT_PATH}"/lib.sh
+
+aws::ecs::task_definition::cleanup_inactive "$@"
