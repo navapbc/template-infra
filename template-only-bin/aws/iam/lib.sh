@@ -49,6 +49,37 @@ function aws::iam::cleanup() {
   fi
 }
 
+function aws::iam::role::cleanup_project() {
+  local project_filter=$1
+
+  echo "Checking for IAM roles for project ${project_filter}..."
+  for role_name in $(aws::iam::role::get_all_names); do
+    role_project_tag=$(aws::iam::role::get_tag_value "${role_name}" "project")
+
+    if [[ "${role_project_tag}" == ${project_filter} ]]; then
+      aws::iam::role::delete_by_name "${role_name}" || echo "Failed to delete IAM Role ${role_name}"
+    fi
+  done
+}
+
+function aws::iam::role::get_tag_value() {
+  local role_name=$1
+  local tag_key=$2
+
+  aws iam list-role-tags \
+    --role-name "${role_name}" \
+    --query "Tags[?Key=='${tag_key}'].Value" \
+    --output text
+}
+
+# not literally _all_ at the moment, don't want to deal with pagination unless necessary
+function aws::iam::role::get_all_names() {
+  local names
+  readarray -t names < <(aws iam list-roles --query "Roles[? !(starts_with(Path, '/aws-service-role/'))].RoleName" --output text)
+
+  echo "${names[@]}"
+}
+
 function aws::iam::role::delete_by_name() {
   local role_names=("$@")
 

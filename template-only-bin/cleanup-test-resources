@@ -170,4 +170,12 @@ for project in "${PROJECTS[@]}"; do
   cleanup_project "${project}" || echo "Failed to clean up ${project}"
 done
 
+echo "=== Cleanup for items the AWS resource tagging API doesn't support ==="
+
+if [ -n "${PROJECT_NAME}" ]; then
+  aws::iam::role::cleanup_project "${project}"
+else
+  aws::iam::role::cleanup_project "plt-tst-act-*"
+fi
+
 echo "=== Cleanup complete ==="
