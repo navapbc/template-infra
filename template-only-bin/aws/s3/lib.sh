@@ -54,12 +54,11 @@ function aws::s3::empty_bucket() {
   echo "'${num_objects}' objects to remove"
   if [[ "${num_objects}" != "0" ]]; then
     start=$SECONDS
-    while [[ $num_objects -gt 0 ]]
-    do
+    while [[ $num_objects -gt 0 ]]; do
       # shellcheck disable=SC2016
-      aws s3api delete-objects --bucket "${bucket_name}" --delete "$(aws s3api list-object-versions --bucket "${bucket_name}" --region "${aws_region}" --max-items 500 --query='{Objects: Versions[0:500].{Key:Key,VersionId:VersionId}}')" --query 'length(Deleted[*] || `[]` )' > /dev/null
-      num_objects=$((num_objects  > 500 ? num_objects - 500 : 0))
-      echo "Removed batch of Objects... Remaining : ${num_objects} ($(( SECONDS - start ))s)"
+      aws s3api delete-objects --bucket "${bucket_name}" --delete "$(aws s3api list-object-versions --bucket "${bucket_name}" --region "${aws_region}" --max-items 500 --query='{Objects: Versions[0:500].{Key:Key,VersionId:VersionId}}')" --query 'length(Deleted[*] || `[]` )' >/dev/null
+      num_objects=$((num_objects > 500 ? num_objects - 500 : 0))
+      echo "Removed batch of Objects... Remaining : ${num_objects} ($((SECONDS - start))s)"
     done
   fi
 
@@ -68,12 +67,11 @@ function aws::s3::empty_bucket() {
   echo "'${num_objects}' markers to remove"
   if [[ "$num_objects" != "0" ]]; then
     start=$SECONDS
-    while [[ $num_objects -gt 0 ]]
-    do
+    while [[ $num_objects -gt 0 ]]; do
       # shellcheck disable=SC2016
-      aws s3api delete-objects --bucket "${bucket_name}" --delete "$(aws s3api list-object-versions --bucket "${bucket_name}" --region "${aws_region}" --max-items 500 --query='{Objects: DeleteMarkers[0:500].{Key:Key,VersionId:VersionId}}')" --query 'length(Deleted[*] || `[]` )' > /dev/null
-      num_objects=$((num_objects  > 500 ? num_objects - 500 : 0))
-      echo "Removed batch of Markers... Remaining : ${num_objects} (took $(( SECONDS - start ))s)"
+      aws s3api delete-objects --bucket "${bucket_name}" --delete "$(aws s3api list-object-versions --bucket "${bucket_name}" --region "${aws_region}" --max-items 500 --query='{Objects: DeleteMarkers[0:500].{Key:Key,VersionId:VersionId}}')" --query 'length(Deleted[*] || `[]` )' >/dev/null
+      num_objects=$((num_objects > 500 ? num_objects - 500 : 0))
+      echo "Removed batch of Markers... Remaining : ${num_objects} (took $((SECONDS - start))s)"
     done
   fi
 }

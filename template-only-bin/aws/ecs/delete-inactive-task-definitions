@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 SCRIPT_PATH=$(dirname "$(realpath -s "$0")")
 
 source "${SCRIPT_PATH}"/lib.sh

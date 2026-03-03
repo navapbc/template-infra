@@ -6,7 +6,6 @@ function aws::sns::cleanup() {
   local sns_topic_arns
   readarray -t sns_topic_arns < <(printf "%s\n" "${arns[@]}" | grep '^arn:aws:sns:.*')
 
-
   if [ "${#sns_topic_arns[@]}" -ne 0 ]; then
     echo "Cleaning up SNS..."
     aws::sns::delete_topic "${sns_topic_arns[@]}"
