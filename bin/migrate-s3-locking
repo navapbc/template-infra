@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# Migrate .s3.tfbackend files from DynamoDB state locking to S3 native locking.
+#
+# This script:
+#   1. Finds all .s3.tfbackend files under infra/
+#   2. Removes the dynamodb_table line
+#   3. Adds use_lockfile = true
+#   4. Updates infra/example.s3.tfbackend
+#
+# Run this from the project root before applying the accounts layer.
+# After running, you still need to:
+#   - Run `terraform init -reconfigure` for each module
+#   - Verify with `terraform plan`
+#   - Apply the accounts layer to remove the DynamoDB table
+# -----------------------------------------------------------------------------
+set -euo pipefail
+
+echo "===================================="
+echo "Migrate to S3 native state locking"
+echo "===================================="
+
+# Find all .s3.tfbackend files under infra/
+tfbackend_files=$(find infra -name '*.s3.tfbackend' -not -name 'example.*' | sort)
+file_count=$(echo "${tfbackend_files}" | wc -l | tr -d ' ')
+
+echo "Found ${file_count} .s3.tfbackend files to migrate"
+echo
+
+migrated=0
+skipped=0
+
+for file in ${tfbackend_files}; do
+  # Check if file still has dynamodb_table
+  if grep -q 'dynamodb_table' "${file}"; then
+    # Remove the dynamodb_table line
+    sed -i.bak '/dynamodb_table/d' "${file}"
+
+    # Add use_lockfile = true if not already present
+    if ! grep -q 'use_lockfile' "${file}"; then
+      echo "use_lockfile   = true" >> "${file}"
+    fi
+
+    # Remove the backup file created by sed
+    rm -f "${file}.bak"
+
+    echo "  Migrated: ${file}"
+    migrated=$((migrated + 1))
+  else
+    echo "  Skipped (already migrated): ${file}"
+    skipped=$((skipped + 1))
+  fi
+done
+
+# Update example.s3.tfbackend
+example_file="infra/example.s3.tfbackend"
+if [ -f "${example_file}" ] && grep -q 'dynamodb_table' "${example_file}"; then
+  sed -i.bak '/dynamodb_table/d' "${example_file}"
+  if ! grep -q 'use_lockfile' "${example_file}"; then
+    echo "use_lockfile   = true" >> "${example_file}"
+  fi
+  rm -f "${example_file}.bak"
+  echo "  Migrated: ${example_file}"
+  migrated=$((migrated + 1))
+elif [ -f "${example_file}" ]; then
+  echo "  Skipped (already migrated): ${example_file}"
+fi
+
+echo
+echo "===================================="
+echo "Migration complete"
+echo "  Migrated: ${migrated} files"
+echo "  Skipped:  ${skipped} files"
+echo "===================================="
+echo
+echo "Next steps:"
+echo "  1. Run 'terraform init -reconfigure' for each root module"
+echo "  2. Run 'terraform plan' to verify no unexpected changes"
+echo "  3. Apply the accounts layer to remove the DynamoDB table"
+echo "  4. Commit and push the updated .s3.tfbackend files"
