@@ -7,14 +7,23 @@
 #   2. Removes the dynamodb_table line
 #   3. Adds use_lockfile = true
 #   4. Updates infra/example.s3.tfbackend
+#   5. Optionally reinitializes each root module and runs terraform plan
+#
+# Usage:
+#   bin/migrate-s3-locking              # Update backend files only
+#   bin/migrate-s3-locking --reinit     # Also run terraform init + plan for each module
 #
 # Run this from the project root before applying the accounts layer.
 # After running, you still need to:
-#   - Run `terraform init -reconfigure` for each module
-#   - Verify with `terraform plan`
 #   - Apply the accounts layer to remove the DynamoDB table
+#   - Commit and push the updated .s3.tfbackend files
 # -----------------------------------------------------------------------------
 set -euo pipefail
+
+reinit=false
+if [[ "${1:-}" == "--reinit" ]]; then
+  reinit=true
+fi
 
 echo "===================================="
 echo "Migrate to S3 native state locking"
@@ -72,9 +81,61 @@ echo "Migration complete"
 echo "  Migrated: ${migrated} files"
 echo "  Skipped:  ${skipped} files"
 echo "===================================="
+
+if [[ "${reinit}" == true ]]; then
+  echo
+  echo "===================================="
+  echo "Reinitializing root modules"
+  echo "===================================="
+
+  errors=0
+
+  for file in ${tfbackend_files}; do
+    # Derive module_dir and config_name from the file path
+    # e.g. infra/networks/dev.s3.tfbackend -> module_dir=infra/networks, config_name=dev
+    module_dir=$(dirname "${file}")
+    config_name=$(basename "${file}" .s3.tfbackend)
+
+    echo
+    echo "--- ${module_dir} (${config_name}) ---"
+    echo "Running: terraform init -reconfigure"
+    if ! ./bin/terraform-init "${module_dir}" "${config_name}"; then
+      echo "  ERROR: terraform init failed for ${module_dir} ${config_name}"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    echo "Running: terraform plan"
+    if ! terraform -chdir="${module_dir}" plan -input=false; then
+      echo "  ERROR: terraform plan failed for ${module_dir} ${config_name}"
+      errors=$((errors + 1))
+      continue
+    fi
+
+    echo "  OK: ${module_dir} (${config_name})"
+  done
+
+  echo
+  echo "===================================="
+  echo "Reinit complete"
+  if [[ ${errors} -gt 0 ]]; then
+    echo "  ERRORS: ${errors} module(s) had failures"
+    exit 1
+  else
+    echo "  All modules initialized and verified successfully"
+  fi
+  echo "===================================="
+fi
+
 echo
 echo "Next steps:"
-echo "  1. Run 'terraform init -reconfigure' for each root module"
-echo "  2. Run 'terraform plan' to verify no unexpected changes"
-echo "  3. Apply the accounts layer to remove the DynamoDB table"
-echo "  4. Commit and push the updated .s3.tfbackend files"
+if [[ "${reinit}" == false ]]; then
+  echo "  1. Run 'terraform init -reconfigure' for each root module"
+  echo "     Or re-run this script with --reinit to automate this"
+  echo "  2. Run 'terraform plan' to verify no unexpected changes"
+  echo "  3. Apply the accounts layer to remove the DynamoDB table"
+  echo "  4. Commit and push the updated .s3.tfbackend files"
+else
+  echo "  1. Apply the accounts layer to remove the DynamoDB table"
+  echo "  2. Commit and push the updated .s3.tfbackend files"
+fi
