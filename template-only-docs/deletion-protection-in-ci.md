@@ -60,18 +60,6 @@ The scripts that handle deletion protection overrides are:
 
 The remaining scripts ([`template-only-bin/destroy-network`](../template-only-bin/destroy-network) and [`template-only-bin/destroy-app-build-repository`](../template-only-bin/destroy-app-build-repository)) have no deletion-protected resources and run `terraform destroy` directly.
 
-## Resources with deletion protection
-
-| Resource | Terraform file | Expression | Destroy script |
-|---|---|---|---|
-| ALB | `infra/modules/service/load_balancer.tf` | `enable_deletion_protection = !var.is_temporary` | `destroy-app-service` |
-| ALB access logs S3 bucket | `infra/modules/service/access_logs.tf` | `force_destroy = var.is_temporary` | `destroy-app-service` |
-| Storage S3 bucket | `infra/modules/storage/main.tf` | `force_destroy = var.is_temporary` | `destroy-app-service` |
-| Cognito user pool | `infra/modules/identity-provider/resources/main.tf` | `deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"` | `destroy-app-service` |
-| RDS cluster | `infra/modules/database/resources/main.tf` | `deletion_protection = !var.is_temporary` | `destroy-app-database` |
-| Backup vault | `infra/modules/database/resources/backups.tf` | `force_destroy = var.is_temporary` | `destroy-app-database` |
-| Terraform state S3 buckets | `infra/modules/terraform-backend-s3/main.tf` | `prevent_destroy = true` (lifecycle rule) | `destroy-account` |
-
 ## Adding a new deletion-protected resource
 
 When you add a resource that has deletion protection or `force_destroy` behavior:
