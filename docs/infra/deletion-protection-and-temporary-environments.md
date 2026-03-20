@@ -1,6 +1,6 @@
 # Deletion protection and temporary environments
 
-Resources like databases, load balancers, and S3 buckets have deletion protection enabled to prevent accidental data loss in permanent environments. However, temporary environments — such as [pull request environments](./pull-request-environments.md) and CI test environments in [platform-test](https://github.com/navapbc/platform-test) — need to be destroyed automatically when they're no longer needed. This document explains the convention used to conditionally disable deletion protection in temporary environments so that cleanup workflows can destroy resources without manual intervention.
+Resources like databases, load balancers, and S3 buckets have deletion protection enabled to prevent accidental data loss in permanent environments. However, temporary environments — such as [pull request environments](./pull-request-environments.md) and CI test environments — need to be destroyed automatically when they're no longer needed. This document explains the convention used to conditionally disable deletion protection in temporary environments so that cleanup workflows can destroy resources without manual intervention.
 
 ## How temporary environments are identified
 
@@ -32,8 +32,6 @@ The `default` workspace is used for permanent environments (e.g. dev, staging, p
 
 Each module that manages a deletion-protected resource accepts an `is_temporary` variable and uses it to conditionally disable deletion protection. The variable defaults to `false` so that resources are protected unless explicitly marked as temporary.
 
-### Variable definition
-
 Each module defines the variable the same way:
 
 ```hcl
@@ -44,124 +42,36 @@ variable "is_temporary" {
 }
 ```
 
-### Pattern by resource type
-
-Different AWS resources use different attributes to control deletion protection. The pattern varies slightly depending on the attribute:
-
-**Boolean deletion protection** (ALB, RDS) — negate `is_temporary`:
+The expression used depends on the resource's deletion protection attribute. For boolean attributes, negate `is_temporary`:
 
 ```hcl
-# infra/modules/service/load_balancer.tf
-resource "aws_lb" "alb" {
-  ...
-  # Use a separate line to support automated terraform destroy commands
-  # checkov:skip=CKV_AWS_150:Allow deletion for automated tests
-  enable_deletion_protection = !var.is_temporary
-}
+# Boolean deletion protection (e.g. ALB, RDS)
+enable_deletion_protection = !var.is_temporary
 
-# infra/modules/database/resources/main.tf
-resource "aws_rds_cluster" "db" {
-  ...
-  # Use a separate line to support automated terraform destroy commands
-  # checkov:skip=CKV_AWS_139:Allow disabling deletion protection for automated tests
-  deletion_protection = !var.is_temporary
-}
+# S3 force destroy
+force_destroy = var.is_temporary
 ```
 
-**S3 force destroy** — use `is_temporary` directly:
+Some resources use non-boolean values. For example, Cognito user pools use string values:
 
 ```hcl
-# infra/modules/service/access_logs.tf
-resource "aws_s3_bucket" "access_logs" {
-  ...
-  # Use a separate line to support automated terraform destroy commands
-  force_destroy = var.is_temporary
-}
-
-# infra/modules/storage/main.tf
-resource "aws_s3_bucket" "storage" {
-  ...
-  # Use a separate line to support automated terraform destroy commands
-  force_destroy = var.is_temporary
-}
+deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"
 ```
 
-**Cognito deletion protection** (uses string values, not booleans):
+Always keep the attribute on its own line with the standard comment so that the pattern is easy to find with grep:
 
 ```hcl
-# infra/modules/identity-provider/resources/main.tf
-resource "aws_cognito_user_pool" "main" {
-  ...
-  # Use a separate line to support automated terraform destroy commands
-  deletion_protection = var.is_temporary ? "INACTIVE" : "ACTIVE"
-}
+# Use a separate line to support automated terraform destroy commands
+force_destroy = var.is_temporary
 ```
 
-**Backup vault force destroy**:
-
-```hcl
-# infra/modules/database/resources/backups.tf
-resource "aws_backup_vault" "backup_vault" {
-  ...
-  # Use a separate line to support automated terraform destroy commands
-  force_destroy = var.is_temporary
-}
-```
-
-## Resources currently using the pattern
-
-| Resource | Module / file | Attribute | Expression |
-|---|---|---|---|
-| Application Load Balancer | `modules/service/load_balancer.tf` | `enable_deletion_protection` | `!var.is_temporary` |
-| ALB access logs S3 bucket | `modules/service/access_logs.tf` | `force_destroy` | `var.is_temporary` |
-| Application storage S3 bucket | `modules/storage/main.tf` | `force_destroy` | `var.is_temporary` |
-| Aurora PostgreSQL cluster | `modules/database/resources/main.tf` | `deletion_protection` | `!var.is_temporary` |
-| Database backup vault | `modules/database/resources/backups.tf` | `force_destroy` | `var.is_temporary` |
-| Cognito user pool | `modules/identity-provider/resources/main.tf` | `deletion_protection` | `var.is_temporary ? "INACTIVE" : "ACTIVE"` |
-
-## How to add deletion protection to a new resource
-
-When adding a new resource that supports deletion protection or force destroy:
-
-1. **Add the `is_temporary` variable** to your module's `variables.tf` if it doesn't already have one:
-
-   ```hcl
-   variable "is_temporary" {
-     description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
-     type        = bool
-     default     = false
-   }
-   ```
-
-2. **Gate the deletion protection attribute** using the appropriate expression for the resource type. Keep the attribute on its own line with the standard comment:
-
-   ```hcl
-   # Use a separate line to support automated terraform destroy commands
-   force_destroy = var.is_temporary
-   ```
-
-3. **Pass `is_temporary` from the root module** when calling your module:
-
-   ```hcl
-   module "my_module" {
-     ...
-     is_temporary = local.is_temporary
-   }
-   ```
-
-4. **Test in a non-default workspace** to verify that the resource can be created and destroyed:
-
-   ```bash
-   terraform -chdir=infra/<APP_NAME>/service workspace new test
-   terraform -chdir=infra/<APP_NAME>/service apply -var=environment_name=dev
-   terraform -chdir=infra/<APP_NAME>/service destroy -var=environment_name=dev
-   ```
+Search for `is_temporary` across the codebase to see all resources currently using this pattern.
 
 ## What happens if you don't gate deletion protection
 
 If a deletion-protected resource does not use the `is_temporary` pattern:
 
-- **Cleanup workflows fail.** The PR environment destroy workflow and platform-test CI cleanup jobs run `terraform destroy` in non-default workspaces. If a resource has deletion protection unconditionally enabled, the destroy will fail.
+- **Cleanup workflows fail.** The PR environment destroy workflow and CI cleanup jobs run `terraform destroy` in non-default workspaces. If a resource has deletion protection unconditionally enabled, the destroy will fail.
 - **Orphaned resources accumulate.** Failed destroys leave resources running in AWS, accruing costs.
 - **Manual intervention is required.** Someone has to manually disable deletion protection and delete the orphaned resources.
 - **CI pipelines break.** Subsequent CI runs may fail due to naming conflicts with orphaned resources.
@@ -172,7 +82,7 @@ Automated cleanup workflows rely on `is_temporary` being properly gated:
 
 - **PR environment destroy workflows** — When a pull request is merged or closed, [pr-environment-destroy.yml](/.github/workflows/pr-environment-destroy.yml) runs `terraform destroy` in the PR's workspace and then deletes the workspace. See [Pull request environments](./pull-request-environments.md) for details.
 - **Developer workspace cleanup** — Developers working in [isolated workspaces](./develop-and-test-infrastructure-in-isolation-using-workspaces.md) run `terraform destroy` to clean up after merging their changes.
-- **platform-test CI cleanup** — CI pipelines in [platform-test](https://github.com/navapbc/platform-test) create temporary workspaces for integration testing and destroy them after tests complete.
+- **CI infrastructure checks** — The [ci-infra.yml](/.github/workflows/ci-infra.yml) workflow creates temporary workspaces for infrastructure validation and destroys them after checks complete.
 
 ## See also
 
