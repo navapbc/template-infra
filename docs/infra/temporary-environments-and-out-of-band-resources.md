@@ -1,15 +1,16 @@
 # Temporary Environments and Out-of-Band Resources
 
-This document explains how temporary environments (PR environments and workspace-based environments) handle resources that require **out-of-band processes** — that is, resources that can't be created or destroyed purely through Terraform.
+This document explains how temporary environments handle resources that require **out-of-band processes** — that is, resources that can't be created or destroyed purely through Terraform.
 
 ## Background
 
-Temporary environments are short-lived infrastructure instances used for testing and review. Template-infra supports two types:
+Temporary environments are short-lived infrastructure instances used for testing and review. Template-infra supports three types:
 
 - **PR environments** — created automatically when a pull request is opened and destroyed when it's merged or closed. See [Pull Request Environments](./pull-request-environments.md).
 - **Workspace-based environments** — created manually using Terraform workspaces for isolated development and testing. See [Develop and Test Infrastructure in Isolation Using Workspaces](./develop-and-test-infrastructure-in-isolation-using-workspaces.md).
+- **CI end-to-end environments** — created and torn down by CI (ci-infra) to test the full lifecycle of provisioning a new application environment from scratch.
 
-Both types need to handle the fact that some resources can't simply be `terraform apply`'d into existence and `terraform destroy`'d away.
+All three types need to handle the fact that some resources can't simply be `terraform apply`'d into existence and `terraform destroy`'d away.
 
 ## What Are Out-of-Band Resources?
 
@@ -24,20 +25,23 @@ An "out-of-band resource" is any resource whose lifecycle involves steps outside
 
 Temporary environments use two strategies for handling out-of-band resources: **sharing** and **exclusion**.
 
-### Strategy 1: Sharing with the Dev Environment
+### Strategy 1: Sharing Resources
 
-Some out-of-band resources are shared between temporary environments and the `dev` environment rather than being provisioned independently. This means temporary environments connect to the same instance of the resource that `dev` uses.
+Some out-of-band resources are shared across temporary environments rather than being provisioned independently for each one. This sharing can take two forms:
+
+- **Cross-layer sharing** — temporary environments in one infrastructure layer share resources managed by a different layer (e.g., the service layer's temporary environments share the database provisioned by the database layer)
+- **Same-layer sharing** — temporary environments using non-default Terraform workspaces share resources with the default workspace (e.g., a PR environment's service workspace shares resources that only exist in the default workspace)
 
 **Resources that use this strategy:**
 
 | Resource | Why It's Shared | Implications |
 | --- | --- | --- |
-| Database | Provisioning a new database takes 20–40 minutes, which is impractical for short-lived environments | Database migrations from the PR branch are **not** automatically run. Schema changes should be isolated into separate PRs and merged before application changes that depend on them. |
-| Identity provider (Cognito) | Cognito user pools contain test user accounts and configuration that would need to be recreated for each environment | Temporary environments authenticate against the same user pool as `dev`. Changes to identity provider configuration in a PR will not be reflected until merged. |
+| Database | Provisioning a new database takes 20–40 minutes, which is impractical for short-lived environments | Cross-layer sharing: service layer temporary environments use the database from the database layer. Database migrations from the PR branch are **not** automatically run. Schema changes should be isolated into separate PRs and merged before application changes that depend on them. |
+| Identity provider (Cognito) | Cognito user pools contain test user accounts and configuration that would need to be recreated for each environment | Same-layer sharing: temporary environments in non-default workspaces share the Cognito user pool from the default workspace. Changes to identity provider configuration in a PR will not be reflected until merged. |
 
-**What this means for developers:** If your change introduces a new resource that requires out-of-band processes, and that resource holds shared state (like user data or application data), consider whether temporary environments should share the resource with `dev`. If so, you'll need to:
+**What this means for developers:** If your change introduces a new resource that requires out-of-band processes, and that resource holds shared state (like user data or application data), consider whether temporary environments should share the resource. If so, you'll need to:
 
-1. Ensure the Terraform configuration supports pointing temporary environments at the dev instance of the resource
+1. Ensure the Terraform configuration supports pointing temporary environments at the shared instance of the resource (whether cross-layer or same-layer)
 2. Document any limitations this creates (e.g., inability to test configuration changes to the shared resource in a PR environment)
 
 ### Strategy 2: Exclusion from Temporary Environments
@@ -63,8 +67,8 @@ When introducing a new resource that requires out-of-band processes, use this fr
 
 ```
 Does the resource hold state that is valuable to share (e.g., user data, test data)?
-├── Yes → Share with dev environment
-│         • Configure Terraform to reference the dev instance in non-default workspaces
+├── Yes → Share the resource across temporary environments
+│         • Configure Terraform to reference the shared instance (cross-layer or same-layer)
 │         • Document limitations (e.g., can't test config changes in PR environments)
 │
 └── No → Can the application function without this resource?
@@ -84,7 +88,7 @@ Does the resource hold state that is valuable to share (e.g., user data, test da
 
 Out-of-band resources create cleanup challenges for temporary environments:
 
-- **Shared resources** don't need cleanup (they belong to `dev`), but be aware that temporary environments may leave artifacts in the shared resource (e.g., database rows, identity provider sessions) that aren't cleaned up automatically
+- **Shared resources** don't need cleanup (they're managed elsewhere), but be aware that temporary environments may leave artifacts in the shared resource (e.g., database rows, identity provider sessions) that aren't cleaned up automatically
 - **Excluded resources** don't need cleanup (they were never created), but if a resource is partially provisioned before an out-of-band step is needed, the Terraform state may contain references to incomplete resources
 
 For more on cleanup of temporary environment resources, see [Pull Request Environments — Cleanup](./pull-request-environments.md) and the CI cleanup workflows.
