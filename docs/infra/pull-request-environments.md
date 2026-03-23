@@ -24,6 +24,15 @@ Pull request environments share the same database as the dev environment. This h
 
 All pull request environments use the same Cognito user pool as the dev environment to enable the sharing of data between pull request environments and the dev environment. This is necessary because in order to access existing user data, users must authenticate with the same identity that was used to create the data.
 
+## Limitations of shared resources in pull request environments
+
+Because PR environments share certain resources (database, identity provider) with the dev environment rather than provisioning their own, there are inherent limitations on what can be tested in a PR environment:
+
+- **Configuration changes to shared resources cannot be tested in a PR environment.** Changes to the database layer or identity provider configuration will not take effect until the PR is merged and deployed to dev.
+- **Multiple PR environments share the same resource instance.** Changes made by one PR environment (e.g., data written to the database) may be visible to other PR environments sharing the same resource.
+
+For more on how and why resources are shared, see [Temporary Environments and Out-of-Band Resources](./temporary-environments-and-out-of-band-resources.md).
+
 ## Isolate database migrations into separate pull requests
 
 Database migrations are not reflected in PR environments. In particular, PR environments share the same database with the dev environment, so database migrations that exist in the pull request are not run on the database to avoid impacting the dev environment.

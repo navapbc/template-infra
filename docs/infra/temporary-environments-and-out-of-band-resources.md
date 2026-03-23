@@ -8,7 +8,7 @@ Temporary environments are short-lived infrastructure instances used for testing
 
 - **PR environments** — created automatically when a pull request is opened and destroyed when it's merged or closed. See [Pull Request Environments](./pull-request-environments.md).
 - **Workspace-based environments** — created manually using Terraform workspaces for isolated development and testing. See [Develop and Test Infrastructure in Isolation Using Workspaces](./develop-and-test-infrastructure-in-isolation-using-workspaces.md).
-- **CI end-to-end environments** — created and torn down by CI (ci-infra) to test the full lifecycle of provisioning a new application environment from scratch.
+- **CI end-to-end environments** — created and torn down by [`template-only-ci-infra.yml`](/.github/workflows/template-only-ci-infra.yml) to test creating a new project from scratch, deploying infrastructure (tests live in `infra/test/`), and tearing it all down.
 
 All three types need to handle the fact that some resources can't simply be `terraform apply`'d into existence and `terraform destroy`'d away.
 
@@ -29,7 +29,7 @@ Temporary environments use two strategies for handling out-of-band resources: **
 
 Some out-of-band resources are shared across temporary environments rather than being provisioned independently for each one. This sharing can take two forms:
 
-- **Cross-layer sharing** — temporary environments in one infrastructure layer share resources managed by a different layer (e.g., the service layer's temporary environments share the database provisioned by the database layer)
+- **Cross-layer sharing** — temporary environments in one infrastructure layer (also called a root module — see [Module Architecture](./module-architecture.md)) share resources managed by a different layer (e.g., the service layer's temporary environments share the database provisioned by the database layer)
 - **Same-layer sharing** — temporary environments using non-default Terraform workspaces share resources with the default workspace (e.g., a PR environment's service workspace shares resources that only exist in the default workspace)
 
 **Resources that use this strategy:**
@@ -42,7 +42,6 @@ Some out-of-band resources are shared across temporary environments rather than 
 **What this means for developers:** If your change introduces a new resource that requires out-of-band processes, and that resource holds shared state (like user data or application data), consider whether temporary environments should share the resource. If so, you'll need to:
 
 1. Ensure the Terraform configuration supports pointing temporary environments at the shared instance of the resource (whether cross-layer or same-layer)
-2. Document any limitations this creates (e.g., inability to test configuration changes to the shared resource in a PR environment)
 
 ### Strategy 2: Exclusion from Temporary Environments
 
@@ -59,29 +58,23 @@ Some out-of-band resources are simply not created in temporary environments. The
 
 1. Add conditional logic to the Terraform configuration to skip the resource in non-default workspaces
 2. Ensure the application can function without the resource (graceful degradation)
-3. Document what functionality is unavailable in temporary environments as a result
 
 ## Decision Framework
 
 When introducing a new resource that requires out-of-band processes, use this framework to decide how temporary environments should handle it:
 
-```
-Does the resource hold state that is valuable to share (e.g., user data, test data)?
-├── Yes → Share the resource across temporary environments
-│         • Configure Terraform to reference the shared instance (cross-layer or same-layer)
-│         • Document limitations (e.g., can't test config changes in PR environments)
-│
-└── No → Can the application function without this resource?
-          ├── Yes → Exclude from temporary environments
-          │         • Add workspace-conditional logic to skip the resource
-          │         • Ensure graceful degradation
-          │
-          └── No → This is a design problem that needs to be solved in the tech spec
-                    • Consider whether the resource can be redesigned to not require
-                      out-of-band processes
-                    • Consider whether a lightweight substitute can be used in
-                      temporary environments
-                    • Discuss with the team before proceeding
+```mermaid
+flowchart TD
+    A{"Does the resource hold state that is\nvaluable to share?\ne.g. user data, test data"}
+    B["Share across temporary environments\n• Configure Terraform to reference\n  the shared instance\n  (cross-layer or same-layer)"]
+    C{"Can the application function\nwithout this resource?"}
+    D["Exclude from temporary environments\n• Add workspace-conditional logic\n• Ensure graceful degradation"]
+    E["Design problem — solve in the tech spec\n• Consider redesigning to avoid\n  out-of-band processes\n• Consider a lightweight substitute\n  for temporary environments\n• Discuss with the team before proceeding"]
+
+    A -->|Yes| B
+    A -->|No| C
+    C -->|Yes| D
+    C -->|No| E
 ```
 
 ## Cleanup Considerations
