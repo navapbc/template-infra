@@ -6,7 +6,6 @@ locals {
   tf_state_bucket_name = var.name
   tf_logs_bucket_name  = "${var.name}-logs"
 }
-
 # Options for encryption are an AWS owned key, which is not unique to your account; AWS managed; or customer managed. The latter two options are more secure, and customer managed gives
 # control over the key. This allows for ability to restrict access by key as well as policies attached to roles or users.
 # https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html

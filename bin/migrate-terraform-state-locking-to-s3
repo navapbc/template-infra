@@ -10,8 +10,8 @@
 #   5. Optionally reinitializes each root module and runs terraform plan
 #
 # Usage:
-#   bin/migrate-s3-locking              # Update backend files only
-#   bin/migrate-s3-locking --reinit     # Also run terraform init + plan for each module
+#   bin/migrate-terraform-state-locking-to-s3              # Update backend files only
+#   bin/migrate-terraform-state-locking-to-s3 --reinit     # Also run terraform init + plan for each module
 #
 # Run this from the project root before applying the accounts layer.
 # After running, you still need to:
@@ -31,6 +31,31 @@ echo "===================================="
 
 # Find all .s3.tfbackend files under infra/
 tfbackend_files=$(find infra -name '*.s3.tfbackend' -not -name 'example.*' | sort)
+
+# Check for active DynamoDB locks before proceeding
+first_file=$(echo "${tfbackend_files}" | head -1)
+if [ -n "${first_file}" ]; then
+  lock_table=$(grep 'dynamodb_table' "${first_file}" | sed 's/.*= *"\(.*\)"/\1/' | tr -d ' ')
+  if [ -n "${lock_table}" ]; then
+    echo "Checking for active locks in DynamoDB table: ${lock_table}"
+    lock_count=$(aws dynamodb scan \
+      --table-name "${lock_table}" \
+      --filter-expression "attribute_exists(LockID)" \
+      --select "COUNT" \
+      --query "Count" \
+      --output text 2>/dev/null || echo "")
+    if [ -n "${lock_count}" ] && [ "${lock_count}" -gt 0 ] 2>/dev/null; then
+      echo "WARNING: Found ${lock_count} active lock(s) in ${lock_table}"
+      echo "Someone may be running Terraform. Wait for locks to clear before proceeding."
+      exit 1
+    elif [ -n "${lock_count}" ]; then
+      echo "No active locks found. Proceeding with migration."
+    else
+      echo "WARNING: Could not check for locks (AWS access issue?). Proceeding anyway."
+    fi
+    echo
+  fi
+fi
 file_count=$(echo "${tfbackend_files}" | wc -l | tr -d ' ')
 
 echo "Found ${file_count} .s3.tfbackend files to migrate"
@@ -106,7 +131,12 @@ if [[ "${reinit}" == true ]]; then
     fi
 
     echo "Running: terraform plan"
-    if ! terraform -chdir="${module_dir}" plan -input=false; then
+    tf_vars_file="${module_dir}/${config_name}.tfvars"
+    tf_vars_option=""
+    if [ -f "${tf_vars_file}" ]; then
+      tf_vars_option="-var-file=${config_name}.tfvars"
+    fi
+    if ! terraform -chdir="${module_dir}" plan -input=false ${tf_vars_option}; then
       echo "  ERROR: terraform plan failed for ${module_dir} ${config_name}"
       errors=$((errors + 1))
       continue
@@ -133,9 +163,9 @@ if [[ "${reinit}" == false ]]; then
   echo "  1. Run 'terraform init -reconfigure' for each root module"
   echo "     Or re-run this script with --reinit to automate this"
   echo "  2. Run 'terraform plan' to verify no unexpected changes"
-  echo "  3. Apply the accounts layer to remove the DynamoDB table"
+  echo "  3. Apply the accounts layer for each account to remove the DynamoDB table"
   echo "  4. Commit and push the updated .s3.tfbackend files"
 else
-  echo "  1. Apply the accounts layer to remove the DynamoDB table"
+  echo "  1. Apply the accounts layer for each account to remove the DynamoDB table"
   echo "  2. Commit and push the updated .s3.tfbackend files"
 fi

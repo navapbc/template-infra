@@ -12,8 +12,8 @@ Terraform 1.10+ supports [native S3 state locking](https://developer.hashicorp.c
 The migration has three phases:
 
 1. **Update backend config files** — Replace `dynamodb_table` with `use_lockfile = true` in all `.s3.tfbackend` files
-2. **Reinitialize and verify** — Run `terraform init -reconfigure` and `terraform plan` for each module
-3. **Apply the accounts layer** — Remove the DynamoDB table and related resources from AWS
+2. **Reinitialize and verify** — Run `terraform init -reconfigure` and `terraform plan` for each root module
+3. **Apply the accounts layer** (for every account) — Remove the DynamoDB table and related resources from AWS
 
 ## Step-by-step instructions
 
@@ -31,25 +31,20 @@ The lock table name follows the pattern `<project>-<account_id>-<region>-tf-stat
 
 If any locks are active, wait for them to clear before proceeding.
 
-### 2. Merge the template update
+### 2. Update your project's template-infra
 
-Merge the pull request that updates the template to remove DynamoDB locking. This updates:
+Follow the standard process for [keeping your infrastructure up to date](https://github.com/navapbc/template-infra/blob/main/README.md#keeping-your-infrastructure-up-to-date) to pull in the template changes that remove DynamoDB locking.
 
-- `infra/modules/terraform-backend-s3/main.tf` — Removes the `aws_dynamodb_table` resource
-- `infra/modules/terraform-backend-s3/outputs.tf` — Removes the `tf_locks_table_name` output
-- `infra/accounts/outputs.tf` — Removes the `tf_locks_table_name` output
-- `infra/example.s3.tfbackend` — Replaces `dynamodb_table` with `use_lockfile = true`
-- `bin/create-tfbackend` — No longer references DynamoDB
-- `bin/migrate-s3-locking` — New script to automate the backend file migration
+<!-- TODO(for release): Update with the specific template-infra release version that includes S3 native locking -->
 
 > **Important:** Do NOT apply the accounts layer yet. Merge the code first, then update the backend files, then apply.
 
 ### 3. Run the migration script
 
-The `bin/migrate-s3-locking` script automates updating all `.s3.tfbackend` files. It removes the `dynamodb_table` line and adds `use_lockfile = true`.
+The `bin/migrate-terraform-state-locking-to-s3` script automates updating all `.s3.tfbackend` files. It removes the `dynamodb_table` line and adds `use_lockfile = true`.
 
 ```bash
-./bin/migrate-s3-locking
+./bin/migrate-terraform-state-locking-to-s3
 ```
 
 The script will report which files were migrated and which were already up to date.
@@ -57,7 +52,7 @@ The script will report which files were migrated and which were already up to da
 To also reinitialize each module and run `terraform plan` automatically, use the `--reinit` flag:
 
 ```bash
-./bin/migrate-s3-locking --reinit
+./bin/migrate-terraform-state-locking-to-s3 --reinit
 ```
 
 This combines steps 3, 4, and 5 below. The script will iterate over each `.s3.tfbackend` file, run `terraform init -reconfigure` and `terraform plan` for the corresponding module, and report any failures.
@@ -79,18 +74,12 @@ Run `terraform init -reconfigure` for each root module to pick up the new backen
 ./bin/terraform-init infra/accounts <account_alias>
 
 # For each network
-./bin/terraform-init infra/networks dev
-./bin/terraform-init infra/networks staging
-./bin/terraform-init infra/networks prod
+./bin/terraform-init infra/networks <NETWORK_NAME>
 
 # For each application module and environment
-./bin/terraform-init infra/<app_name>/build-repository shared
-./bin/terraform-init infra/<app_name>/database dev
-./bin/terraform-init infra/<app_name>/database staging
-./bin/terraform-init infra/<app_name>/database prod
-./bin/terraform-init infra/<app_name>/service dev
-./bin/terraform-init infra/<app_name>/service staging
-./bin/terraform-init infra/<app_name>/service prod
+./bin/terraform-init infra/<APP_NAME>/build-repository shared
+./bin/terraform-init infra/<APP_NAME>/database <ENVIRONMENT>
+./bin/terraform-init infra/<APP_NAME>/service <ENVIRONMENT>
 ```
 
 ### 5. Verify with terraform plan
@@ -116,7 +105,7 @@ For all other modules (networks, app modules), the plan should show **no changes
 Once you've verified the plans, apply the accounts layer to remove the DynamoDB table:
 
 ```bash
-terraform -chdir=infra/accounts apply tfplan
+make infra-update-current-account
 ```
 
 ### 7. Commit the updated backend files
