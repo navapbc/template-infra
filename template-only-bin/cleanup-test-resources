@@ -225,18 +225,6 @@ cleanup_project() {
     aws s3api delete-bucket --bucket "${bucket_name}" --region "${AWS_REGION}" || echo "Failed to delete bucket ${bucket_name}"
   done
 
-  # Delete DynamoDB tables
-  echo "Cleaning up DynamoDB tables..."
-  local dynamodb_arns
-  dynamodb_arns=$(echo "${resources}" | grep 'dynamodb' || echo "")
-
-  for table_arn in ${dynamodb_arns}; do
-    local table_name
-    table_name=$(echo "${table_arn}" | awk -F'/' '{print $NF}')
-    echo "Deleting DynamoDB table: ${table_name}"
-    aws dynamodb delete-table --table-name "${table_name}" --region "${AWS_REGION}" || echo "Failed to delete table ${table_name}"
-  done
-
   echo "Cleaning up Bedrock Data Automation..."
   local bedrock_da_arns
   bedrock_da_arns=$(echo "${resources}" | grep 'arn:aws:bedrock:.*:data-automation-project/' || echo "")
