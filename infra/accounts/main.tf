@@ -52,3 +52,14 @@ module "auth_github_actions" {
   github_repository        = module.project_config.code_repository
   allowed_actions          = [for aws_service in module.project_config.aws_services : "${aws_service}:*"]
 }
+
+# GuardDuty module - account-wide security detector
+module "threat_detection" {
+  source = "../modules/threat_detection"
+
+  enable_detector              = module.project_config.enable_threat_detection
+  finding_publishing_frequency = module.project_config.threat_detection_finding_publishing_frequency
+  # TODO: When upgrading to AWS provider >= 5.7.0, uncomment for multi-region support:
+  # Ticket: https://github.com/navapbc/template-infra/issues/1004#issue-4083076747
+  # regions             = module.project_config.regions
+}
