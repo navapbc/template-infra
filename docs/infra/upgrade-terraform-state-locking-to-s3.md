@@ -37,7 +37,7 @@ Follow the standard process for [keeping your infrastructure up to date](https:/
 
 <!-- TODO(for release): Update with the specific template-infra release version that includes S3 native locking -->
 
-> **Important:** Do NOT apply the accounts layer yet. Merge the code first, then update the backend files, then apply.
+> **Important:** Do NOT run `terraform apply` on `infra/accounts` yet — the DynamoDB table must remain until all `.s3.tfbackend` files have been updated.
 
 ### 3. Run the migration script
 
