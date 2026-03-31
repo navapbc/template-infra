@@ -46,3 +46,17 @@ output "project_name" {
 output "system_notifications_config" {
   value = local.system_notifications_config
 }
+
+# TODO: When upgrading to AWS provider >= 5.7.0, update to include all regions that GuardDuty should be enabled in for multi-region support:
+# Ticket: https://github.com/navapbc/template-infra/issues/1004#issue-4083076747
+#output "regions" {
+#  value = local.regions
+#}
+
+output "enable_threat_detection" {
+  value = local.enable_threat_detection
+}
+
+output "threat_detection_finding_publishing_frequency" {
+  value = local.threat_detection_finding_publishing_frequency
+}
