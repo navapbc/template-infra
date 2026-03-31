@@ -15,12 +15,6 @@ locals {
     // AWS Backup – Centralized service for automating backups across AWS resources.
     "backup",
 
-    // AWS Bedrock – Provides access to large language models and generative AI services.
-    "bedrock",
-
-    // AWS CloudFormation – Infrastructure as Code (IaC) service for provisioning and managing AWS resources.
-    "cloudformation",
-
     // Amazon CloudWatch – Monitors and logs AWS resources and applications.
     "cloudwatch",
 
@@ -47,6 +41,9 @@ locals {
 
     // Amazon EventBridge – Serverless event bus for event-driven applications and AWS service integrations. Used for event-based jobs.
     "events",
+
+    // Amazon GuardDuty – Threat detection service that monitors for malicious activity and unauthorized behavior. Used for S3 malware protection.
+    "guardduty",
 
     // AWS Identity and Access Management – Manages users, roles, and permissions for AWS services.
     "iam",
@@ -90,9 +87,6 @@ locals {
     // Amazon Simple Email Service (SES) – An email sending and receiving service. Used for email notifications.
     "ses",
 
-    // AWS End User Messaging SMS – A service for sending SMS and voice messages. Used for SMS notifications.
-    "sms-voice",
-
     // Amazon Simple Notification Service (SNS) – A pub/sub messaging service.
     "sns",
 
@@ -107,8 +101,5 @@ locals {
 
     // AWS WAF v2 – An updated web application firewall service for filtering and securing traffic.
     "wafv2",
-
-    // AWS CloudFormation – Provides infrastructure as code for deploying and managing AWS resources. Used to manage resources that don't have adequate native Terraform support.
-    "cloudformation",
   ]
 }
