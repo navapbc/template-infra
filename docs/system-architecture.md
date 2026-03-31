@@ -14,6 +14,7 @@ This diagram shows the system architecture. [🔒 Make a copy of this Lucid temp
 * **Cognito** — Amazon Cognito handles authentication and user management.
 * **Database Role Manager** — AWS Lambda serverless function that provisions the database roles needed by the application.
 * **GitHub** — Source code repository. Also responsible for Continuous Integration (CI) and Continuous Delivery (CD) workflows. GitHub Actions builds and deploys releases to an Amazon ECR registry that stores Docker container images for the application service.
+* **GuardDuty Threat Detection** — AWS GuardDuty continuously monitors for malicious activity and unauthorized behavior across the AWS account, analyzing CloudTrail events, VPC Flow Logs, and DNS logs to detect security threats and anomalous activities. Additionally provides malware detection for files uploaded to S3 storage, preventing infected files from being downloaded.
 * **Incident Management Service** — Incident management service (e.g. PagerDuty or Splunk On-Call) for managing on-call schedules and paging engineers for urgent production issues.
 * **NAT Gateway** — Enables outbound internet access for resources in private subnets.
 * **Secrets Manager** — Securely stores and retrieves sensitive information such as database credentials.
