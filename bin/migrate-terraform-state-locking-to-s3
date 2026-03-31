@@ -3,10 +3,10 @@
 # Migrate .s3.tfbackend files from DynamoDB state locking to S3 native locking.
 #
 # This script:
-#   1. Finds all .s3.tfbackend files under infra/
-#   2. Removes the dynamodb_table line
-#   3. Adds use_lockfile = true
-#   4. Updates infra/example.s3.tfbackend
+#   1. Checks for active DynamoDB locks
+#   2. Finds all .s3.tfbackend files under infra/
+#   3. Removes the dynamodb_table line
+#   4. Adds use_lockfile = true
 #   5. Optionally reinitializes each root module and runs terraform plan
 #
 # Usage:
@@ -45,13 +45,19 @@ if [ -n "${first_file}" ]; then
       --query "Count" \
       --output text 2>/dev/null || echo "")
     if [ -n "${lock_count}" ] && [ "${lock_count}" -gt 0 ] 2>/dev/null; then
-      echo "WARNING: Found ${lock_count} active lock(s) in ${lock_table}"
-      echo "Someone may be running Terraform. Wait for locks to clear before proceeding."
+      echo "WARNING: Found ${lock_count} lock(s) in ${lock_table}"
+      echo "Someone may be running Terraform or there are orphan locks."
+      echo "Wait for locks to clear or clean up the locks before proceeding."
       exit 1
     elif [ -n "${lock_count}" ]; then
       echo "No active locks found. Proceeding with migration."
     else
-      echo "WARNING: Could not check for locks (AWS access issue?). Proceeding anyway."
+      echo "WARNING: Could not check for locks (AWS access issue?)."
+      read -r -p "Continue without checking locks? (y/N) " response
+      if [[ ! "${response}" =~ ^[Yy]$ ]]; then
+        echo "Aborting."
+        exit 1
+      fi
     fi
     echo
   fi
@@ -86,7 +92,8 @@ for file in ${tfbackend_files}; do
   fi
 done
 
-# Update example.s3.tfbackend
+# Update example.s3.tfbackend if needed (normally handled by the template update,
+# but included here for completeness)
 example_file="infra/example.s3.tfbackend"
 if [ -f "${example_file}" ] && grep -q 'dynamodb_table' "${example_file}"; then
   sed -i.bak '/dynamodb_table/d' "${example_file}"
@@ -94,10 +101,7 @@ if [ -f "${example_file}" ] && grep -q 'dynamodb_table' "${example_file}"; then
     echo "use_lockfile   = true" >> "${example_file}"
   fi
   rm -f "${example_file}.bak"
-  echo "  Migrated: ${example_file}"
-  migrated=$((migrated + 1))
-elif [ -f "${example_file}" ]; then
-  echo "  Skipped (already migrated): ${example_file}"
+  echo "  Updated: ${example_file}"
 fi
 
 echo
