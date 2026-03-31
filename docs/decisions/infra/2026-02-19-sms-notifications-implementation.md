@@ -1,9 +1,10 @@
-# ADR: Enable SMS Notifications in Strata AWS Infrastructure Template via AWS End User Messaging Phone Number Pool
+# Enable SMS Notifications via AWS End User Messaging Phone Number Pool
 
-- **Status:** Proposed (Draft)
-- **Date:** 2025-01-28
-- **Author:** Johan Robles
-- **Related Ticket:** #976
+- Status: accepted
+- Deciders: @jrpbc @doshitan
+- Date: 2025-01-28
+
+Technical story: https://github.com/navapbc/template-infra/issues/976
 
 ---
 
