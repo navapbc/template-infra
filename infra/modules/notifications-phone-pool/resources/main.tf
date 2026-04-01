@@ -28,6 +28,7 @@ locals {
 # CloudFormation stack for SMS phone pool and phone number
 # Every phone pool must have at least one phone number, so we create both resources in the same stack.
 resource "aws_cloudformation_stack" "sms_phone_pool" {
+  # checkov:skip=CKV_AWS_124: CloudFormation stack event notifications via SNS not required; stack lifecycle is managed by Terraform and errors surface through Terraform output.
   name = "${var.name}-phone-pool"
 
   timeout_in_minutes = 5

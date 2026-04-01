@@ -104,8 +104,5 @@ locals {
 
     // AWS WAF v2 – An updated web application firewall service for filtering and securing traffic.
     "wafv2",
-
-    // AWS CloudFormation – Provides infrastructure as code for deploying and managing AWS resources. Used to manage resources that don't have adequate native Terraform support.
-    "cloudformation",
   ]
 }
