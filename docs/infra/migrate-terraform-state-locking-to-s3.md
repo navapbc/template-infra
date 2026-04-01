@@ -19,7 +19,7 @@ The migration has three phases:
 
 ### 1. Confirm no active Terraform state locks
 
-Before starting, make sure no one is currently running Terraform against any module. Check the DynamoDB table for active locks:
+Before starting, make sure no one is currently running Terraform against any module. The migration script (step 3) checks for locks automatically, but you can also check manually:
 
 ```bash
 aws dynamodb scan \
@@ -29,7 +29,7 @@ aws dynamodb scan \
 
 The lock table name follows the pattern `<project>-<account_id>-<region>-tf-state-locks`. You can find the exact name in any existing `.s3.tfbackend` file under the `dynamodb_table` key.
 
-If any locks are active, wait for them to clear before proceeding.
+If any locks are active, wait for them to clear or clean up orphan locks before proceeding.
 
 ### 2. Update your project's template-infra
 
@@ -108,7 +108,11 @@ Once you've verified the plans, apply the accounts layer to remove the DynamoDB 
 make infra-update-current-account
 ```
 
-### 7. Commit the updated backend files
+### 7. Update active pull requests
+
+If your project has open pull requests with preview environments, rebase them onto the latest main branch so they pick up the migrated `.s3.tfbackend` files. Otherwise, those PR environments will still reference the old DynamoDB-based backend configuration.
+
+### 8. Commit the updated backend files
 
 Commit and push the updated `.s3.tfbackend` files:
 
