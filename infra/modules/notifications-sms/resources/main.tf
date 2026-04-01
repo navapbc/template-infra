@@ -106,6 +106,7 @@ resource "aws_iam_role_policy" "sms_logging_permissions" {
 
 # CloudFormation stack for SMS configuration set
 resource "aws_cloudformation_stack" "sms_config_set" {
+  # checkov:skip=CKV_AWS_124: CloudFormation stack event notifications via SNS not required; stack lifecycle is managed by Terraform and errors surface through Terraform output.
   name = "${var.name}-config-set"
 
   # Use a dedicated service role for CloudFormation operations
