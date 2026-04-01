@@ -38,18 +38,17 @@ if [ -n "${first_file}" ]; then
   lock_table=$(grep 'dynamodb_table' "${first_file}" | sed 's/.*= *"\(.*\)"/\1/' | tr -d ' ')
   if [ -n "${lock_table}" ]; then
     echo "Checking for active locks in DynamoDB table: ${lock_table}"
-    lock_count=$(aws dynamodb scan \
+    active_count=$(aws dynamodb scan \
       --table-name "${lock_table}" \
-      --filter-expression "attribute_exists(LockID)" \
+      --filter-expression "attribute_exists(LockID) AND attribute_exists(Info)" \
       --select "COUNT" \
       --query "Count" \
       --output text 2>/dev/null || echo "")
-    if [ -n "${lock_count}" ] && [ "${lock_count}" -gt 0 ] 2>/dev/null; then
-      echo "WARNING: Found ${lock_count} lock(s) in ${lock_table}"
-      echo "Someone may be running Terraform or there are orphan locks."
-      echo "Wait for locks to clear or clean up the locks before proceeding."
+    if [ -n "${active_count}" ] && [ "${active_count}" -gt 0 ] 2>/dev/null; then
+      echo "ERROR: Found ${active_count} active lock(s) in ${lock_table}"
+      echo "Someone is running Terraform. Wait for them to finish before proceeding."
       exit 1
-    elif [ -n "${lock_count}" ]; then
+    elif [ -n "${active_count}" ]; then
       echo "No active locks found. Proceeding with migration."
     else
       echo "WARNING: Could not check for locks (AWS access issue?)."

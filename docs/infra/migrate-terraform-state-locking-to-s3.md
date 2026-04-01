@@ -17,21 +17,7 @@ The migration has three phases:
 
 ## Step-by-step instructions
 
-### 1. Confirm no active Terraform state locks
-
-Before starting, make sure no one is currently running Terraform against any module. The migration script (step 3) checks for locks automatically, but you can also check manually:
-
-```bash
-aws dynamodb scan \
-  --table-name <your-lock-table> \
-  --filter-expression "attribute_exists(LockID)"
-```
-
-The lock table name follows the pattern `<project>-<account_id>-<region>-tf-state-locks`. You can find the exact name in any existing `.s3.tfbackend` file under the `dynamodb_table` key.
-
-If any locks are active, wait for them to clear or clean up orphan locks before proceeding.
-
-### 2. Update your project's template-infra
+### 1. Update your project's template-infra
 
 Follow the standard process for [keeping your infrastructure up to date](https://github.com/navapbc/template-infra/blob/main/README.md#keeping-your-infrastructure-up-to-date) to pull in the template changes that remove DynamoDB locking.
 
@@ -39,7 +25,7 @@ Follow the standard process for [keeping your infrastructure up to date](https:/
 
 > **Important:** Do NOT run `terraform apply` on `infra/accounts` yet — the DynamoDB table must remain until all `.s3.tfbackend` files have been updated.
 
-### 3. Run the migration script
+### 2. Run the migration script
 
 The `bin/migrate-terraform-state-locking-to-s3` script automates updating all `.s3.tfbackend` files. It removes the `dynamodb_table` line and adds `use_lockfile = true`.
 
@@ -55,17 +41,17 @@ To also reinitialize each module and run `terraform plan` automatically, use the
 ./bin/migrate-terraform-state-locking-to-s3 --reinit
 ```
 
-This combines steps 3, 4, and 5 below. The script will iterate over each `.s3.tfbackend` file, run `terraform init -reconfigure` and `terraform plan` for the corresponding module, and report any failures.
+This combines steps 2, 3, and 4 below. The script will iterate over each `.s3.tfbackend` file, run `terraform init -reconfigure` and `terraform plan` for the corresponding module, and report any failures.
 
 If you prefer to do this manually, edit each `.s3.tfbackend` file under `infra/` to:
 - Remove the `dynamodb_table = "..."` line
 - Add `use_lockfile   = true`
 
-Then follow steps 4 and 5 below.
+Then follow steps 3 and 4 below.
 
-### 4. Reinitialize each root module
+### 3. Reinitialize each root module
 
-> **Note:** If you used `--reinit` in step 3, skip to step 6.
+> **Note:** If you used `--reinit` in step 2, skip to step 5.
 
 Run `terraform init -reconfigure` for each root module to pick up the new backend configuration. Use the existing `bin/terraform-init` script:
 
@@ -82,7 +68,7 @@ Run `terraform init -reconfigure` for each root module to pick up the new backen
 ./bin/terraform-init infra/<APP_NAME>/service <ENVIRONMENT>
 ```
 
-### 5. Verify with terraform plan
+### 4. Verify with terraform plan
 
 Run `terraform plan` for each module to confirm there are no unexpected changes. For the accounts module specifically, you should see the DynamoDB table marked for destruction:
 
@@ -100,7 +86,7 @@ The one resource to destroy is `aws_dynamodb_table.terraform_lock`.
 
 For all other modules (networks, app modules), the plan should show **no changes**.
 
-### 6. Apply the accounts layer
+### 5. Apply the accounts layer
 
 Once you've verified the plans, apply the accounts layer to remove the DynamoDB table:
 
@@ -108,11 +94,11 @@ Once you've verified the plans, apply the accounts layer to remove the DynamoDB 
 make infra-update-current-account
 ```
 
-### 7. Update active pull requests
+### 6. Update active pull requests
 
 If your project has open pull requests with preview environments, rebase them onto the latest main branch so they pick up the migrated `.s3.tfbackend` files. Otherwise, those PR environments will still reference the old DynamoDB-based backend configuration.
 
-### 8. Commit the updated backend files
+### 7. Commit the updated backend files
 
 Commit and push the updated `.s3.tfbackend` files:
 
@@ -124,7 +110,7 @@ git push
 
 ## Repeat for each AWS account
 
-If your project uses multiple AWS accounts (e.g., separate accounts for lower environments and prod), repeat steps 1, 3–7 for each account. You'll need to assume the appropriate role or configure AWS credentials for each account before running the commands.
+If your project uses multiple AWS accounts (e.g., separate accounts for lower environments and prod), repeat steps 1–7 for each account. You'll need to assume the appropriate role or configure AWS credentials for each account before running the commands.
 
 ## Rollback
 
