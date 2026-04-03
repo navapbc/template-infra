@@ -100,6 +100,7 @@ module "service" {
     local.document_data_extraction_environment_variables,
     local.identity_provider_environment_variables,
     local.notifications_environment_variables,
+    local.sms_environment_variables,
     local.service_config.extra_environment_variables
   )
 
@@ -129,6 +130,9 @@ module "service" {
     } : {},
     module.app_config.enable_notifications ? {
       notifications_access = module.notifications[0].access_policy_arn,
+    } : {},
+    local.sms_config != null ? {
+      sms_notifications_access = module.notifications_sms[0].access_policy_arn,
     } : {},
   )
 

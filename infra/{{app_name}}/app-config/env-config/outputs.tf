@@ -34,6 +34,10 @@ output "notifications_config" {
   value = local.notifications_config
 }
 
+output "sms_config" {
+  value = local.sms_config
+}
+
 output "storage_config" {
   value = {
     # Include project name in bucket name since buckets need to be globally unique across AWS

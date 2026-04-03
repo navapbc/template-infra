@@ -12,6 +12,7 @@ module "prod_config" {
   enable_identity_provider        = local.enable_identity_provider
   enable_notifications            = local.enable_notifications
   enable_document_data_extraction = local.enable_document_data_extraction
+  enable_sms_notifications        = local.enable_sms_notifications
 
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs
