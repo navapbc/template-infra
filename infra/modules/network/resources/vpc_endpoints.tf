@@ -18,6 +18,9 @@ locals {
 
     # AWS services used by notifications
     var.enable_notifications ? ["email-smtp"] : [],
+
+    # AWS services used by SMS notifications
+    var.enable_sms_notifications ? ["pinpoint-sms-voice-v2"] : []
   )
 
   # S3 and DynamoDB use Gateway VPC endpoints. All other services use Interface VPC endpoints
