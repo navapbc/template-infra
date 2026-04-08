@@ -139,7 +139,7 @@ if [[ "${reinit}" == true ]]; then
     if [ -f "${tf_vars_file}" ]; then
       tf_vars_args+=("-var-file=${config_name}.tfvars")
     fi
-    if ! terraform -chdir="${module_dir}" plan -input=false "${tf_vars_args[@]}"; then
+    if ! terraform -chdir="${module_dir}" plan -input=false ${tf_vars_args[@]+"${tf_vars_args[@]}"}; then
       echo "  ERROR: terraform plan failed for ${module_dir} ${config_name}"
       errors=$((errors + 1))
       continue
