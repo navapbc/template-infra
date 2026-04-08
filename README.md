@@ -30,7 +30,7 @@ This template repository provides **foundational AWS infrastructure** for deploy
 This template provides everything you need to deploy a production-ready web application:
 
 - **Team Workflows** – Pull request templates, architecture decision records (ADRs), and Makefiles for streamlined development
--  **Account Level Foundational Infrastructure** – Infrastructure for terraform backends, including an S3 bucket for storing and managing terraform state files.
+- **Account Level Foundational Infrastructure** – Infrastructure for terraform backends, including an S3 bucket for storing and managing terraform state files.
 - **Application Infrastructure** – Container registry, load balancers, web services, and databases for your web app
 - **Continuous Integration** – GitHub Actions for automated linting, validation, and security compliance checks
 - **Continuous Deployment** – infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
@@ -59,17 +59,17 @@ Before using this template, you need an application ready to deploy.
 
 Install the template into your project using the Nava Platform CLI:
 
-1. **Install the nava-platform tool**: 
+1. **Install the nava-platform tool**:
 Follow the instructions at [github.com/navapbc/platform-cli](https://github.com/navapbc/platform-cli)
 
-2. **Run the installation command** 
+2. **Run the installation command**
 in your project's root directory:
 
    ```sh
    nava-platform infra install .
    ```
 
-3. **You're ready to go!** 
+3. **You're ready to go!**
 Proceed to the setup steps below.
 
 ### Setup Guide

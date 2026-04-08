@@ -78,7 +78,7 @@ To set up this project for the first time (i.e., it has never been deployed to t
 
    **Important:** Make sure you review and understand /infra/project-config/main.tf. Configuration here can have broad impact that is hard to change later, so be reasonably confident things are right initially.
 
-   **Note:** Some application config impacts other layers besides the application environment. So if you want to minimize back and forth during set up, you should [read the requirements for setting up an application environment](/docs/infra/set-up-app-env.md#requirements) and configure #### your application infrastructure with what you currently know you need (e.g. a database, external service access).
+   **Note:** Some application config impacts other layers besides the application environment. So if you want to minimize back and forth during set up, you should [read the requirements for setting up an application environment](/docs/infra/set-up-app-env.md#requirements) and configure your application infrastructure with what you currently know you need (e.g. a database, external service access).
 
 3. [Set up infrastructure developer tools](/docs/infra/set-up-infrastructure-tools.md)
 
