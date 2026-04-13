@@ -87,6 +87,9 @@ locals {
     // Amazon Simple Email Service (SES) – An email sending and receiving service. Used for email notifications.
     "ses",
 
+    // AWS End User Messaging SMS – A service for sending SMS and voice messages. Used for SMS notifications.
+    "sms-voice",
+
     // Amazon Simple Notification Service (SNS) – A pub/sub messaging service.
     "sns",
 

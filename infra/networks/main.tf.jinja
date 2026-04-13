@@ -48,6 +48,9 @@ locals {
 
   # Whether any of the applications in the network has enabled notifications
   enable_notifications = anytrue([for app in local.apps_in_network : app.enable_notifications])
+
+  # Whether any of the applications in the network has enabled SMS notifications
+  enable_sms_notifications = anytrue([for app in local.apps_in_network : app.enable_sms_notifications])
 }
 
 terraform {
