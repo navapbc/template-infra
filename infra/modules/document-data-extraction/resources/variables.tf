@@ -89,7 +89,7 @@ variable "standard_output_configuration" {
   default = null
 }
 
-# override_configuration allows customizing extraction behavior beyond standard 
+# override_configuration allows customizing extraction behavior beyond standard
 # settings:
 #  - enabling document splitting
 #  - skipping certain modalities (audio, video, text)

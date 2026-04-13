@@ -95,7 +95,7 @@ def configure_database(conn: Connection, config: dict) -> None:
     # for projects that wish to use earlier versions of Postgres.
     print("---- Revoking default access on public schema")
     db.execute(conn, "REVOKE CREATE ON SCHEMA public FROM PUBLIC")
-    
+
     print("---- Revoking database access from public role")
     db.execute(conn, f"REVOKE ALL ON DATABASE {identifier(database_name)} FROM PUBLIC")
     print(f"---- Setting default search path to schema {schema_name}")

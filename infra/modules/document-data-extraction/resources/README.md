@@ -28,14 +28,14 @@ The module creates:
 ```hcl
 module "bedrock_data_automation" {
   source = "../../modules/document-data-extraction/resources"
-  
+
   name  = "my-app-prod"
-  
+
   blueprints = [
     "./schemas/invoice.json",
     "arn:aws:bedrock:us-east-1::blueprint/aws-managed-blueprint-id"
   ]
-  
+
   standard_output_configuration = {
     document = {
       extraction = {
@@ -45,7 +45,7 @@ module "bedrock_data_automation" {
       }
     }
   }
-  
+
   tags = {
     Environment = "production"
     ManagedBy   = "terraform"
@@ -118,9 +118,9 @@ See `variables.tf` for complete structure details.
 ```hcl
 module "bedrock_data_automation" {
   source = "../../modules/document-data-extraction/resources"
-  
+
   name = "my-app"
-  
+
   blueprints = [] # No custom blueprints
 }
 ```
@@ -129,7 +129,7 @@ module "bedrock_data_automation" {
 ```hcl
 module "bedrock_data_automation" {
   source = "../../modules/document-data-extraction/resources"
-  
+
   name       = "my-app"
   blueprints = [] # Add file paths or ARNs here
 

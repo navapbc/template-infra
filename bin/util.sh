@@ -14,12 +14,12 @@ function base62_decode() {
   local digits="0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
   local s=$1
   local n=0
-  
+
   for ((i=0;i<${#s};i++)); do
     c=${s:$i:1}
     pos=${digits%%"$c"*}
     n=$((n*62 + ${#pos}))
   done
-  
+
   echo $n
 }

@@ -103,7 +103,7 @@ resource "aws_s3_bucket_policy" "tf_state" {
 
 # Create the S3 bucket to provide server access logging.
 #
-# Ignore bucket logging complaince check for this bucket since 
+# Ignore bucket logging complaince check for this bucket since
 # the bucket is used for logging only and doesn't need server access logging itself
 # (see https://docs.aws.amazon.com/AmazonS3/latest/userguide/ServerLogs.html)
 # tfsec:ignore:aws-s3-enable-bucket-logging

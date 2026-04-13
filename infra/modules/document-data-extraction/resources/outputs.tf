@@ -11,7 +11,7 @@ output "bda_project_arn" {
   value       = awscc_bedrock_data_automation_project.bda_project.project_arn
 }
 
-# aws bedrock data automation requires users to use cross Region inference support 
+# aws bedrock data automation requires users to use cross Region inference support
 # when processing files. the following like the profile ARNs for different inference
 # profiles
 # https://docs.aws.amazon.com/bedrock/latest/userguide/bda-cris.html
