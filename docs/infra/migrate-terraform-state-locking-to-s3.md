@@ -19,9 +19,7 @@ The migration has three phases:
 
 ### 1. Update your project's template-infra
 
-Follow the standard process for [keeping your infrastructure up to date](https://github.com/navapbc/template-infra/blob/main/README.md#keeping-your-infrastructure-up-to-date) to pull in the template changes that remove DynamoDB locking.
-
-<!-- TODO(for release): Update with the specific template-infra release version that includes S3 native locking -->
+Follow the standard process for [keeping your infrastructure up to date](https://github.com/navapbc/template-infra/blob/main/README.md#keeping-your-infrastructure-up-to-date) to pull in the template changes that remove DynamoDB locking. The change is in `v0.17.0` of the template.
 
 > **Important:** Do NOT run `terraform apply` on `infra/accounts` yet — the DynamoDB table must remain until all `.s3.tfbackend` files have been updated.
 
