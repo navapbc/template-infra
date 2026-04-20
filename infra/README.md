@@ -45,8 +45,8 @@ The infrastructure is designed to operate on different layers:
 - Account layer
 - Network layer
 - Build repository layer (per application)
-- Database layer (per application)
-- Service layer (per application)
+- Database layer (per application environment)
+- Service layer (per application environment)
 
 ### 🏜️ Application environments
 
