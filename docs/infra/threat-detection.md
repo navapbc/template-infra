@@ -1,6 +1,6 @@
 # Threat Detection (AWS GuardDuty)
 
-The infrastructure uses AWS GuardDuty for threat detection and security monitoring across the AWS account. GuardDuty by default continuously analyzes the following data sources:
+The infrastructure uses AWS GuardDuty for threat detection and security monitoring across the AWS account. GuardDuty is enabled by default to continuously analyze the following data sources:
 
 - **AWS CloudTrail event logs** - API calls and user activities
 - **Amazon VPC Flow Logs** - Network traffic patterns
@@ -8,7 +8,7 @@ The infrastructure uses AWS GuardDuty for threat detection and security monitori
 
 ## Malware detection for S3 storage
 
-The infratructure leverages GuardDuty's malware detection feature to continuously scans files uploaded to S3 buckets for malicious content. When malware is detected:
+The infrastructure leverages GuardDuty's malware detection feature to continuously scan files uploaded to S3 buckets for malicious content. When malware is detected:
 
 1. **File access is blocked** - Downloads of infected files are prevented
 2. **Findings are generated** - Security findings are created in the GuardDuty service with detailed information including:
@@ -25,7 +25,7 @@ The infratructure leverages GuardDuty's malware detection feature to continuousl
 ### Checking S3 Object Tags for Malware Status
 
 ```bash
-#!/bin/bash
+#!/usr/bin/env bash
 
 for plan_id in $(aws guardduty list-malware-protection-plans \
     --query "MalwareProtectionPlans[*].MalwareProtectionPlanId" \
@@ -72,9 +72,9 @@ done
 
 ### Disabling Threat Detection
 
-To disable threat detection entirely:
+To disable AWS GuardDuty threat detection:
 
-1. Edit your Terraform workspace configuration file for the account layer,`infra/project-config/main.tf`
+1. Edit your Terraform workspace configuration file for the account layer, `infra/project-config/threat_detection.tf`
 
 2. Set the threat detection variable to `false`:
    ```hcl
@@ -82,9 +82,9 @@ To disable threat detection entirely:
    ```
 
 3. Set finding publishing frequency (FIFTEEN_MINUTES, ONE_HOUR, SIX_HOURS)
-```hcl
-threat_detection_finding_publishing_frequency = "FIFTEEN_MINUTES"
-```
+   ```hcl
+   threat_detection_finding_publishing_frequency = "FIFTEEN_MINUTES"
+   ```
 4. Apply the changes:
    ```bash
    make infra-update-current-account
@@ -96,6 +96,17 @@ threat_detection_finding_publishing_frequency = "FIFTEEN_MINUTES"
 |----------|-------------|---------|---------|
 | `enable_threat_detection` | Enable/disable GuardDuty threat detection | `true` | `true`, `false` |
 | `threat_detection_finding_publishing_frequency` | How often GuardDuty publishes findings to CloudWatch Events | `"FIFTEEN_MINUTES"` | `"FIFTEEN_MINUTES"`, `"ONE_HOUR"`, `"SIX_HOURS"` |
+
+### Enabling malware detection for S3 storage
+
+1. Edit your Terraform configuration file for the application service layer, `infra/<application-name>/app-config/main.tf`
+
+2. Set the `enable_storage_malware_scanning` variable to `true`
+
+3. Apply the changes:
+   ```bash
+   make infra-update-app-service APP_NAME=<application-name> ENVIRONMENT=<ENVIRONMENT>
+   ```
 
 ### Malware Detection Errors
 
