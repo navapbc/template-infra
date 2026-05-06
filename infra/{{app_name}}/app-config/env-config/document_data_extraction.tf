@@ -8,7 +8,7 @@ locals {
     # File paths are relative to the service directory
     # ARNs reference AWS-managed or existing custom blueprints
     blueprints = [
-      "./document-data-extraction-blueprints/*"
+      "./document-data-extraction-blueprints/*",
     ]
 
     # BDA can only be deployed to us-east-1, us-west-2, and us-gov-west-1
