@@ -52,6 +52,14 @@ resource "awscc_bedrock_data_automation_project" "bda_project" {
     blueprints = local.all_blueprints
   } : null
   override_configuration = var.override_configuration
+
+  lifecycle {
+    ignore_changes = [
+      # Ignore these changes to avoid always showing a diff, see
+      # https://github.com/navapbc/template-infra/issues/1027
+      custom_output_configuration.blueprints
+    ]
+  }
 }
 
 resource "awscc_bedrock_blueprint" "bda_blueprint" {
