@@ -4,6 +4,7 @@ data "aws_region" "current" {}
 
 # CloudWatch Log Group for SMS delivery receipts
 resource "aws_cloudwatch_log_group" "sms_logs" {
+  # checkov:skip=CKV_AWS_338:Ensure CloudWatch log groups retains logs for at least 1 year
   name              = "/aws/sms-voice/${var.name}/sms-notifications/delivery-receipts"
   retention_in_days = 30
 

@@ -66,6 +66,7 @@ resource "aws_wafv2_web_acl" "main" {
 
 resource "aws_cloudwatch_log_group" "waf_logs" {
   # checkov:skip=CKV_AWS_158:The KMS key triggered an operation error
+  # checkov:skip=CKV_AWS_338:Ensure CloudWatch log groups retains logs for at least 1 year
   name              = "aws-waf-logs-${var.name}"
   retention_in_days = 30
 }

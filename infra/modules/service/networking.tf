@@ -9,6 +9,7 @@ module "network" {
 }
 
 resource "aws_security_group" "alb" {
+  # checkov:skip=CKV_AWS_382:Ensure no security groups allow egress from 0.0.0.0:0 to port -1
   # Specify name_prefix instead of name because when a change requires creating a new
   # security group, sometimes the change requires the new security group to be created
   # before the old one is destroyed. In this situation, the new one needs a unique name

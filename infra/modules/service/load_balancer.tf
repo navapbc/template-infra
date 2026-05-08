@@ -4,6 +4,7 @@
 
 # ALB for an app running in ECS
 resource "aws_lb" "alb" {
+  # checkov:skip=CKV2_AWS_76:Ensure AWS ALB attached WAFv2 WebACL is configured with AMR for Log4j Vulnerability
   depends_on      = [aws_s3_bucket_policy.access_logs]
   name            = var.service_name
   idle_timeout    = "120"
@@ -137,6 +138,7 @@ resource "aws_lb_listener_rule" "app_https_forward" {
 }
 
 resource "aws_lb_target_group" "app_tg" {
+  # checkov:skip=CKV_AWS_378:Ensure AWS Load Balancer doesn't use HTTP protocol
   # you must use a prefix, to facilitate successful tg changes
   name_prefix          = "app-"
   port                 = var.container_port

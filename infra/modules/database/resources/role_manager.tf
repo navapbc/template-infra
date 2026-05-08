@@ -15,7 +15,7 @@ resource "aws_lambda_function" "role_manager" {
 
   filename         = local.role_manager_archive_path
   source_code_hash = filebase64sha256(local.role_manager_archive_path)
-  runtime          = "python3.9"
+  runtime          = "python3.10"
   handler          = "role_manager.lambda_handler"
   role             = aws_iam_role.role_manager.arn
   kms_key_arn      = aws_kms_key.role_manager.arn
@@ -61,6 +61,8 @@ data "aws_kms_key" "default_ssm_key" {
 resource "aws_kms_key" "role_manager" {
   description         = "Key for Lambda function ${local.role_manager_name}"
   enable_key_rotation = true
+
+  policy = data.aws_iam_policy_document.kms_key_policy.json
 }
 
 data "aws_secretsmanager_secret" "db_password" {

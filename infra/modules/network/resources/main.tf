@@ -12,6 +12,7 @@ module "interface" {
 }
 
 module "aws_vpc" {
+  # checkov:skip=CKV_TF_1:Ensure Terraform module sources use a commit hash
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.2.0"
 

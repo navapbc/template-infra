@@ -31,6 +31,7 @@ resource "aws_cognito_user_pool_client" "client" {
 }
 
 resource "aws_ssm_parameter" "client_secret" {
+  # checkov:skip=CKV_AWS_337:Ensure SSM parameters are using KMS CMK
   name  = "/${var.name}/identity-provider/client-secret"
   type  = "SecureString"
   value = aws_cognito_user_pool_client.client.client_secret

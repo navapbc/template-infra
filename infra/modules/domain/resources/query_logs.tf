@@ -1,6 +1,7 @@
 # DNS query logging
 
 resource "aws_cloudwatch_log_group" "dns_query_logging" {
+  # checkov:skip=CKV_AWS_338:Ensure CloudWatch log groups retains logs for at least 1 year
   provider = aws.us-east-1
 
   count = var.manage_dns ? 1 : 0

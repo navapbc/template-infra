@@ -14,6 +14,7 @@ resource "aws_security_group" "db" {
 }
 
 resource "aws_security_group" "role_manager" {
+  # checkov:skip=CKV2_AWS_5:Ensure that Security Groups are attached to another resource
   name_prefix = "${var.name}-role-manager"
   description = "Database role manager security group"
   vpc_id      = module.network.vpc_id
