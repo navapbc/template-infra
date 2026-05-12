@@ -53,7 +53,7 @@ blueprints are currently ignored. So after initial creation, if you wish to
 change the blueprints, you will need to take a few extra steps:
 
 1. Update `blueprints` config item as appropriate
-1. Comment out `custom_output_configuration.blueprints` line in the from the
+1. Comment out `custom_output_configuration.blueprints` line in the
    `ignore_changes` block on `awscc_bedrock_data_automation_project` in the [DDE
    module][dde-module].
 1. Update the service (`make infra-update-app-service APP_NAME=<APP_NAME>
@@ -63,7 +63,7 @@ change the blueprints, you will need to take a few extra steps:
 
 If you don't use the `check-infra-deploy-status.yml` workflow and/or are
 expecting frequent changes to the needed blueprints, you could remove the
-`ignore_chnages` block so that changes take effect via the regular deployment
+`ignore_changes` block so that changes take effect via the regular deployment
 process.
 
 [dde-module]: /infra/modules/document-data-extraction/resources/main.tf
