@@ -41,7 +41,7 @@ jobs:
       service_endpoint: ${{ steps.update-environment.outputs.service_endpoint }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
