@@ -85,9 +85,33 @@ resource "aws_rds_cluster_instance" "primary" {
   # apply_immediately = true
 }
 
+data "aws_iam_policy_document" "kms_key_policy" {
+  # checkov:skip=CKV_AWS_109:Root account requires full KMS permissions to enable IAM-based access control
+  # checkov:skip=CKV_AWS_111:Root account requires full KMS permissions to enable IAM-based access control
+  # checkov:skip=CKV_AWS_356:In a key policy, the wildcard character in the Resource element represents the KMS key to which the key policy is attached.
+
+  # This gives the AWS account that owns the KMS key full access to the KMS key,
+  # deferring specific access rules to IAM roles.
+  #
+  # This is the default key policy for programmatically generated KMS keys in
+  # general, see: https://docs.aws.amazon.com/kms/latest/developerguide/key-policy-default.html#key-policy-default-allow-root-enable-iam
+  statement {
+    sid    = "Enable IAM User Permissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+}
+
 resource "aws_kms_key" "db" {
   description         = "Key for RDS cluster ${var.name}"
   enable_key_rotation = true
+
+  policy = data.aws_iam_policy_document.kms_key_policy.json
 }
 
 # Query Logging
