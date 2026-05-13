@@ -41,6 +41,8 @@ locals {
       }
     ] : []
   )
+
+  bda_project_arn = awscc_bedrock_data_automation_project.bda_project.project_arn
 }
 
 resource "awscc_bedrock_data_automation_project" "bda_project" {
