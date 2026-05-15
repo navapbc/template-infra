@@ -16,8 +16,9 @@ locals {
 
     file_upload_jobs = {
       for job_name, job_config in local.file_upload_jobs :
-      # For job configs that don't define a source_bucket, add the source_bucket config property
-      job_name => merge({ source_bucket = local.bucket_name, handle_temp_prefix = true }, job_config)
+      # For job configs that don't define a source_bucket, default to the
+      # service's bucket and PR/temporary environment prefixing.
+      job_name => merge({ source_bucket = local.bucket_name, source_bucket_apply_workspace_prefix = true }, job_config)
     }
 
     ephemeral_write_volumes = []

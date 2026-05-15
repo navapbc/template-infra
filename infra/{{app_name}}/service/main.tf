@@ -35,7 +35,7 @@ locals {
   # this will need to change as well.
   prefixed_file_upload_jobs = {
     for job_name, job_config in local.service_config.file_upload_jobs :
-    job_name => job_config.handle_temp_prefix
+    job_name => job_config.source_bucket_apply_workspace_prefix
     ? merge(job_config, { source_bucket = "${local.prefix}${job_config.source_bucket}" })
     : job_config
   }
