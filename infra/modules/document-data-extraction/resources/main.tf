@@ -72,4 +72,21 @@ resource "awscc_bedrock_blueprint" "bda_blueprint" {
   schema         = each.value.schema
   type           = each.value.type
   tags           = local.bda_tags
+
+  lifecycle {
+    # Blueprints can't be deleted until all things (notably BDA Projects)
+    # referencing them are updated.
+    #
+    # NOTE: If you wish to change the type/modality of an existing blueprint,
+    # this setting will result in an error. As changing the type will force the
+    # resource to be re-created and this setting will make updates attempt to
+    # create a new blueprint with the same name before the existing one is
+    # removed, but blueprint names need to be unique. The simplest fix is to use
+    # a different name than the existing blueprint.
+    #
+    # Multiple modalities for custom blueprint files are not supported natively
+    # in the Strata templates, so this is just an FYI, see
+    # https://github.com/navapbc/template-infra/issues/1035
+    create_before_destroy = true
+  }
 }
