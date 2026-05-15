@@ -54,13 +54,16 @@ blueprints are currently ignored. This means the usual:
 - Changes to blueprints in AWS console (or other means) won't be detected by
   Terraform
 - Additions or removals of blueprints in the config won't apply with other
-  service-layer changes (after initial creation)
+  service-layer changes. Notably **deleting a custom blueprint source file will
+  result in an error during updates**, as the underlying blueprint resource will
+  try to be destroyed, but will still be referenced by the BDA project and so
+  the update will be prevented. See next section for more detail on removals.
 
 So after initial creation, if you wish to change the blueprints (or more
 generally, sync the deployed state to what is specified in the IaC), you will
 need to take a few extra steps:
 
-1. Update `blueprints` config item as appropriate
+1. Update `blueprints` config item (and custom blueprint files) as appropriate
    - For initial development, commit the changes now. For releases, checkout the
      commit corresponding to the release with the desired changes.
 1. Comment out `custom_output_configuration.blueprints` line in the
@@ -86,3 +89,27 @@ expecting frequent changes to the needed blueprints, you could remove the
 process.
 
 [dde-module]: /infra/modules/document-data-extraction/resources/main.tf
+
+### Removing custom blueprint files
+
+As mentioned above, you must follow the specified update steps when removing
+custom blueprint source files (default location:
+`/infra/<APP_NAME>/service/document-data-extraction-blueprints/`) to avoid
+errors during updates.
+
+This is because these files are turned into Bedrock blueprints, which are
+independent resources from any BDA project; the BDA project just references them
+by ARN. And because we ignore changes to the list of blueprint ARNs on the BDA
+project, a straight update will miss removing the Bedrock blueprint ARN from the
+list before the blueprint resource itself is (attempted to be) destroyed. You
+will encounter an error like:
+
+> Calling Cloud Control API service DeleteResource operation returned: waiter
+> state transitioned to FAILED.
+>
+> StatusMessage: Unable to delete the blueprint as it is being referenced by
+> some project. You must remove it from all referring projects before you can
+> delete the blueprint. (Service: BedrockDataAutomation, Status Code: 400,
+> Request ID: 5471570b-af48-40c4-bf88-293c92fe3021) (SDK Attempt Count: 1).
+>
+> ErrorCode: InvalidRequest
