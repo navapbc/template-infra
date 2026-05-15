@@ -22,6 +22,23 @@ locals {
   service_config          = local.environment_config.service_config
 
   service_name = "${local.prefix}${local.service_config.service_name}"
+
+  # The `source_bucket` config value (generally) contains a raw service-specific
+  # bucket name for the "real"/non-temporary environment. For temporary
+  # environments, these buckets will generally be automatically prefixed with
+  # the temporary environment identifier in this module, so add that to the base
+  # `source_bucket` value unless the config specifies not to (i.e., it is a
+  # shared/fixed bucket that _should_ trigger jobs across different
+  # environments).
+  #
+  # This is a little fragile and relies on naming conventions; if those change,
+  # this will need to change as well.
+  prefixed_file_upload_jobs = {
+    for job_name, job_config in local.service_config.file_upload_jobs :
+    job_name => job_config.source_bucket_apply_workspace_prefix
+    ? merge(job_config, { source_bucket = "${local.prefix}${job_config.source_bucket}" })
+    : job_config
+  }
 }
 
 terraform {
@@ -77,7 +94,7 @@ module "service" {
   desired_instance_count   = local.service_config.desired_instance_count
   enable_command_execution = local.service_config.enable_command_execution
 
-  file_upload_jobs = local.service_config.file_upload_jobs
+  file_upload_jobs = local.prefixed_file_upload_jobs
   scheduled_jobs   = local.environment_config.scheduled_jobs
 
   db_vars = module.app_config.has_database ? {
