@@ -44,22 +44,41 @@ their ARN in the `blueprints` config list in
 
 Due to [underlying provider
 limitations](https://github.com/navapbc/template-infra/issues/1027), when
-specifying blueprints to use, the BDA project resource will always show a diff
-between the IaC and current state.
+specifying blueprints to use, the BDA project resource will always show a (hard
+to understand) diff between the IaC and current state.
 
 To eliminate this noise (and facilitate a useful automated checks like
 `/.github/workflows/check-infra-deploy-status.yml`), changes to the list of
-blueprints are currently ignored. So after initial creation, if you wish to
-change the blueprints, you will need to take a few extra steps:
+blueprints are currently ignored. This means the usual:
+
+- Changes to blueprints in AWS console (or other means) won't be detected by
+  Terraform
+- Additions or removals of blueprints in the config won't apply with other
+  service-layer changes (after initial creation)
+
+So after initial creation, if you wish to change the blueprints (or more
+generally, sync the deployed state to what is specified in the IaC), you will
+need to take a few extra steps:
 
 1. Update `blueprints` config item as appropriate
+   - For initial development, commit the changes now. For releases, checkout the
+     commit corresponding to the release with the desired changes.
 1. Comment out `custom_output_configuration.blueprints` line in the
    `ignore_changes` block on `awscc_bedrock_data_automation_project` in the [DDE
    module][dde-module].
-1. Update the service (`make infra-update-app-service APP_NAME=<APP_NAME>
-   ENVIRONMENT=<ENVIRONMENT>`) to apply the blueprint changes
+   - Run `sed -i.bak 's/custom_output_configuration.blueprints/# custom_output_configuration.blueprints/' infra/modules/document-data-extraction/resources/main.tf`
+1. Update the service to apply the blueprint changes
+   - Run `make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>`
 1. Uncomment `custom_output_configuration.blueprints` line in the [DDE
    module][dde-module] to restore the silencing.
+   - Could achieve this simply by discarding changes in version tracking, e.g.
+     in git with `git reset --hard HEAD`, or restore the `*.bak` file created
+     via the `sed` example command above.
+
+This means deploying releases with blueprint updates will need manual handling
+for the service layer, similar to most other non-service layers. Depending on
+timeline of upstream Terraform provider fixes and feedback on if the manual
+process is burdensome or not, could develop greater automation around this.
 
 If you don't use the `check-infra-deploy-status.yml` workflow and/or are
 expecting frequent changes to the needed blueprints, you could remove the

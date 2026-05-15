@@ -56,7 +56,10 @@ resource "awscc_bedrock_data_automation_project" "bda_project" {
   lifecycle {
     ignore_changes = [
       # Ignore these changes to avoid always showing a diff, see
-      # https://github.com/navapbc/template-infra/issues/1027
+      # /docs/infra/document-data-extraction.md for more info.
+      #
+      # NOTE: This does mean that if you comment this out to update blueprints,
+      # you must uncomment it after deployment to restore the silencing.
       custom_output_configuration.blueprints
     ]
   }
