@@ -1,7 +1,7 @@
 variable "enable_malware_scanning" {
   description = "Whether to enable malware scanning on the storage bucket."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "is_temporary" {

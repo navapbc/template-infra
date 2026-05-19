@@ -57,9 +57,7 @@ module "auth_github_actions" {
 module "threat_detection" {
   source = "../modules/threat_detection"
 
-  enable_detector              = module.project_config.enable_threat_detection
-  finding_publishing_frequency = module.project_config.threat_detection_finding_publishing_frequency
-  # TODO: When upgrading to AWS provider >= 5.7.0, uncomment for multi-region support:
-  # Ticket: https://github.com/navapbc/template-infra/issues/1004#issue-4083076747
-  # regions             = module.project_config.regions
+  enable_detector              = coalesce(var.enable_threat_detection, module.project_config.threat_detection.enabled)
+  finding_publishing_frequency = var.enable_threat_detection == true ? var.threat_detection_finding_publishing_frequency : module.project_config.threat_detection.finding_publishing_frequency
 }
+

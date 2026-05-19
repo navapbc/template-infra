@@ -1,7 +1,7 @@
 variable "enable_threat_detection" {
   description = "Whether to enable the ThreatDetection detector for the account"
   type        = bool
-  default     = true
+  default     = null
 }
 
 variable "threat_detection_finding_publishing_frequency" {
@@ -18,3 +18,4 @@ variable "threat_detection_finding_publishing_frequency" {
     error_message = "Finding publishing frequency must be one of: FIFTEEN_MINUTES, ONE_HOUR, SIX_HOURS."
   }
 }
+
