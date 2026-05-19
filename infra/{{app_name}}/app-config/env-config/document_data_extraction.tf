@@ -31,7 +31,25 @@ locals {
           types = ["IMAGE_SUMMARY"]
         }
       }
-    }
 
+      document = {
+        extraction = {
+          granularity = {
+            types = ["PAGE"]
+          }
+          bounding_box = {
+            state = "ENABLED"
+          }
+        }
+        output_format = {
+          additional_file_format = {
+            state = "DISABLED"
+          }
+          text_format = {
+            types = ["PLAIN_TEXT"]
+          }
+        }
+      }
+    }
   } : null
 }
