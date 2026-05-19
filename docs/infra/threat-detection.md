@@ -1,6 +1,6 @@
 # Threat Detection (AWS GuardDuty)
 
-The infrastructure uses AWS GuardDuty for threat detection and security monitoring across the AWS account. GuardDuty is enabled by default to continuously analyze the following data sources:
+The infrastructure uses AWS GuardDuty for threat detection and security monitoring within the AWS accounts. GuardDuty is enabled by default to continuously analyze the following data sources:
 
 - **AWS CloudTrail event logs** - API calls and user activities
 - **Amazon VPC Flow Logs** - Network traffic patterns
@@ -62,13 +62,15 @@ done
 ### Accessing GuardDuty Findings
 
 **AWS Console:**
-- Navigate to GuardDuty Console → Findings
+
+- Navigate to GuardDuty Console -> Findings
 - Filter by finding type, severity, or resource
 - View detailed finding information and evidence
 
 ## Configuration
 
-**Threat detection is enabled by default** for all environments. The configuration can be customized through Terraform variables in the accounts layer.
+**Threat detection is enabled by default** for all environments in the configured default region. The configuration can be customized through Terraform variables in the accounts layer.
+Note: Amazon GuardDuty is a regional service. Enabling threat detection will activate GuardDuty only in the configured default region.
 
 ### Disabling Threat Detection
 
@@ -77,6 +79,7 @@ To disable AWS GuardDuty threat detection:
 1. Edit your Terraform workspace configuration file for the account layer, `infra/project-config/threat_detection.tf`
 
 2. Set the threat detection variable to `false`:
+
    ```hcl
    enable_threat_detection = false
    ```
@@ -92,9 +95,9 @@ To disable AWS GuardDuty threat detection:
 
 ### Available Configuration Options
 
-| Variable | Description | Default | Options |
-|----------|-------------|---------|---------|
-| `enable_threat_detection` | Enable/disable GuardDuty threat detection | `true` | `true`, `false` |
+| Variable                                        | Description                                                 | Default             | Options                                          |
+| ----------------------------------------------- | ----------------------------------------------------------- | ------------------- | ------------------------------------------------ |
+| `enable_threat_detection`                       | Enable/disable GuardDuty threat detection                   | `true`              | `true`, `false`                                  |
 | `threat_detection_finding_publishing_frequency` | How often GuardDuty publishes findings to CloudWatch Events | `"FIFTEEN_MINUTES"` | `"FIFTEEN_MINUTES"`, `"ONE_HOUR"`, `"SIX_HOURS"` |
 
 ### Enabling malware detection for S3 storage
@@ -105,7 +108,7 @@ To disable AWS GuardDuty threat detection:
 
 3. Apply the changes:
    ```bash
-   make infra-update-app-service APP_NAME=<application-name> ENVIRONMENT=<ENVIRONMENT>
+   make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
    ```
 
 ### Malware Detection Errors
@@ -113,6 +116,7 @@ To disable AWS GuardDuty threat detection:
 When GuardDuty detects malware in uploaded files, users may encounter the following error:
 
 **Error Message:**
+
 ```
 fatal error: An error occurred (403) when calling the HeadObject operation: Forbidden
 ```
