@@ -19,14 +19,3 @@ variable "finding_publishing_frequency" {
   }
 }
 
-# TODO: When upgrading to AWS provider >= 5.7.0, uncomment for multi-region support:
-# Ticket: https://github.com/navapbc/template-infra/issues/1004#issue-4083076747
-# variable "regions" {
-#   description = <<-EOF
-#   List of AWS regions that GuardDuty should be enabled in.
-#   This should typically include all regions that are being used in the project,
-#   especially if there are resources in those regions that GuardDuty can monitor for security threats.
-#   EOF
-#   type        = list(string)
-#   default     = []
-# }
