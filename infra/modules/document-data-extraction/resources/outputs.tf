@@ -8,7 +8,7 @@ output "access_policy_arn" {
 
 output "bda_project_arn" {
   description = "The ARN of the Bedrock Data Automation project"
-  value       = awscc_bedrock_data_automation_project.bda_project.project_arn
+  value       = local.bda_project_arn
 }
 
 # aws bedrock data automation requires users to use cross Region inference support
