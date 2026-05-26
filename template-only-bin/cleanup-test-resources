@@ -36,7 +36,7 @@ export PATH
 DRY_RUN=false
 PROJECT_NAME=""
 AWS_ACCOUNT_ID="533267424629"
-AWS_REGION="us-east-1"
+AWS_REGION="us-east-2"
 
 # Parse arguments
 while [[ $# -gt 0 ]]; do
