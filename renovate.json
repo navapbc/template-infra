@@ -12,6 +12,7 @@
     "github>navapbc/strata-lib-renovate:labels",
     "github>navapbc/strata-lib-renovate:security"
   ],
+  "ignorePresets": [":ignoreModulesAndTests"],
   "gomod": {
     "managerFilePatterns": ["**/go.mod"]
   },
