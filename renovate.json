@@ -15,6 +15,9 @@
   "gomod": {
     "managerFilePatterns": ["**/go.mod"]
   },
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
   "packageRules": [
     {
       "matchFileNames": ["template-only-*/**", "template-only-*"],
