@@ -15,7 +15,9 @@
   "packageRules": [
     {
       "matchFileNames": ["template-only-*/**", "template-only-*"],
-      "commitMessagePrefix": "[Template Only]"
+      "commitMessagePrefix": "[Template Only]",
+      "groupName": "[Template Only] updates",
+      "groupSlug": "template-only-updates"
     }
   ]
 }
