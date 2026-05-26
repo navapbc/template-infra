@@ -12,6 +12,9 @@
     "github>navapbc/strata-lib-renovate:labels",
     "github>navapbc/strata-lib-renovate:security"
   ],
+  "gomod": {
+    "managerFilePatterns": ["**/go.mod"]
+  },
   "packageRules": [
     {
       "matchFileNames": ["template-only-*/**", "template-only-*"],
