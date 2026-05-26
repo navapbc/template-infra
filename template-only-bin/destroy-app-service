@@ -45,6 +45,8 @@ aws_region=$(terraform -chdir="infra/project-config" output --raw default_region
 
 echo "Cleaning up task definitions for project: ${project_name}"
 
+export AWS_PAGER=""
+
 # Find all task definitions tagged with this project using Resource Groups Tagging API
 task_def_arns=$(aws resourcegroupstaggingapi get-resources \
   --region "${aws_region}" \
