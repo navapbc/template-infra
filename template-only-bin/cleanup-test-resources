@@ -266,7 +266,7 @@ cleanup_project() {
     # Check if this is a default security group, which we can't delete
     # separately, will be removed with the VPC itself
     local security_group_description
-    security_group_description=$(aws ec2 describe-security-groups --group-ids "${security_group_id}" --query='SecurityGroups[0].Description' --output text 2>&1)
+    security_group_description=$(aws ec2 describe-security-groups --region "${AWS_REGION}" --group-ids "${security_group_id}" --query='SecurityGroups[0].Description' --output text 2>&1)
     if [[ "${security_group_description}" = "default VPC security group" ]]; then
       echo "Default security group, can't delete individually: ${security_group_id}"
       continue
@@ -307,7 +307,7 @@ cleanup_project() {
     igw_id=$(echo "${igw_arn}" | awk -F'/' '{print $NF}')
 
     # Need to detach the gateway before deleting
-    igw_vpc_ids=$(aws ec2 describe-internet-gateways --internet-gateway-ids "${igw_id}" --query 'InternetGateways[0].Attachments[*].VpcId' --output text | tr '\t' '\n')
+    igw_vpc_ids=$(aws ec2 describe-internet-gateways --region "${AWS_REGION}" --internet-gateway-ids "${igw_id}" --query 'InternetGateways[0].Attachments[*].VpcId' --output text | tr '\t' '\n')
     for igw_vpc_id in ${igw_vpc_ids}; do
       echo "Detaching Internet Gateway ${igw_id} from VPC ${igw_vpc_id}"
       aws ec2 detach-internet-gateway --internet-gateway-id "${igw_id}" --vpc-id "${igw_vpc_id}" --region "${AWS_REGION}" || echo "Failed to detach Internet Gateway ${igw_id}"
@@ -361,10 +361,10 @@ cleanup_project() {
     key_id=$(echo "${key_arn}" | awk -F'/' '{print $NF}')
 
     local key_state
-    key_state=$(aws kms describe-key --key-id "${key_id}" --query 'KeyMetadata.KeyState' --output text)
+    key_state=$(aws kms describe-key --region "${AWS_REGION}" --key-id "${key_id}" --query 'KeyMetadata.KeyState' --output text)
     if [[ "${key_state}" = "PendingDeletion" ]]; then
       local key_delete_time
-      key_delete_time=$(aws kms describe-key --key-id "${key_id}" --query 'KeyMetadata.DeletionDate' --output text)
+      key_delete_time=$(aws kms describe-key --region "${AWS_REGION}" --key-id "${key_id}" --query 'KeyMetadata.DeletionDate' --output text)
       echo "KMS key already scheduled for deletion: ${key_id} at ${key_delete_time}"
       continue
     fi
@@ -476,6 +476,7 @@ cleanup_inactive_task_definitions() {
         # Check if this task definition is tagged with a plt-tst-act-* project
         local project_tag
         project_tag=$(aws ecs list-tags-for-resource \
+          --region "${AWS_REGION}" \
           --resource-arn "${task_arn}" \
           --query "tags[?key=='project'].value" \
           --output text 2>/dev/null || echo "")
