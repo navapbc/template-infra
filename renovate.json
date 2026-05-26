@@ -24,6 +24,15 @@
       "matchFileNames": ["template-only-*/**", "template-only-*"],
       "commitMessagePrefix": "[Template Only]",
       "additionalBranchPrefix": "template-only-"
+    },
+    {
+      "groupName": "Playwright",
+      "matchPackageNames": [
+        "playwright",
+        "@playwright/test",
+        "mcr.microsoft.com/playwright"
+      ],
+      "matchDatasources": ["docker", "npm"]
     }
   ]
 }
