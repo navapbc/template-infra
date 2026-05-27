@@ -75,8 +75,11 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
           DEST_BRANCH_NAME: ${{ needs.get-params.outputs.dest_branch_name }}
         run: |
-          if gh pr view "${DEST_BRANCH_NAME}" --repo navapbc/platform-test &> /dev/null; then
+          PR_STATE=$(gh pr list --head "${DEST_BRANCH_NAME}" --repo navapbc/platform-test --json state --jq '.[].state')
+          echo "PR_STATE=${PR_STATE}"
+
+          if [[ "${PR_STATE}" == "OPEN" ]]; then
             gh pr close "${DEST_BRANCH_NAME}" --delete-branch --repo navapbc/platform-test
           else
-            echo "PR does not exist. Nothing to close."
+            echo "PR does not exist (or is already closed). Nothing to close."
           fi
