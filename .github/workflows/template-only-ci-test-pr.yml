@@ -4,8 +4,10 @@ run-name: ${{ github.workflow }} - ${{ inputs.action || github.event.pull_reques
 on:
   workflow_dispatch:
     inputs:
-      branch_name:
+      src_branch_name:
         required: true
+        type: string
+      dest_branch_name:
         type: string
       action:
         type: choice
@@ -13,10 +15,11 @@ on:
           - update
           - close
         default: update
-  pull_request:
-    paths:
-      - "**"
-      - "copier.yml"
+  # TODO: enable when ready
+  # pull_request:
+  #   paths:
+  #     - "**"
+  #     - "copier.yml"
   pull_request_target:
     types: [closed]
 
@@ -24,12 +27,39 @@ on:
 permissions: {}
 
 jobs:
+  get-params:
+    name: Get parameters with some processing
+    runs-on: ubuntu-latest
+    outputs:
+      src_branch_name: ${{ steps.get-params-step.outputs.src_branch_name }}
+      dest_branch_name: ${{ steps.get-params-step.outputs.dest_branch_name }}
+    steps:
+      - id: get-params-step
+        env:
+          GITHUB_HEAD_REF: github.head_ref
+        run: |
+          src_branch_name="${{ inputs.src_branch_name || env.GITHUB_HEAD_REF }}"
+
+          echo "src_branch_name=${src_branch_name}"
+          echo "src_branch_name=${src_branch_name}" >> "$GITHUB_OUTPUT"
+
+          if [[ -n "${{ inputs.dest_branch_name  }}" ]]; then
+            dest_branch_name="${{ inputs.dest_branch_name }}"
+          else
+            dest_branch_name="test-pr|${{ github.repository }}|${src_branch_name}"
+          fi
+
+          echo "dest_branch_name=${dest_branch_name}"
+          echo "dest_branch_name=${dest_branch_name}" >> "$GITHUB_OUTPUT"
+
   update:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
     uses: ./.github/workflows/template-only-create-or-update-test-pr.yml
     if: (github.event_name == 'workflow_dispatch' && inputs.action == 'update') || github.event.pull_request.state == 'open'
+    needs: get-params
     with:
-      branch_name: ${{ inputs.branch_name || github.head_ref }}
+      src_branch_name: ${{ needs.get-params.outputs.src_branch_name }}
+      dest_branch_name: ${{ needs.get-params.outputs.dest_branch_name }}
       project_repo: navapbc/platform-test
     secrets:
       access_token: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
@@ -37,10 +67,15 @@ jobs:
   close:
     if: (github.event_name == 'workflow_dispatch' && inputs.action == 'close') || github.event.pull_request.state == 'closed'
     runs-on: ubuntu-latest
+    needs: get-params
     steps:
       - name: Close test PR
         env:
           GITHUB_TOKEN: ${{ secrets.PLATFORM_BOT_GITHUB_TOKEN }}
-          BRANCH_NAME: ${{ inputs.branch_name || github.head_ref }}
+          DEST_BRANCH_NAME: ${{ needs.get-params.outputs.dest_branch_name }}
         run: |
-          gh pr close "${BRANCH_NAME}" --delete-branch --repo navapbc/platform-test
+          if gh pr view "${DEST_BRANCH_NAME}" --repo navapbc/platform-test &> /dev/null; then
+            gh pr close "${DEST_BRANCH_NAME}" --delete-branch --repo navapbc/platform-test
+          else
+            echo "PR does not exist. Nothing to close."
+          fi
