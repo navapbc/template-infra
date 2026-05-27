@@ -10,7 +10,9 @@
     "github>navapbc/strata-lib-renovate:dependencyDashboard",
     "github>navapbc/strata-lib-renovate:groupNonMajorUpdatesByManager",
     "github>navapbc/strata-lib-renovate:labels",
-    "github>navapbc/strata-lib-renovate:security"
+    "github>navapbc/strata-lib-renovate:security",
+
+    ":dependencyDashboardApproval"
   ],
   "ignorePresets": [":ignoreModulesAndTests"],
   "gomod": {
