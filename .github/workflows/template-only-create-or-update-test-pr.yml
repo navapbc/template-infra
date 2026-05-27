@@ -3,7 +3,10 @@ name: Template Test PR
 on:
   workflow_call:
     inputs:
-      branch_name:
+      src_branch_name:
+        required: true
+        type: string
+      dest_branch_name:
         required: true
         type: string
       project_repo:
@@ -19,7 +22,8 @@ on:
 permissions: {}
 
 env:
-  BRANCH_NAME: ${{ inputs.branch_name }}
+  SRC_BRANCH_NAME: ${{ inputs.src_branch_name }}
+  DEST_BRANCH_NAME: ${{ inputs.dest_branch_name }}
 
 jobs:
   create-or-update-pr:
@@ -50,11 +54,11 @@ jobs:
       - name: Set up PR branch
         working-directory: project-repo
         run: |
-          git checkout -b "${BRANCH_NAME}"
+          git checkout -b "${DEST_BRANCH_NAME}"
 
       - name: Update infra template
         working-directory: project-repo
-        run: nava-platform infra update --template-uri ${{ github.server_url }}/${{ github.repository }} --version "${BRANCH_NAME}" .
+        run: nava-platform infra update --template-uri ${{ github.server_url }}/${{ github.repository }} --version "${SRC_BRANCH_NAME}" .
 
       - name: Push changes to project repo
         working-directory: project-repo
@@ -66,7 +70,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.access_token }}
         run: |
-          PR_URL="$(gh pr list --head "${BRANCH_NAME}" --state open --json url --jq .[].url)"
+          PR_URL="$(gh pr list --head "${DEST_BRANCH_NAME}" --state open --json url --jq .[].url)"
           if [[ -n "${PR_URL}" ]]; then
             echo "PR already exists -> ${PR_URL}"
             echo "exists=true" >> "$GITHUB_OUTPUT"
@@ -87,9 +91,9 @@ jobs:
           elif [[ -n "${{ github.event.pull_request.html_url }}" ]]; then
             PR_BODY="${{ github.event.pull_request.html_url }}"
           else
-            PR_BODY="${{ github.server_url }}/${{ github.repository }}/tree/${BRANCH_NAME}"
+            PR_BODY="${{ github.server_url }}/${{ github.repository }}/tree/${SRC_BRANCH_NAME}"
           fi
 
           gh pr create \
             --body "${PR_BODY}" \
-            --title "Test Template PR: ${BRANCH_NAME}"
+            --title "[${{ github.repository }}] Test Template PR: ${SRC_BRANCH_NAME}"
