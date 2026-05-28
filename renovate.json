@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    "security:minimumReleaseAgeNpm",
+
+    "schedule:monthly",
+    ":maintainLockFilesMonthly",
+
+    "github>navapbc/strata-lib-renovate:dependencyDashboard",
+    "github>navapbc/strata-lib-renovate:groupNonMajorUpdatesByManager",
+    "github>navapbc/strata-lib-renovate:labels",
+    "github>navapbc/strata-lib-renovate:security",
+
+    ":dependencyDashboardApproval"
+  ],
+  "ignorePresets": [":ignoreModulesAndTests"],
+  "gomod": {
+    "managerFilePatterns": ["**/go.mod"]
+  },
+  "postUpdateOptions": [
+    "gomodTidy"
+  ],
+  "packageRules": [
+    {
+      "matchFileNames": ["template-only-*/**", "template-only-*"],
+      "commitMessagePrefix": "template-only:",
+      "additionalBranchPrefix": "template-only-"
+    },
+    {
+      "groupName": "Playwright",
+      "matchPackageNames": [
+        "playwright",
+        "@playwright/test",
+        "mcr.microsoft.com/playwright"
+      ],
+      "matchDatasources": ["docker", "npm"]
+    }
+  ]
+}
