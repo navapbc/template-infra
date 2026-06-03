@@ -2,7 +2,7 @@ module navapbc/template-infra
 
 go 1.24.0
 
-toolchain go1.24.1
+toolchain go1.25.11
 
 require github.com/gruntwork-io/terratest v0.48.2
 
