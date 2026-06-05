@@ -6,60 +6,7 @@ The infrastructure uses AWS GuardDuty for threat detection and security monitori
 - **Amazon VPC Flow Logs** - Network traffic patterns
 - **DNS logs** - Domain name resolution requests
 
-## Malware detection for S3 storage
-
-The infrastructure leverages GuardDuty's malware detection feature to continuously scan files uploaded to S3 buckets for malicious content. When malware is detected:
-
-1. **File access is blocked** - Downloads of infected files are prevented
-2. **Findings are generated** - Security findings are created in the GuardDuty service with detailed information including:
-   - **Finding ID** - Unique identifier for the security event
-   - **Severity level** - Low, Medium, High, Critical
-   - **Finding type** - Specific threat classification (e.g., `Malware:S3/MaliciousFile`)
-   - **Resource details** - Affected S3 bucket, object key, and account information
-   - **Timestamp** - When the malware was detected
-   - **Evidence** - Technical details about the malicious content
-   - **Remediation** - Recommended actions to address the threat
-3. **Tags are applied** - S3 objects are tagged with scan results for tracking:
-   - **`GuardDutyMalwareScanStatus`** - Scan result status (`NO_THREATS_FOUND`, `THREATS_FOUND`)
-
-### Checking S3 Object Tags for Malware Status
-
-```bash
-#!/usr/bin/env bash
-
-for plan_id in $(aws guardduty list-malware-protection-plans \
-    --query "MalwareProtectionPlans[*].MalwareProtectionPlanId" \
-    --output text); do
-
-    bucket=$(aws guardduty get-malware-protection-plan \
-        --malware-protection-plan-id "$plan_id" \
-        --query "ProtectedResource.S3Bucket.BucketName" \
-        --output text 2>/dev/null)
-
-    if [ "$bucket" != "None" ] && [ -n "$bucket" ]; then
-        echo "Scanning protected bucket: $bucket ..."
-
-        aws s3api list-objects-v2 --bucket "$bucket" \
-            --query "Contents[*].Key" \
-            --output text 2>/dev/null | tr '\t' '\n' | \
-        while read -r key; do
-            if [ -n "$key" ]; then
-                tags=$(aws s3api get-object-tagging \
-                    --bucket "$bucket" \
-                    --key "$key" \
-                    --query "TagSet[?Key=='GuardDutyMalwareScanStatus' && Value=='THREATS_FOUND'].Value" \
-                    --output text 2>/dev/null)
-
-                if [ "$tags" = "THREATS_FOUND" ]; then
-                    echo "MALWARE DETECTED: s3://$bucket/$key"
-                fi
-            fi
-        done
-    fi
-done
-```
-
-### Accessing GuardDuty Findings
+## Accessing GuardDuty Findings
 
 **AWS Console:**
 
@@ -70,28 +17,8 @@ done
 ## Configuration
 
 **Threat detection is enabled by default** for all environments in the configured default region. The configuration can be customized through Terraform variables in the accounts layer.
+
 Note: Amazon GuardDuty is a regional service. Enabling threat detection will activate GuardDuty only in the configured default region.
-
-### Disabling Threat Detection
-
-To disable AWS GuardDuty threat detection:
-
-1. Edit your Terraform workspace configuration file for the account layer, `infra/project-config/threat_detection.tf`
-
-2. Set the threat detection variable to `false`:
-
-   ```hcl
-   enable_threat_detection = false
-   ```
-
-3. Set finding publishing frequency (FIFTEEN_MINUTES, ONE_HOUR, SIX_HOURS)
-   ```hcl
-   threat_detection_finding_publishing_frequency = "FIFTEEN_MINUTES"
-   ```
-4. Apply the changes:
-   ```bash
-   make infra-update-current-account
-   ```
 
 ### Available Configuration Options
 
@@ -100,25 +27,27 @@ To disable AWS GuardDuty threat detection:
 | `enable_threat_detection`                       | Enable/disable GuardDuty threat detection                   | `true`              | `true`, `false`                                  |
 | `threat_detection_finding_publishing_frequency` | How often GuardDuty publishes findings to CloudWatch Events | `"FIFTEEN_MINUTES"` | `"FIFTEEN_MINUTES"`, `"ONE_HOUR"`, `"SIX_HOURS"` |
 
-### Enabling malware detection for S3 storage
+### Setting Threat Detection Configuration
 
-1. Edit your Terraform configuration file for the application service layer, `infra/<application-name>/app-config/main.tf`
+Edit your Terraform workspace configuration file for the account layer, `infra/project-config/threat_detection.tf`.
 
-2. Set the `enable_storage_malware_scanning` variable to `true`
+To disable AWS GuardDuty threat detection:
 
-3. Apply the changes:
-   ```bash
-   make infra-update-app-service APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
-   ```
+- Set the threat detection variable to `false`:
 
-### Malware Detection Errors
+  ```hcl
+  enable_threat_detection = false
+  ```
 
-When GuardDuty detects malware in uploaded files, users may encounter the following error:
+To set publishing frequency:
 
-**Error Message:**
+- Set finding publishing frequency (FIFTEEN_MINUTES, ONE_HOUR, SIX_HOURS):
+  ```hcl
+  threat_detection_finding_publishing_frequency = "FIFTEEN_MINUTES"
+  ```
 
+Apply the changes:
+
+```bash
+make infra-update-current-account
 ```
-fatal error: An error occurred (403) when calling the HeadObject operation: Forbidden
-```
-
-**Cause:** GuardDuty's malware detection has identified the file as containing malware or suspicious content, and AWS S3 is blocking access with a 403 Forbidden error.

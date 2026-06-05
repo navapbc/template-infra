@@ -41,7 +41,8 @@ output "sms_config" {
 output "storage_config" {
   value = {
     # Include project name in bucket name since buckets need to be globally unique across AWS
-    bucket_name = local.bucket_name
+    bucket_name                     = local.bucket_name
+    enable_storage_malware_scanning = var.enable_storage_malware_scanning
   }
 }
 
