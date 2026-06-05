@@ -49,6 +49,12 @@ variable "enable_sms_notifications" {
   default     = false
 }
 
+variable "enable_storage_malware_scanning" {
+  type        = bool
+  description = "Enable Storage malware scanning"
+  default     = false
+}
+
 variable "sms_number_type" {
   type        = string
   description = "The type of phone number to use for SMS notifications. Must be either 'LONG_CODE', 'TOLL_FREE', 'TEN_DLC', or 'SIMULATOR'."

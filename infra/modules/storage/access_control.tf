@@ -78,6 +78,7 @@ data "aws_iam_policy_document" "storage_access" {
       "arn:aws:s3:::${var.name}/*"
     ]
   }
+
   statement {
     actions   = ["kms:GenerateDataKey", "kms:Decrypt"]
     effect    = "Allow"
