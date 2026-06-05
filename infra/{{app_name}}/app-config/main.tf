@@ -30,12 +30,6 @@ locals {
   # 3. Adds environment variables for the app client to the service
   enable_identity_provider = false
 
-  # Whether or not the application storage should have malware scanning enabled.
-  # If enabled:
-  # 1. Automatically scans uploaded files for malware
-  # 2. Tags the affected files with "THREATS_FOUND" and prevents them from being retrieved
-  enable_storage_malware_scanning = false
-
   # Whether or not the application should deploy a notification service.
   #
   # To use this in a particular environment, domain_name must also be set.
