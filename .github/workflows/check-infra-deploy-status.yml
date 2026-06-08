@@ -19,7 +19,7 @@ jobs:
       root_module_configs: ${{ steps.collect-infra-deploy-status-check-configs.outputs.root_module_configs }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Collect root module configurations
         id: collect-infra-deploy-status-check-configs
@@ -47,7 +47,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
