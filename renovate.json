@@ -1,16 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "security:minimumReleaseAgeNpm",
-
-    "schedule:monthly",
-    ":maintainLockFilesMonthly",
-
-    "github>navapbc/strata-lib-renovate:dependencyDashboard",
-    "github>navapbc/strata-lib-renovate:groupNonMajorUpdatesByManager",
-    "github>navapbc/strata-lib-renovate:labels",
-    "github>navapbc/strata-lib-renovate:security",
+    "github>navapbc/strata-lib-renovate:strataTemplate",
 
     ":dependencyDashboardApproval"
   ],
