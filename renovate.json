@@ -23,7 +23,7 @@
   ],
   "packageRules": [
     {
-      "matchFileNames": ["template-only-*/**", "template-only-*"],
+      "matchFileNames": ["**/template-only*{/,}**"],
       "commitMessagePrefix": "template-only:",
       "additionalBranchPrefix": "template-only-"
     },
