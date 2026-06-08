@@ -91,7 +91,20 @@ jobs:
           elif [[ -n "${{ github.event.pull_request.html_url }}" ]]; then
             PR_BODY="${{ github.event.pull_request.html_url }}"
           else
-            PR_BODY="${{ github.server_url }}/${{ github.repository }}/tree/${SRC_BRANCH_NAME}"
+            # There may be a PR associated with the source branch, but the
+            # workflow wasn't triggered by the PR itself (either the PR author
+            # doesn't have permission to run the workflow, there was some error
+            # and we want to manually re-run, etc). It's valuable to connect the
+            # two PRs with a mention regardless, so check if we have a PR to
+            # link.
+            src_pr_url=$(gh pr --repo ${{ github.repository }} list --head "${SRC_BRANCH_NAME}" --state open --limit 1 --json url --jq .[].url || true)
+            echo "src_pr_url=${src_pr_url}"
+
+            if [[ -n ${src_pr_url} ]]; then
+              PR_BODY="${src_pr_url}"
+            else
+              PR_BODY="${{ github.server_url }}/${{ github.repository }}/tree/${SRC_BRANCH_NAME}"
+            fi
           fi
 
           gh pr create \
