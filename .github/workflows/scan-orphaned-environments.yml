@@ -18,7 +18,7 @@ jobs:
       app_names: ${{ steps.get-app-names.outputs.app_names }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Get app names
         id: get-app-names
@@ -48,7 +48,7 @@ jobs:
       pull-requests: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Terraform
         uses: ./.github/actions/setup-terraform
