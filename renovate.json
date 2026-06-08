@@ -12,6 +12,11 @@
   "postUpdateOptions": [
     "gomodTidy"
   ],
+  "github-actions": {
+    "managerFilePatterns": [
+      "/\\.github/(?:workflows|actions)/.+\\.ya?ml(?:.jinja)?$/"
+    ]
+  },
   "packageRules": [
     {
       "matchFileNames": ["**/template-only*{/,}**"],
