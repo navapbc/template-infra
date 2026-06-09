@@ -15,7 +15,7 @@ runs:
         echo "terraform_version=${terraform_version}" >> "$GITHUB_OUTPUT"
       shell: bash
     - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v2
+      uses: hashicorp/setup-terraform@v4
       with:
         terraform_version: ${{ steps.get-terraform-version.outputs.terraform_version }}
         terraform_wrapper: false
