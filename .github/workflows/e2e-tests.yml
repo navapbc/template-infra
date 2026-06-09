@@ -55,7 +55,7 @@ jobs:
           ls -R ./e2e/blob-report || echo "blob-report directory not found"
 
       - name: Upload blob report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: blob-report-shard-${{ matrix.shard }}
           path: ./e2e/blob-report
@@ -88,7 +88,7 @@ jobs:
         run: make e2e-setup-ci
 
       - name: Download blob reports from GitHub Actions Artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ./e2e/blob-report
           pattern: blob-report-shard-*
@@ -108,7 +108,7 @@ jobs:
           ls -R ./e2e/playwright-report || echo "No report found in ./e2e/playwright-report"
 
       - name: Upload merged HTML report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: e2e-test-report
           path: ./e2e/playwright-report
