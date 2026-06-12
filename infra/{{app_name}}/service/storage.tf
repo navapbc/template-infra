@@ -4,7 +4,8 @@ locals {
 }
 
 module "storage" {
-  source       = "../../modules/storage"
-  name         = local.bucket_name
-  is_temporary = local.is_temporary
+  source                  = "../../modules/storage"
+  name                    = local.bucket_name
+  is_temporary            = local.is_temporary
+  enable_malware_scanning = local.storage_config.enable_storage_malware_scanning
 }
