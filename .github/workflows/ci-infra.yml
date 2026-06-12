@@ -102,6 +102,6 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Run tfsec check
-        uses: aquasecurity/tfsec-pr-commenter-action@v1.3.1
+        uses: aquasecurity/tfsec-pr-commenter-action@v1.2.0
         with:
           github_token: ${{ github.token }}
