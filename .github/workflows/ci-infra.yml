@@ -78,10 +78,6 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v6
-        with:
-          python-version: "3.10"
-
       - name: Run Checkov check
         # Pin to specific checkov version rather than running from checkov@master
         # since checkov frequently adds new checks that can cause CI checks to fail unpredictably.
