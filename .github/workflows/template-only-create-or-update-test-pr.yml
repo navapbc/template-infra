@@ -108,5 +108,6 @@ jobs:
           fi
 
           gh pr create \
+            --draft \
             --body "${PR_BODY}" \
             --title "[${{ github.repository }}] Test Template PR: ${SRC_BRANCH_NAME}"
