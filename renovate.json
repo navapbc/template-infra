@@ -41,5 +41,20 @@
       ],
       "matchDatasources": ["docker", "npm"]
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Update AWS Lambda runtime values in Terraform files",
+      "managerFilePatterns": ["/.+\\.tf$/"],
+      "matchStrings": [
+        ".*#\\s*renovate:\\s*aws-lambda-runtime( versioning=(?<versioning>.*?))?\\s.*?runtime\\s*=\\s*\"(?<currentValue>.*)\"",
+        ".*#\\s*renovate:\\s*depName=aws-lambda( versioning=(?<versioning>.*?))?\\s.*?runtime\\s*=\\s*\"(?<currentValue>.*)\"",
+        ".*#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?runtime\\s*=\\s*\"(?<currentValue>.*)\""
+      ],
+      "depNameTemplate": "{{#if depName}}{{{depName}}}{{else}}aws-lambda{{/if}}",
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}endoflife-date{{/if}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}regex:^(?<compatibility>[A-Za-z]+)(?<major>\\d+)(\\.(?<minor>\\d+))?(?:.x)?${{/if}}"
+    }
   ]
 }
