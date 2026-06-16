@@ -31,6 +31,17 @@
         "mcr.microsoft.com/playwright"
       ],
       "matchDatasources": ["docker", "npm"]
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDepNames": ["aws-lambda"],
+      "branchName": "{{{branchPrefix}}}aws-lambda/{{{additionalBranchPrefix}}}{{{newVersion}}}"
+    },
+    {
+      "matchManagers": ["regex"],
+      "matchDepNames": ["aws-lambda"],
+      "matchCurrentValue": "provided.al2",
+      "maxMajorIncrement": 3000
     }
   ],
   "customManagers": [
@@ -45,7 +56,7 @@
       ],
       "depNameTemplate": "{{#if depName}}{{{depName}}}{{else}}aws-lambda{{/if}}",
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}endoflife-date{{/if}}",
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}regex:^(?<compatibility>[A-Za-z]+)(?<major>\\d+)(\\.(?<minor>\\d+))?(?:.x)?${{/if}}"
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}{{#if (containsString currentValue \"provided.al\")}}regex:^provided.al(?<major>.*)${{else}}regex:^(?<compatibility>[A-Za-z]+)(?<major>\\d+)(\\.(?<minor>\\d+))?(?:.x)?${{/if}}{{/if}}"
     }
   ]
 }
