@@ -1,16 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    "config:recommended",
-    "security:minimumReleaseAgeNpm",
-
-    "schedule:monthly",
-    ":maintainLockFilesMonthly",
-
-    "github>navapbc/strata-lib-renovate:dependencyDashboard",
-    "github>navapbc/strata-lib-renovate:groupNonMajorUpdatesByManager",
-    "github>navapbc/strata-lib-renovate:labels",
-    "github>navapbc/strata-lib-renovate:security",
+    "github>navapbc/strata-lib-renovate:strataTemplate",
+    "github>navapbc/strata-lib-renovate:strataTemplateSeparateTemplateOnlyLegacy",
+    "github>navapbc/strata-lib-renovate:playwright",
+    "github>navapbc/strata-lib-renovate:terraformAwsLambdaRuntimes",
 
     ":dependencyDashboardApproval"
   ],
@@ -25,36 +19,5 @@
     "managerFilePatterns": [
       "/\\.github/(?:workflows|actions)/.+\\.ya?ml(?:.jinja)?$/"
     ]
-  },
-  "packageRules": [
-    {
-      "matchFileNames": ["**/template-only*{/,}**"],
-      "commitMessagePrefix": "template-only:",
-      "additionalBranchPrefix": "template-only-"
-    },
-    {
-      "groupName": "Playwright",
-      "matchPackageNames": [
-        "playwright",
-        "@playwright/test",
-        "mcr.microsoft.com/playwright"
-      ],
-      "matchDatasources": ["docker", "npm"]
-    }
-  ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Update AWS Lambda runtime values in Terraform files",
-      "managerFilePatterns": ["/.+\\.tf$/"],
-      "matchStrings": [
-        ".*#\\s*renovate:\\s*aws-lambda-runtime( versioning=(?<versioning>.*?))?\\s.*?runtime\\s*=\\s*\"(?<currentValue>.*)\"",
-        ".*#\\s*renovate:\\s*depName=aws-lambda( versioning=(?<versioning>.*?))?\\s.*?runtime\\s*=\\s*\"(?<currentValue>.*)\"",
-        ".*#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?\\s.*?runtime\\s*=\\s*\"(?<currentValue>.*)\""
-      ],
-      "depNameTemplate": "{{#if depName}}{{{depName}}}{{else}}aws-lambda{{/if}}",
-      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}endoflife-date{{/if}}",
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}regex:^(?<compatibility>[A-Za-z]+)(?<major>\\d+)(\\.(?<minor>\\d+))?(?:.x)?${{/if}}"
-    }
-  ]
+  }
 }
