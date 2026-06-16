@@ -121,7 +121,7 @@ resource "aws_iam_role_policy" "role_manager_access_to_db_password" {
         Effect = "Allow"
         Action = ["ssm:GetParameter"]
         Resource = [
-          "arn:aws:ssm:${data.aws_region.current.name}:${data.aws_caller_identity.current.id}:parameter${local.db_password_param_name}"
+          "arn:aws:ssm:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:parameter${local.db_password_param_name}"
         ]
       }
     ]

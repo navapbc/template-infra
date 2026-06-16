@@ -81,7 +81,7 @@ resource "aws_vpc_endpoint" "interface" {
   for_each = local.interface_vpc_endpoints
 
   vpc_id              = module.aws_vpc.vpc_id
-  service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
+  service_name        = "com.amazonaws.${data.aws_region.current.region}.${each.key}"
   vpc_endpoint_type   = "Interface"
   security_group_ids  = [aws_security_group.aws_services.id]
   subnet_ids          = local.aws_service_subnets[each.key]
@@ -92,7 +92,7 @@ resource "aws_vpc_endpoint" "gateway" {
   for_each = local.gateway_vpc_endpoints
 
   vpc_id            = module.aws_vpc.vpc_id
-  service_name      = "com.amazonaws.${data.aws_region.current.name}.${each.key}"
+  service_name      = "com.amazonaws.${data.aws_region.current.region}.${each.key}"
   vpc_endpoint_type = "Gateway"
   route_table_ids   = module.aws_vpc.private_route_table_ids
 }

@@ -4,7 +4,7 @@ data "aws_caller_identity" "current" {}
 
 locals {
   # Default to current region if no regions specified
-  search_regions = var.regions != null ? var.regions : [data.aws_region.current.name]
+  search_regions = var.regions != null ? var.regions : [data.aws_region.current.region]
 }
 
 # Check for existing phone pools in each specified region

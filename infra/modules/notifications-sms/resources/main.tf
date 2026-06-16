@@ -42,7 +42,7 @@ resource "aws_iam_role_policy" "cloudformation_sms_permissions" {
           "sms-voice:*"
         ]
         Resource = [
-          "arn:aws:sms-voice:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:*"
+          "arn:aws:sms-voice:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:*"
         ]
       },
       {

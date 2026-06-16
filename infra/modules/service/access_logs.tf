@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "access_logs_put_access" {
 
     principals {
       type        = "AWS"
-      identifiers = ["arn:aws:iam::${local.elb_account_map[data.aws_region.current.name]}:root"]
+      identifiers = ["arn:aws:iam::${local.elb_account_map[data.aws_region.current.region]}:root"]
     }
   }
 }

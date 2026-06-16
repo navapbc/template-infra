@@ -18,7 +18,7 @@ output "bda_project_arn" {
 # TODO(https://github.com/navapbc/template-infra/issues/993) Add GovCloud Support
 output "bda_profile_arn" {
   description = "The profile ARN associated with the BDA project"
-  value       = "arn:aws:bedrock:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:data-automation-profile/us.data-automation-v1"
+  value       = "arn:aws:bedrock:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:data-automation-profile/us.data-automation-v1"
 }
 
 output "bda_blueprint_arns" {

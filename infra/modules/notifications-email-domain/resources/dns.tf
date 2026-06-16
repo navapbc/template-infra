@@ -24,7 +24,7 @@ resource "aws_route53_record" "mx_receive" {
   ttl             = "600"
   zone_id         = var.hosted_zone_id
   name            = local.mail_from_domain
-  records         = ["10 feedback-smtp.${data.aws_region.current.name}.amazonses.com"]
+  records         = ["10 feedback-smtp.${data.aws_region.current.region}.amazonses.com"]
 }
 
 resource "aws_route53_record" "dmarc" {
