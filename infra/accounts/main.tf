@@ -60,4 +60,3 @@ module "threat_detection" {
   enable_detector              = coalesce(var.enable_threat_detection, module.project_config.threat_detection.enabled)
   finding_publishing_frequency = var.enable_threat_detection == true ? var.threat_detection_finding_publishing_frequency : module.project_config.threat_detection.finding_publishing_frequency
 }
-
