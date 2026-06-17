@@ -53,4 +53,3 @@ output "threat_detection" {
     finding_publishing_frequency = local.threat_detection_finding_publishing_frequency
   }
 }
-
