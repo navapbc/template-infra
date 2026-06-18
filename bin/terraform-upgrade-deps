@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+#
+# Update module and provider versions to latest specified by config for given
+# module.
+#
+# Optional parameters:
+#   --force - Force a re-download of all dependencies
+#
+# Positional parameters:
+#   module_dir (required) – The location of the root module to update
+
+set -euo pipefail
+
+force="false"
+
+while :; do
+  case "$1" in
+    --force)
+      force="true"
+      shift 1
+      ;;
+    *)
+      break
+      ;;
+  esac
+done
+
+module_dir="$1"
+
+# for systems that have run infra commands previously, clear out things which
+# could interfere with fetching updated dependencies, depending on how thorough
+# the user wants to be
+if [[ ${force} == "true" ]]; then
+  # removing the lockfile should generally be enough to trigger Terraform to do
+  # a complete re-eval, but also remove the module's entire local cache
+  # directory for good measure
+  rm -rf "${module_dir}/.terraform.lock.hcl" "${module_dir}/.terraform/"
+else
+  # remove only the cached state (if present) so `terraform init` does not try
+  # to contact (potentially remote) backends which might not be configured
+  # properly, but reuses any already downloaded dependencies that are up-to-date
+  rm -f "${module_dir}/.terraform/terraform.tfstate"
+fi
+
+# then initialize allowing "upgrades", skip backend set up
+terraform -chdir="${module_dir}" init -backend=false -upgrade
