@@ -20,7 +20,7 @@ resource "aws_lambda_function" "role_manager" {
   kms_key_arn      = aws_kms_key.role_manager.arn
 
   # renovate: aws-lambda-runtime
-  runtime = "python3.9"
+  runtime = "python3.14"
 
   reserved_concurrent_executions = 1
 
