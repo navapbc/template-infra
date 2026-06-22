@@ -16,6 +16,8 @@ resource "aws_ecr_repository" "app" {
     encryption_type = "KMS"
     kms_key         = aws_kms_key.ecr_kms.arn
   }
+
+  force_delete = false
 }
 
 resource "aws_ecr_repository_policy" "image_access" {

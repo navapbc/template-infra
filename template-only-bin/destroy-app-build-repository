@@ -13,8 +13,12 @@ set -euxo pipefail
 app_name=${1:-"app"}
 backend_config_file="shared.s3.tfbackend"
 
+sed -i.bak 's/force_delete = false/force_delete = true/g' infra/modules/container-image-repository/main.tf
+
 cd "infra/${app_name}/build-repository"
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
+
+terraform apply -auto-approve -target="module.container_image_repository.aws_ecr_repository.app"
 
 terraform destroy -auto-approve

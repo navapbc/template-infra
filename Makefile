@@ -273,6 +273,9 @@ infra-test-service: ## Run service layer infra test suite
 	@:$(call check_defined, APP_NAME, "the name of subdirectory of /infra that holds the application's infrastructure code")
 	cd infra/test && APP_NAME=$(APP_NAME) IMAGE_TAG=$(IMAGE_TAG) go test -run TestService -v -timeout 30m
 
+infra-upgrade-terraform-deps: ## (Re)initialize root modules allowing updates to providers/modules
+	./bin/infra-deploy-status-check-configs | jq '.[] | "./bin/terraform-upgrade-deps infra/\(.root_module_subdir|@sh)"' | uniq | xargs -L 1 bash -x -c
+
 #############
 ## Linting ##
 #############
