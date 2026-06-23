@@ -15,11 +15,12 @@ on:
           - update
           - close
         default: update
-  pull_request:
-    paths:
-      - "**"
-      - "!**template-only**"
-      - "copier.yml"
+  # TODO: if/when we want to automatically create
+  # pull_request:
+  #   paths:
+  #     - "**"
+  #     - "!**template-only**"
+  #     - "copier.yml"
   pull_request_target:
     types: [closed]
 
