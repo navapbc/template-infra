@@ -67,7 +67,7 @@ resource "aws_wafv2_web_acl" "main" {
 resource "aws_cloudwatch_log_group" "waf_logs" {
   # checkov:skip=CKV_AWS_158:The KMS key triggered an operation error
   name              = "aws-waf-logs-${var.name}"
-  retention_in_days = 30
+  retention_in_days = 365
 }
 
 resource "aws_wafv2_web_acl_logging_configuration" "waf_logs" {
