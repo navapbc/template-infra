@@ -158,4 +158,6 @@ resource "aws_lb_target_group" "app_tg" {
   lifecycle {
     create_before_destroy = true
   }
+
+  # checkov:skip=CKV_AWS_378: TODO(https://github.com/navapbc/template-infra/issues/1092): Add support for encrypting private network traffic
 }
