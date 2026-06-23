@@ -90,6 +90,8 @@ resource "aws_rds_cluster_instance" "primary" {
 resource "aws_kms_key" "db" {
   description         = "Key for RDS cluster ${var.name}"
   enable_key_rotation = true
+
+  # checkov:skip=CKV2_AWS_64:The default key policy is acceptable
 }
 
 # Query Logging

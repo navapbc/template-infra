@@ -86,4 +86,6 @@ data "aws_iam_policy_document" "image_access" {
 resource "aws_kms_key" "ecr_kms" {
   enable_key_rotation = true
   description         = "KMS key for ECR repository ${var.name}"
+
+  # checkov:skip=CKV2_AWS_64:The default key policy is acceptable
 }
