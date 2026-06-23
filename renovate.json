@@ -19,5 +19,13 @@
     "managerFilePatterns": [
       "/\\.github/(?:workflows|actions)/.+\\.ya?ml(?:.jinja)?$/"
     ]
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": [
+        "aquasecurity/tfsec-pr-commenter-action"
+      ],
+      "enabled": false
+    }
+  ]
 }
