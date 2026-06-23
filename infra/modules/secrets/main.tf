@@ -23,6 +23,8 @@ resource "aws_ssm_parameter" "secrets" {
   name  = each.value.secret_store_name
   type  = "SecureString"
   value = random_password.secrets[each.key].result
+
+  # checkov:skip=CKV_AWS_337:Future work may enable a CMK out of the box, until then use the default AWS KMS key
 }
 
 data "aws_ssm_parameter" "secrets" {
