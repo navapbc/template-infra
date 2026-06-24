@@ -83,11 +83,15 @@ resource "aws_rds_cluster_instance" "primary" {
   # window, but when you want changes to happen now, set this.
   #
   # apply_immediately = true
+
+  # checkov:skip=CKV_AWS_353:TODO(https://github.com/navapbc/template-infra/issues/1091) sort out the performance/database insights feature
 }
 
 resource "aws_kms_key" "db" {
   description         = "Key for RDS cluster ${var.name}"
   enable_key_rotation = true
+
+  # checkov:skip=CKV2_AWS_64:The default key policy is acceptable
 }
 
 # Query Logging

@@ -15,6 +15,8 @@ resource "aws_kms_key" "tf_backend" {
   deletion_window_in_days = "10"
   # Generates new cryptographic material every 365 days, this is used to encrypt your data. The KMS key retains the old material for decryption purposes.
   enable_key_rotation = "true"
+
+  # checkov:skip=CKV2_AWS_64:The default key policy is acceptable
 }
 
 # Create the S3 bucket used to store terraform state remotely.

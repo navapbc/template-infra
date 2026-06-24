@@ -43,6 +43,11 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # For practical general usage, allow unrestricted egress. Projects can
+  # configure routing rules/network firewall more centrally and/or customize
+  # this to the shape of services in their particular use case.
+  #
+  # checkov:skip=CKV_AWS_382:There are practical issues with configuring meaningful egress rules in the template
   egress {
     description = "Allow all outgoing traffic"
     from_port   = 0

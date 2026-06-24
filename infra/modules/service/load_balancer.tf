@@ -18,9 +18,6 @@ resource "aws_lb" "alb" {
   # TODO(https://github.com/navapbc/template-infra/issues/163) Implement HTTPS
   # checkov:skip=CKV2_AWS_20:Redirect HTTP to HTTPS as part of implementing HTTPS support
 
-  # TODO(https://github.com/navapbc/template-infra/issues/165) Protect ALB with WAF
-  # checkov:skip=CKV2_AWS_28:Implement WAF in issue #165
-
   # Drop invalid HTTP headers for improved security
   # Note that header names cannot contain underscores
   # https://docs.bridgecrew.io/docs/ensure-that-alb-drops-http-headers
@@ -31,6 +28,8 @@ resource "aws_lb" "alb" {
     prefix  = "${var.service_name}-lb"
     enabled = true
   }
+
+  # checkov:skip=CKV2_AWS_76:When the WAF feature is enabled the default rule set includes Log4j mitigation
 }
 
 # NOTE: for the demo we expose private http endpoint
@@ -158,4 +157,6 @@ resource "aws_lb_target_group" "app_tg" {
   lifecycle {
     create_before_destroy = true
   }
+
+  # checkov:skip=CKV_AWS_378: TODO(https://github.com/navapbc/template-infra/issues/1092): Add support for encrypting private network traffic
 }

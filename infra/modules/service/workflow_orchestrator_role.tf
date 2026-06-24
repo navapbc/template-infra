@@ -45,6 +45,8 @@ resource "aws_iam_policy" "workflow_orchestrator" {
 data "aws_iam_policy_document" "workflow_orchestrator" {
   # checkov:skip=CKV_AWS_111:These permissions are scoped just fine
 
+  # checkov:skip=CKV_AWS_356:CloudWatch API actions don't support resource-level permissions
+  # https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html#cloudwatch-iam-policy
   statement {
     sid = "UnscopeLogsPermissions"
     actions = [
