@@ -1,0 +1,108 @@
+name: Template Test PR
+
+on:
+  workflow_call:
+    inputs:
+      src_branch_name:
+        required: true
+        type: string
+      dest_branch_name:
+        required: true
+        type: string
+      project_repo:
+        type: string
+        required: true
+      pr_body:
+        type: string
+    secrets:
+      access_token:
+        required: true
+
+# all access is via the provided `access_token`
+permissions: {}
+
+env:
+  SRC_BRANCH_NAME: ${{ inputs.src_branch_name }}
+  DEST_BRANCH_NAME: ${{ inputs.dest_branch_name }}
+
+jobs:
+  create-or-update-pr:
+    name: Create or update PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project repo
+        uses: actions/checkout@v6
+        with:
+          path: project-repo
+          repository: ${{ inputs.project_repo }}
+          token: ${{ secrets.access_token }}
+
+      - name: Set up navapbc/platform-cli
+        uses: navapbc/platform-cli/.github/actions/setup-cli@e565096992407a70e73e5a85167421f9bd85addb
+
+      - name: Configure git
+        working-directory: project-repo
+        run: |
+          git config user.name nava-platform-bot
+          git config user.email platform-admins@navapbc.com
+
+      - name: Set up PR branch
+        working-directory: project-repo
+        run: |
+          git checkout -b "${DEST_BRANCH_NAME}"
+
+      - name: Update infra template
+        working-directory: project-repo
+        run: nava-platform infra update --template-uri ${{ github.server_url }}/${{ github.repository }} --version "${SRC_BRANCH_NAME}" .
+
+      - name: Push changes to project repo
+        working-directory: project-repo
+        run: git push --force --set-upstream origin HEAD
+
+      - name: Check for existing PR
+        id: check-pr
+        working-directory: project-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.access_token }}
+        run: |
+          PR_URL="$(gh pr list --head "${DEST_BRANCH_NAME}" --state open --json url --jq .[].url)"
+          if [[ -n "${PR_URL}" ]]; then
+            echo "PR already exists -> ${PR_URL}"
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "PR does not exist (or is not open)"
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open Pull Request
+        if: ${{ steps.check-pr.outputs.exists != 'true' }}
+        working-directory: project-repo
+        env:
+          GITHUB_TOKEN: ${{ secrets.access_token }}
+          PR_BODY: ${{ inputs.pr_body }}
+        run: |
+          if [[ -n "${PR_BODY}" ]]; then
+            : # we're good
+          elif [[ -n "${{ github.event.pull_request.html_url }}" ]]; then
+            PR_BODY="${{ github.event.pull_request.html_url }}"
+          else
+            # There may be a PR associated with the source branch, but the
+            # workflow wasn't triggered by the PR itself (either the PR author
+            # doesn't have permission to run the workflow, there was some error
+            # and we want to manually re-run, etc). It's valuable to connect the
+            # two PRs with a mention regardless, so check if we have a PR to
+            # link.
+            src_pr_url=$(gh pr --repo ${{ github.repository }} list --head "${SRC_BRANCH_NAME}" --state open --limit 1 --json url --jq .[].url || true)
+            echo "src_pr_url=${src_pr_url}"
+
+            if [[ -n ${src_pr_url} ]]; then
+              PR_BODY="${src_pr_url}"
+            else
+              PR_BODY="${{ github.server_url }}/${{ github.repository }}/tree/${SRC_BRANCH_NAME}"
+            fi
+          fi
+
+          gh pr create \
+            --draft \
+            --body "${PR_BODY}" \
+            --title "[${{ github.repository }}] Test Template PR: ${SRC_BRANCH_NAME}"
