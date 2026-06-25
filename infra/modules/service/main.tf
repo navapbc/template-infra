@@ -12,8 +12,8 @@ locals {
 
   base_environment_variables = [
     { name : "PORT", value : tostring(var.container_port) },
-    { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.name },
-    { name : "AWS_REGION", value : data.aws_region.current.name },
+    { name : "AWS_DEFAULT_REGION", value : data.aws_region.current.region },
+    { name : "AWS_REGION", value : data.aws_region.current.region },
     { name : "IMAGE_TAG", value : var.image_tag },
   ]
   db_environment_variables = var.db_vars == null ? [] : [
@@ -130,7 +130,7 @@ resource "aws_ecs_task_definition" "app" {
         logDriver = "awslogs",
         options = {
           "awslogs-group"         = aws_cloudwatch_log_group.service_logs.name,
-          "awslogs-region"        = data.aws_region.current.name,
+          "awslogs-region"        = data.aws_region.current.region,
           "awslogs-stream-prefix" = local.log_stream_prefix
         }
       },

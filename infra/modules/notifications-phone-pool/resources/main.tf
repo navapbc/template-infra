@@ -5,7 +5,7 @@ data "aws_caller_identity" "current" {}
 
 locals {
   phone_number_arn_base = (
-    "arn:aws:sms-voice:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:phone-number"
+    "arn:aws:sms-voice:${data.aws_region.current.region}:${data.aws_caller_identity.current.account_id}:phone-number"
   )
   registration_id_arn = var.sms_sender_phone_number_registration_id != null ? "${local.phone_number_arn_base}/${var.sms_sender_phone_number_registration_id}" : null
 

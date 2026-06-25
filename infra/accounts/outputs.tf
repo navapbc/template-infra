@@ -7,7 +7,7 @@ output "project_name" {
 }
 
 output "region" {
-  value = data.aws_region.current.name
+  value = data.aws_region.current.region
 }
 
 output "tf_log_bucket_name" {

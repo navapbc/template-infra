@@ -21,7 +21,7 @@ locals {
 
   # Get pool from current region (for temporary environments)
   current_region_pool = local.sms_config != null && local.is_temporary ? try(
-    module.existing_notifications_phone_pool[0].pools_by_region[data.aws_region.current.name],
+    module.existing_notifications_phone_pool[0].pools_by_region[data.aws_region.current.region],
     null
   ) : null
 

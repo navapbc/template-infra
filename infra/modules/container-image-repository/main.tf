@@ -1,7 +1,7 @@
 data "aws_region" "current" {}
 
 locals {
-  image_registry = "${aws_ecr_repository.app.registry_id}.dkr.ecr.${data.aws_region.current.name}.amazonaws.com"
+  image_registry = "${aws_ecr_repository.app.registry_id}.dkr.ecr.${data.aws_region.current.region}.amazonaws.com"
 }
 
 resource "aws_ecr_repository" "app" {
