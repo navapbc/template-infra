@@ -37,7 +37,7 @@ jobs:
     steps:
       - id: get-params-step
         env:
-          GITHUB_HEAD_REF: github.head_ref
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
         run: |
           src_branch_name="${{ inputs.src_branch_name || env.GITHUB_HEAD_REF }}"
 
