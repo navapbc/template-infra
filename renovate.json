@@ -26,6 +26,12 @@
         "aquasecurity/tfsec-pr-commenter-action"
       ],
       "enabled": false
+    },
+    {
+      "matchManagers": ["terraform", "terraform-version"],
+      "matchPackageNames": ["hashicorp/terraform"],
+      "groupName": "Terraform Core",
+      "dependencyDashboardApproval": true
     }
   ]
 }
