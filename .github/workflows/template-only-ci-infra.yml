@@ -48,13 +48,8 @@ jobs:
         with:
           go-version-file: ./template-infra/template-only-test/go.mod
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.13"
-
-      - name: Install nava-platform CLI
-        run: pipx install --python "$(which python)" git+https://github.com/navapbc/platform-cli
+      - name: Set up navapbc/platform-cli
+        uses: navapbc/platform-cli/.github/actions/setup-cli@e565096992407a70e73e5a85167421f9bd85addb
 
       - name: Install infra template
         run: |
