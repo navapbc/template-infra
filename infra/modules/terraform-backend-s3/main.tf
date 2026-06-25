@@ -226,7 +226,7 @@ data "aws_iam_policy_document" "tf_log" {
       variable = "aws:SourceArn"
 
       values = [
-        "arn:${data.aws_partition.current.id}:s3:::${aws_s3_bucket.tf_log.id}"
+        "arn:${data.aws_partition.current.partition}:s3:::${aws_s3_bucket.tf_log.id}"
       ]
     }
 
