@@ -20,6 +20,8 @@ set -euo pipefail
 
 module_dir="$1"
 config_name="$2"
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
 
 # 1. Set working directory to the terraform root module directory
 

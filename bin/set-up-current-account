@@ -25,6 +25,9 @@ set -euo pipefail
 account_name="$1"
 
 account_id=$(./bin/current-account-id)
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
+
 
 # Get project name and region from project config
 # This ensures consistency with how terraform computes the bucket name
