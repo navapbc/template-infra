@@ -13,6 +13,7 @@ module "prod_config" {
   enable_notifications            = local.enable_notifications
   enable_document_data_extraction = local.enable_document_data_extraction
   enable_sms_notifications        = local.enable_sms_notifications
+  enable_storage_malware_scanning = local.enable_storage_malware_scanning
 
   # These numbers are a starting point based on this article
   # Update the desired instance size and counts based on the project's specific needs

@@ -45,6 +45,9 @@ locals {
     // Amazon EventBridge – Serverless event bus for event-driven applications and AWS service integrations. Used for event-based jobs.
     "events",
 
+    // Amazon GuardDuty – Threat detection service that monitors for malicious activity and unauthorized behavior. Used for S3 malware protection.
+    "guardduty",
+
     // AWS Identity and Access Management – Manages users, roles, and permissions for AWS services.
     "iam",
 

@@ -15,6 +15,7 @@ resource "aws_s3_bucket_policy" "storage" {
 }
 
 data "aws_iam_policy_document" "storage" {
+  # Require HTTPS connections
   statement {
     sid       = "RestrictToTLSRequestsOnly"
     effect    = "Deny"
@@ -28,6 +29,26 @@ data "aws_iam_policy_document" "storage" {
       test     = "Bool"
       variable = "aws:SecureTransport"
       values   = ["false"]
+    }
+  }
+
+  # Block access to objects tagged with malware threats
+  statement {
+    sid    = "BlockMalwareThreats"
+    effect = "Deny"
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectVersion"
+    ]
+    resources = ["${aws_s3_bucket.storage.arn}/*"]
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "s3:ExistingObjectTag/GuardDutyMalwareScanStatus"
+      values   = ["THREATS_FOUND"]
     }
   }
 }
