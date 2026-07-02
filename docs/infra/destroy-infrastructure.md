@@ -4,17 +4,17 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
 
 ## Instructions
 
-1. First, destroy all your environments. Within `/infra/<APP_NAME>/service` run the following, replacing `dev` with the environment you're destroying.
+1. First, destroy all of your application environments. Ensure that load balancers have deletion protection disabled. Then, within `/infra/<APP_NAME>/service` run the following, replacing `dev` with the environment you're destroying.
 
    ```bash
-   $ terraform init --backend-config=dev.s3.tfbackend
-   $ terraform destroy -var-file=dev.tfvars
+   $ terraform init -backend-config=dev.s3.tfbackend
+   $ terraform destroy -var environment_name=dev
    ```
 
-2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply` from within the `infra/accounts` directory. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in-depth explanation.
+2. Then, to destroy the backends, you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply` from within the `infra/accounts` directory. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in-depth explanation.
 
    ```terraform
-   # infra/modules/modules/terraform-backend-s3/main.tf
+   # infra/modules/terraform-backend-s3/main.tf
 
    resource "aws_s3_bucket" "tf_state" {
      bucket = var.state_bucket_name
@@ -35,7 +35,7 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
    }
    ```
 
-3. Then since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration:
+3. Then, since we're going to be destroying the tfstate buckets, you'll want to move the tfstate file out of S3 and back to your local system. Comment out or delete the s3 backend configuration:
 
    ```terraform
    # infra/accounts/main.tf
