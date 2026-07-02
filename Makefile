@@ -23,7 +23,7 @@ __check_defined = \
 	$(if $(value $1),, \
 		$(error Undefined $1$(if $2, ($2))$(if $(value @), \
 			required by target '$@')))
-
+export TF_IN_AUTOMATION='true'
 
 .PHONY : \
 	e2e-build \
@@ -195,7 +195,6 @@ infra-update-current-account: ## Update infra resources for current AWS profile
 	./bin/terraform-init-and-apply infra/accounts $$(./bin/current-account-config-name)
 
 infra-update-network: ## Update network
-	export TF_IN_AUTOMATION='true'
 	@:$(call check_defined, NETWORK_NAME, the name of the network in /infra/networks)
 	terraform -chdir="infra/networks" init -input=false -reconfigure -backend-config="$(NETWORK_NAME).s3.tfbackend"
 	terraform -chdir="infra/networks" apply -var="network_name=$(NETWORK_NAME)"
@@ -205,7 +204,7 @@ infra-update-app-build-repository: ## Create or update $APP_NAME's build reposit
 	./bin/terraform-init-and-apply infra/$(APP_NAME)/build-repository shared
 
 infra-update-app-database: ## Create or update $APP_NAME's database module for $ENVIRONMENT
-	export TF_IN_AUTOMATION='true'
+
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	terraform -chdir="infra/$(APP_NAME)/database" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
@@ -222,7 +221,7 @@ infra-update-app-database-roles: ## Create or update database roles and schemas 
 	./bin/create-or-update-database-roles $(APP_NAME) $(ENVIRONMENT)
 
 infra-update-app-service: ## Create or update $APP_NAME's web service module
-	export TF_IN_AUTOMATION='true'
+
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
 	@:$(call check_defined, ENVIRONMENT, the name of the application environment e.g. "prod" or "staging")
 	terraform -chdir="infra/$(APP_NAME)/service" init -input=false -reconfigure -backend-config="$(ENVIRONMENT).s3.tfbackend"
@@ -234,7 +233,7 @@ infra-validate-modules: ## Run terraform validate on reusable child modules
 infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
 
 infra-validate-module-%:
-	export TF_IN_AUTOMATION='true'
+
 	@echo "Validate library module: $*"
 	terraform -chdir=infra/modules/$* init -backend=false
 	terraform -chdir=infra/modules/$* validate
@@ -265,14 +264,14 @@ infra-lint-scripts: ## Lint shell scripts
 	shellcheck bin/**
 
 infra-lint-terraform: ## Lint Terraform code
-	export TF_IN_AUTOMATION='true'
+
 	terraform fmt -recursive -check infra
 
 infra-lint-workflows: ## Lint GitHub actions
 	actionlint
 
 infra-format: ## Format infra code
-	export TF_IN_AUTOMATION='true'
+
 	terraform fmt -recursive infra
 
 infra-test-service: ## Run service layer infra test suite
