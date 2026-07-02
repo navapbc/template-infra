@@ -235,8 +235,8 @@ infra-validate-modules: $(patsubst %, infra-validate-module-%, $(MODULES))
 infra-validate-module-%:
 
 	@echo "Validate library module: $*"
-	TF_IN_AUTOMATION='true' terraform -chdir=infra/modules/$* init -backend=false
-	TF_IN_AUTOMATION='true' terraform -chdir=infra/modules/$* validate
+	terraform -chdir=infra/modules/$* init -backend=false
+	terraform -chdir=infra/modules/$* validate
 
 infra-check-app-database-roles: ## Check that app database roles have been configured properly
 	@:$(call check_defined, APP_NAME, the name of subdirectory of /infra that holds the application's infrastructure code)
