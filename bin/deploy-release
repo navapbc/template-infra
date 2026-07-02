@@ -20,6 +20,9 @@ echo "::group::Starting ${app_name} deploy of ${image_tag} to ${environment}"
 TF_CLI_ARGS_apply="-input=false -auto-approve -var=image_tag=${image_tag}" make infra-update-app-service APP_NAME="${app_name}" ENVIRONMENT="${environment}"
 echo "::endgroup::"
 
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
+
 # Wait for the service to become stable
 
 cluster_name=$(terraform -chdir="infra/${app_name}/service" output -raw service_cluster_name)

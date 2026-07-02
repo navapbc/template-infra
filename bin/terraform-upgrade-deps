@@ -42,5 +42,8 @@ else
   rm -f "${module_dir}/.terraform/terraform.tfstate"
 fi
 
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
+
 # then initialize allowing "upgrades", skip backend set up
 terraform -chdir="${module_dir}" init -backend=false -upgrade

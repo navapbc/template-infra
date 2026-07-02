@@ -5,6 +5,8 @@ set -euo pipefail
 app_name="$1"
 image_name="$2"
 image_tag="$3"
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
 
 echo "---------------"
 echo "Publish release"

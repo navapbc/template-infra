@@ -10,6 +10,9 @@ set -euo pipefail
 
 account_name="$1"
 
+#Export to make sure subprocesses pick up the variable
+export TF_IN_AUTOMATION='true'
+
 code_repository=$(terraform -chdir="infra/project-config" output --raw code_repository)
 
 # This is used later to determine the run id of the workflow run

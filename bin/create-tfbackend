@@ -22,6 +22,9 @@ tf_state_key="${3:-${module_dir}/${backend_config_name}.tfstate}"
 # The local tfbackend config file that will store the terraform backend config
 backend_config_file="${module_dir}/${backend_config_name}.s3.tfbackend"
 
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
+
 # Get the name of the S3 bucket that was created to store the tf state
 # This will be used to configure the S3 backends in all the application
 # modules

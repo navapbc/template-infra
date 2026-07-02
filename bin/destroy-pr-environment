@@ -15,6 +15,8 @@ environment="$2"
 pr_number="$3"
 
 workspace="p-${pr_number}"
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
 
 echo "::group::Initialize Terraform with backend for environment: ${environment}"
 terraform -chdir="infra/${app_name}/service" init -backend-config="${environment}.s3.tfbackend"
