@@ -57,7 +57,8 @@ jobs:
         run: |
           echo "If this fails, run 'make infra-format'"
           make infra-lint-terraform
-
+    env:
+      TF_IN_AUTOMATION: 'true'
   validate-terraform:
     name: Validate Terraform modules
     runs-on: ubuntu-latest
@@ -70,7 +71,8 @@ jobs:
 
       - name: Validate
         run: make infra-validate-modules
-
+    env:
+      TF_IN_AUTOMATION: 'true'
   check-compliance-with-checkov:
     name: Check compliance with checkov
     runs-on: ubuntu-latest
