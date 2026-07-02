@@ -89,3 +89,5 @@ jobs:
       - name: Publish release
         if: steps.check-image-published.outputs.is_image_published == 'false'
         run: make APP_NAME=${{ inputs.app_name }} release-publish
+
+
