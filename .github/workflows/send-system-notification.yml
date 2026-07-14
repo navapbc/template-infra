@@ -63,7 +63,7 @@ jobs:
 
       - name: Send Slack message
         if: ${{ steps.get-channel-type.outputs.channel_type == 'slack' }}
-        uses: slackapi/slack-github-action@v3.0.3
+        uses: slackapi/slack-github-action@v3.0.5
         with:
           method: chat.postMessage
           token: ${{ secrets[env.SLACK_TOKEN_SECRET_NAME] }}
