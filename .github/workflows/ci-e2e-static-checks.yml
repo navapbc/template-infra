@@ -34,7 +34,7 @@ jobs:
 
       - name: Cache Node.js dependencies
         id: cache-node
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: e2e/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}

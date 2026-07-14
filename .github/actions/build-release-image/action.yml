@@ -30,7 +30,7 @@ runs:
 
     - name: Restore from Cache
       id: cache-buildx
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: /tmp/.buildx-cache
         key: container-build-${{ inputs.app_name }}-${{ inputs.commit_hash }}
