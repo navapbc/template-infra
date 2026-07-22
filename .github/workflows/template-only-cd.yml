@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - name: Checkout project repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: project-repo
           repository: ${{ matrix.project_repo }}
@@ -43,7 +43,7 @@ jobs:
 
       - name: Checkout template-infra repo (for example app)
         if: "${{ matrix.project_repo == 'navapbc/platform-test' }}"
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: template-infra
 
