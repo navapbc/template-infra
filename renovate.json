@@ -40,7 +40,7 @@
     {
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["digest"],
-      "commitMessagePrefix": "from {{{currentDigestShort}}} to {{{newDigestShort}}}"
+      "commitMessageExtra": "from {{{currentDigestShort}}} to {{{newDigestShort}}}"
     }
   ]
 }
