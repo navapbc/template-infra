@@ -42,6 +42,10 @@ output "enable_sms_notifications" {
   value = local.enable_sms_notifications
 }
 
+output "enable_storage_malware_scanning" {
+  value = local.enable_storage_malware_scanning
+}
+
 output "enable_waf" {
   value = local.enable_waf
 }

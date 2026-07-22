@@ -1,3 +1,9 @@
+variable "enable_malware_scanning" {
+  description = "Whether to enable malware scanning on the storage bucket."
+  type        = bool
+  default     = false
+}
+
 variable "is_temporary" {
   description = "Whether the service is meant to be spun up temporarily (e.g. for automated infra tests). This is used to disable deletion protection."
   type        = bool
