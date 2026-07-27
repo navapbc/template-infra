@@ -46,3 +46,10 @@ output "project_name" {
 output "system_notifications_config" {
   value = local.system_notifications_config
 }
+
+output "threat_detection" {
+  value = {
+    enabled                      = local.enable_threat_detection
+    finding_publishing_frequency = local.threat_detection_finding_publishing_frequency
+  }
+}

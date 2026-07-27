@@ -12,6 +12,7 @@ module "dev_config" {
   enable_notifications            = local.enable_notifications
   enable_document_data_extraction = local.enable_document_data_extraction
   enable_sms_notifications        = local.enable_sms_notifications
+  enable_storage_malware_scanning = local.enable_storage_malware_scanning
 
   # Enable and configure identity provider.
   enable_identity_provider = local.enable_identity_provider
