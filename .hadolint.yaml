@@ -6,3 +6,5 @@ failure-threshold: warning
 ignored:
   # not necessarily a bad idea, but can be brittle and a maintenance burden
   - DL3008
+  # doesn't account for variables or explicitly created users, so tends to be noise
+  - DL3066
