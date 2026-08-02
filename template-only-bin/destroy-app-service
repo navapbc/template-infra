@@ -24,6 +24,9 @@ pushd "infra/${app_name}/service" > /dev/null
 
 terraform init -reconfigure -backend-config="${backend_config_file}"
 
+# save for later
+service_name="$(terraform output -raw service_name)"
+
 terraform apply -auto-approve -target="module.service.aws_s3_bucket.access_logs" -target="module.service.aws_lb.alb" -target="module.identity_provider.aws_cognito_user_pool.main" -var="environment_name=${environment}"
 
 terraform destroy -auto-approve -var="environment_name=${environment}"
@@ -42,12 +45,14 @@ aws_region=$(terraform -chdir="infra/project-config" output --raw default_region
 
 echo "Cleaning up task definitions for project: ${project_name}"
 
+export AWS_PAGER=""
+
 # Find all task definitions tagged with this project using Resource Groups Tagging API
 task_def_arns=$(aws resourcegroupstaggingapi get-resources \
   --region "${aws_region}" \
   --tag-filters Key=project,Values="${project_name}" \
   --resource-type-filters ecs:task-definition \
-  --query 'ResourceTagMappingList[].ResourceARN' \
+  --query "ResourceTagMappingList[?contains(ResourceARN, '${service_name}')].ResourceARN" \
   --output text || echo "")
 
 if [ -n "${task_def_arns}" ]; then
@@ -84,5 +89,5 @@ if [ -n "${task_def_arns}" ]; then
   done
   echo "Task definition cleanup complete"
 else
-  echo "No task definitions found for project ${project_name}"
+  echo "No task definitions found for service ${service_name} in project ${project_name}"
 fi
