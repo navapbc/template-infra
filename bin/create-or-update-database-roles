@@ -17,6 +17,9 @@ set -euo pipefail
 app_name="$1"
 environment="$2"
 
+#Export so subprocesses pick up var
+export TF_IN_AUTOMATION='true'
+
 terraform -chdir="infra/${app_name}/app-config" init > /dev/null
 terraform -chdir="infra/${app_name}/app-config" apply -auto-approve > /dev/null
 ./bin/terraform-init "infra/${app_name}/database" "${environment}"
