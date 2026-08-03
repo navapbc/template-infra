@@ -27,7 +27,7 @@ ENV HOST=0.0.0.0
 # Run as non-root user
 USER app
 
-HEALTHCHECK CMD /usr/bin/healthcheck
+HEALTHCHECK CMD ["/usr/bin/healthcheck"]
 
 # Create a basic webserver and run it until the container is stopped
 CMD ["python", "-m", "app"]
