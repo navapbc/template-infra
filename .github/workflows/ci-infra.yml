@@ -79,7 +79,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Run Checkov check
-        uses: bridgecrewio/checkov-action@v12.3114.0
+        uses: bridgecrewio/checkov-action@v12.3115.0
         with:
           directory: infra
           framework: terraform
