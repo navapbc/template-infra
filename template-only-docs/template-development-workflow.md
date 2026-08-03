@@ -4,13 +4,25 @@ This is the workflow for developers making changes to the infrastructure templat
 
 ## Prerequisites
 
-For most infrastructure changes, you will need an environment to work with. Since template-infra is a template and not a live project, it doesn't have any long-lived environments. Thus, you should develop and test your infrastructure changes using the `dev` environment on one of the following test repos:
+For most infrastructure changes, you will need an environment to work with.
+Since template-infra is a template and not a live project, it doesn't have any
+long-lived environments.
 
-- [platform-test](https://github.com/navapbc/platform-test) – Test project that uses [template-infra](https://github.com/navapbc/template-infra) and the [example app](https://github.com/navapbc/template-infra/tree/main/template-only-app) that comes with the template. This is the default project we use for development and testing infrastructure changes.
-- [platform-test-flask](https://github.com/navapbc/platform-test-flask) - Test project that uses [template-infra](https://github.com/navapbc/template-infra) and [template-application-flask](https://github.com/navapbc/template-application-flask)
-- [platform-test-nextjs](https://github.com/navapbc/platform-test-nextjs) - Test project that uses [template-infra](https://github.com/navapbc/template-infra) and [template-application-nextjs](https://github.com/navapbc/template-application-nextjs)
+For Nava employees, generally this should be in
+[platform-test](https://github.com/navapbc/platform-test). This is a test
+project that uses [template-infra](https://github.com/navapbc/template-infra),
+the [example
+app](https://github.com/navapbc/template-infra/tree/main/template-only-app), and
+instances of various other Strata application templates to provide a broad
+integration test environment using the latest (unreleased) code from each. You
+should develop and test your infrastructure changes using the `dev` environment
+there.
 
-If you need an AWS IAM user for the AWS account associated with any of the platform test repos, contact @lorenyu.
+For non-Nava employees, generally you'd be working on a project using the Strata
+template, and so sharing your development and testing results from that project
+usually suffices. If you'd like to contribute long term and/or larger changes
+and don't have a suitable test environment, reach out via email to
+<strata@navapbc.com> and we can figure something out.
 
 ## Developing infrastructure changes
 

@@ -28,7 +28,5 @@ A live demo of the test application is fully deployed by the <https://github.com
 
 ## Template Applications
 
-You can use the following template applications with the template infrastructure. Each of these includes a script to generate a working application that works with this infra template.
-
-* [template-application-nextjs](https://github.com/navapbc/template-application-nextjs)
-* [template-application-flask](https://github.com/navapbc/template-application-flask)
+The infra template can be used with any of the [Strata application
+templates](https://github.com/navapbc/strata#strata-application-templates).

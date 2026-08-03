@@ -1,31 +1,23 @@
-<p>
-  <img src="template-only-docs/assets/Nava-Strata-Logo-V02.svg" alt="Nava Strata" width="400">
-</p>
-<p><i>Open source tools for every layer of government service delivery.</i></p>
-<p><b>Strata is a gold-standard target architecture and suite of open-source tools that gives government agencies everything they need to run a modern service.</b></p>
+# AWS infrastructure template
 
-<h4 align="center">
+_Part of [Nava Strata](https://github.com/navapbc/strata)._
+
+<p align="center">
   <a href="https://github.com/navapbc/template-infra/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-apache_2.0-red" alt="Nava Strata is released under the Apache 2.0 license" >
   </a>
   <a href="https://github.com/navapbc/template-infra/blob/main/CONTRIBUTING.md">
     <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen" alt="PRs welcome!" />
   </a>
-  <a href="https://github.com/navapbc/template-infra/issues">
+  <a href="https://github.com/navapbc/template-infra/commits/main">
     <img src="https://img.shields.io/github/commit-activity/m/navapbc/template-infra" alt="git commit activity" />
   </a>
-  <a href="https://github.com/navapbc/template-infra/repos/">
-    <img alt="GitHub Downloads (all assets, all releases)" src="https://img.shields.io/github/downloads/navapbc/template-infra/total">
-  </a>
-</h4>
+</p>
 
-# AWS infrastructure template
+This template repository provides **foundational AWS infrastructure** for
+deploying modern web applications.
 
-## Overview
-
-This template repository provides **foundational AWS infrastructure** for deploying modern web applications. It is part of the interoperable [Nava Strata](https://github.com/navapbc/strata) suite of open source tools.
-
-### What's Included
+## What's Included
 
 This template provides everything you need to deploy a production-ready web application:
 
@@ -36,7 +28,7 @@ This template provides everything you need to deploy a production-ready web appl
 - **Continuous Deployment** – infrastructure for continuous deployment, including: AWS account access for Github actions, scripts for building and publishing release artifacts, and a Github action for automated deployments from the main branch.
 - **Comprehensive Documentation** – Technical documentation explaining all architectural decisions and defaults
 
-### System Architecture
+## System Architecture
 
 The infrastructure creates a robust, scalable system architecture:
 
@@ -107,16 +99,24 @@ resolution.
 
 ---
 
-## Additional Resources
+## Documentation
 
-- **[Documentation](/docs/)** – Comprehensive guides and architectural decisions
-- **[Contributing](CONTRIBUTING.md)** – How to contribute to this project
-- **[License](LICENSE.md)** – Apache 2.0 License
-- **[Security](SECURITY.md)** – Security policies and vulnerability reporting
+Comprehensive guides and architectural decisions are available in
+[docs/](/docs/). These are included in generated projects as well.
+
+Topics related to the template itself and its development are in
+[template-only-docs/](/template-only-docs/). These do not get included in
+generated projects.
 
 ---
 
+## License
+
+This project is licensed under the Apache 2.0 License. See the
+[LICENSE](LICENSE) file for details.
+
 ## Community
 
-- **Found a bug?** Submit an [issue](https://github.com/navapbc/template-infra/issues)
-- **Want to contribute?** Check out our [contributing guide](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)

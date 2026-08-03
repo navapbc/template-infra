@@ -1,33 +1,42 @@
 {
   "name": "strata-infra-aws",
-  "version": "1.0.0",
-  "description": "Open source tools for every layer of government service delivery. Strata is a gold-standard target architecture and suite of open source tools that gives government agencies everything they need to run a modern service.",
+  "version": "0.20.0",
+  "description": "A template to set up foundational infrastructure for your application in AWS",
   "status": "Production",
   "permissions": {
     "licenses": [
       {
         "name": "Apache-2.0",
-        "URL": "https://github.com/navapbc/template-infra/blob/main/LICENSE.md"
+        "URL": "https://github.com/navapbc/template-infra/blob/main/LICENSE"
       }
     ],
-    "usageType": ["openSource"]
+    "usageType": [
+      "openSource"
+    ]
   },
   "organization": "Nava",
   "repositoryURL": "https://github.com/navapbc/template-infra",
   "repositoryVisibility": "public",
   "vcs": "git",
   "reuseFrequency": {
-    "forks": 2
+    "forks": 5
   },
-  "languages": ["Bash", "HCL", "Terraform"],
+  "languages": [
+    "Bash",
+    "HCL",
+    "Terraform"
+  ],
   "maintenance": "internal",
   "SBOM": "https://github.com/navapbc/template-infra/network/dependencies",
   "date": {
-    "created": "2022-09-08T23:06:37Z",
-    "lastModified": "2025-10-16T18:20:45Z",
-    "metadataLastUpdated": "2025-10-16T19:37:20.815Z"
+    "created": "2022-05-11T01:08:04Z",
+    "lastModified": "2026-08-03T14:52:31Z",
+    "metadataLastUpdated": "2026-08-03T15:05:16Z"
   },
-  "tags": ["platform", "sdk"],
+  "tags": [
+    "platform",
+    "sdk"
+  ],
   "contact": {},
   "feedbackMechanism": "https://github.com/navapbc/template-infra/issues",
   "AIUseCaseID": "0"
