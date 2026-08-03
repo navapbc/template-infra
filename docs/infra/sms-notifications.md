@@ -327,7 +327,7 @@ Following [AWS End User Messaging SMS Best Practices](https://docs.aws.amazon.co
 
 ### Support Resources
 
-- [AWS End User Messaging SMS Developer Guide](https://docs.aws.amazon.com/sms-voice/latest/)
+- [AWS End User Messaging SMS Developer Guide](https://docs.aws.amazon.com/sms-voice/latest/userguide/what-is-sms-mms.html)
 - [Phone Number Registration Troubleshooting](https://docs.aws.amazon.com/sms-voice/latest/userguide/registrations-troubleshoot.html)
 - [SMS Delivery Best Practices](https://docs.aws.amazon.com/sms-voice/latest/userguide/best-practices.html)
 
