@@ -11,6 +11,7 @@ To destroy everything you'll need to undeploy all the infrastructure in reverse 
    $ terraform destroy -var-file=dev.tfvars
    ```
 
+<!-- markdown-link-check-disable-next-line -->
 2. Then to destroy the backends, first you'll need to add `force_destroy = true` to the S3 buckets, and update the lifecycle block to set `prevent_destroy = false`. Then run `terraform apply` from within the `infra/accounts` directory. The reason we need to do this is because S3 buckets by default are protected from destruction to avoid loss of data. See [Terraform: Destroy/Replace Buckets](https://medium.com/interleap/terraform-destroy-replace-buckets-cf9d63d0029d) for a more in-depth explanation.
 
    ```terraform
