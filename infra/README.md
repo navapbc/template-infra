@@ -96,7 +96,7 @@ To set up this project for the first time (i.e., it has never been deployed to t
 
 ### Add an application to an existing repo
 
-[Use the Platform CLI to add another application to an existing repo](https://navapbc.github.io/platform-cli/adding-an-app/)
+[Use the Platform CLI to add another application to an existing repo](https://navapbc.github.io/platform-cli/guides/adding-an-app/)
 
 ### 🆕 New developer
 
