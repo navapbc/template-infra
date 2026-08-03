@@ -173,5 +173,4 @@ module "bedrock_data_automation" {
 ## References
 
 - [AWS Bedrock Data Automation](https://docs.aws.amazon.com/bedrock/latest/userguide/data-automation.html)
-- [Project Terraform Conventions](../../../../.github/copilot-instructions.md)
 - [Checkov Documentation](https://www.checkov.io/)
