@@ -5,8 +5,7 @@ RUN adduser --system --disabled-password --no-create-home app
 
 WORKDIR /app
 
-RUN apk update && \
-  apk --no-cache add \
+RUN apk --no-cache add \
   aws-cli~=2 \
   postgresql17-client~=17
 
