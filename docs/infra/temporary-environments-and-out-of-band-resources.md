@@ -8,7 +8,7 @@ Temporary environments are short-lived infrastructure instances used for testing
 
 - **PR environments** — created automatically when a pull request is opened and destroyed when it's merged or closed. See [Pull Request Environments](./pull-request-environments.md).
 - **Workspace-based environments** — created manually using Terraform workspaces for isolated development and testing. See [Develop and Test Infrastructure in Isolation Using Workspaces](./develop-and-test-infrastructure-in-isolation-using-workspaces.md).
-- **CI end-to-end environments** — created and torn down by [`template-only-ci-infra.yml`](/.github/workflows/template-only-ci-infra.yml) to test creating a new project from scratch, deploying infrastructure (tests live in `infra/test/`), and tearing it all down.
+- **CI end-to-end environments** — created and torn down by the `ci-<APP_NAME>-infra-service.yml` workflow for an app (main code lives in `infra/test/`) on PRs or merges to the primary branch. This deploys infrastructure, tests the new service instance starts up, and then tears it all down.
 
 All three types need to handle the fact that some resources can't simply be `terraform apply`'d into existence and `terraform destroy`'d away.
 
