@@ -61,6 +61,7 @@ jobs:
           echo "service_endpoint=${service_endpoint}" >> "$GITHUB_OUTPUT"
         env:
           GH_TOKEN: ${{ github.token }}
+          TF_IN_AUTOMATION: 'true'
 
   e2e-tests:
     name: " " # GitHub UI is noisy when calling reusable workflows, so use whitespace for name to reduce noise
