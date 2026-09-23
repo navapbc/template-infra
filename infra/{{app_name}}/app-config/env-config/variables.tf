@@ -149,4 +149,8 @@ variable "database_insights_mode" {
   EOT
   type        = string
   default     = "standard"
+  validation {
+    condition     = contains(["standard", "advanced"], var.database_insights_mode)
+    error_message = "database_insights_mode must be either \"standard\" or \"advanced\""
+  }
 }

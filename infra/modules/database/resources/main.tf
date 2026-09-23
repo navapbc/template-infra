@@ -69,9 +69,9 @@ resource "aws_rds_cluster" "db" {
 
   enabled_cloudwatch_logs_exports = ["postgresql"]
 
-  # AWS is retiring Performance Insights on 2026-07-31, replaced by Database
-  # Insights. Setting these at the cluster level does NOT propagate to existing
-  # instances, so aws_rds_cluster_instance sets them too -- see the comment there.
+  # Database Insights replaced Performance Insights, which AWS retired on
+  # 2026-07-31. database_insights_mode is a cluster-only argument; the
+  # performance_insights_* arguments are set here and on the instance below.
   database_insights_mode                = var.database_insights_mode
   performance_insights_enabled          = true
   performance_insights_retention_period = local.performance_insights_retention_period
@@ -93,10 +93,17 @@ resource "aws_rds_cluster_instance" "primary" {
   monitoring_role_arn        = aws_iam_role.rds_enhanced_monitoring.arn
   monitoring_interval        = 30
 
-  # Performance Insights is configured per instance as well as on the cluster.
-  # The cluster-level setting applies to instances created afterwards; it does
-  # not retroactively update instances that already exist, so both are set.
-  # database_insights_mode is cluster-only and is not repeated here.
+  # Set here as well as on the cluster. Cluster-level settings apply to
+  # instances created afterwards and do not retroactively update existing
+  # ones, and CKV_AWS_353 checks the instance specifically.
+  #
+  # AWS documents that Database Insights cannot be managed per instance within
+  # a cluster, which would suggest these are redundant or rejected. In practice
+  # existing Aurora clusters in our accounts carry performance_insights_* on
+  # the instance with the cluster-level fields unset, so the instance is where
+  # the setting currently takes effect. Confirm with a real apply before
+  # relying on the cluster-level values alone.
+  # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.Considerations.html
   performance_insights_enabled          = true
   performance_insights_retention_period = local.performance_insights_retention_period
   performance_insights_kms_key_id       = aws_kms_key.db.arn
@@ -105,7 +112,6 @@ resource "aws_rds_cluster_instance" "primary" {
   # window, but when you want changes to happen now, set this.
   #
   # apply_immediately = true
-
 }
 
 resource "aws_kms_key" "db" {

@@ -39,8 +39,8 @@ variable "project_name" {
 
 variable "database_insights_mode" {
   description = <<-EOT
-    Database Insights mode for the cluster. AWS is retiring Performance Insights
-    on 2026-07-31; Database Insights replaces it.
+    Database Insights mode for the cluster. Database Insights replaced
+    Performance Insights, which AWS retired on 2026-07-31.
 
     - "standard" (default): free, 7-day retention.
     - "advanced": paid (priced per vCPU/month, plus API charges), 15-month

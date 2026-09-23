@@ -112,29 +112,50 @@ make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT
 ## Database monitoring
 
 Databases are created with [Database Insights](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.html)
-enabled. Database Insights replaces Performance Insights, which
-[AWS is retiring on 2026-07-31](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html).
+enabled. Database Insights replaced Performance Insights, which
+[AWS retired on 2026-07-31](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html).
 
 Two modes are available, set per environment via `database_insights_mode`:
 
-| Mode                 | Retention | Cost                                                  | What you get                                                                   |
-| -------------------- | --------- | ----------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `standard` (default) | 7 days    | Free                                                  | Performance Insights dashboard, top SQL, wait events                           |
-| `advanced`           | 465 days  | Paid, priced per vCPU/month plus per-API-call charges | Everything in standard, plus long-term trend analysis and cross-database views |
+| Mode                 | Retention | Cost                                                  | What you get                                         |
+| -------------------- | --------- | ----------------------------------------------------- | ---------------------------------------------------- |
+| `standard` (default) | 7 days    | Free                                                  | Performance Insights dashboard, top SQL, wait events |
+| `advanced`           | 465 days  | Paid, priced per vCPU/month plus per-API-call charges | Long-term retention and cross-database views         |
 
 The template defaults to `standard` so that no project inherits a recurring
-charge without opting in. To enable advanced mode for an environment:
+charge without opting in. To enable advanced mode for an environment, set it
+on that environment's config module:
 
 ```terraform
-# infra/<APP_NAME>/app-config/<ENVIRONMENT>.tf
-database_config = {
-  database_insights_mode = "advanced"
+# infra/<APP_NAME>/app-config/prod.tf
+module "prod_config" {
+  source = "./env-config"
   # ...
+  database_insights_mode = "advanced"
 }
 ```
 
 The retention period is derived from the mode (advanced requires exactly 465
-days), so it does not need to be set separately.
+days), so it does not need to be set separately. The settings are applied at
+the cluster level; AWS does not support managing Database Insights per
+instance within a cluster.
+
+### Before enabling advanced mode
+
+Two caveats are worth knowing, because they limit what the paid tier actually
+buys you here:
+
+- **This module uses Aurora Serverless v2 (`db.serverless`).** Two of the
+  headline advanced-mode features -- performance analysis over a time period,
+  and proactive recommendations -- are
+  [not supported on `db.serverless`](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.Engines.html).
+  You would pay the per-vCPU charge for the longer retention window without
+  getting those.
+- **Switching an existing cluster from `standard` to `advanced` has been
+  reported to fail** when the cluster uses a customer-managed KMS key, which
+  this module always does. See
+  [terraform-provider-aws#42981](https://github.com/hashicorp/terraform-provider-aws/issues/42981).
+  Test the transition in a lower environment first.
 
 Check [the RDS pricing page](https://aws.amazon.com/rds/aurora/pricing/) for
 current advanced-mode rates before enabling it, since the per-vCPU charge
