@@ -140,3 +140,26 @@ variable "service_override_extra_environment_variables" {
   EOT
   default     = {}
 }
+
+variable "database_insights_mode" {
+  description = <<-EOT
+    Database Insights mode for the environment's database cluster.
+    "standard" is free with a 7-day window; "advanced" is paid and retains
+    465 days. See docs/infra/set-up-database.md#database-monitoring.
+  EOT
+  type        = string
+  default     = "standard"
+  validation {
+    condition     = contains(["standard", "advanced"], var.database_insights_mode)
+    error_message = "database_insights_mode must be either \"standard\" or \"advanced\""
+  }
+}
+
+variable "performance_insights_retention_period" {
+  description = <<-EOT
+    Days of Performance Insights history to retain. Null leaves the cluster's
+    existing retention unchanged. See docs/infra/set-up-database.md#database-monitoring.
+  EOT
+  type        = number
+  default     = null
+}

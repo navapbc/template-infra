@@ -11,6 +11,17 @@ locals {
 
   engine_version       = "16"
   engine_major_version = regex("^\\d+", local.engine_version)
+
+  # Left null unless explicitly set, so a cluster keeps whatever retention it
+  # already has. Hardcoding a value here would silently lower retention on any
+  # database already using a longer window, discarding that history
+  # irreversibly. When null, AWS applies the default for the selected mode.
+  #
+  # Advanced mode requires at least 465 days (not exactly 465 -- 496, 731 and
+  # other multiples of 31 are also valid); standard supports the free 7-day
+  # window.
+  # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.html
+  performance_insights_retention_period = var.performance_insights_retention_period
 }
 
 module "interface" {
@@ -63,6 +74,14 @@ resource "aws_rds_cluster" "db" {
 
   enabled_cloudwatch_logs_exports = ["postgresql"]
 
+  # Database Insights replaced Performance Insights, which AWS retired on
+  # 2026-07-31. database_insights_mode is a cluster-only argument; the
+  # performance_insights_* arguments are set here and on the instance below.
+  database_insights_mode                = var.database_insights_mode
+  performance_insights_enabled          = true
+  performance_insights_retention_period = local.performance_insights_retention_period
+  performance_insights_kms_key_id       = aws_kms_key.db.arn
+
   # Many DB modifications are by default queued up for the next maintenance
   # window, but when you want changes to happen now, set this.
   #
@@ -79,12 +98,25 @@ resource "aws_rds_cluster_instance" "primary" {
   monitoring_role_arn        = aws_iam_role.rds_enhanced_monitoring.arn
   monitoring_interval        = 30
 
+  # Set here as well as on the cluster. Cluster-level settings apply to
+  # instances created afterwards and do not retroactively update existing
+  # ones, and CKV_AWS_353 checks the instance specifically.
+  #
+  # AWS documents that Database Insights cannot be managed per instance within
+  # a cluster, which would suggest these are redundant or rejected. In practice
+  # existing Aurora clusters in our accounts carry performance_insights_* on
+  # the instance with the cluster-level fields unset, so the instance is where
+  # the setting currently takes effect. Confirm with a real apply before
+  # relying on the cluster-level values alone.
+  # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.Considerations.html
+  performance_insights_enabled          = true
+  performance_insights_retention_period = local.performance_insights_retention_period
+  performance_insights_kms_key_id       = aws_kms_key.db.arn
+
   # Many DB modifications are by default queued up for the next maintenance
   # window, but when you want changes to happen now, set this.
   #
   # apply_immediately = true
-
-  # checkov:skip=CKV_AWS_353:TODO(https://github.com/navapbc/template-infra/issues/1091) sort out the performance/database insights feature
 }
 
 resource "aws_kms_key" "db" {
