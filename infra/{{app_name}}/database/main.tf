@@ -54,5 +54,6 @@ module "database" {
   project_name = module.project_config.project_name
   is_temporary = local.is_temporary
 
-  database_insights_mode = local.database_config.database_insights_mode
+  database_insights_mode                = local.database_config.database_insights_mode
+  performance_insights_retention_period = local.database_config.performance_insights_retention_period
 }

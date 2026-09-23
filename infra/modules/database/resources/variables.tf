@@ -43,9 +43,9 @@ variable "database_insights_mode" {
     Performance Insights, which AWS retired on 2026-07-31.
 
     - "standard" (default): free, 7-day retention.
-    - "advanced": paid (priced per vCPU/month, plus API charges), 15-month
+    - "advanced": paid (priced per vCPU/month, plus API charges), long-term
       retention and SQL-level analysis. Advanced requires a retention period of
-      465 days.
+      at least 465 days.
 
     See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.html
   EOT
@@ -54,5 +54,39 @@ variable "database_insights_mode" {
   validation {
     condition     = contains(["standard", "advanced"], var.database_insights_mode)
     error_message = "database_insights_mode must be either \"standard\" or \"advanced\""
+  }
+}
+
+variable "performance_insights_retention_period" {
+  description = <<-EOT
+    Days of Performance Insights history to retain. Defaults to null, which
+    leaves whatever the cluster already has rather than changing it -- existing
+    databases are commonly on a non-default value, and lowering this discards
+    history irreversibly.
+
+    When null, new clusters get the AWS default for the chosen
+    database_insights_mode: 7 days for "standard", 465 for "advanced".
+
+    Valid values are 7, 731, or a multiple of 31. "advanced" mode requires at
+    least 465.
+  EOT
+  type        = number
+  default     = null
+  validation {
+    condition = (
+      var.performance_insights_retention_period == null ||
+      var.performance_insights_retention_period == 7 ||
+      var.performance_insights_retention_period == 731 ||
+      (try(var.performance_insights_retention_period % 31, 1) == 0)
+    )
+    error_message = "performance_insights_retention_period must be 7, 731, or a multiple of 31"
+  }
+  validation {
+    condition = (
+      var.database_insights_mode != "advanced" ||
+      var.performance_insights_retention_period == null ||
+      var.performance_insights_retention_period >= 465
+    )
+    error_message = "advanced database_insights_mode requires a retention period of at least 465 days"
   }
 }

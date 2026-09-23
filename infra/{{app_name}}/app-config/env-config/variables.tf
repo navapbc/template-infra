@@ -154,3 +154,12 @@ variable "database_insights_mode" {
     error_message = "database_insights_mode must be either \"standard\" or \"advanced\""
   }
 }
+
+variable "performance_insights_retention_period" {
+  description = <<-EOT
+    Days of Performance Insights history to retain. Null leaves the cluster's
+    existing retention unchanged. See docs/infra/set-up-database.md#database-monitoring.
+  EOT
+  type        = number
+  default     = null
+}

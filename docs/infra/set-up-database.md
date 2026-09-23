@@ -72,7 +72,11 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 
 ```json
 {
-  "roles": ["postgres", "migrator", "app"],
+  "roles": [
+    "postgres",
+    "migrator",
+    "app"
+  ],
   "roles_with_groups": {
     "rds_superuser": "rds_password",
     "pg_monitor": "pg_read_all_settings,pg_read_all_stats,pg_stat_scan_tables",
@@ -117,10 +121,10 @@ enabled. Database Insights replaced Performance Insights, which
 
 Two modes are available, set per environment via `database_insights_mode`:
 
-| Mode                 | Retention | Cost                                                  | What you get                                         |
-| -------------------- | --------- | ----------------------------------------------------- | ---------------------------------------------------- |
-| `standard` (default) | 7 days    | Free                                                  | Performance Insights dashboard, top SQL, wait events |
-| `advanced`           | 465 days  | Paid, priced per vCPU/month plus per-API-call charges | Long-term retention and cross-database views         |
+| Mode                 | Retention         | Cost                                                  | What you get                                         |
+| -------------------- | ----------------- | ----------------------------------------------------- | ---------------------------------------------------- |
+| `standard` (default) | 7 days            | Free                                                  | Performance Insights dashboard, top SQL, wait events |
+| `advanced`           | at least 465 days | Paid, priced per vCPU/month plus per-API-call charges | Long-term retention and cross-database views         |
 
 The template defaults to `standard` so that no project inherits a recurring
 charge without opting in. To enable advanced mode for an environment, set it
@@ -135,27 +139,42 @@ module "prod_config" {
 }
 ```
 
-The retention period is derived from the mode (advanced requires exactly 465
-days), so it does not need to be set separately. The settings are applied at
-the cluster level; AWS does not support managing Database Insights per
-instance within a cluster.
+### Retention
+
+`performance_insights_retention_period` defaults to `null`, which leaves a
+cluster's existing retention untouched. This matters when adopting these
+settings on databases that already exist: they are often on a non-default
+retention, and lowering it discards that history irreversibly.
+
+For a new cluster, `null` means AWS applies the default for the selected mode
+— 7 days for `standard`, 465 for `advanced`. To pin a value explicitly:
+
+```terraform
+performance_insights_retention_period = 731
+```
+
+Valid values are `7`, `731`, or any multiple of 31. Advanced mode requires at
+least 465.
+
+### Where these settings apply
+
+`database_insights_mode` is a cluster-level argument. The
+`performance_insights_*` arguments are set on both the cluster and its
+instance: AWS documents that Database Insights
+[cannot be managed per instance within a cluster](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.Considerations.html),
+but in practice existing Aurora clusters carry these on the instance with the
+cluster-level fields unset, and `CKV_AWS_353` checks the instance. If you add
+further instances to a cluster, give them the same values — AWS requires every
+instance in a cluster to agree.
 
 ### Before enabling advanced mode
 
-Two caveats are worth knowing, because they limit what the paid tier actually
-buys you here:
-
-- **This module uses Aurora Serverless v2 (`db.serverless`).** Two of the
-  headline advanced-mode features -- performance analysis over a time period,
-  and proactive recommendations -- are
-  [not supported on `db.serverless`](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.Engines.html).
-  You would pay the per-vCPU charge for the longer retention window without
-  getting those.
-- **Switching an existing cluster from `standard` to `advanced` has been
-  reported to fail** when the cluster uses a customer-managed KMS key, which
-  this module always does. See
-  [terraform-provider-aws#42981](https://github.com/hashicorp/terraform-provider-aws/issues/42981).
-  Test the transition in a lower environment first.
+This module uses Aurora Serverless v2 (`db.serverless`), and two of the
+headline advanced-mode features — performance analysis over a time period, and
+proactive recommendations — are
+[not supported on `db.serverless`](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.Engines.html).
+You would pay the per-vCPU charge for the longer retention window without
+getting those.
 
 Check [the RDS pricing page](https://aws.amazon.com/rds/aurora/pricing/) for
 current advanced-mode rates before enabling it, since the per-vCPU charge

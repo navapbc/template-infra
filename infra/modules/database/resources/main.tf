@@ -12,11 +12,16 @@ locals {
   engine_version       = "16"
   engine_major_version = regex("^\\d+", local.engine_version)
 
-  # Advanced mode requires exactly 465 days of retention; standard mode only
-  # supports the free 7-day window. Deriving this from the mode keeps the two
-  # from drifting into an invalid combination.
+  # Left null unless explicitly set, so a cluster keeps whatever retention it
+  # already has. Hardcoding a value here would silently lower retention on any
+  # database already using a longer window, discarding that history
+  # irreversibly. When null, AWS applies the default for the selected mode.
+  #
+  # Advanced mode requires at least 465 days (not exactly 465 -- 496, 731 and
+  # other multiples of 31 are also valid); standard supports the free 7-day
+  # window.
   # https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.html
-  performance_insights_retention_period = var.database_insights_mode == "advanced" ? 465 : 7
+  performance_insights_retention_period = var.performance_insights_retention_period
 }
 
 module "interface" {
