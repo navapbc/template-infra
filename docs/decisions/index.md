@@ -17,6 +17,8 @@ This log lists the architectural decisions for [project name].
 * [ADR-2023-11-28](infra/2023-11-28-feature-flags-system-design.md) - Feature flags system design
 * [ADR-2023-12-01](infra/2023-12-01-network-layer-design.md) - Design of network layer
 * [ADR-2025-01-09](infra/2025-01-09-notifications-architecture.md) - Notifications Architecture
+* [ADR-2026-02-19](infra/2026-02-19-sms-notifications-implementation.md) - Enable SMS Notifications via AWS End User Messaging Phone Number Pool
+* [ADR-2026-09-23](infra/2026-09-23-externally-hosted-container-images.md) - Support services that run externally hosted container images
 
 <!-- adrlogstop -->
 
