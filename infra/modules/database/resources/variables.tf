@@ -36,3 +36,23 @@ variable "project_name" {
   description = "The name of the project"
   type        = string
 }
+
+variable "database_insights_mode" {
+  description = <<-EOT
+    Database Insights mode for the cluster. AWS is retiring Performance Insights
+    on 2026-07-31; Database Insights replaces it.
+
+    - "standard" (default): free, 7-day retention.
+    - "advanced": paid (priced per vCPU/month, plus API charges), 15-month
+      retention and SQL-level analysis. Advanced requires a retention period of
+      465 days.
+
+    See https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.html
+  EOT
+  type        = string
+  default     = "standard"
+  validation {
+    condition     = contains(["standard", "advanced"], var.database_insights_mode)
+    error_message = "database_insights_mode must be either \"standard\" or \"advanced\""
+  }
+}

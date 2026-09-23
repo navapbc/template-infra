@@ -72,11 +72,7 @@ The Lambda function's response should describe the resulting PostgreSQL roles an
 
 ```json
 {
-  "roles": [
-    "postgres",
-    "migrator",
-    "app"
-  ],
+  "roles": ["postgres", "migrator", "app"],
   "roles_with_groups": {
     "rds_superuser": "rds_password",
     "pg_monitor": "pg_read_all_settings,pg_read_all_stats,pg_stat_scan_tables",
@@ -112,6 +108,37 @@ Why is this needed? The reason is that the `migrator` role will be used by the m
 ```bash
 make infra-check-app-database-roles APP_NAME=<APP_NAME> ENVIRONMENT=<ENVIRONMENT>
 ```
+
+## Database monitoring
+
+Databases are created with [Database Insights](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_DatabaseInsights.html)
+enabled. Database Insights replaces Performance Insights, which
+[AWS is retiring on 2026-07-31](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html).
+
+Two modes are available, set per environment via `database_insights_mode`:
+
+| Mode                 | Retention | Cost                                                  | What you get                                                                   |
+| -------------------- | --------- | ----------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `standard` (default) | 7 days    | Free                                                  | Performance Insights dashboard, top SQL, wait events                           |
+| `advanced`           | 465 days  | Paid, priced per vCPU/month plus per-API-call charges | Everything in standard, plus long-term trend analysis and cross-database views |
+
+The template defaults to `standard` so that no project inherits a recurring
+charge without opting in. To enable advanced mode for an environment:
+
+```terraform
+# infra/<APP_NAME>/app-config/<ENVIRONMENT>.tf
+database_config = {
+  database_insights_mode = "advanced"
+  # ...
+}
+```
+
+The retention period is derived from the mode (advanced requires exactly 465
+days), so it does not need to be set separately.
+
+Check [the RDS pricing page](https://aws.amazon.com/rds/aurora/pricing/) for
+current advanced-mode rates before enabling it, since the per-vCPU charge
+applies continuously, not just while you are looking at the dashboard.
 
 ## Set up application environments
 
