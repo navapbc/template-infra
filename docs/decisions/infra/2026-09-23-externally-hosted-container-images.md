@@ -71,11 +71,16 @@ locals {
 
   # Always populated. Derived from build_repository_config when the project
   # builds its own image; set explicitly when it does not.
-  image_config = coalesce(var.external_image_config, {
+  #
+  # A conditional, not coalesce(): Terraform evaluates all coalesce arguments
+  # eagerly, so the derived branch would dereference a null
+  # build_repository_config and fail on exactly the external-image case this
+  # exists to support.
+  image_config = local.build_repository_config != null ? {
     repository_url = local.build_repository_config.repository_url
     repository_arn = local.build_repository_config.repository_arn
-    tag            = null  # resolved per-deploy from the commit hash
-  })
+    tag            = null # resolved per-deploy, see image_tag below
+  } : var.external_image_config
 }
 ```
 
@@ -84,9 +89,15 @@ The service layer then reads `image_config` rather than reaching into
 
 ```terraform
 # infra/{{app_name}}/service/main.tf
-image_repository_arn = local.image_config.repository_arn  # null when external
+image_repository_arn = local.image_config.repository_arn # null when external
 image_repository_url = local.image_config.repository_url
-image_tag            = coalesce(local.image_config.tag, var.image_tag)
+
+# An external image pins its own tag. Otherwise keep the existing resolution
+# in service/image_tag.tf, which falls back to the previously deployed tag
+# from remote state when var.image_tag is null -- that fallback is what lets
+# `terraform plan` run with no required variables, so it must not be replaced
+# with a plain coalesce on var.image_tag.
+image_tag = local.image_config.tag != null ? local.image_config.tag : local.image_tag
 ```
 
 ### IAM
@@ -124,13 +135,21 @@ scope below.
 
 `build-and-publish.yml` already has the right seam: it checks whether an image
 is published and skips the build steps if so
-(`.github/workflows/build-and-publish.yml:75-90`). The change is to short-
-circuit earlier, when the app has no build repository at all, so the workflow
-is not called rather than called and skipped.
+(`.github/workflows/build-and-publish.yml:75-90`). The natural instinct is to
+short-circuit earlier, so the workflow is not called at all.
 
-`deploy.yml` calls `database-migrations.yml`, which in turn calls
-`build-and-publish.yml`. That chain needs a condition at the top rather than
-three independent guards.
+That does not work as a single condition at the top of the chain.
+`deploy.yml:39` declares `deploy` with `needs: [database-migrations]`, and
+`database-migrations.yml:36` declares `run-migrations` with
+`needs: [build-and-publish]`. GitHub Actions treats a skipped dependency as
+not-success, so skipping at the top cascades: the migrations job is skipped,
+and `deploy` is skipped with it. An external-image service would never deploy.
+
+The guard therefore belongs on the build and publish _steps_, with migrations
+and deploy still running. Dependent jobs need `if: always() && !failure() &&
+!cancelled()` (or equivalent) so a deliberately skipped build does not read as
+a failed one. This is closer to the "independent guards" shape than to one
+top-level condition, and the implementation should plan for that.
 
 ### Positive Consequences
 
@@ -175,8 +194,24 @@ three independent guards.
 
 Per the issue:
 
-- Having the build-repository layer detect that a service needs no repository
-  and skip resource creation. The DB layer does not do this either.
+- Having the build-repository layer _intelligently_ detect that a service
+  needs no repository and skip resource creation, per the issue.
+
+  Note this cannot be scoped out entirely, and the DB-layer analogy does not
+  hold. `infra/{{app_name}}/build-repository/main.tf` dereferences the config
+  unconditionally, including at line 39 inside the `provider "aws"` block
+  (`region = local.build_repository_config.region`) and again at line 59
+  (`name = local.build_repository_config.name`). With the config null those
+  throw during provider configuration, so an external-image app could not run
+  `terraform plan` against that layer at all, let alone see it as a no-op. The
+  DB layer is gated by a separate config value; this one is not.
+
+  The minimum the implementation must do is make those two references safe --
+  most likely by having the layer resolve the region independently of
+  `build_repository_config` and gate the repository resource on a
+  `count`/`for_each`. Deciding whether the layer then does anything smarter is
+  what stays out of scope.
+
 - Transparently caching external images into an internal repository.
 
 Additionally, identified while writing this:
@@ -187,6 +222,18 @@ Additionally, identified while writing this:
   That is a distinct piece of work and should get its own issue.
 
 ## Validation
+
+Both code samples above were executed against Terraform with the pinned AWS
+provider, in both the internal-build and external-image configurations:
+
+|          | `repository_url`                       | `repository_arn`                    | `image_tag`                               |
+| -------- | -------------------------------------- | ----------------------------------- | ----------------------------------------- |
+| External | the pinned external image              | `null`, so the ECR grant is omitted | the tag pinned in config                  |
+| Internal | derived from `build_repository_config` | derived                             | falls back to the previously deployed tag |
+
+The `dynamic`/`for_each` IAM block was likewise verified: with the ARN null
+the `ECRPullAccess` statement is absent from the rendered policy JSON, and
+with it set the statement appears unchanged.
 
 The issue asks for test coverage via a new service in `platform-test` pointing
 at a simple hello-world image. That should be part of the implementation PR,
