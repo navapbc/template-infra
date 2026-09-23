@@ -72,16 +72,25 @@ locals {
   # Always populated. Derived from build_repository_config when the project
   # builds its own image; set explicitly when it does not.
   #
-  # A conditional, not coalesce(): Terraform evaluates all coalesce arguments
-  # eagerly, so the derived branch would dereference a null
-  # build_repository_config and fail on exactly the external-image case this
-  # exists to support.
+  # Both branches must list every attribute, including repository_arn, even
+  # where it is null. Terraform unifies mismatched object branches into a map
+  # of string and silently drops the missing key, so omitting it here makes
+  # local.image_config.repository_arn fail with "Missing map element" in the
+  # service layer -- only on the external path.
+  #
+  # A conditional, not coalesce(): the derived branch dereferences
+  # build_repository_config, and Terraform evaluates that expression before
+  # any function is called, so a null config fails regardless of the function
+  # chosen. try() does not help; the fix is not to dereference unguarded.
   image_config = local.build_repository_config != null ? {
     repository_url = local.build_repository_config.repository_url
     repository_arn = local.build_repository_config.repository_arn
     tag            = null # resolved per-deploy, see image_tag below
-  } : var.external_image_config
-}
+    } : {
+    repository_url = var.external_image_config.repository_url
+    repository_arn = var.external_image_config.repository_arn # null
+    tag            = var.external_image_config.tag
+  }
 ```
 
 The service layer then reads `image_config` rather than reaching into
@@ -145,11 +154,15 @@ That does not work as a single condition at the top of the chain.
 not-success, so skipping at the top cascades: the migrations job is skipped,
 and `deploy` is skipped with it. An external-image service would never deploy.
 
-The guard therefore belongs on the build and publish _steps_, with migrations
-and deploy still running. Dependent jobs need `if: always() && !failure() &&
-!cancelled()` (or equivalent) so a deliberately skipped build does not read as
-a failed one. This is closer to the "independent guards" shape than to one
-top-level condition, and the implementation should plan for that.
+The guard therefore belongs on the build and publish _steps_, not on the jobs.
+A job whose steps are skipped still **succeeds**, so migrations and deploy run
+normally and need no `if:` condition at all. `build-and-publish.yml:75-90`
+already works exactly this way today: it skips both build steps when the image
+is already published, and the job is green.
+
+Adding `always()`-family conditions to the dependents would be actively wrong,
+since they would let migrations and deploy proceed when the build genuinely
+failed.
 
 ### Positive Consequences
 
@@ -197,20 +210,33 @@ Per the issue:
 - Having the build-repository layer _intelligently_ detect that a service
   needs no repository and skip resource creation, per the issue.
 
-  Note this cannot be scoped out entirely, and the DB-layer analogy does not
-  hold. `infra/{{app_name}}/build-repository/main.tf` dereferences the config
-  unconditionally, including at line 39 inside the `provider "aws"` block
-  (`region = local.build_repository_config.region`) and again at line 59
-  (`name = local.build_repository_config.name`). With the config null those
-  throw during provider configuration, so an external-image app could not run
-  `terraform plan` against that layer at all, let alone see it as a no-op. The
-  DB layer is gated by a separate config value; this one is not.
+  Note this cannot be scoped out entirely. Four places dereference the config
+  unconditionally, and they fail in two different ways.
 
-  The minimum the implementation must do is make those two references safe --
-  most likely by having the layer resolve the region independently of
-  `build_repository_config` and gate the repository resource on a
-  `count`/`for_each`. Deciding whether the layer then does anything smarter is
-  what stays out of scope.
+  **Terraform.** `build-repository/main.tf:39` reads
+  `local.build_repository_config.region` inside the `provider "aws"` block,
+  and `:59` reads `.name`. With a null config these throw during provider
+  configuration, so the layer cannot even be planned.
+
+  **Shell.** `bin/is-image-published:16-17` and `bin/publish-release:20-21`
+  both run `output -json build_repository_config | jq -r ".name"`. These fail
+  _silently_: `jq -r` on null prints the string `null` and exits 0, so
+  `set -euo pipefail` does not catch it. `is-image-published` then queries ECR
+  for a repository literally named `null`, swallows the error via its own
+  `|| true`, and reports `false` — meaning the build steps this design wants
+  skipped would be reported as needing to run. That script is the exact seam
+  the CI/CD section above depends on.
+
+  The DB layer is still the right precedent, but not for the reason it first
+  appears: its Terraform has the same shape, with `database/main.tf:35`
+  dereferencing `local.database_config.region` in its own provider block. What
+  protects it is a gate one level up — `bin/run-database-migrations:34-38`
+  checks `has_database` and exits before touching the layer. Workflow-level
+  gating is what to copy.
+
+  The minimum the implementation must do is make all four references safe.
+  Deciding whether the layer then does anything smarter is what stays out of
+  scope.
 
 - Transparently caching external images into an internal repository.
 
