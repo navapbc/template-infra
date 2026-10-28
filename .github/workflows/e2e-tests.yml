@@ -50,11 +50,13 @@ jobs:
               TOTAL_SHARDS=${{ matrix.total_shards }}
 
       - name: Verify blob report directory after tests
+        if: ${{ !cancelled() }} # Run even if tests failed so failed shards still upload their reports
         run: |
           echo "Contents of blob-report directory on host:"
           ls -R ./e2e/blob-report || echo "blob-report directory not found"
 
       - name: Upload blob report
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: blob-report-shard-${{ matrix.shard }}
